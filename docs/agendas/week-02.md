@@ -37,8 +37,8 @@
    * Agreeing on a time/date for the first draft submission *(1 min)*
    * Final Deadline: Friday, March 1st
 6. **Round-up** *(5 min)*
-   * Dividing of tasks...?
-   * What are you going to do the upcoming week? *(3 min)*
+   * Dividing of tasks: Choosing next week's chair and minute taker
+   * What are you going to do the upcoming week? *(2 min)*
    * Do you anticipate any hurdles? Can we help you in overcoming them? *(2 min)*
 7. **Miscellaneous**
    * (Depending on the amount of time we have left)
