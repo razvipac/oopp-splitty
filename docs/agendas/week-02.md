@@ -1,9 +1,13 @@
 ## Week 2 Agenda
 
-**Date:**           20/02/2024\
-**Main focus:**     Git Assignment\
-**Chair:**           Amin\
-**Note taker:**     Stan
+| Key | Value |
+| --- | --- |
+| Date: | 20/02/2024 |
+| Time: | 14:45 - 15:30 |
+| Location: | Drebbelweg PC1 Cubicle 1 |
+| Chair | Amin |
+| Minute Taker | Stan |
+| Attendees: | ? |
 
 # Agenda Items
 
@@ -44,27 +48,16 @@
    * Any questions? *(3 min)*
    * Summarizing + Closure *(1 min)*
 
-# Opening
-
-**Present:**
-
-**Absent:**
-
 # Points of action
 
  - Everyone: read and complete the [Git Assignment](https://brightspace.tudelft.nl/d2l/le/content/595286/viewContent/3613610/View)
 
  - ...
 
-# Action points for next week (Scrum board)
-> *Every week you fill the Scrum board with new action points for that week. See the to do list for the items you should implement.*
+# Action points for next week
 
-# Any other business
-> *If anybody has something that should be discussed but came up with that after the agenda was finalized (in point 2), he/she should bring that up now so that it can be discussed after all.*
+ - ...
 
-# Questions for the TA
-> *Your TA will visit you in the second half of the lab session. Note down all questions that you have so that you can ask them then.*
+# Questions
 
-# Question round
-> *If there are any questions, now is the time to ask them.*
-
+ - ...
