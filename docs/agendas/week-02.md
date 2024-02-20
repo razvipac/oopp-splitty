@@ -24,20 +24,21 @@
 2. **Check-in** *(3 min)*
    * How is everyone doing? *(2 min)*
    * Approval of the agenda - Does anyone have any additions? *(1 min)*
-4. **Git Assignment** *(15 min)*
+4. **Git Assignment** *(5 min)*
    * Deadline: Friday, February 23rd
    * How was the lecture last Wednesday? *(2 min)*
    * Have you started? *(1 min)*
    * Have you run into any problems? *(10 min)*
    * Agreeing on a finishing time/date. *(2 min)*
-5. **Code of Conduct Assignment** *(15 min)*
+5. **Code of Conduct Assignment** *(10 min)*
    * How is it going so far? Any difficulties? *(10 min)*
    * Has everyone checked out the rubric? *(1 min)*
    * How should we review / give each other feedback? *(3 min)*
    * Agreeing on a time/date for the first draft submission *(1 min)*
    * Final Deadline: Friday, March 1st
-6. **Round-up** *(5 min)*
-   * Dividing of tasks: Choosing next week's chair and minute taker
+6. **Round-up** *(15 min)*
+   * Dividing of tasks: 100 lines of code
+   * Choosing next week's chair and minute taker
    * What are you going to do the upcoming week? *(2 min)*
    * Do you anticipate any hurdles? Can we help you in overcoming them? *(2 min)*
 7. **Miscellaneous**
