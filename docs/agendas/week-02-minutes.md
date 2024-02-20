@@ -1,4 +1,6 @@
 # Minutes 
+
+| Key           | Value                     |
 | ---           | ---                       |
 | Date:         | 20/02/2024                |
 | Time:         | 14:45 - 15:30             |
@@ -6,7 +8,6 @@
 | Chair         | Amin                      |
 | Attendees:    | All                       |
 | Minute Taker  | Stanisław Malinowski      |
-| ---           | ---                       |
 
 ## Git Assignment
 We agree to use the course deadline (Friday 23th February).
