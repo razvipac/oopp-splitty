@@ -5,9 +5,9 @@
 | Date: | 20/02/2024 |
 | Time: | 14:45 - 15:30 |
 | Location: | Drebbelweg PC1 Cubicle 1 |
-| Chair | Amin |
-| Minute Taker | Stan |
-| Attendees: | ? |
+| Chair | Amin Abid |
+| Minute Taker | Stanisław Malinowski |
+| Attendees: | All |
 
 # Agenda Items
 
@@ -49,16 +49,27 @@
    * Any questions? *(3 min)*
    * Summarizing + Closure *(1 min)*
 
+# Approval of Agenda
+
+*The following topics were added:*
+
+* Choosing next week's chair and minute taker
+* Discussing the 100 lines of code we need to write
+
 # Points of action
 
- - Everyone: read and complete the [Git Assignment](https://brightspace.tudelft.nl/d2l/le/content/595286/viewContent/3613610/View)
-
- - ...
+* Everyone: read and complete the [Git Assignment](https://brightspace.tudelft.nl/d2l/le/content/595286/viewContent/3613610/View)
+* Everyone: complete their own part of the Code of Conduct assignment.
+    * Agreed deadline: this Thursday night
+* Front-End Team: coding functionalities/pages in JavaFX
+    * Mihai: Code the "Add/Edit Contact Details" page
+    * Amin: Code the "Open Debts" page
+    * Naman: Code the "Sent Invitation" page
+    * Other pages that can be coded (if the weekly code requirement is not met):
+       * Statistics
+       * Language Selection
+       * Overview
+* Back-End Team: planning/creating database, setting up server
 
 # Action points for next week
-
- - ...
-
-# Questions
-
  - ...
