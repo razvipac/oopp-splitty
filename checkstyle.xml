@@ -22,7 +22,7 @@
  -->
 
 
-<module name = "Checker">
+<module name="Checker">
 
     <property name="fileExtensions" value="java"/>
     <module name="BeforeExecutionExclusionFileFilter">
@@ -30,7 +30,6 @@
     </module>
 
     <module name="TreeWalker">
-        <module name="UnusedImports" />
         <module name="MissingJavadocMethod">
             <property name="severity" value="warning"/>
             <property name="scope" value="public"/>
