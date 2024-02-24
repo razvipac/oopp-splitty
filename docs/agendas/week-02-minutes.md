@@ -30,10 +30,10 @@ We'll make separate front-end and back-end teams. Divide people in the teams bas
 *Front-End Team*:
 - Mihai Bobeică 
 - Amin Abid
-- Razvan Paraschiv
+- Naman Choudhary
 
 *Back-End Team*:
-- Naman Choudhary
+- Razvan Paraschiv
 - Vasil Georgiev
 - Stanisław Malinowski
 
@@ -41,7 +41,7 @@ We'll make separate front-end and back-end teams. Divide people in the teams bas
 We'll the "Add/Edit contact details" feature for next week.
 
 ## Next week's roles
-- Chair - Naman Choudhary
+- Chair - Razvan Paraschiv
 - Minute taker - Vasil Georgiev
 
 **We should focus on using the entire 45min of the meeting.**
