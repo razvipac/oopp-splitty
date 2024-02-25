@@ -15,8 +15,16 @@ import commons.Person;
 
 public class OpenDebts {
 
-    public Scene scene;
+    private Scene scene;
     private ArrayList<Debt> debtList;
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
 
     /**
      * Constructor for Open Debts page
@@ -91,10 +99,11 @@ public class OpenDebts {
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);
-        Text bankInfo = new Text("Bank information available, transfer money to:\n" +
-                "Account Holder: John Doe\n" +
-                "IBAN: NL12 3456 7890 1234 56\n" +
-                "BIC: ABCDEFGH");
+        Text bankInfo = new Text("""
+                Bank information available, transfer money to:
+                Account Holder: John Doe
+                IBAN: NL12 3456 7890 1234 56
+                BIC: ABCDEFGH""");
         debtInfo.setPadding(new Insets(0, 0, 10, 0));
         debtInfo.getChildren().addAll(bankInfo);
         debtInfo.setVisible(false);

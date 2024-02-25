@@ -16,8 +16,16 @@ import javafx.scene.text.Text;
 
 
 public class Invitations {
-    public Scene scene;
+    private Scene scene;
     private TextArea boxToPutEmails;
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
 
     public Invitations() {
         createSceneInvitation();

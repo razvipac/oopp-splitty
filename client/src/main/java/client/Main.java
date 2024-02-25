@@ -41,7 +41,7 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-    private OpenDebts od = new OpenDebts();
+    private final OpenDebts od = new OpenDebts();
     // add your page as a private object here
     private Invitations inv = new Invitations();
     private ContactDetails cd = new ContactDetails();
@@ -73,11 +73,11 @@ public class Main extends Application {
         // Button for Invitation page
         Button invitationButton = new Button("Invitation");
         // set the button's action to open your scene
-        invitationButton.setOnAction(e -> primaryStage.setScene(inv.scene));
+        invitationButton.setOnAction(e -> primaryStage.setScene(inv.getScene()));
 
         // Button for OpenDebts page
         Button odButton = new Button("Open Debts");
-        odButton.setOnAction(e -> primaryStage.setScene(od.scene));
+        odButton.setOnAction(e -> primaryStage.setScene(od.getScene()));
 
         // Layout
         VBox layout = new VBox();
