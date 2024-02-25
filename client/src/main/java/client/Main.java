@@ -20,6 +20,7 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import client.scenes.ContactDetails;
 import client.scenes.Invitations;
 import com.google.inject.Injector;
 
@@ -33,6 +34,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.checkerframework.checker.units.qual.C;
 
 public class Main extends Application {
 
@@ -42,6 +44,7 @@ public class Main extends Application {
     private OpenDebts od = new OpenDebts();
     // add your page as a private object here
     private Invitations inv = new Invitations();
+    private ContactDetails cd = new ContactDetails();
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
@@ -65,7 +68,7 @@ public class Main extends Application {
         // Button for ContactDetails page
         Button cdButton = new Button("Contact Details");
         // set the button's action to open your scene
-        // cdButton.setOnAction(e -> primaryStage.setScene(...));
+        cdButton.setOnAction(e -> primaryStage.setScene(cd.getScene()));
 
         // Button for Invitation page
         Button invitationButton = new Button("Invitation");
