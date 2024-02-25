@@ -9,6 +9,8 @@ public class Event {
     private Date creationDate;
     private Date lastActivity;
 
+    public Event() {
+    }
 
     public Event(String name, int code, Date creationDate, Date lastActivity) {
         this.name = name;
@@ -66,11 +68,9 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event" +
-                "name='" + name + '\'' +
-                ", code=" + code +
-                ", creationDate=" + creationDate +
-                ", lastActivity=" + lastActivity +
-                '}';
+        return "Event " + name + ":" +
+                "\t- code = " + code +
+                "\t- creationDate = " + creationDate +
+                "\t- lastActivity = " + lastActivity;
     }
 }
