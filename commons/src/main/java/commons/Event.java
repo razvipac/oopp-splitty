@@ -1,13 +1,24 @@
 package commons;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
+@Entity
 public class Event {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
-    private int code;
-    private Date creationDate;
-    private Date lastActivity;
+    private String code;
+    private LocalDate creationDate;
+    private LocalDate lastActivity = LocalDate.now();
 
     /**
      * Initializing an empty Event
@@ -21,13 +32,11 @@ public class Event {
      * @param name         The name of the respective event
      * @param code         The code of the respective event
      * @param creationDate The creation date of the respective event
-     * @param lastActivity The last activity of the respective event
      */
-    public Event(String name, int code, Date creationDate, Date lastActivity) {
+    public Event(String name, String code, LocalDate creationDate) {
         this.name = name;
         this.code = code;
         this.creationDate = creationDate;
-        this.lastActivity = lastActivity;
     }
 
     /**
@@ -40,22 +49,22 @@ public class Event {
     /**
      * @return the code of an instance of type Event
      */
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
     /**
      * @return the creation date of an instance of type Event
      */
-    public Date getCreationDate() {
+    public LocalDate getCreationDate() {
         return creationDate;
     }
 
     /**
      * @return the last activity of an instance of type Event
      */
-    public Date getLastActivity() {
-        return lastActivity;
+    public String getLastActivity() {
+        return lastActivity.toString();
     }
 
     /**
@@ -72,7 +81,7 @@ public class Event {
      *
      * @param code The code of an event
      */
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -81,7 +90,7 @@ public class Event {
      *
      * @param creationDate The creation date of an event
      */
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -90,7 +99,7 @@ public class Event {
      *
      * @param lastActivity The last activity of an event
      */
-    public void setLastActivity(Date lastActivity) {
+    public void setLastActivity(LocalDate lastActivity) {
         this.lastActivity = lastActivity;
     }
 
@@ -107,7 +116,7 @@ public class Event {
         if (o == null || getClass() != o.getClass())
             return false;
         Event event = (Event) o;
-        return code == event.code && name.equals(event.name) && creationDate.equals(event.creationDate) && lastActivity.equals(event.lastActivity);
+        return code.equals(event.code) && name.equals(event.name) && creationDate.equals(event.creationDate) && lastActivity.equals(event.lastActivity);
     }
 
     /**
@@ -130,4 +139,39 @@ public class Event {
                 "\t- creationDate = " + creationDate.toString() +
                 "\t- lastActivity = " + lastActivity.toString();
     }
+
+    /**
+     *
+     * @param events Represents our list of present events
+     * @return Returns the list of present events ordered alphabetically
+     */
+    public static List<Event> orderByTitle(List<Event> events)
+    {
+        return events.stream()
+                .sorted(Comparator.comparing(Event::getName))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     *
+     * @param events Represents our list of present events
+     * @return Returns the list of present events but ordered by means of date of creation
+     */
+    public static List<Event> orderByCreationDate(List<Event> events) {
+        return events.stream()
+                .sorted(Comparator.comparing(Event::getCreationDate))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     *
+     * @param events Represents our list of present events
+     * @return Returns the list of present events but ordered by means of last activity
+     */
+    public static List<Event> orderByLastActivity(List<Event> events) {
+        return events.stream()
+                .sorted(Comparator.comparing(Event::getLastActivity))
+                .collect(Collectors.toList());
+    }
+
 }

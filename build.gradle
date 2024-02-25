@@ -40,7 +40,14 @@ subprojects {
 	
 	dependencies {
 		implementation 'org.apache.commons:commons-lang3:3.12.0'
-		
+
+		// JPA and Hibernate
+		implementation 'javax.persistence:javax.persistence-api:2.2'
+		implementation 'org.hibernate:hibernate-core:5.6.0.Final'
+
+		//PostgreSQL JDBC Driver
+		implementation 'org.postgresql:postgresql:42.2.20'
+
 		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 		testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 		testImplementation 'org.mockito:mockito-core:4.1.0'
