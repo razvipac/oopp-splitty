@@ -39,9 +39,9 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-    private OpenDebts od = new OpenDebts();
+    private final OpenDebts od = new OpenDebts();
     // add your page as a private object here
-    private Invitations inv = new Invitations();
+    private final Invitations inv = new Invitations();
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
@@ -74,7 +74,7 @@ public class Main extends Application {
 
         // Button for OpenDebts page
         Button odButton = new Button("Open Debts");
-        odButton.setOnAction(e -> primaryStage.setScene(od.scene));
+        odButton.setOnAction(e -> primaryStage.setScene(od.getScene()));
 
         // Layout
         VBox layout = new VBox();

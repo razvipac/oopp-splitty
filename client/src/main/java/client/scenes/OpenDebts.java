@@ -15,8 +15,16 @@ import commons.Person;
 
 public class OpenDebts {
 
-    public Scene scene;
+    private Scene scene;
     private ArrayList<Debt> debtList;
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
 
     /**
      * Constructor for Open Debts page
