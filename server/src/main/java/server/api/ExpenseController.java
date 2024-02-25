@@ -52,12 +52,16 @@ public class ExpenseController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Expense> createExpense(@RequestBody ExpenseBody body){
-        throw new RuntimeException("To be implemented");
+    public ResponseEntity<Expense> createExpense(
+            @RequestBody ExpenseBody body
+    ){
+        return new ResponseEntity<>(expenseService.create(body), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Expense> deleteOneById(@PathVariable("id") Long id){
+    public ResponseEntity<Expense> deleteOneById(
+            @PathVariable("id") Long id
+    ){
         try{
             return new ResponseEntity<>(expenseService.deleteById(id), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){

@@ -34,6 +34,18 @@ public class ExpenseService {
         throw new NotFoundInDatabaseException("Expense was not found in the database");
     }
 
+    public Expense create(ExpenseBody body){
+        // TODO: fetch participant
+
+        Expense newExpense = new Expense(
+                body.price(),
+                body.item()
+        );
+
+        expenseRepository.save(newExpense);
+        return newExpense;
+    }
+
     public Expense deleteById(Long id) throws NotFoundInDatabaseException {
         Expense found = getOneById(id);
         // if not found exception will be thrown
@@ -46,7 +58,7 @@ public class ExpenseService {
         // if not found exception will be thrown
         found.setItem(body.item());
         found.setPrice(body.price());
-        // TODO: set participant
+        // TODO: set participant, fetch and add
 
         expenseRepository.save(found);
         return found;
