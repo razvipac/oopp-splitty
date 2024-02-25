@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.*;
-
 import java.util.Objects;
 @Entity
 @Table(name = "Participant")
@@ -15,17 +14,29 @@ public class Participant {
     @ManyToOne
     @JoinColumn(name = "code", nullable = false)
     private Event event;
-
     private String email;
     private String iban;
     private String bic;
 
+    /**
+     * Default constructor needed for the JPA
+     */
     protected Participant() {
     }
 
     public Participant(String name, Event event, String email, String iban, String bic) {
         this.name = name;
         this.event = event;
+        this.email = email;
+        this.iban = iban;
+        this.bic = bic;
+    }
+
+    /*
+    Constructor made for testing
+     */
+    public Participant(String name, String email, String iban, String bic) {
+        this.name = name;
         this.email = email;
         this.iban = iban;
         this.bic = bic;
@@ -72,12 +83,22 @@ public class Participant {
     }
 
     @Override
+    public String toString() {
+        return "Participant{" +
+                "name='" + name + '\'' +
+                ", event=" + event +
+                ", email='" + email + '\'' +
+                ", iban='" + iban + '\'' +
+                ", bic='" + bic + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Participant that)) return false;
         return Objects.equals(name, that.name) && Objects.equals(event, that.event) && Objects.equals(email, that.email) && Objects.equals(iban, that.iban) && Objects.equals(bic, that.bic);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(name, event, email, iban, bic);
