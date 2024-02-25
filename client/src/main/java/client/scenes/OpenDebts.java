@@ -95,6 +95,7 @@ public class OpenDebts {
                 "Account Holder: John Doe\n" +
                 "IBAN: NL12 3456 7890 1234 56\n" +
                 "BIC: ABCDEFGH");
+        debtInfo.setPadding(new Insets(0, 0, 10, 0));
         debtInfo.getChildren().addAll(bankInfo);
         debtInfo.setVisible(false);
         debtInfo.setManaged(false);
