@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/expense")
 public class ExpenseController {
-    private ExpenseRepository expenseRepository;
+    private final ExpenseRepository expenseRepository;
 
     @Autowired
     public ExpenseController(ExpenseRepository expenseRepository) {
@@ -66,8 +66,4 @@ public class ExpenseController {
     }
 }
 
-record ExpenseBody(
-        Integer price,
-        String item,
-        Long participantId
-) {}
+
