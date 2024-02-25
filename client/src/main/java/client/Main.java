@@ -27,6 +27,10 @@ import client.scenes.OpenDebts;
 //import client.scenes.MainCtrl;
 //import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -34,7 +38,8 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-    private static OpenDebts od = new OpenDebts();
+    private OpenDebts od = new OpenDebts();
+    // add your page as a private object here
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
@@ -43,12 +48,44 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
+        // Code that was already in this class
 //        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
 //        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
 //
 //        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 //        mainCtrl.initialize(primaryStage, overview, add);
 
-        od.start(primaryStage);
+        // Button for StartScreen page
+        Button startButton = new Button("Start Screen");
+        // set the button's action to open your scene
+        // startButton.setOnAction(e -> primaryStage.setScene(...));
+
+        // Button for ContactDetails page
+        Button cdButton = new Button("Contact Details");
+        // set the button's action to open your scene
+        // cdButton.setOnAction(e -> primaryStage.setScene(...));
+
+        // Button for Invitation page
+        Button invitationButton = new Button("Invitation");
+        // set the button's action to open your scene
+        // invitationButton.setOnAction(e -> primaryStage.setScene(...));
+
+        // Button for OpenDebts page
+        Button odButton = new Button("Open Debts");
+        odButton.setOnAction(e -> primaryStage.setScene(od.scene));
+
+        // Layout
+        VBox layout = new VBox();
+        layout.setPadding(new Insets(10));
+        // adding elements to layout
+        layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton);
+
+        // Scene
+        Scene scene = new Scene(layout, 400, 300);
+
+        // Window
+        primaryStage.setTitle("Main");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }
