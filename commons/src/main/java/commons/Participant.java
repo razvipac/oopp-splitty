@@ -24,6 +24,14 @@ public class Participant {
     protected Participant() {
     }
 
+    /**
+     *
+     * @param name is the primary key of this entity as it has to be unique because this is the only information available for participants
+     * @param event contains the code of the event that the participant is in
+     * @param email for payment information purposes
+     * @param iban for payment information purposes
+     * @param bic for payment information purposes
+     */
     public Participant(String name, Event event, String email, String iban, String bic) {
         this.name = name;
         this.event = event;
@@ -34,6 +42,7 @@ public class Participant {
 
     /*
     Constructor made for testing
+    To Do: delete after getting event entity information
      */
     public Participant(String name, String email, String iban, String bic) {
         this.name = name;
@@ -42,46 +51,78 @@ public class Participant {
         this.bic = bic;
     }
 
+    /**
+     * @return name of the participant
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name changes the name of the participant
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * @return the code of the event
+     */
     public Event getEvent() {
         return event;
     }
 
+    /**
+     * @param event changes the event code the participant is in
+     */
     public void setEvent(Event event) {
         this.event = event;
     }
 
+    /**
+     * @return the mail of the participant
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * @param email sets a different email for the participant
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * @return the payment information
+     */
     public String getIban() {
         return iban;
     }
 
+    /**
+     * @param iban changes payment information
+     */
     public void setIban(String iban) {
         this.iban = iban;
     }
 
+    /**
+     * @return the payment information
+     */
     public String getBic() {
         return bic;
     }
-
+    /**
+     * @param bic changes payment information
+     */
     public void setBic(String bic) {
         this.bic = bic;
     }
 
+    /**
+     * @return legible information of the participant
+     */
     @Override
     public String toString() {
         return "Participant{" +
@@ -93,6 +134,10 @@ public class Participant {
                 '}';
     }
 
+    /**
+     * @param o takes an obkect to compare
+     * @return true if the objects are equal; false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
