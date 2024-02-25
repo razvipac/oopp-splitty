@@ -70,7 +70,7 @@ public class Main extends Application {
         // Button for Invitation page
         Button invitationButton = new Button("Invitation");
         // set the button's action to open your scene
-        invitationButton.setOnAction(e -> primaryStage.setScene(inv.scene));
+        invitationButton.setOnAction(e -> primaryStage.setScene(inv.getScene()));
 
         // Button for OpenDebts page
         Button odButton = new Button("Open Debts");
