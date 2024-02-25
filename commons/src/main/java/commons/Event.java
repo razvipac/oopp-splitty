@@ -13,9 +13,10 @@ import java.util.stream.Collectors;
 
 @Entity
 public class Event {
+
+    private String name;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String name;
     private String code;
     private LocalDate creationDate;
     private LocalDate lastActivity = LocalDate.now();
