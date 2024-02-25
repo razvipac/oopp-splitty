@@ -21,7 +21,7 @@ public class ExpenseController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Expense>> getAll(@PathVariable("eventCode") String eventCode){
+    public ResponseEntity<List<Expense>> getAll(){
         return new ResponseEntity<>(expenseService.getAll(), HttpStatus.OK);
     }
 
@@ -53,11 +53,6 @@ public class ExpenseController {
 
     @PostMapping("")
     public ResponseEntity<Expense> createExpense(@RequestBody ExpenseBody body){
-        throw new RuntimeException("To be implemented");
-    }
-
-    @PostMapping("")
-    public ResponseEntity<List<Expense>> createExpenses(@RequestBody List<ExpenseBody> body){
         throw new RuntimeException("To be implemented");
     }
 
