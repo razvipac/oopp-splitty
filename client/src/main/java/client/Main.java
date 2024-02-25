@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 
 import com.google.inject.Injector;
 
+import client.scenes.OpenDebts;
 import client.scenes.AddQuoteCtrl;
 import client.scenes.MainCtrl;
 import client.scenes.QuoteOverviewCtrl;
@@ -33,6 +34,8 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
+    private static OpenDebts od = new OpenDebts();
+
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
     }
@@ -40,10 +43,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+//        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
+//        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+//
+//        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+//        mainCtrl.initialize(primaryStage, overview, add);
 
-        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add);
+        od.start(primaryStage);
     }
 }
