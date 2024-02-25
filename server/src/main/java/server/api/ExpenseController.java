@@ -36,13 +36,6 @@ public class ExpenseController {
         }
     }
 
-    @GetMapping("/{eventCode}")
-    public ResponseEntity<Expense> getAllInEvent(
-            @PathVariable("eventCode") String eventCode
-    ){
-        throw new RuntimeException("To be implemented");
-    }
-
     @GetMapping("/{eventCode}/{id}")
     public ResponseEntity<Expense> getOneFromEventById(
             @PathVariable("eventCode") String eventCode,
