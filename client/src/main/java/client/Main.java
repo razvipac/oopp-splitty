@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import client.scenes.Invitations;
+import client.scenes.StartScreen;
 import com.google.inject.Injector;
 
 import client.scenes.OpenDebts;
@@ -43,6 +44,8 @@ public class Main extends Application {
     // add your page as a private object here
     private final Invitations inv = new Invitations();
 
+    private final StartScreen sc = new StartScreen();
+
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
     }
@@ -59,6 +62,7 @@ public class Main extends Application {
 
         // Button for StartScreen page
         Button startButton = new Button("Start Screen");
+        startButton.setOnAction(e -> primaryStage.setScene(sc.getScene()));
         // set the button's action to open your scene
         // startButton.setOnAction(e -> primaryStage.setScene(...));
 
