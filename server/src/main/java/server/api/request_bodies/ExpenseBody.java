@@ -1,4 +1,4 @@
-package server.api;
+package server.api.request_bodies;
 
 import commons.ParticipantId;
 
