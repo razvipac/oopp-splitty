@@ -12,12 +12,6 @@ public class Participant {
     private String iban;
     private String bic;
 
-//    Basic endpoints and fully functional relationships between the 3 main entities
-//
-//    Added fully functional relationships between classes Event, Participant and Expense.
-//    Added very basic endpoints for testing.
-//    JSON dumping is on the way now that this works.
-
     /**
      * Default constructor needed for the JPA
      */
