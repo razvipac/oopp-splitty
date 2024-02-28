@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.EventRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -17,6 +17,15 @@ public class EventService {
 
     public EventService(@Autowired EventRepository eventRepository) {
         this.eventRepository = eventRepository;
+    }
+
+    public Event getOneById(String id) throws NotFoundInDatabaseException {
+        Optional<Event> searchResult = eventRepository.findById(id);
+
+        if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
+                "Event with code: " + id + " is not present in the database!");
+
+        return searchResult.get();
     }
 
     public List<Event> getAll(){
