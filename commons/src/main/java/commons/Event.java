@@ -2,7 +2,7 @@ package commons;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Comparator;
@@ -15,13 +15,14 @@ public class Event {
     private String name;
     @Id
     private String code;
-    private LocalDate creationDate;
-    private LocalDate lastActivity = LocalDate.now();
+    private LocalDateTime creationDate;
+    private LocalDateTime lastActivity;
 
     /**
      * Initializing an empty Event
      */
     public Event() {
+        this.lastActivity = LocalDateTime.now();
     }
 
     /**
@@ -31,9 +32,10 @@ public class Event {
      * @param code         The code of the respective event
      * @param creationDate The creation date of the respective event
      */
-    public Event(String name, String code, LocalDate creationDate) {
+    public Event(String name, String code, LocalDateTime creationDate) {
         this.name = name;
         this.code = code;
+        this.lastActivity = LocalDateTime.now();
         this.creationDate = creationDate;
     }
 
@@ -54,7 +56,7 @@ public class Event {
     /**
      * @return the creation date of an instance of type Event
      */
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
@@ -88,7 +90,7 @@ public class Event {
      *
      * @param creationDate The creation date of an event
      */
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -97,7 +99,7 @@ public class Event {
      *
      * @param lastActivity The last activity of an event
      */
-    public void setLastActivity(LocalDate lastActivity) {
+    public void setLastActivity(LocalDateTime lastActivity) {
         this.lastActivity = lastActivity;
     }
 
