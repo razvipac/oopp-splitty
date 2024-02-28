@@ -4,7 +4,7 @@ import commons.Expense;
 import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.api.ExpenseBody;
+import server.api.request_bodies.ExpenseBody;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
 
