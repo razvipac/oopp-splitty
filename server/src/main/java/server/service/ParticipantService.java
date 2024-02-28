@@ -5,12 +5,11 @@ import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.api.request_bodies.ParticipantBody;
-import server.database.EventRepository;
 import server.database.ParticipantRepository;
+import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ParticipantService {

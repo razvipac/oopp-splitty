@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.api.request_bodies.ExpenseBody;
 import server.service.ExpenseService;
-import server.service.NotFoundInDatabaseException;
+import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.List;
 

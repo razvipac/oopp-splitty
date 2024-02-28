@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import server.api.request_bodies.ExpenseBody;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
+import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.LinkedList;
 import java.util.List;

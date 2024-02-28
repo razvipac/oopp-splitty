@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.api.request_bodies.ParticipantBody;
-import server.service.NotFoundInDatabaseException;
+import server.service.exceptions.NotFoundInDatabaseException;
 import server.service.ParticipantService;
 
 import java.util.List;
