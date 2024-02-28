@@ -21,8 +21,17 @@ public class ParticipantController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Participant>> getAllInEvent(@PathVariable("eventCode") String eventCode){
-        return new ResponseEntity<>(participantService.getAll(eventCode), HttpStatus.OK);
+    public ResponseEntity<List<Participant>> getAllOrOne(
+            @PathVariable(value = "eventCode", required = false) String eventCode,
+            @RequestParam(value = "name", required = false) String name){
+        if (name == null)
+            return new ResponseEntity<>(participantService.getAll(eventCode), HttpStatus.OK);
+
+        try {
+            return new ResponseEntity<>(List.of(participantService.getOne(eventCode, name)), HttpStatus.OK);
+        } catch (NotFoundInDatabaseException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping

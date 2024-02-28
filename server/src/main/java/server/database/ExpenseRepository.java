@@ -1,8 +1,18 @@
 package server.database;
 
 import commons.Expense;
+import commons.ExpenseId;
+import commons.Participant;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+
 @Repository
-public interface ExpenseRepository extends CrudRepository<Expense, Long> { }
+public interface ExpenseRepository extends CrudRepository<Expense, ExpenseId> {
+    @Query("SELECT e FROM Expense e WHERE e.pkey.paidBy.pkey.event.code = :eventCode")
+    Collection<Expense> findAllExpensesInEvent(@Param("eventCode") String eventCode);
+}
+

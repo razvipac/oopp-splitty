@@ -12,5 +12,5 @@ import commons.ParticipantId;
 public record ExpenseBody(
         Integer price,
         String item,
-        ParticipantId participantId
+        String participantName
 ) {}

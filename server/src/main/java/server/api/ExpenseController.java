@@ -12,7 +12,7 @@ import server.service.exceptions.NotFoundInDatabaseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/expense")
+@RequestMapping("api/v1/{eventCode}/expense")
 public class ExpenseController {
     private final ExpenseService expenseService;
 
@@ -21,47 +21,63 @@ public class ExpenseController {
         this.expenseService = expenseService;
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<Expense>> getAll(){
-        return new ResponseEntity<>(expenseService.getAll(), HttpStatus.OK);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<List<Expense>> getAllInEvent(
+//            @PathVariable("eventCode") String eventCode
+//    ){
+//        return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
+//    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Expense> getOneById(
-            @PathVariable("id") Long id
-    ){
+    @GetMapping("")
+    public ResponseEntity<List<Expense>> getAllOrOne(
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "participantName", required = false) String participantName,
+            @PathVariable("eventCode") String eventCode
+            ){
+        if (id == null && participantName == null){
+            return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
+        }
+
         try{
-            return new ResponseEntity<>(expenseService.getOneById(id), HttpStatus.OK);
+            return new ResponseEntity<>(List.of(expenseService.getOne(eventCode, participantName, id)), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("")
-    public ResponseEntity<Expense> createExpense(
+    public ResponseEntity<Expense> createOne(
+            @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseBody body
     ){
-        return new ResponseEntity<>(expenseService.create(body), HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Expense> deleteOneById(
-            @PathVariable("id") Long id
-    ){
         try{
-            return new ResponseEntity<>(expenseService.deleteById(id), HttpStatus.OK);
+            return new ResponseEntity<>(expenseService.createOne(eventCode, body), HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PutMapping("/{id}")
+    @DeleteMapping("")
+    public ResponseEntity<Expense> deleteOne(
+            @RequestParam("id") Long id,
+            @RequestParam("participantName") String participantName,
+            @PathVariable("eventCode") String eventCode
+    ){
+        try{
+            return new ResponseEntity<>(expenseService.deleteOne(eventCode, participantName, id), HttpStatus.OK);
+        } catch (NotFoundInDatabaseException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("")
     public ResponseEntity<Expense> updateOneById(
-            @PathVariable("id") Long id,
+            @RequestParam("id") Long id,
+            @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseBody body
     ){
         try{
-            return new ResponseEntity<>(expenseService.updateById(id, body), HttpStatus.OK);
+            return new ResponseEntity<>(expenseService.updateOne(eventCode, id, body), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

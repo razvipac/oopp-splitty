@@ -17,8 +17,10 @@ public class Expense {
     public Expense() {
     }
 
-    public Expense(Long id, Integer price, String item, Participant paidBy) {
-        this.pkey = new ExpenseId(id, paidBy);
+    public Expense(Integer price, String item, Participant paidBy) {
+        ExpenseId eid = new ExpenseId();
+        eid.setPaidBy(paidBy);
+        this.pkey = eid;
         this.price = price;
         this.item = item;
     }

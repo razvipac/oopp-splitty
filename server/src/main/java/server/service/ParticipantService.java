@@ -10,6 +10,7 @@ import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ParticipantService {
@@ -22,9 +23,18 @@ public class ParticipantService {
         this.eventService = eventService;
     }
 
+    public Participant getOne(String eventCode, String name) throws NotFoundInDatabaseException {
+        Optional<Participant> searchResult = participantRepository.findParticipantByEventCodeAndName(name, eventCode);
+        if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
+                "A Participant of event " + eventCode + " with name " + name + "cannot be found!"
+        );
+
+        return searchResult.get();
+    }
+
     public List<Participant> getAll(String eventCode){
         List<Participant> result = new LinkedList<>();
-        participantRepository.getAllParticipantsInEvent(eventCode).iterator().forEachRemaining(result::add);
+        participantRepository.findAllParticipantsInEvent(eventCode).iterator().forEachRemaining(result::add);
         return result;
     }
 
