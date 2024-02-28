@@ -18,11 +18,19 @@ public class EventController {
         this.eventService = eventService;
     }
 
+    /**
+     * GET /api/v1/
+     * Gets all Events
+     */
     @GetMapping
     public ResponseEntity<List<Event>> getAll(){
         return new ResponseEntity<>(eventService.getAll(), HttpStatus.OK);
     }
 
+    /**
+     * POST /api/v1/?name={name}
+     * Creates a new Event with name {name}
+     */
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestParam("name") String name){
         return new ResponseEntity<>(eventService.createOne(name), HttpStatus.CREATED);

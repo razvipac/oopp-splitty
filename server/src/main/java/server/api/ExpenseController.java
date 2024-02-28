@@ -28,6 +28,13 @@ public class ExpenseController {
 //        return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
 //    }
 
+    /**
+     * GET api/v1/{eventCode}/expense?id={id}&participantName={name}
+     * id and participantName are optional
+     * if any of them is omitted all Expenses of event with {eventCode} will be returned
+     * if they are both given a Expense belonging to a participant with name {name} of Event with {eventCode}
+     * and with id {id} will be returned
+     */
     @GetMapping("")
     public ResponseEntity<List<Expense>> getAllOrOne(
             @RequestParam(value = "id", required = false) Long id,
@@ -45,6 +52,10 @@ public class ExpenseController {
         }
     }
 
+    /**
+     * POST api/v1/{eventCode}/expense with request body in format of ExpenseBody
+     * creates a new Expense populated with data from body under an event with {eventCode}
+     */
     @PostMapping("")
     public ResponseEntity<Expense> createOne(
             @PathVariable("eventCode") String eventCode,
@@ -57,6 +68,11 @@ public class ExpenseController {
         }
     }
 
+    /**
+     * DELETE api/v1/{eventCode}/expense?id={id}&participantName={name}
+     * deletes expense belonging to a Participant with name {name} and id {id} from
+     * event with code {eventCode}
+     */
     @DeleteMapping("")
     public ResponseEntity<Expense> deleteOne(
             @RequestParam("id") Long id,
@@ -70,6 +86,11 @@ public class ExpenseController {
         }
     }
 
+    /**
+     * PUT api/v1/{eventCode}/expense?id={id} with request body in format of ExpenseBody
+     * Updates the data of expense object with id {id} under event with code {eventCode}
+     * Overwrites data with that in passed body, YOU CANNOT CHANGE THE NAME OF THE PARTICIPANT
+     */
     @PutMapping("")
     public ResponseEntity<Expense> updateOneById(
             @RequestParam("id") Long id,

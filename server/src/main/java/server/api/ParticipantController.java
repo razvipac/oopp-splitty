@@ -20,9 +20,15 @@ public class ParticipantController {
         this.participantService = participantService;
     }
 
+    /**
+     * GET api/v1/{eventCode}/expense?name={name}
+     * name is optional
+     * if it is omitted all Participants of event with {eventCode} will be returned
+     * if it is given a Participant belonging to a Event with {eventCode} and given name will be returned
+     */
     @GetMapping
     public ResponseEntity<List<Participant>> getAllOrOne(
-            @PathVariable(value = "eventCode", required = false) String eventCode,
+            @PathVariable(value = "eventCode") String eventCode,
             @RequestParam(value = "name", required = false) String name){
         if (name == null)
             return new ResponseEntity<>(participantService.getAll(eventCode), HttpStatus.OK);
@@ -34,6 +40,10 @@ public class ParticipantController {
         }
     }
 
+    /**
+     * POST /api/v1/{eventCode}/participant with body in ParticipantBody format
+     * Creates a new Participant populated with the data in body
+     */
     @PostMapping
     public ResponseEntity<Participant> createOne(
             @PathVariable("eventCode") String eventCode,

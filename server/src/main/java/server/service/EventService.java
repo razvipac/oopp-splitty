@@ -12,6 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Handles input and output for saved Event objects
+ */
 @Service
 public class EventService {
     private EventRepository eventRepository;
@@ -20,21 +23,37 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public Event getOneById(String id) throws NotFoundInDatabaseException {
-        Optional<Event> searchResult = eventRepository.findById(id);
+    /**
+     * Fetches an Event object with given code
+     * @param code code of the fetched Event object
+     * @return a fetched Event object
+     * @throws NotFoundInDatabaseException if a object with given code is not present in the database
+     */
+    public Event getOne(String code) throws NotFoundInDatabaseException {
+        Optional<Event> searchResult = eventRepository.findById(code);
 
         if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
-                "Event with code: " + id + " is not present in the database!");
+                "Event with code: " + code + " is not present in the database!");
 
         return searchResult.get();
     }
 
+
+    /**
+     * Fetches all Events in the database
+     * @return a linked list with all stored Event instances
+     */
     public List<Event> getAll(){
         List<Event> events = new LinkedList<>();
         eventRepository.findAll().iterator().forEachRemaining(events::add);
         return events;
     }
 
+    /**
+     * Creates and saves an Event with given name
+     * @param name name of the event to be created
+     * @return the newly created Event object
+     */
     public Event createOne(String name){
         String code = generateCode();
         LocalDateTime creationDate = LocalDateTime.now();
@@ -46,8 +65,14 @@ public class EventService {
         return newEvent;
     }
 
+    /**
+     * Generates a UNIQUE 8 character code.
+     * Checks if it is already present in the Event database table, if it is the code gets
+     * regenerated until it is unique.
+     * @return a unique 8 character code to be used as a Event code
+     */
     private String generateCode(){
-        // Creates a list of characters 0-9 A-Z a-z
+        // Creates a list of characters [[0-9], [A-Z], [a-z]]
         List<Character> possibleCharacters = new ArrayList<>();
         for (int i = 48; i <= 57; i++){
             possibleCharacters.add((char) i);
