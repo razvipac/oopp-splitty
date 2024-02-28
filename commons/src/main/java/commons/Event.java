@@ -1,9 +1,6 @@
 package commons;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,11 +9,11 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Entity
+@Table(name="event")
 public class Event {
 
     private String name;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code;
     private LocalDate creationDate;
     private LocalDate lastActivity = LocalDate.now();

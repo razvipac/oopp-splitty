@@ -5,35 +5,30 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Entity")
+@Table(name = "expense")
 public class Expense {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "entity_id_sequence")
-    private Long id;
+
+    @EmbeddedId
+    private ExpenseId pkey;
 
     private Integer price;
     private String item;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "participant_name")
-    private Participant paidBy;
 
     public Expense() {
     }
 
     public Expense(Long id, Integer price, String item, Participant paidBy) {
-        this.id = id;
+        this.pkey = new ExpenseId(id, paidBy);
         this.price = price;
         this.item = item;
-        this.paidBy = paidBy;
     }
 
     public Long getId() {
-        return id;
+        return pkey.getId();
     }
 
     public void setId(Long id) {
-        this.id = id;
+        pkey.setId(id);
     }
 
     public Integer getPrice() {
@@ -53,20 +48,19 @@ public class Expense {
     }
 
     public Participant getPaidBy() {
-        return paidBy;
+        return pkey.getPaidBy();
     }
 
     public void setPaidBy(Participant paidBy) {
-        this.paidBy = paidBy;
+        pkey.setPaidBy(paidBy);
     }
 
     @Override
     public String toString() {
         return "Expense{" +
-                "id=" + id +
+                "pkey=" + pkey +
                 ", price=" + price +
                 ", item='" + item + '\'' +
-                ", paidBy=" + paidBy +
                 '}';
     }
 
@@ -75,11 +69,11 @@ public class Expense {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Expense expense = (Expense) o;
-        return Objects.equals(id, expense.id) && Objects.equals(price, expense.price) && Objects.equals(item, expense.item) && Objects.equals(paidBy, expense.paidBy);
+        return Objects.equals(pkey, expense.pkey) && Objects.equals(price, expense.price) && Objects.equals(item, expense.item);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, price, item, paidBy);
+        return Objects.hash(pkey, price, item);
     }
 }

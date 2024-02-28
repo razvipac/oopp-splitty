@@ -11,7 +11,7 @@ import server.service.NotFoundInDatabaseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/expense")
+@RequestMapping("api/v1/expense")
 public class ExpenseController {
     private final ExpenseService expenseService;
 
@@ -34,14 +34,6 @@ public class ExpenseController {
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    @GetMapping("/{eventCode}/{id}")
-    public ResponseEntity<Expense> getOneFromEventById(
-            @PathVariable("eventCode") String eventCode,
-            @PathVariable("id") Long id
-    ){
-        throw new RuntimeException("To be implemented");
     }
 
     @PostMapping("")

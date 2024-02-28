@@ -1,10 +1,12 @@
 package server.service;
 
 import commons.Expense;
+import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.api.ExpenseBody;
 import server.database.ExpenseRepository;
+import server.database.ParticipantRepository;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,10 +15,12 @@ import java.util.Optional;
 @Service
 public class ExpenseService {
     private ExpenseRepository expenseRepository;
+    private ParticipantRepository participantRepository;
 
     @Autowired
-    public ExpenseService(ExpenseRepository expenseRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository, ParticipantRepository participantRepository) {
         this.expenseRepository = expenseRepository;
+        this.participantRepository = participantRepository;
     }
 
     /**
@@ -54,12 +58,14 @@ public class ExpenseService {
      * @return the Expense object that got created
      */
     public Expense create(ExpenseBody body){
-        // TODO: fetch participant
+        Optional<Participant> searchResult = participantRepository.findById(body.participantId());
 
-        Expense newExpense = new Expense(
-                body.price(),
-                body.item()
-        );
+        if (searchResult.isEmpty()) return new Expense();
+
+        Expense newExpense = new Expense();
+        newExpense.setPrice(body.price());
+        newExpense.setItem(body.item());
+        newExpense.setPaidBy(searchResult.get());
 
         expenseRepository.save(newExpense);
         return newExpense;

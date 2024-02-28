@@ -1,5 +1,7 @@
 package server.api;
 
+import commons.ParticipantId;
+
 /**
  * Structure of the request body for Create/Update operations on expenses
  *
@@ -10,5 +12,5 @@ package server.api;
 public record ExpenseBody(
         Integer price,
         String item,
-        Long participantId
+        ParticipantId participantId
 ) {}
