@@ -5,13 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import server.api.request_bodies.ExpenseBody;
 import server.service.ExpenseService;
-import server.service.NotFoundInDatabaseException;
+import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/expense")
+@RequestMapping("api/v1/{eventCode}/expense")
 public class ExpenseController {
     private final ExpenseService expenseService;
 
@@ -20,55 +21,84 @@ public class ExpenseController {
         this.expenseService = expenseService;
     }
 
+//    @GetMapping("")
+//    public ResponseEntity<List<Expense>> getAllInEvent(
+//            @PathVariable("eventCode") String eventCode
+//    ){
+//        return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
+//    }
+
+    /**
+     * GET api/v1/{eventCode}/expense?id={id}&participantName={name}
+     * id and participantName are optional
+     * if any of them is omitted all Expenses of event with {eventCode} will be returned
+     * if they are both given a Expense belonging to a participant with name {name} of Event with {eventCode}
+     * and with id {id} will be returned
+     */
     @GetMapping("")
-    public ResponseEntity<List<Expense>> getAll(){
-        return new ResponseEntity<>(expenseService.getAll(), HttpStatus.OK);
-    }
+    public ResponseEntity<List<Expense>> getAllOrOne(
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "participantName", required = false) String participantName,
+            @PathVariable("eventCode") String eventCode
+            ){
+        if (id == null && participantName == null){
+            return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Expense> getOneById(
-            @PathVariable("id") Long id
-    ){
         try{
-            return new ResponseEntity<>(expenseService.getOneById(id), HttpStatus.OK);
+            return new ResponseEntity<>(List.of(expenseService.getOne(eventCode, participantName, id)), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/{eventCode}/{id}")
-    public ResponseEntity<Expense> getOneFromEventById(
-            @PathVariable("eventCode") String eventCode,
-            @PathVariable("id") Long id
-    ){
-        throw new RuntimeException("To be implemented");
-    }
-
+    /**
+     * POST api/v1/{eventCode}/expense with request body in format of ExpenseBody
+     * creates a new Expense populated with data from body under an event with {eventCode}
+     */
     @PostMapping("")
-    public ResponseEntity<Expense> createExpense(
+    public ResponseEntity<Expense> createOne(
+            @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseBody body
     ){
-        return new ResponseEntity<>(expenseService.create(body), HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Expense> deleteOneById(
-            @PathVariable("id") Long id
-    ){
         try{
-            return new ResponseEntity<>(expenseService.deleteById(id), HttpStatus.OK);
+            return new ResponseEntity<>(expenseService.createOne(eventCode, body), HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PutMapping("/{id}")
+    /**
+     * DELETE api/v1/{eventCode}/expense?id={id}&participantName={name}
+     * deletes expense belonging to a Participant with name {name} and id {id} from
+     * event with code {eventCode}
+     */
+    @DeleteMapping("")
+    public ResponseEntity<Expense> deleteOne(
+            @RequestParam("id") Long id,
+            @RequestParam("participantName") String participantName,
+            @PathVariable("eventCode") String eventCode
+    ){
+        try{
+            return new ResponseEntity<>(expenseService.deleteOne(eventCode, participantName, id), HttpStatus.OK);
+        } catch (NotFoundInDatabaseException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * PUT api/v1/{eventCode}/expense?id={id} with request body in format of ExpenseBody
+     * Updates the data of expense object with id {id} under event with code {eventCode}
+     * Overwrites data with that in passed body, YOU CANNOT CHANGE THE NAME OF THE PARTICIPANT
+     */
+    @PutMapping("")
     public ResponseEntity<Expense> updateOneById(
-            @PathVariable("id") Long id,
+            @RequestParam("id") Long id,
+            @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseBody body
     ){
         try{
-            return new ResponseEntity<>(expenseService.updateById(id, body), HttpStatus.OK);
+            return new ResponseEntity<>(expenseService.updateOne(eventCode, id, body), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

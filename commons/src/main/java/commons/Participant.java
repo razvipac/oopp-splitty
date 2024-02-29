@@ -1,19 +1,13 @@
 package commons;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.*;
 import java.util.Objects;
 @Entity
-@Table(name = "Participant")
+@Table(name = "participant")
 public class Participant {
-    @Id
-    private String name;
-    @ManyToOne
-    @JoinColumn(name = "code", nullable = false)
-    private Event event;
+    @EmbeddedId
+    private ParticipantId pkey;
     private String email;
     private String iban;
     private String bic;
@@ -33,19 +27,7 @@ public class Participant {
      * @param bic for payment information purposes
      */
     public Participant(String name, Event event, String email, String iban, String bic) {
-        this.name = name;
-        this.event = event;
-        this.email = email;
-        this.iban = iban;
-        this.bic = bic;
-    }
-
-    /*
-    Constructor made for testing
-    To Do: delete after getting event entity information
-     */
-    public Participant(String name, String email, String iban, String bic) {
-        this.name = name;
+        this.pkey = new ParticipantId(name, event);
         this.email = email;
         this.iban = iban;
         this.bic = bic;
@@ -55,28 +37,28 @@ public class Participant {
      * @return name of the participant
      */
     public String getName() {
-        return name;
+        return pkey.getName();
     }
 
     /**
      * @param name changes the name of the participant
      */
     public void setName(String name) {
-        this.name = name;
+        this.pkey.setName(name);
     }
 
     /**
      * @return the code of the event
      */
     public Event getEvent() {
-        return event;
+        return pkey.getEvent();
     }
 
     /**
      * @param event changes the event code the participant is in
      */
     public void setEvent(Event event) {
-        this.event = event;
+        pkey.setEvent(event);
     }
 
     /**
@@ -126,8 +108,8 @@ public class Participant {
     @Override
     public String toString() {
         return "Participant{" +
-                "name='" + name + '\'' +
-                ", event=" + event +
+                "name='" + pkey.getName() + '\'' +
+                ", event=" + pkey.getEvent() +
                 ", email='" + email + '\'' +
                 ", iban='" + iban + '\'' +
                 ", bic='" + bic + '\'' +
@@ -141,11 +123,13 @@ public class Participant {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Participant that)) return false;
-        return Objects.equals(name, that.name) && Objects.equals(event, that.event) && Objects.equals(email, that.email) && Objects.equals(iban, that.iban) && Objects.equals(bic, that.bic);
+        if (o == null || getClass() != o.getClass()) return false;
+        Participant that = (Participant) o;
+        return Objects.equals(pkey, that.pkey) && Objects.equals(email, that.email) && Objects.equals(iban, that.iban) && Objects.equals(bic, that.bic);
     }
+
     @Override
     public int hashCode() {
-        return Objects.hash(name, event, email, iban, bic);
+        return Objects.hash(pkey, email, iban, bic);
     }
 }
