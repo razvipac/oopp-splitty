@@ -27,14 +27,14 @@ public class Invitations {
         return scene;
     }
 
-    public Invitations() {
-        createSceneInvitation();
+    public Invitations(Button button) {
+        createSceneInvitation(button);
     }
 
     /**
      * Creates the GUI for the invitation
      */
-    public void createSceneInvitation() {
+    public void createSceneInvitation(Button backButton) {
         // Title of the invitation (hardcoded)
         Text title = new Text("New Year Party");
         title.setFont(Font.font("Arial", FontWeight.BOLD , 20));
@@ -71,7 +71,7 @@ public class Invitations {
         layout.setSpacing(10);
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().addAll(title, inviteCode, inviteByEmailAddress,
-                boxToPutEmails, sendInvitesButton);
+                boxToPutEmails, sendInvitesButton, backButton);
         layout.setAlignment(Pos.CENTER);
 
         scene = new Scene(layout, 270, 300);

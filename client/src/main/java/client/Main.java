@@ -43,10 +43,11 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     private final OpenDebts od = new OpenDebts();
+    private Button backButton = new Button("Back");
     // add your page as a private object here
-    private Invitations inv = new Invitations();
+    private Invitations inv = new Invitations(backButton);
     private ContactDetails cd = new ContactDetails();
-
+    private Scene scene;
     private final StartScreen sc = new StartScreen();
 
     public static void main(String[] args) throws URISyntaxException, IOException {
@@ -62,6 +63,9 @@ public class Main extends Application {
 //
 //        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 //        mainCtrl.initialize(primaryStage, overview, add);
+
+        // back Button
+        backButton.setOnAction(e -> primaryStage.setScene(scene));
 
         // Button for StartScreen page
         Button startButton = new Button("Start Screen");
@@ -90,7 +94,7 @@ public class Main extends Application {
         layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton);
 
         // Scene
-        Scene scene = new Scene(layout, 400, 300);
+        scene = new Scene(layout, 400, 300);
 
         // Window
         primaryStage.setTitle("Main");
@@ -98,3 +102,4 @@ public class Main extends Application {
         primaryStage.show();
     }
 }
+
