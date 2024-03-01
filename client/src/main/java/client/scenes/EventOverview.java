@@ -132,9 +132,12 @@ public class EventOverview {
                 }
         );
 
+        Button settleDebtsButton = new Button("Settle Debts");
+
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesText, expenseAddButton, participantSelect,
-                viewExpenseBox, expensesScroller);
+                viewExpenseBox, expensesScroller,
+                settleDebtsButton);
 
         // Scene
         scene = new Scene(layout, 350, 400);
