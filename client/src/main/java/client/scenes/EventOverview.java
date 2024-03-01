@@ -62,8 +62,20 @@ public class EventOverview {
                 (v, oldValue, newValue) -> selectedParticipant = newValue
         );
 
+        HBox viewExpenseBox = new HBox(5);
+        // Choose radio button
+        ToggleGroup chooseView = new ToggleGroup();
+        RadioButton allRadio = new RadioButton("All");
+        allRadio.setToggleGroup(chooseView);
+        RadioButton fromRadio = new RadioButton("From " + selectedParticipant);
+        fromRadio.setToggleGroup(chooseView);
+        RadioButton includingRadio = new RadioButton("Including " + selectedParticipant);
+        includingRadio.setToggleGroup(chooseView);
+        viewExpenseBox.getChildren().addAll(allRadio, fromRadio, includingRadio);
+
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
-                expensesText, expenseAddButton, participantSelect);
+                expensesText, expenseAddButton, participantSelect,
+                viewExpenseBox);
 
         // Scene
         scene = new Scene(layout, 400, 400);
