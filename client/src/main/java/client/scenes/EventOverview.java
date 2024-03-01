@@ -1,6 +1,7 @@
 package client.scenes;
 
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -18,6 +19,11 @@ public class EventOverview {
     private ArrayList<String> expenses;
     private String selectedParticipant;
 
+    public enum View {
+        ALL, FROM, INCLUDING
+    }
+    View currentView;
+
     /**
      * Constructor for Event Overview page
      */
@@ -28,8 +34,6 @@ public class EventOverview {
         participants.add("John");
         participants.add("Anna");
         participants.add("David");
-        // show the expenses of the first person in the list by default
-        selectedParticipant = participants.getFirst();
 
         // Expenses for testing purposes
         expenses = new ArrayList<>();
@@ -38,6 +42,10 @@ public class EventOverview {
         expenses.add("John");
         expenses.add("Anna");
 
+        // show the expenses of the first person in the list by default
+        selectedParticipant = participants.getFirst();
+        // set current view of expenses to 'all' by default
+        currentView = View.ALL;
         createScene();
     }
 
@@ -68,6 +76,7 @@ public class EventOverview {
         ToggleGroup chooseView = new ToggleGroup();
         RadioButton allRadio = new RadioButton("All");
         allRadio.setToggleGroup(chooseView);
+        allRadio.setSelected(true);
         RadioButton fromRadio = new RadioButton("From " + selectedParticipant);
         fromRadio.setToggleGroup(chooseView);
         RadioButton includingRadio = new RadioButton("Including " + selectedParticipant);
@@ -92,24 +101,36 @@ public class EventOverview {
         VBox expensesContainer = new VBox(5);
 
         for(String e : expenses) {
-            GridPane expenseBox = new GridPane();
-            expenseBox.setHgap(12);
-            expenseBox.setVgap(2);
-            // hardcoded date
-            Text date = new Text("01-01-2024");
-            expenseBox.add(date, 0, 0, 1, 2);
-            // hardcoded info string
-            Text expenseInfo = new Text(e + " paid 99 Euro for Item");
-            expenseBox.add(expenseInfo, 1, 0);
-            Text expenseFor = new Text("(all)");
-            expenseBox.add(expenseFor, 1, 1);
-            // edit expense button
-            Button expenseEditButton = new Button("Edit");
-            expenseBox.add(expenseEditButton, 2, 0, 1, 2);
-
-            expensesContainer.getChildren().add(expenseBox);
+            ExpenseItem item = new ExpenseItem(e);
+            expensesContainer.getChildren().add(item);
         }
         expensesScroller.setContent(expensesContainer);
+
+        chooseView.selectedToggleProperty().addListener(
+                (v, oldValue, newValue) -> {
+                    if(allRadio.isSelected()) currentView = View.ALL;
+                    else if(fromRadio.isSelected()) currentView = View.FROM;
+                    else if(includingRadio.isSelected()) currentView = View.INCLUDING;
+
+                    for(Node item : expensesContainer.getChildren()) {
+                        switch (currentView) {
+                            case ALL -> {
+                                item.setVisible(true);
+                                item.setManaged(true);
+                            }
+                            case FROM, INCLUDING -> {
+                                if (((ExpenseItem) item).expense.equals(selectedParticipant)) {
+                                    item.setVisible(true);
+                                    item.setManaged(true);
+                                } else {
+                                    item.setVisible(false);
+                                    item.setManaged(false);
+                                }
+                            }
+                        }
+                    }
+                }
+        );
 
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesText, expenseAddButton, participantSelect,
@@ -163,5 +184,27 @@ public class EventOverview {
         // remove trailing comma and space
         sb.setLength(sb.length() - 2);
         return sb.toString();
+    }
+
+    public static class ExpenseItem extends GridPane {
+        public String expense;
+        public ExpenseItem(String expense) {
+            this.expense = expense;
+
+            this.setHgap(12);
+            this.setVgap(2);
+
+            // hardcoded date
+            Text date = new Text("01-01-2024");
+            this.add(date, 0, 0, 1, 2);
+            // hardcoded info string
+            Text expenseInfo = new Text(expense + " paid 99 Euro for Item");
+            this.add(expenseInfo, 1, 0);
+            Text expenseFor = new Text("(all)");
+            this.add(expenseFor, 1, 1);
+            // edit expense button
+            Button expenseEditButton = new Button("Edit");
+            this.add(expenseEditButton, 2, 0, 1, 2);
+        }
     }
 }
