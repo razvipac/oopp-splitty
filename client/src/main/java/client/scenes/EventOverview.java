@@ -6,16 +6,30 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
+import java.util.ArrayList;
+
 public class EventOverview {
 
     private Scene scene;
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
+    private ArrayList<String> participants;
+    private String selectedParticipant;
+
     /**
      * Constructor for Event Overview page
      */
     public EventOverview() {
+        // Participants for testing purposes
+        participants = new ArrayList<>();
+        participants.add("Chris");
+        participants.add("John");
+        participants.add("Anna");
+        participants.add("David");
+        // show the expenses of the first person in the list by default
+        selectedParticipant = participants.getFirst();
+
         createScene();
     }
 
@@ -24,9 +38,38 @@ public class EventOverview {
      */
     public void createScene() {
         // Layout
-        VBox layout = new VBox();
+        VBox layout = new VBox(5);
         layout.setPadding(new Insets(10));
 
+        HBox eventBox = getEventBox();
+        HBox participantsBox = getParticipantsBox();
+
+        // Names of the participants (hardcoded)
+        Text participantNames = new Text(getParticipantsAsString());
+
+        // Expenses text
+        Text expensesText = new Text("Expenses");
+        expensesText.setFont(h2);
+
+        // Add expense button
+        Button expenseAddButton = new Button("Add Expense");
+
+        // Dropdown comboBox with participants to select from
+        ComboBox<String> participantSelect = new ComboBox<>();
+        participantSelect.getItems().addAll(participants);
+        //listener for participantSelect
+        participantSelect.getSelectionModel().selectedItemProperty().addListener(
+                (v, oldValue, newValue) -> selectedParticipant = newValue
+        );
+
+        layout.getChildren().addAll(eventBox, participantsBox, participantNames,
+                expensesText, expenseAddButton, participantSelect);
+
+        // Scene
+        scene = new Scene(layout, 400, 400);
+    }
+
+    private HBox getEventBox() {
         // HBox eventBox with Event Name and Send Invite button
         HBox eventBox = new HBox(5);
         // Event Name (hardcoded)
@@ -36,26 +79,22 @@ public class EventOverview {
         Button sendInviteButton = new Button("Send Invite");
         // Add to eventBox
         eventBox.getChildren().addAll(eventName, sendInviteButton);
+        return eventBox;
+    }
 
+    private HBox getParticipantsBox() {
         // HBox participantsBox with Participants text, Edit and Add Participants button
         HBox participantsBox = new HBox(5);
         // Participants text
-        Text participants = new Text("Participants");
-        participants.setFont(h2);
+        Text participantsText = new Text("Participants");
+        participantsText.setFont(h2);
         // Edit Participant button
-        Button editParticipantButton = new Button("Edit");
+        Button participantEditButton = new Button("Edit");
         // Add Participant button
-        Button addParticipantButton = new Button("Add");
+        Button participantAddButton = new Button("Add");
         // Add to participantBox
-        participantsBox.getChildren().addAll(participants, editParticipantButton, addParticipantButton);
-
-        // Names of the participants (hardcoded)
-        Text personNames = new Text("Chris, John, Anna, David");
-
-        layout.getChildren().addAll(eventBox, participantsBox, personNames);
-
-        // Scene
-        scene = new Scene(layout, 400, 400);
+        participantsBox.getChildren().addAll(participantsText, participantEditButton, participantAddButton);
+        return participantsBox;
     }
 
     /**
@@ -64,5 +103,15 @@ public class EventOverview {
      */
     public Scene getScene() {
         return scene;
+    }
+
+    public String getParticipantsAsString() {
+        StringBuilder sb = new StringBuilder();
+        for(String person : participants) {
+            sb.append(person).append(", ");
+        }
+        // remove trailing comma and space
+        sb.setLength(sb.length() - 2);
+        return sb.toString();
     }
 }
