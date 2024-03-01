@@ -1,44 +1,60 @@
 package server.service;
 
 import commons.Expense;
+import commons.ExpenseId;
+import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.api.ExpenseBody;
+import server.api.request_bodies.ExpenseBody;
 import server.database.ExpenseRepository;
+import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ *  Handles input and output of saved Expense objects
+ */
 @Service
 public class ExpenseService {
     private ExpenseRepository expenseRepository;
+    private ParticipantService participantService ;
 
-    @Autowired
-    public ExpenseService(ExpenseRepository expenseRepository) {
+    public ExpenseService(
+            @Autowired ExpenseRepository expenseRepository,
+            @Autowired ParticipantService participantService) {
         this.expenseRepository = expenseRepository;
+        this.participantService = participantService;
     }
 
     /**
-     * Fetches a list of all expense objects in the datasource
-     * @return list of all expense objects in the datasource
+     * Fetches all Expenses in a given Event
+     * @param eventCode code of the Event to which the Expenses belong
+     * @return a LinkedList containing all Expense objects in a given Event
      */
-    public List<Expense> getAll(){
+    public List<Expense> getAllInEvent(String eventCode){
         List<Expense> result = new LinkedList<>();
-        expenseRepository.findAll().iterator().forEachRemaining(result::add);
+        expenseRepository.findAllExpensesInEvent(eventCode).iterator().forEachRemaining(result::add);
         return result;
     }
 
     /**
-     * Fetches one expense object from the datasource by it's ID
-     *
-     * @param id id of the object to be fetched
-     * @return the fetched expense object
-     * @throws NotFoundInDatabaseException
-     * if the object with the passed ID does not exist in the datasource
+     * Fetches one Expense object
+     * @param eventCode code of the Event to which the Expense belongs
+     * @param participantName name of the owner of the Expense
+     * @param id id of the Expense
+     * @return a given Expense object
+     * @throws NotFoundInDatabaseException if a owner of the Expense or the specified Event does not exist
      */
-    public Expense getOneById(Long id) throws NotFoundInDatabaseException {
-        Optional<Expense> search = expenseRepository.findById(id);
+    public Expense getOne(String eventCode, String participantName,
+                              Long id) throws NotFoundInDatabaseException {
+
+        Optional<Expense> search = expenseRepository.findById(getExpenseId(
+                eventCode,
+                participantName,
+                id
+        ));
 
         if (search.isPresent()){
             return search.get();
@@ -47,56 +63,77 @@ public class ExpenseService {
     }
 
     /**
-     * Adds an expense object with data specified in the passed ExpenseBody to
-     * the datasource
+     * Creates and saves a new Expense object
      *
-     * @param body data to populate the new Expense instance with
-     * @return the Expense object that got created
+     * @param eventCode code of the Event to which the Expense belongs
+     * @param body data to populate the new Expense object with
+     * @return the newly created Expense object
+     * @throws NotFoundInDatabaseException if a owner of the Expense or the specified Event does not exist
      */
-    public Expense create(ExpenseBody body){
-        // TODO: fetch participant
+    public Expense createOne(String eventCode,
+                             ExpenseBody body) throws NotFoundInDatabaseException {
 
-        Expense newExpense = new Expense(
-                body.price(),
-                body.item()
-        );
+        Participant paidBy = participantService.getOne(eventCode, body.participantName());
+
+        Expense newExpense = new Expense(body.price(), body.item(), paidBy);
 
         expenseRepository.save(newExpense);
         return newExpense;
     }
 
     /**
-     * Deletes an Expense object with the passed ID from the datasource
+     * Deletes a specified Expense from the database
      *
-     * @param id ID of the object to be deleted
-     * @return the Expense object that got deleted
-     * @throws NotFoundInDatabaseException
-     * if a object with the passed ID does not exist in the datasource
+     * @param eventCode code of the Event to which the Expense belongs
+     * @param participantName name of the owner of the Expense
+     * @param id id of the Expense
+     * @return the deleted Expense object
+     * @throws NotFoundInDatabaseException if a owner of the Expense or the specified Event does not exist
      */
-    public Expense deleteById(Long id) throws NotFoundInDatabaseException {
-        Expense found = getOneById(id);
+    public Expense deleteOne(String eventCode, String participantName, Long id) throws NotFoundInDatabaseException {
+        Expense found = getOne(eventCode, participantName, id);
         // if not found exception will be thrown
-        expenseRepository.deleteById(id);
+
+        expenseRepository.deleteById(getExpenseId(
+                eventCode,
+                participantName,
+                id
+        ));
         return found;
     }
 
     /**
-     * Modifies the data of an object with a passed ID inside the datasource
-     *
-     * @param id ID of the object to be modified
-     * @param body ExpenseBody object specifying the new state of the modified object
-     * @return the modified Expense object
-     * @throws NotFoundInDatabaseException
-     * if an object with passed ID does not exist in the datasource
+     * Updates the data of a given Expense
+     * @param eventCode code of the Event to which the Expense belongs
+     * @param id id of the Expense
+     * @param body data to be set as the new value of the given expense. **NAME CANNOT BE CHANGED!**
+     * @return the updated expense object
+     * @throws NotFoundInDatabaseException if a owner of the Expense or the specified Event does not exist
      */
-    public Expense updateById(Long id, ExpenseBody body) throws NotFoundInDatabaseException {
-        Expense found = getOneById(id);
+    public Expense updateOne(String eventCode, Long id, ExpenseBody body) throws NotFoundInDatabaseException {
+        Expense found = getOne(eventCode, body.participantName(), id);
         // if not found exception will be thrown
+
         found.setItem(body.item());
         found.setPrice(body.price());
-        // TODO: set participant, fetch and add
 
         expenseRepository.save(found);
         return found;
+
+    }
+
+    /**
+     * Creates a ExpenseId object given arguments
+     * @param eventCode eventCode of the Event to which the Expense belongs
+     * @param participantName name of the owner of the expense
+     * @param id id of the Expense
+     * @return ExpenseId object created from the given data
+     * @throws NotFoundInDatabaseException if a Participant of Event with code eventCode
+     * and name participantName does not exist in the database
+     */
+    private ExpenseId getExpenseId(String eventCode, String participantName, Long id)
+            throws NotFoundInDatabaseException{
+        Participant paidBy = participantService.getOne(eventCode, participantName);
+        return  new ExpenseId(id, paidBy);
     }
 }
