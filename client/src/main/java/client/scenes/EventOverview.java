@@ -15,6 +15,7 @@ public class EventOverview {
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
     private ArrayList<String> participants;
+    private ArrayList<String> expenses;
     private String selectedParticipant;
 
     /**
@@ -29,6 +30,13 @@ public class EventOverview {
         participants.add("David");
         // show the expenses of the first person in the list by default
         selectedParticipant = participants.getFirst();
+
+        // Expenses for testing purposes
+        expenses = new ArrayList<>();
+        expenses.add("Chris");
+        expenses.add("John");
+        expenses.add("John");
+        expenses.add("Anna");
 
         createScene();
     }
@@ -79,12 +87,36 @@ public class EventOverview {
                 }
         );
 
+        ScrollPane expensesScroller = new ScrollPane();
+        expensesScroller.setPrefHeight(140);
+        VBox expensesContainer = new VBox(5);
+
+        for(String e : expenses) {
+            GridPane expenseBox = new GridPane();
+            expenseBox.setHgap(12);
+            expenseBox.setVgap(2);
+            // hardcoded date
+            Text date = new Text("01-01-2024");
+            expenseBox.add(date, 0, 0, 1, 2);
+            // hardcoded info string
+            Text expenseInfo = new Text(e + " paid 99 Euro for Item");
+            expenseBox.add(expenseInfo, 1, 0);
+            Text expenseFor = new Text("(all)");
+            expenseBox.add(expenseFor, 1, 1);
+            // edit expense button
+            Button expenseEditButton = new Button("Edit");
+            expenseBox.add(expenseEditButton, 2, 0, 1, 2);
+
+            expensesContainer.getChildren().add(expenseBox);
+        }
+        expensesScroller.setContent(expensesContainer);
+
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesText, expenseAddButton, participantSelect,
-                viewExpenseBox);
+                viewExpenseBox, expensesScroller);
 
         // Scene
-        scene = new Scene(layout, 400, 400);
+        scene = new Scene(layout, 350, 400);
     }
 
     private HBox getEventBox() {
