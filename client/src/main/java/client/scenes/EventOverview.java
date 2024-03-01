@@ -54,13 +54,6 @@ public class EventOverview {
         // Add expense button
         Button expenseAddButton = new Button("Add Expense");
 
-        // Dropdown comboBox with participants to select from
-        ComboBox<String> participantSelect = new ComboBox<>();
-        participantSelect.getItems().addAll(participants);
-        //listener for participantSelect
-        participantSelect.getSelectionModel().selectedItemProperty().addListener(
-                (v, oldValue, newValue) -> selectedParticipant = newValue
-        );
 
         HBox viewExpenseBox = new HBox(5);
         // Choose radio button
@@ -72,6 +65,19 @@ public class EventOverview {
         RadioButton includingRadio = new RadioButton("Including " + selectedParticipant);
         includingRadio.setToggleGroup(chooseView);
         viewExpenseBox.getChildren().addAll(allRadio, fromRadio, includingRadio);
+
+        // Dropdown comboBox with participants to select from
+        ComboBox<String> participantSelect = new ComboBox<>();
+        participantSelect.getItems().addAll(participants);
+        //listener for participantSelect
+        participantSelect.getSelectionModel().selectedItemProperty().addListener(
+                (v, oldValue, newValue) -> {
+                    selectedParticipant = newValue;
+                    // update text of radio buttons 'from' and 'including'
+                    fromRadio.setText("From " + selectedParticipant);
+                    includingRadio.setText("Including " + selectedParticipant);
+                }
+        );
 
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesText, expenseAddButton, participantSelect,
