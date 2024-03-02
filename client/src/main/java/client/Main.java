@@ -79,11 +79,14 @@ public class Main extends Application {
         Button odButton = new Button("Open Debts");
         odButton.setOnAction(e -> primaryStage.setScene(od.getScene()));
 
+        // Button for language selection
+        Button languageButton = new LanguageButton();
+
         // Layout
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
         // adding elements to layout
-        layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton);
+        layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton,languageButton);
 
         // Scene
         Scene scene = new Scene(layout, 400, 300);
