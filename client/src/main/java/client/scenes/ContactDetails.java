@@ -14,10 +14,6 @@ import javafx.scene.text.Text;
 
 public class ContactDetails {
     private Scene scene;
-    private TextArea boxName;
-    private TextArea boxEmail;
-    private TextArea boxIBAN;
-    private TextArea boxBIC;
 
     public ContactDetails(){
         createSceneContactDetails();
@@ -37,7 +33,7 @@ public class ContactDetails {
         // Create a label
         Label nameLabel = new Label("Name:");
         // Create a text field
-        boxName = new TextArea();
+        TextArea boxName = new TextArea();
         boxName.setPromptText("Enter the name here");
         boxName.setMaxWidth(350);
         boxName.setMaxHeight(100);
@@ -53,7 +49,7 @@ public class ContactDetails {
 
         Label emailLabel = new Label("Email:");
         // Create a text field
-        boxEmail = new TextArea();
+        TextArea boxEmail = new TextArea();
         boxEmail.setPromptText("Enter the email here");
         boxEmail.setMaxWidth(350);
         boxEmail.setMaxHeight(100);
@@ -68,7 +64,7 @@ public class ContactDetails {
          */
         Label ibanLabel = new Label("IBAN:");
         // Create a text field
-        boxIBAN = new TextArea();
+        TextArea boxIBAN = new TextArea();
         boxIBAN.setPromptText("Enter the IBAN here");
         boxIBAN.setMaxWidth(350);
         boxIBAN.setMaxHeight(100);
@@ -83,7 +79,7 @@ public class ContactDetails {
          */
         Label bicLabel = new Label("BIC:");
         // Create a text field
-        boxBIC = new TextArea();
+        TextArea boxBIC = new TextArea();
         boxBIC.setPromptText("Enter the BIC here");
         boxBIC.setMaxWidth(350);
         boxBIC.setMaxHeight(100);
