@@ -5,53 +5,62 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Entity")
+@Table(name = "expense")
 public class Expense {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "entity_id_sequence")
-    private Long id;
+
+    @EmbeddedId
+    private ExpenseId pkey;
 
     private Integer price;
     private String item;
 
-    // TODO: Add many to one relation with Participant
-
     public Expense() {
     }
 
-    public Expense(Integer price, String item) {
+    public Expense(Integer price, String item, Participant paidBy) {
+        ExpenseId eid = new ExpenseId();
+        eid.setPaidBy(paidBy);
+        this.pkey = eid;
         this.price = price;
         this.item = item;
     }
 
     public Long getId() {
-        return id;
+        return pkey.getId();
+    }
+
+    public void setId(Long id) {
+        pkey.setId(id);
     }
 
     public Integer getPrice() {
         return price;
     }
 
-    public String getItem() {
-        return item;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getItem() {
+        return item;
     }
 
     public void setItem(String item) {
         this.item = item;
     }
 
+    public Participant getPaidBy() {
+        return pkey.getPaidBy();
+    }
+
+    public void setPaidBy(Participant paidBy) {
+        pkey.setPaidBy(paidBy);
+    }
+
     @Override
     public String toString() {
         return "Expense{" +
-                "id=" + id +
+                "pkey=" + pkey +
                 ", price=" + price +
                 ", item='" + item + '\'' +
                 '}';
@@ -62,11 +71,11 @@ public class Expense {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Expense expense = (Expense) o;
-        return Objects.equals(id, expense.id) && Objects.equals(price, expense.price) && Objects.equals(item, expense.item);
+        return Objects.equals(pkey, expense.pkey) && Objects.equals(price, expense.price) && Objects.equals(item, expense.item);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, price, item);
+        return Objects.hash(pkey, price, item);
     }
 }
