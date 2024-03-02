@@ -38,10 +38,8 @@ public class ContactDetails {
 
 
         // Create an HBox to hold the label and text field
-        HBox hBoxName = createHBox(nameLabel, boxName);
+        HBox hBoxName = createHBox(nameLabel, boxName, 10, 10);
         hBoxName.setAlignment(Pos.CENTER);
-
-
 
 
         Label emailLabel = new Label("Email:");
@@ -49,7 +47,7 @@ public class ContactDetails {
         TextArea boxEmail = createTextArea("Enter the email here", 350, 100);
 
         // Create an HBox to hold the label and text field
-        HBox hBoxEmail = createHBox(emailLabel, boxEmail);
+        HBox hBoxEmail = createHBox(emailLabel, boxEmail, 10, 10);
         hBoxEmail.setAlignment(Pos.CENTER);
 
 
@@ -69,11 +67,7 @@ public class ContactDetails {
         TextArea boxBIC = createTextArea("Enter the BIC here", 350, 100);
 
         // Create an HBox to hold the label and text field
-        HBox hBoxBic = new HBox(10); // 10 is the spacing between elements
-        hBoxBic.setPadding(new Insets(10)); // Padding around the HBox
-        hBoxBic.getChildren().addAll(bicLabel, boxBIC);
-        hBoxBic.setAlignment(Pos.CENTER);
-
+        HBox hBoxBic = createHBox(bicLabel, boxBIC, 10, 10);
 
         // Adding buttons
 
@@ -115,12 +109,14 @@ public class ContactDetails {
      * Create an HBox to hold the label and text area
      * @param label label to be added to the HBox
      * @param textArea text area to be added to the HBox
+     * @param spacing spacing between elements
+     * @param padding padding around the HBox
      * @return the HBox
      */
-    public HBox createHBox(Label label, TextArea textArea) {
+    public HBox createHBox(Label label, TextArea textArea, int spacing, int padding) {
         // Create an HBox to hold the label and text area
-        HBox hbox = new HBox(10); // 10 is the spacing between elements
-        hbox.setPadding(new Insets(10)); // Padding around the HBox
+        HBox hbox = new HBox(spacing);
+        hbox.setPadding(new Insets(padding));
         hbox.getChildren().addAll(label, textArea);
 
         return hbox;
