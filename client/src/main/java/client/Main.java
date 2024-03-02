@@ -20,12 +20,9 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import client.scenes.ContactDetails;
-import client.scenes.Invitations;
-import client.scenes.StartScreen;
+import client.scenes.*;
 import com.google.inject.Injector;
 
-import client.scenes.OpenDebts;
 //import client.scenes.AddQuoteCtrl;
 //import client.scenes.MainCtrl;
 //import client.scenes.QuoteOverviewCtrl;
@@ -35,18 +32,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.checkerframework.checker.units.qual.C;
+
 
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
+    // add your page as a private object below
     private final OpenDebts od = new OpenDebts();
-    // add your page as a private object here
     private Invitations inv = new Invitations();
     private ContactDetails cd = new ContactDetails();
-
+    private final EventOverview eo = new EventOverview();
     private final StartScreen sc = new StartScreen();
 
     public static void main(String[] args) throws URISyntaxException, IOException {
@@ -69,6 +66,10 @@ public class Main extends Application {
         // set the button's action to open your scene
         // startButton.setOnAction(e -> primaryStage.setScene(...));
 
+        // Button for EventOverview page
+        Button eoButton = new Button("Event Overview");
+        eoButton.setOnAction(e -> primaryStage.setScene(eo.getScene()));
+
         // Button for ContactDetails page
         Button cdButton = new Button("Contact Details");
         // set the button's action to open your scene
@@ -87,7 +88,7 @@ public class Main extends Application {
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
         // adding elements to layout
-        layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton);
+        layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton, odButton);
 
         // Scene
         Scene scene = new Scene(layout, 400, 300);
