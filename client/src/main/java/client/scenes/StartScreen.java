@@ -18,46 +18,44 @@ public class StartScreen {
 
     private Scene scene;
 
+    /**
+     * Constructor for the start screen that calls the method to create the GUI
+     */
     public StartScreen() {
-    createSceneStartScreen();
+        createSceneStartScreen();
     }
 
     /**
      * Getter for the scene
+     *
      * @return the scene
      */
     public Scene getScene() {
         return scene;
     }
+
     /**
      * Creates the GUI for the start screen
      */
     public void createSceneStartScreen() {
         // Labels for the start screen
-        Label createANewEventLabel = new Label("Create a new event");
-        createANewEventLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        createANewEventLabel.setPadding(new Insets(10, 10, 10, 10));
+        Label createANewEventLabel = createLabel("Create a new event", "Arial", FontWeight.BOLD,
+                20, new Insets(10, 10, 10, 10));
 
-        Label joinEventLabel = new Label("Join an event");
-        joinEventLabel.setFont(Font.font("Arial", FontWeight.BOLD,20));
-        joinEventLabel.setPadding(new Insets(10, 10, 10, 10));
+        Label joinEventLabel = createLabel("Join an event", "Arial", FontWeight.BOLD,
+                20, new Insets(10, 10, 10, 10));
 
-        Label recentlyViewedEventsLabel = new Label("Recently viewed events:");
-        recentlyViewedEventsLabel.setFont(Font.font("Arial", FontWeight.BOLD,20));
-        recentlyViewedEventsLabel.setPadding(new Insets(10, 10, 10, 10));
+        Label recentlyViewedEventsLabel = createLabel("Recently viewed events:", "Arial",
+                FontWeight.BOLD, 20, new Insets(10, 10, 10, 10));
+
 
         // Text fields for creating and joining events
-        TextField createEvent = new TextField();
-        createEvent.setFont(Font.font("Arial", 20));
-        createEvent.setPromptText("Enter event name here");
-        createEvent.setMaxWidth(300);
-        createEvent.setPadding(new Insets(10, 10, 10, 10));
+        TextField createEvent = createTextField("Arial", 20, "Enter event name here", 300,
+                new Insets(10, 10, 10, 10));
 
-        TextField joinEvent = new TextField();
-        joinEvent.setFont(Font.font("Arial", 20));
-        joinEvent.setPromptText("Enter event code here");
-        joinEvent.setMaxWidth(300);
-        joinEvent.setPadding(new Insets(10, 10, 10, 10));
+        TextField joinEvent = createTextField("Arial", 20, "Enter event code here", 300,
+                new Insets(10, 10, 10, 10));
+
 
         // Buttons for creating and joining events
         Button createButton = new Button("Create");
@@ -75,13 +73,10 @@ public class StartScreen {
         });
 
         // HBoxes for creating and joining events
-        HBox createEventBox = new HBox(createEvent, createButton);
-        createEventBox.setSpacing(10);
-        createEventBox.setAlignment(Pos.CENTER);
+        HBox createEventBox = createHBox(10, Pos.CENTER, createEvent, createButton);
 
-        HBox joinEventBox = new HBox(joinEvent, joinButton);
-        joinEventBox.setSpacing(10);
-        joinEventBox.setAlignment(Pos.CENTER);
+        HBox joinEventBox = createHBox(10, Pos.CENTER, joinEvent, joinButton);
+
 
         // hardcoded data of recently viewed events
         HBox skiTripBox = createEventBox("• Ski Trip");
@@ -113,6 +108,7 @@ public class StartScreen {
 
     /**
      * Creates a HBox for an event
+     *
      * @param eventName the name of the event
      * @return the HBox for the event
      */
@@ -125,5 +121,55 @@ public class StartScreen {
         return eventBox;
     }
 
+    /**
+     * Creates a label with the given parameters
+     * @param text Text of the label
+     * @param font Font of the label
+     * @param weight Boldness of the label
+     * @param size Size of the label
+     * @param padding Padding of the label
+     * @return the label
+     */
+    public Label createLabel(String text, String font, FontWeight weight,
+                             int size, Insets padding) {
+        Label label = new Label(text);
+        label.setFont(Font.font(font, weight, size));
+        label.setPadding(padding);
+        return label;
+    }
+
+    /**
+     * Creates a text field with the given parameters
+     * @param font Font of the text field
+     * @param size Size of the text field
+     * @param promptText Prompt text of the text field
+     * @param maxWidth  Maximum width of the text field
+     * @param padding Padding of the text field
+     * @return the text field
+     */
+    public TextField createTextField(String font, int size, String promptText,
+                                     int maxWidth, Insets padding) {
+        TextField textField = new TextField();
+        textField.setFont(Font.font(font, size));
+        textField.setPromptText(promptText);
+        textField.setMaxWidth(maxWidth);
+        textField.setPadding(padding);
+        return textField;
+    }
+
+    /**
+     * Overloaded method for creating a HBox
+     * @param spacing Spacing of the HBox
+     * @param alignment Alignment of the HBox
+     * @param textField TextField in the HBox
+     * @param button Button in the HBox
+     * @return the HBox
+     */
+    public HBox createHBox(double spacing, Pos alignment, TextField textField, Button button) {
+        HBox hbox = new HBox(textField, button);
+        hbox.setSpacing(spacing);
+        hbox.setAlignment(alignment);
+        return hbox;
+    }
 
 }
