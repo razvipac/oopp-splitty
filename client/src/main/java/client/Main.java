@@ -26,16 +26,12 @@ import client.scenes.StartScreen;
 import com.google.inject.Injector;
 
 import client.scenes.OpenDebts;
-//import client.scenes.AddQuoteCtrl;
-//import client.scenes.MainCtrl;
-//import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.checkerframework.checker.units.qual.C;
 
 public class Main extends Application {
 
