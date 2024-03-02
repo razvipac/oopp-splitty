@@ -1,4 +1,4 @@
-## Week 2 Agenda
+## Week 3 Agenda
 
 | Key | Value |
 | --- | --- |

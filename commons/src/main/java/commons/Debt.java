@@ -1,5 +1,7 @@
 package commons;
 
+import java.util.Objects;
+
 public class Debt {
 
     private Person debtor;      // person who owes money
@@ -34,5 +36,26 @@ public class Debt {
         this.received = received;
     }
 
-    // To do: equals method
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Debt debt = (Debt) o;
+        return Double.compare(amount, debt.amount) == 0 && received == debt.received && Objects.equals(debtor, debt.debtor) && Objects.equals(creditor, debt.creditor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(debtor, creditor, amount, received);
+    }
+
+    @Override
+    public String toString() {
+        return "Debt{" +
+                "debtor=" + debtor +
+                ", creditor=" + creditor +
+                ", amount=" + amount +
+                ", received=" + received +
+                '}';
+    }
 }

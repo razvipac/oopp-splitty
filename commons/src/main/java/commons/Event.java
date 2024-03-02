@@ -174,4 +174,10 @@ public class Event {
                 .collect(Collectors.toList());
     }
 
+    public static int sumOfAllExpenses(List<Expense> expenses) {
+        return expenses.stream()
+                .mapToInt(Expense::getPrice)
+                .sum();
+    }
+
 }
