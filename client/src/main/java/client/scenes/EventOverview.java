@@ -101,7 +101,7 @@ public class EventOverview {
                 settleDebtsButton);
 
         // Scene
-        scene = new Scene(layout, 350, 400);
+        scene = new Scene(layout, 350, 380);
     }
 
     /**
@@ -206,6 +206,7 @@ public class EventOverview {
         // Dropdown comboBox with all participants of event to select from
         ComboBox<String> participantDropdown = new ComboBox<>();
         participantDropdown.getItems().addAll(participants);
+        participantDropdown.getSelectionModel().selectFirst();
 
         // Listener for participantDropdown, sets selectedParticipant and updates radio button text
         participantDropdown.getSelectionModel().selectedItemProperty().addListener(
@@ -264,13 +265,13 @@ public class EventOverview {
 
         // set visibility according to currentView
         for(Node item : expensesContainer.getChildren()) {
-            // TODO: properly implement the 'INCLUDING' view (currently does the same as 'FROM')
+            // TODO: properly implement the 'INCLUDING' view (currently does the same as 'ALL')
             switch (currentView) {
-                case ALL -> {
+                case ALL, INCLUDING -> {
                     item.setVisible(true);
                     item.setManaged(true);
                 }
-                case FROM, INCLUDING -> {
+                case FROM -> {
                     if (((ExpenseItem) item).expense.equals(selectedParticipant)) {
                         item.setVisible(true);
                         item.setManaged(true);
