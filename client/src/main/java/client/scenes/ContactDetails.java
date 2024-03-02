@@ -15,6 +15,9 @@ import javafx.scene.text.Text;
 public class ContactDetails {
     private Scene scene;
 
+    /**
+     * Constructor for the contact details that calls the method to create the scene
+     */
     public ContactDetails(){
         createSceneContactDetails();
     }
@@ -26,73 +29,53 @@ public class ContactDetails {
         Text title = new Text("Add/Edit Expense");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
-        /**
-         * creating the name hbox
-         */
+
 
         // Create a label
         Label nameLabel = new Label("Name:");
         // Create a text field
-        TextArea boxName = new TextArea();
-        boxName.setPromptText("Enter the name here");
-        boxName.setMaxWidth(350);
-        boxName.setMaxHeight(100);
+        TextArea boxName = createTextArea("Enter the name here", 350, 100);
+
 
         // Create an HBox to hold the label and text field
-        HBox hboxName = new HBox(10); // 10 is the spacing between elements
-        hboxName.setPadding(new Insets(10)); // Padding around the HBox
-        hboxName.getChildren().addAll(nameLabel, boxName);
+        HBox hBoxName = createHBox(nameLabel, boxName);
+        hBoxName.setAlignment(Pos.CENTER);
 
-        /**
-         * creating the email hbox
-         */
+
+
 
         Label emailLabel = new Label("Email:");
         // Create a text field
-        TextArea boxEmail = new TextArea();
-        boxEmail.setPromptText("Enter the email here");
-        boxEmail.setMaxWidth(350);
-        boxEmail.setMaxHeight(100);
+        TextArea boxEmail = createTextArea("Enter the email here", 350, 100);
 
         // Create an HBox to hold the label and text field
-        HBox hboxEmail = new HBox(10); // 10 is the spacing between elements
-        hboxEmail.setPadding(new Insets(10)); // Padding around the HBox
-        hboxEmail.getChildren().addAll(emailLabel, boxEmail);
+        HBox hBoxEmail = createHBox(emailLabel, boxEmail);
+        hBoxEmail.setAlignment(Pos.CENTER);
 
-        /**
-         * creating the IBAN hbox
-         */
+
         Label ibanLabel = new Label("IBAN:");
         // Create a text field
-        TextArea boxIBAN = new TextArea();
-        boxIBAN.setPromptText("Enter the IBAN here");
-        boxIBAN.setMaxWidth(350);
-        boxIBAN.setMaxHeight(100);
+        TextArea boxIBAN = createTextArea("Enter the IBAN here", 350, 100);
 
         // Create an HBox to hold the label and text field
-        HBox hboxiban = new HBox(10); // 10 is the spacing between elements
-        hboxiban.setPadding(new Insets(10)); // Padding around the HBox
-        hboxiban.getChildren().addAll(ibanLabel, boxIBAN);
+        HBox hBoxIban = new HBox(10); // 10 is the spacing between elements
+        hBoxIban.setPadding(new Insets(10)); // Padding around the HBox
+        hBoxIban.getChildren().addAll(ibanLabel, boxIBAN);
+        hBoxIban.setAlignment(Pos.CENTER);
 
-        /**
-         * creating the BIC hbox
-         */
+
         Label bicLabel = new Label("BIC:");
         // Create a text field
-        TextArea boxBIC = new TextArea();
-        boxBIC.setPromptText("Enter the BIC here");
-        boxBIC.setMaxWidth(350);
-        boxBIC.setMaxHeight(100);
+        TextArea boxBIC = createTextArea("Enter the BIC here", 350, 100);
 
         // Create an HBox to hold the label and text field
-        HBox hboxbic = new HBox(10); // 10 is the spacing between elements
-        hboxbic.setPadding(new Insets(10)); // Padding around the HBox
-        hboxbic.getChildren().addAll(bicLabel, boxBIC);
+        HBox hBoxBic = new HBox(10); // 10 is the spacing between elements
+        hBoxBic.setPadding(new Insets(10)); // Padding around the HBox
+        hBoxBic.getChildren().addAll(bicLabel, boxBIC);
+        hBoxBic.setAlignment(Pos.CENTER);
 
 
-        /**
-         * adding the buttons
-         */
+        // Adding buttons
 
         Button abort = new Button("Abort");
         abort.setOnAction(e -> {
@@ -105,21 +88,20 @@ public class ContactDetails {
             // add it to the server
         });
 
-        HBox hboxButtons = new HBox(10); // 10 is the spacing between elements
-        hboxbic.setPadding(new Insets(10)); // Padding around the HBox
-        hboxbic.getChildren().addAll(abort, ok);
+        HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
+        hBoxBic.setPadding(new Insets(10)); // Padding around the HBox
+        hBoxBic.getChildren().addAll(abort, ok);
+        hBoxButtons.setAlignment(Pos.CENTER);
 
-        /**
-         * creating the layout
-         */
+        // create the layout
         VBox layout = new VBox();
         layout.setSpacing(10);
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().add(title);
 
-        layout.getChildren().addAll(hboxName, hboxEmail, hboxiban, hboxbic);
-        // the button is placed along side the rest, not below, it needs fixing
-        layout.getChildren().addAll(hboxButtons);
+        layout.getChildren().addAll(hBoxName, hBoxEmail, hBoxIban, hBoxBic);
+        // the button is placed alongside the rest, not below, it needs fixing
+        layout.getChildren().addAll(hBoxButtons);
 
         layout.setAlignment(Pos.CENTER);
 
@@ -129,6 +111,41 @@ public class ContactDetails {
         layout.prefHeightProperty().bind(scene.heightProperty());
     }
 
+    /**
+     * Create an HBox to hold the label and text area
+     * @param label label to be added to the HBox
+     * @param textArea text area to be added to the HBox
+     * @return the HBox
+     */
+    public HBox createHBox(Label label, TextArea textArea) {
+        // Create an HBox to hold the label and text area
+        HBox hbox = new HBox(10); // 10 is the spacing between elements
+        hbox.setPadding(new Insets(10)); // Padding around the HBox
+        hbox.getChildren().addAll(label, textArea);
+
+        return hbox;
+    }
+
+    /**
+     * Create a text area with the given parameters
+     * @param promptText Prompt text of the text area
+     * @param maxWidth Maximum width of the text area
+     * @param maxHeight Maximum height of the text area
+     * @return the text area
+     */
+    public TextArea createTextArea(String promptText, int maxWidth, int maxHeight) {
+        TextArea textArea = new TextArea();
+        textArea.setPromptText(promptText);
+        textArea.setMaxWidth(maxWidth);
+        textArea.setMaxHeight(maxHeight);
+
+        return textArea;
+    }
+
+    /**
+     * Get the scene
+     * @return the scene
+     */
     public Scene getScene() {
         return this.scene;
     }
