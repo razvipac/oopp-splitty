@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -27,6 +26,9 @@ public class Invitations {
         return scene;
     }
 
+    /**
+     * Constructor for the invitation that calls the method to create the scene
+     */
     public Invitations() {
         createSceneInvitation();
     }
@@ -62,9 +64,6 @@ public class Invitations {
             System.out.println("Invites sent to: " + boxToPutEmails.getText());
         });
 
-        // layout button
-        HBox hbox = new HBox();
-        hbox.getChildren().add(sendInvitesButton);
 
         // layout
         VBox layout = new VBox();
