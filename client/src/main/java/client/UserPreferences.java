@@ -9,7 +9,9 @@ public class UserPreferences {
     public UserPreferences(Locale preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
     }
-    public UserPreferences(){}
+    public UserPreferences(){
+        this.preferredLanguage = Locale.ENGLISH;
+    }
 
     public Locale getPreferredLanguage() {
         return this.preferredLanguage;

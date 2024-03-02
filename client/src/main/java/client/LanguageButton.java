@@ -26,14 +26,11 @@ public class LanguageButton extends Button {
     }
 
     private void loadAvailableLanguages() {
-        // TODO: Load available languages from the application
-        // availableLanguages = LanguageManager.getSupportedLocales();
+        availableLanguages = LanguageManager.getSupportedLocales();
     }
 
     private void loadCurrentLanguage() {
-        // TODO: Load the persisted language choice from storage
-        // currentLanguage = LanguageManager.loadSelectedLocale();
-        // If not persisted, set a default language.
+        currentLanguage = LanguageManager.loadSelectedLocale();
         if (currentLanguage == null) {
             currentLanguage = Locale.getDefault();
         }
@@ -41,7 +38,6 @@ public class LanguageButton extends Button {
     }
 
     private ImageView createFlagIcon() {
-        // TODO: Create an ImageView with the flag icon for the current language
         Image flagImage = LanguageManager.getFlagImage(currentLanguage);
         ImageView imageView = new ImageView(flagImage);
         imageView.setFitWidth(20);
@@ -50,7 +46,6 @@ public class LanguageButton extends Button {
     }
 
     private void updateFlagIcon() {
-        // TODO: Update the flag icon based on the current language
         setGraphic(createFlagIcon());
     }
 
@@ -81,7 +76,7 @@ public class LanguageButton extends Button {
         currentLanguage = selectedLocale;
 
         // TODO: Save the selected language to storage for persistence
-        // LanguageManager.saveSelectedLocale(currentLanguage);
+        LanguageManager.saveSelectedLocale(currentLanguage);
 
         updateFlagIcon();
     }

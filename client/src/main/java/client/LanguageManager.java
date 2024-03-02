@@ -1,14 +1,33 @@
-package client.utils;
+package client;
 
-public static class LanguageManager {
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.scene.image.Image;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+public class LanguageManager {
+    private static final String PREFERENCES_FILE_PATH = "userSettings/userPreferences.json";
     public static List<Locale> getSupportedLocales() {
-        return Arrays.asList(Locale.ENGLISH, Locale.FRENCH, Locale.GERMAN);
+        return Arrays.asList(Locale.ENGLISH, new Locale("nl", "NL"));
+    }
+
+    public static UserPreferences loadPreferences() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(new File(PREFERENCES_FILE_PATH), new TypeReference<UserPreferences>() {});
+        } catch (IOException e) {
+            return new UserPreferences(); // Default preferences if the file doesn't exist or there's an issue reading it
+        }
     }
 
     public static Locale loadSelectedLocale() {
-        // Implement logic to load and return the selected locale from storage
-        // For example, read a configuration file or preferences.
-        return null;
+        UserPreferences preferences = loadPreferences();
+        return (preferences != null) ? preferences.getPreferredLanguage() : null;
     }
 
     public static void saveSelectedLocale(Locale selectedLocale) {
