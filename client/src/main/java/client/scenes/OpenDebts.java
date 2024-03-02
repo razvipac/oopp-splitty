@@ -9,7 +9,6 @@ import javafx.scene.text.*;
 // import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import commons.Debt;
 import commons.Person;
