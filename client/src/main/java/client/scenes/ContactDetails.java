@@ -117,10 +117,7 @@ public class ContactDetails {
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().add(title);
 
-        layout.getChildren().addAll(hboxName);
-        layout.getChildren().addAll(hboxEmail);
-        layout.getChildren().addAll(hboxiban);
-        layout.getChildren().addAll(hboxbic);
+        layout.getChildren().addAll(hboxName, hboxEmail, hboxiban, hboxbic);
         // the button is placed along side the rest, not below, it needs fixing
         layout.getChildren().addAll(hboxButtons);
 
