@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 
 import client.scenes.*;
 import com.google.inject.Injector;
-
+import client.scenes.OpenDebts;
 //import client.scenes.AddQuoteCtrl;
 //import client.scenes.MainCtrl;
 //import client.scenes.QuoteOverviewCtrl;
@@ -32,39 +32,47 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     // add your page as a private object below
-    private final OpenDebts od = new OpenDebts();
-    private Invitations inv = new Invitations();
-    private ContactDetails cd = new ContactDetails();
-    private final EventOverview eo = new EventOverview();
-    private final StartScreen sc = new StartScreen();
+    private final OpenDebts od = new OpenDebts(this);
+    private final Invitations inv = new Invitations(this);
+    private final ContactDetails cd = new ContactDetails(this);
+    private final EventOverview eo = new EventOverview(this);
+    private final StartScreen sc = new StartScreen(this);
+    private final AddEditExpense aed = new AddEditExpense();
 
+    private Stage primaryStage; // added this line
+    private Scene mainScene; // added this line
+
+    /**
+     * Main method that starts the application
+     * @param args command line arguments
+     * @throws URISyntaxException if the URI is invalid or cannot be constructed
+     * @throws IOException if an I/O error occurs
+     */
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
     }
 
+    /**
+     * The start method to call the different scenes
+     * @param primaryStage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @throws IOException
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
-
-        // Code that was already in this class
-//        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-//        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
-//
-//        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-//        mainCtrl.initialize(primaryStage, overview, add);
+        this.primaryStage = primaryStage; // added this line
 
         // Button for StartScreen page
         Button startButton = new Button("Start Screen");
         startButton.setOnAction(e -> primaryStage.setScene(sc.getScene()));
-        // set the button's action to open your scene
-        // startButton.setOnAction(e -> primaryStage.setScene(...));
 
         // Button for EventOverview page
         Button eoButton = new Button("Event Overview");
@@ -72,30 +80,55 @@ public class Main extends Application {
 
         // Button for ContactDetails page
         Button cdButton = new Button("Contact Details");
-        // set the button's action to open your scene
         cdButton.setOnAction(e -> primaryStage.setScene(cd.getScene()));
 
         // Button for Invitation page
         Button invitationButton = new Button("Invitation");
-        // set the button's action to open your scene
         invitationButton.setOnAction(e -> primaryStage.setScene(inv.getScene()));
 
         // Button for OpenDebts page
         Button odButton = new Button("Open Debts");
         odButton.setOnAction(e -> primaryStage.setScene(od.getScene()));
 
+        Button addExpenseButton = new Button("Add Expense");
+        addExpenseButton.setOnAction(e -> primaryStage.setScene(aed.getScene()));
+
+        // Button for language selection
+        Button languageButton = new LanguageButton();
+
         // Layout
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
         // adding elements to layout
-        layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton, odButton);
+        layout.getChildren().addAll(startButton, cdButton, invitationButton,
+                odButton,languageButton);
 
         // Scene
-        Scene scene = new Scene(layout, 400, 300);
+        mainScene = new Scene(layout, 400, 300); // changed this line
 
         // Window
         primaryStage.setTitle("Main");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(mainScene); // changed this line
         primaryStage.show();
     }
+
+    /**
+     * Getter for the primary stage
+     * @return the primary stage
+     */
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    /**
+     * Getter for the main scene
+     * @return the main scene
+     */
+    public Scene getMainScene() {
+        return mainScene;
+    }
 }
+
+
+
+

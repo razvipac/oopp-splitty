@@ -58,4 +58,48 @@ public class Debt {
                 ", received=" + received +
                 '}';
     }
+
+    public List<Debt> SettleDebts(List<Participant> allParticipants, Event event, List<Expense> expenses) {
+        Map<Participant, Double> debtMap = new HashMap<>();
+
+        for (Expense expense : expenses) {
+            Participant paidBy = expense.getPaidBy();
+            double totalExpense = expense.getPrice();
+
+            // For this first draft, we are going to
+            List<Participant> participants = BasicGetParticipants(allParticipants, event);
+            double individualShare = totalExpense / participants.size();
+
+            for (Participant participant : participants) {
+                if (!participant.equals(paidBy)) {
+                    double currentDebt = debtMap.getOrDefault(participant, 0.0);
+                    debtMap.put(participant, currentDebt + individualShare);
+                }
+            }
+        }
+
+        List<Debt> debts = new ArrayList<>();
+        for (Map.Entry<Participant, Double> entry : debtMap.entrySet()) {
+            Participant debtor = entry.getKey();
+            double amount = entry.getValue();
+            debts.add(new Debt(debtor, null, amount)); // Leave the creditor null for now
+        }
+
+        return debts;
+    }
+
+    private List<Participant> BasicGetParticipants(List<Participant> allParticipants, Event event) {
+        List<Participant> participants = new ArrayList<>();
+        for(Participant participant : allParticipants)
+            if(participant.getEvent().equals(event))
+                participants.add(participant);
+        return participants;
+    }
+
+    private List<Participant> AdvancedGetParticipants(Expense expense) {
+        List<Participant> participants = new ArrayList<>();
+        participants.add(expense.getPaidBy());
+        // Logic to be added for participants
+        return participants;
+    }
 }

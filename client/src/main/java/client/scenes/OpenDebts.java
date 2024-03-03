@@ -1,6 +1,7 @@
 package client.scenes;
 
 import commons.Event;
+import client.Main;
 import javafx.geometry.Insets;
 //import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,6 +20,7 @@ public class OpenDebts {
 
     private Scene scene;
     private ArrayList<Debt> debtList;
+    private Main main;
 
     /**
      * Getter for the scene
@@ -30,8 +32,10 @@ public class OpenDebts {
 
     /**
      * Constructor for Open Debts page
+     * @param main to the main class
      */
-    public OpenDebts() {
+    public OpenDebts(Main main) {
+        this.main = main;
         // Data for testing purposes
         Participant john = new Participant("John",
                            new Event("Abby's birthday party", "code1",
@@ -58,7 +62,7 @@ public class OpenDebts {
     }
 
     /**
-     * Creates the scene
+     * Creates the scene for the Open Debts page
      */
     public void createScene() {
         // Layout
@@ -68,15 +72,19 @@ public class OpenDebts {
         // Header
         Text header = new Text("Open Debts");
         header.setFont(Font.font("Arial", FontWeight.BOLD , 20));
-        layout.getChildren().add(header);
+        layout.getChildren().addAll(header);
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        layout.getChildren().add(backButton);
 
         // Adding each debt
         for(Debt d : debtList) {
             addDebtToLayout(d, layout);
         }
-
         // Scene
         scene = new Scene(layout, 400, 400);
+
     }
 
     /**
@@ -110,6 +118,7 @@ public class OpenDebts {
                 System.out.println("The debt (" + debtString + ") is marked as not received");
             }
         });
+
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);
