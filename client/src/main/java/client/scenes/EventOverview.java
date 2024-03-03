@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -13,6 +14,8 @@ public class EventOverview {
 
     // JavaFX Scene
     private Scene scene;
+
+    private Main main;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -41,8 +44,10 @@ public class EventOverview {
 
     /**
      * Creates Event Overview.
+     * @param main to call the main scene
      */
-    public EventOverview() {
+    public EventOverview(Main main) {
+        this.main = main;
         // Participants for testing purposes
         participants = new ArrayList<>();
         participants.add("Chris");
@@ -94,11 +99,14 @@ public class EventOverview {
         // TODO: button is non-functional
         Button settleDebtsButton = new Button("Settle Debts");
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+
         // add all elements to layout
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesHeader, expenseAddButton,
                 participantDropdown, radioSelectBox, expensesScroller,
-                settleDebtsButton);
+                settleDebtsButton, backButton);
 
         // Scene
         scene = new Scene(layout, 350, 380);

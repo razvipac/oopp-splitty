@@ -38,31 +38,40 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     // add your page as a private object below
-    private final OpenDebts od = new OpenDebts();
-    private Invitations inv = new Invitations();
-    private ContactDetails cd = new ContactDetails();
-    private final EventOverview eo = new EventOverview();
-    private final StartScreen sc = new StartScreen();
+    private final OpenDebts od = new OpenDebts(this);
+    private final Invitations inv = new Invitations(this);
+    private final ContactDetails cd = new ContactDetails(this);
+    private final EventOverview eo = new EventOverview(this);
+    private final StartScreen sc = new StartScreen(this);
 
+    private Stage primaryStage; // added this line
+    private Scene mainScene; // added this line
+
+    /**
+     * Main method that starts the application
+     * @param args command line arguments
+     * @throws URISyntaxException if the URI is invalid or cannot be constructed
+     * @throws IOException if an I/O error occurs
+     */
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
     }
 
+    /**
+     * The start method to call the different scenes
+     * @param primaryStage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @throws IOException
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
-
-        // Code that was already in this class
-//        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-//        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
-//
-//        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-//        mainCtrl.initialize(primaryStage, overview, add);
+        this.primaryStage = primaryStage; // added this line
 
         // Button for StartScreen page
         Button startButton = new Button("Start Screen");
         startButton.setOnAction(e -> primaryStage.setScene(sc.getScene()));
-        // set the button's action to open your scene
-        // startButton.setOnAction(e -> primaryStage.setScene(...));
 
         // Button for EventOverview page
         Button eoButton = new Button("Event Overview");
@@ -70,12 +79,10 @@ public class Main extends Application {
 
         // Button for ContactDetails page
         Button cdButton = new Button("Contact Details");
-        // set the button's action to open your scene
         cdButton.setOnAction(e -> primaryStage.setScene(cd.getScene()));
 
         // Button for Invitation page
         Button invitationButton = new Button("Invitation");
-        // set the button's action to open your scene
         invitationButton.setOnAction(e -> primaryStage.setScene(inv.getScene()));
 
         // Button for OpenDebts page
@@ -92,11 +99,24 @@ public class Main extends Application {
         layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton,languageButton);
 
         // Scene
-        Scene scene = new Scene(layout, 400, 300);
+        mainScene = new Scene(layout, 400, 300); // changed this line
 
         // Window
         primaryStage.setTitle("Main");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(mainScene); // changed this line
         primaryStage.show();
     }
+
+    // added getter methods
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public Scene getMainScene() {
+        return mainScene;
+    }
 }
+
+
+
+

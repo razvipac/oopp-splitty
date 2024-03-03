@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import javafx.geometry.Insets;
 //import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ public class OpenDebts {
 
     private Scene scene;
     private ArrayList<Debt> debtList;
+    private Main main;
 
     /**
      * Getter for the scene
@@ -28,8 +30,10 @@ public class OpenDebts {
 
     /**
      * Constructor for Open Debts page
+     * @param main to the main class
      */
-    public OpenDebts() {
+    public OpenDebts(Main main) {
+        this.main = main;
         // Data for testing purposes
         Person john = new Person("John", "Doe");
         Person david = new Person("David", "Davidson");
@@ -55,6 +59,10 @@ public class OpenDebts {
         Text header = new Text("Open Debts");
         header.setFont(Font.font("Arial", FontWeight.BOLD , 20));
         layout.getChildren().addAll(header);
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        layout.getChildren().add(backButton);
 
         // Adding each debt
         for(Debt d : debtList) {
@@ -96,6 +104,7 @@ public class OpenDebts {
                 System.out.println("The debt (" + debtString + ") is marked as not received");
             }
         });
+
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);

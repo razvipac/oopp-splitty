@@ -1,6 +1,7 @@
 package client.scenes;
 
 
+import client.Main;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,11 +18,14 @@ import javafx.scene.text.Text;
 public class StartScreen {
 
     private Scene scene;
+    private Main main;
 
     /**
      * Constructor for the start screen that calls the method to create the GUI
+     * @param main scene of the main class
      */
-    public StartScreen() {
+    public StartScreen(Main main) {
+        this.main = main;
         createSceneStartScreen();
     }
 
@@ -72,6 +76,9 @@ public class StartScreen {
             System.out.println("Event joined: " + joinEvent.getText());
         });
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+
         // HBoxes for creating and joining events
         HBox createEventBox = createHBox(10, Pos.CENTER, createEvent, createButton);
 
@@ -97,7 +104,7 @@ public class StartScreen {
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().addAll(createANewEventLabel, createEventBox,
                 joinEventLabel, joinEventBox, recentlyViewedEventsLabel,
-                skiTripBox, museumVisitBox, giftForJohnBox, newYearPartyBox);
+                skiTripBox, museumVisitBox, giftForJohnBox, newYearPartyBox, backButton);
         layout.setAlignment(Pos.CENTER);
 
         scene = new Scene(layout, 300, 300);
