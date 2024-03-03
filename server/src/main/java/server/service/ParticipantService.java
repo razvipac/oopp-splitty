@@ -1,7 +1,6 @@
 package server.service;
 
-import commons.Event;
-import commons.Participant;
+import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.api.request_bodies.ParticipantBody;
@@ -74,5 +73,33 @@ public class ParticipantService {
 
         participantRepository.save(newParticipant);
         return newParticipant;
+    }
+
+    public Participant deleteOne(String eventCode, String participantName) throws NotFoundInDatabaseException {
+        Participant found = getOne(eventCode, participantName);
+        // if not found exception will be thrown
+
+        participantRepository.deleteById(getParticipantId(
+                eventCode,
+                participantName
+        ));
+        return found;
+    }
+
+    public Participant updateOne(String eventCode,String name, ParticipantBody body) throws NotFoundInDatabaseException {
+        Participant found = getOne(eventCode, body.name());
+        // if not found exception will be thrown
+        found.setEmail(body.email());
+        found.setIban(body.iban());
+        found.setBic(body.bic());
+
+        participantRepository.save(found);
+        return found;
+    }
+
+    private ParticipantId getParticipantId(String eventCode, String participantName)
+            throws NotFoundInDatabaseException{
+        Event event = eventService.getOne(eventCode);
+        return  new ParticipantId(participantName, event);
     }
 }

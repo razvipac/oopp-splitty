@@ -55,4 +55,29 @@ public class ParticipantController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("")
+    public ResponseEntity<Participant> deleteOne(
+            @RequestParam("participantName") String participantName,
+            @PathVariable("eventCode") String eventCode
+    ){
+        try{
+            return new ResponseEntity<>(participantService.deleteOne(eventCode, participantName), HttpStatus.OK);
+        } catch (NotFoundInDatabaseException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("")
+    public ResponseEntity<Participant> updateOneById(
+            @RequestParam("name") String name,
+            @PathVariable("eventCode") String eventCode,
+            @RequestBody ParticipantBody body
+    ){
+        try{
+            return new ResponseEntity<>(participantService.updateOne(eventCode, name, body), HttpStatus.OK);
+        } catch (NotFoundInDatabaseException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
