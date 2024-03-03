@@ -6,7 +6,8 @@ build/
 !**/src/test/**/build/
 
 **/*.mv.db
-/coverage/*
+/**/*.trace.db
+coverage/*
 **/*.swp
 
 ### STS ###

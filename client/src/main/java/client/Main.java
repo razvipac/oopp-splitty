@@ -20,29 +20,28 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import client.scenes.ContactDetails;
-import client.scenes.Invitations;
-import client.scenes.StartScreen;
+import client.scenes.*;
 import com.google.inject.Injector;
-
 import client.scenes.OpenDebts;
+//import client.scenes.AddQuoteCtrl;
+//import client.scenes.MainCtrl;
+//import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
+    // add your page as a private object below
     private final OpenDebts od = new OpenDebts();
-    // add your page as a private object here
     private Invitations inv = new Invitations();
     private ContactDetails cd = new ContactDetails();
-
+    private final EventOverview eo = new EventOverview();
     private final StartScreen sc = new StartScreen();
 
     public static void main(String[] args) throws URISyntaxException, IOException {
@@ -64,6 +63,10 @@ public class Main extends Application {
         startButton.setOnAction(e -> primaryStage.setScene(sc.getScene()));
         // set the button's action to open your scene
         // startButton.setOnAction(e -> primaryStage.setScene(...));
+
+        // Button for EventOverview page
+        Button eoButton = new Button("Event Overview");
+        eoButton.setOnAction(e -> primaryStage.setScene(eo.getScene()));
 
         // Button for ContactDetails page
         Button cdButton = new Button("Contact Details");
