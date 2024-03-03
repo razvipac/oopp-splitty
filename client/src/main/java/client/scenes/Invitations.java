@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,12 +12,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-
-
-
 public class Invitations {
     private Scene scene;
     private TextArea boxToPutEmails;
+    private Main main; // reference to Main class
 
     /**
      * Getter for the scene
@@ -29,7 +28,8 @@ public class Invitations {
     /**
      * Constructor for the invitation that calls the method to create the scene
      */
-    public Invitations() {
+    public Invitations(Main main) {
+        this.main = main;
         createSceneInvitation();
     }
 
@@ -64,19 +64,21 @@ public class Invitations {
             System.out.println("Invites sent to: " + boxToPutEmails.getText());
         });
 
+        // Back button
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
 
         // layout
         VBox layout = new VBox();
         layout.setSpacing(10);
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().addAll(title, inviteCode, inviteByEmailAddress,
-                boxToPutEmails, sendInvitesButton);
+                boxToPutEmails, sendInvitesButton, backButton);
         layout.setAlignment(Pos.CENTER);
 
         scene = new Scene(layout, 270, 300);
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());
-
     }
 }
