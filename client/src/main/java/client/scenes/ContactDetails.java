@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,11 +15,14 @@ import javafx.scene.text.Text;
 
 public class ContactDetails {
     private Scene scene;
+    private Main main;
 
     /**
      * Constructor for the contact details that calls the method to create the scene
+     * @param main scene of the main class
      */
-    public ContactDetails(){
+    public ContactDetails(Main main){
+        this.main = main;
         createSceneContactDetails();
     }
 
@@ -82,9 +86,12 @@ public class ContactDetails {
             // add it to the server
         });
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+
         HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
         hBoxBic.setPadding(new Insets(10)); // Padding around the HBox
-        hBoxBic.getChildren().addAll(abort, ok);
+        hBoxBic.getChildren().addAll(abort, ok, backButton);
         hBoxButtons.setAlignment(Pos.CENTER);
 
         // create the layout

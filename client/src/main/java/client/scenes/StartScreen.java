@@ -22,7 +22,7 @@ public class StartScreen {
 
     /**
      * Constructor for the start screen that calls the method to create the GUI
-     * @param main reference to the Main class
+     * @param main scene of the main class
      */
     public StartScreen(Main main) {
         this.main = main;

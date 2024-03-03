@@ -42,7 +42,7 @@ public class Main extends Application {
     // add your page as a private object below
     private final OpenDebts od = new OpenDebts();
     private final Invitations inv = new Invitations(this);
-    private final ContactDetails cd = new ContactDetails();
+    private final ContactDetails cd = new ContactDetails(this);
     private final EventOverview eo = new EventOverview();
     private final StartScreen sc = new StartScreen(this);
 
