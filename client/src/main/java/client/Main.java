@@ -43,6 +43,7 @@ public class Main extends Application {
     private final ContactDetails cd = new ContactDetails(this);
     private final EventOverview eo = new EventOverview(this);
     private final StartScreen sc = new StartScreen(this);
+    private final AddEditExpense aed = new AddEditExpense();
 
     private Stage primaryStage; // added this line
     private Scene mainScene; // added this line
@@ -89,6 +90,9 @@ public class Main extends Application {
         Button odButton = new Button("Open Debts");
         odButton.setOnAction(e -> primaryStage.setScene(od.getScene()));
 
+        Button addExpenseButton = new Button("Add Expense");
+        addExpenseButton.setOnAction(e -> primaryStage.setScene(aed.getScene()));
+
         // Button for language selection
         Button languageButton = new LanguageButton();
 
@@ -96,7 +100,8 @@ public class Main extends Application {
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
         // adding elements to layout
-        layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton,languageButton);
+        layout.getChildren().addAll(startButton, cdButton, invitationButton,
+                odButton,languageButton);
 
         // Scene
         mainScene = new Scene(layout, 400, 300); // changed this line
@@ -107,11 +112,18 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    // added getter methods
+    /**
+     * Getter for the primary stage
+     * @return the primary stage
+     */
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 
+    /**
+     * Getter for the main scene
+     * @return the main scene
+     */
     public Scene getMainScene() {
         return mainScene;
     }
