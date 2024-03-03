@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 
 import client.scenes.*;
 import com.google.inject.Injector;
-
+import client.scenes.OpenDebts;
 //import client.scenes.AddQuoteCtrl;
 //import client.scenes.MainCtrl;
 //import client.scenes.QuoteOverviewCtrl;
@@ -32,8 +32,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
@@ -84,11 +82,14 @@ public class Main extends Application {
         Button odButton = new Button("Open Debts");
         odButton.setOnAction(e -> primaryStage.setScene(od.getScene()));
 
+        // Button for language selection
+        Button languageButton = new LanguageButton();
+
         // Layout
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
         // adding elements to layout
-        layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton, odButton);
+        layout.getChildren().addAll(startButton, cdButton, invitationButton, odButton,languageButton);
 
         // Scene
         Scene scene = new Scene(layout, 400, 300);
