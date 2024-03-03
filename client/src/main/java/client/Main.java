@@ -44,7 +44,7 @@ public class Main extends Application {
     private final Invitations inv = new Invitations(this);
     private final ContactDetails cd = new ContactDetails();
     private final EventOverview eo = new EventOverview();
-    private final StartScreen sc = new StartScreen();
+    private final StartScreen sc = new StartScreen(this);
 
     private Stage primaryStage; // added this line
     private Scene mainScene; // added this line

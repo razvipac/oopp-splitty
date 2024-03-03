@@ -27,6 +27,7 @@ public class Invitations {
 
     /**
      * Constructor for the invitation that calls the method to create the scene
+     * @param main reference to the Main class
      */
     public Invitations(Main main) {
         this.main = main;
