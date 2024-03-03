@@ -44,7 +44,7 @@ public class OpenDebts {
     }
 
     /**
-     * Creates the scene
+     * Creates the scene for the Open Debts page
      */
     public void createScene() {
         // Layout
@@ -54,15 +54,15 @@ public class OpenDebts {
         // Header
         Text header = new Text("Open Debts");
         header.setFont(Font.font("Arial", FontWeight.BOLD , 20));
-        layout.getChildren().add(header);
+        layout.getChildren().addAll(header);
 
         // Adding each debt
         for(Debt d : debtList) {
             addDebtToLayout(d, layout);
         }
-
         // Scene
         scene = new Scene(layout, 400, 400);
+
     }
 
     /**
