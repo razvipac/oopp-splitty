@@ -40,7 +40,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     // add your page as a private object below
-    private final OpenDebts od = new OpenDebts();
+    private final OpenDebts od = new OpenDebts(this);
     private final Invitations inv = new Invitations(this);
     private final ContactDetails cd = new ContactDetails(this);
     private final EventOverview eo = new EventOverview();
