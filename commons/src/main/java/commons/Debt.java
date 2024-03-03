@@ -1,26 +1,26 @@
 package commons;
 
-import java.util.Objects;
+import java.util.*;
 
 public class Debt {
 
-    private Person debtor;      // person who owes money
-    private Person creditor;    // person who is owed money
+    private Participant debtor;      // person who owes money
+    private Participant creditor;    // person who is owed money
     private double amount;      // amount of money owed, in euros
     private boolean received;   // true if money is received, false otherwise
 
-    public Debt(Person debtor, Person creditor, double amount) {
+    public Debt(Participant debtor, Participant creditor, double amount) {
         this.debtor = debtor;
         this.creditor = creditor;
         this.amount = amount;
         this.received = false;
     }
 
-    public Person getDebtor() {
+    public Participant getDebtor() {
         return debtor;
     }
 
-    public Person getCreditor() {
+    public Participant getCreditor() {
         return creditor;
     }
 

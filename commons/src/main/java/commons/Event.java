@@ -174,6 +174,11 @@ public class Event {
                 .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param expenses The list of present expenses regarding one event
+     * @return returns the total cost of these expenses
+     */
     public static int sumOfAllExpenses(List<Expense> expenses) {
         return expenses.stream()
                 .mapToInt(Expense::getPrice)
