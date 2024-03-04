@@ -1,5 +1,6 @@
 package commons;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -11,7 +12,7 @@ import java.util.Objects;
 public class ParticipantId implements Serializable {
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_code")
     private Event event;
 

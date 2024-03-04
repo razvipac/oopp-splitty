@@ -1,5 +1,7 @@
 package client.scenes;
 
+import commons.Event;
+import client.Main;
 import javafx.geometry.Insets;
 //import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,15 +10,17 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 // import javafx.stage.Stage;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import commons.Debt;
-import commons.Person;
+import commons.Participant;
 
 public class OpenDebts {
 
     private Scene scene;
     private ArrayList<Debt> debtList;
+    private Main main;
 
     /**
      * Getter for the scene
@@ -28,13 +32,27 @@ public class OpenDebts {
 
     /**
      * Constructor for Open Debts page
+     * @param main to the main class
      */
-    public OpenDebts() {
+    public OpenDebts(Main main) {
+        this.main = main;
         // Data for testing purposes
-        Person john = new Person("John", "Doe");
-        Person david = new Person("David", "Davidson");
-        Person chris = new Person("Chris", "Stoffer");
-        Person anna = new Person("Anna", "Belle");
+        Participant john = new Participant("John",
+                           new Event("Abby's birthday party", "code1",
+                                     LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                               "John@mail.com", "1234", "1234");
+        Participant david = new Participant("David",
+                            new Event("Davidson's birthday party", "code2",
+                                      LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                                "David@mail.com", "2341", "2341");
+        Participant chris = new Participant("Chris",
+                            new Event("Stoffer's birthday party", "code3",
+                                      LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                                "Chris@mail.com", "3412", "3412");
+        Participant anna = new Participant("Anna",
+                           new Event("Belle's birthday party", "code4",
+                                     LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                               "Anna@mail.com", "4123", "4123");
         debtList = new ArrayList<>();
         debtList.add(new Debt(john, david, 123));
         debtList.add(new Debt(chris, david, 34));
@@ -44,7 +62,7 @@ public class OpenDebts {
     }
 
     /**
-     * Creates the scene
+     * Creates the scene for the Open Debts page
      */
     public void createScene() {
         // Layout
@@ -54,15 +72,19 @@ public class OpenDebts {
         // Header
         Text header = new Text("Open Debts");
         header.setFont(Font.font("Arial", FontWeight.BOLD , 20));
-        layout.getChildren().add(header);
+        layout.getChildren().addAll(header);
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        layout.getChildren().add(backButton);
 
         // Adding each debt
         for(Debt d : debtList) {
             addDebtToLayout(d, layout);
         }
-
         // Scene
         scene = new Scene(layout, 400, 400);
+
     }
 
     /**
@@ -77,8 +99,8 @@ public class OpenDebts {
         VBox debtItem = new VBox(5);
 
         // debtString & debtStringLabel, contains the debtor, creditor and amount
-        String debtorName = d.getDebtor().firstName;
-        String creditorName = d.getCreditor().firstName;
+        String debtorName = d.getDebtor().getName();
+        String creditorName = d.getCreditor().getName();
         double amount = d.getAmount();
         String debtString = debtorName + " gives " + amount + " Euro to " + creditorName;
         Label debtStringLabel = new Label(debtString);
@@ -96,6 +118,7 @@ public class OpenDebts {
                 System.out.println("The debt (" + debtString + ") is marked as not received");
             }
         });
+
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);

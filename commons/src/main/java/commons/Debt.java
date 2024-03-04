@@ -1,24 +1,26 @@
 package commons;
 
+import java.util.*;
+
 public class Debt {
 
-    private Person debtor;      // person who owes money
-    private Person creditor;    // person who is owed money
+    private Participant debtor;      // person who owes money
+    private Participant creditor;    // person who is owed money
     private double amount;      // amount of money owed, in euros
     private boolean received;   // true if money is received, false otherwise
 
-    public Debt(Person debtor, Person creditor, double amount) {
+    public Debt(Participant debtor, Participant creditor, double amount) {
         this.debtor = debtor;
         this.creditor = creditor;
         this.amount = amount;
         this.received = false;
     }
 
-    public Person getDebtor() {
+    public Participant getDebtor() {
         return debtor;
     }
 
-    public Person getCreditor() {
+    public Participant getCreditor() {
         return creditor;
     }
 
@@ -34,5 +36,70 @@ public class Debt {
         this.received = received;
     }
 
-    // To do: equals method
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Debt debt = (Debt) o;
+        return Double.compare(amount, debt.amount) == 0 && received == debt.received && Objects.equals(debtor, debt.debtor) && Objects.equals(creditor, debt.creditor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(debtor, creditor, amount, received);
+    }
+
+    @Override
+    public String toString() {
+        return "Debt{" +
+                "debtor=" + debtor +
+                ", creditor=" + creditor +
+                ", amount=" + amount +
+                ", received=" + received +
+                '}';
+    }
+
+    public List<Debt> SettleDebts(List<Participant> allParticipants, Event event, List<Expense> expenses) {
+        Map<Participant, Double> debtMap = new HashMap<>();
+
+        for (Expense expense : expenses) {
+            Participant paidBy = expense.getPaidBy();
+            double totalExpense = expense.getPrice();
+
+            // For this first draft, we are going to
+            List<Participant> participants = BasicGetParticipants(allParticipants, event);
+            double individualShare = totalExpense / participants.size();
+
+            for (Participant participant : participants) {
+                if (!participant.equals(paidBy)) {
+                    double currentDebt = debtMap.getOrDefault(participant, 0.0);
+                    debtMap.put(participant, currentDebt + individualShare);
+                }
+            }
+        }
+
+        List<Debt> debts = new ArrayList<>();
+        for (Map.Entry<Participant, Double> entry : debtMap.entrySet()) {
+            Participant debtor = entry.getKey();
+            double amount = entry.getValue();
+            debts.add(new Debt(debtor, null, amount)); // Leave the creditor null for now
+        }
+
+        return debts;
+    }
+
+    private List<Participant> BasicGetParticipants(List<Participant> allParticipants, Event event) {
+        List<Participant> participants = new ArrayList<>();
+        for(Participant participant : allParticipants)
+            if(participant.getEvent().equals(event))
+                participants.add(participant);
+        return participants;
+    }
+
+    private List<Participant> AdvancedGetParticipants(Expense expense) {
+        List<Participant> participants = new ArrayList<>();
+        participants.add(expense.getPaidBy());
+        // Logic to be added for participants
+        return participants;
+    }
 }

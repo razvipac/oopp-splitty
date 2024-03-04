@@ -10,7 +10,7 @@ public class ExpenseId implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "entity_id_sequence")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
             @JoinColumn(name = "paidBy_name", referencedColumnName = "name"),
             @JoinColumn(name = "paidBy_event_code", referencedColumnName = "event_code")

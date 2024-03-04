@@ -35,6 +35,7 @@ public class EventService {
         if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
                 "Event with code: " + code + " is not present in the database!");
 
+
         return searchResult.get();
     }
 
@@ -63,6 +64,25 @@ public class EventService {
 
         eventRepository.save(newEvent);
         return newEvent;
+    }
+
+    public Event deleteOne(String eventCode) throws NotFoundInDatabaseException {
+        Event found = getOne(eventCode);
+        // if not found exception will be thrown
+
+        eventRepository.deleteById(eventCode);
+        return found;
+    }
+
+    public Event updateOne(String eventCode, String newName) throws NotFoundInDatabaseException {
+        Event found = getOne(eventCode);
+        // if not found exception will be thrown
+
+        found.setName(newName);
+
+        eventRepository.save(found);
+        return found;
+
     }
 
     /**
