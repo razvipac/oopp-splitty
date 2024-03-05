@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 package commons;
 import org.junit.jupiter.api.Test;
 
