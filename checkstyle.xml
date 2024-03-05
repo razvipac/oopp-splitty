@@ -8,6 +8,7 @@
 
         <module name="SuppressionCommentFilter"/>
 
+        <!-- Missing Javadoc is not considered as a warning -->
         <module name="MissingJavadocMethod">
             <property name="severity" value="info"/>
             <property name="scope" value="public"/>
@@ -17,6 +18,7 @@
         </module>
 
         <module name="JavadocMethod">
+            <property name="severity" value="info"/>
             <property name="accessModifiers" value="public"/>
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
