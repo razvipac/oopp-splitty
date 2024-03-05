@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -83,14 +84,14 @@ public class AddQuoteCtrl {
 
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
-        case ENTER:
-            ok();
-            break;
-        case ESCAPE:
-            cancel();
-            break;
-        default:
-            break;
+            case ENTER:
+                ok();
+                break;
+            case ESCAPE:
+                cancel();
+                break;
+            default:
+                break;
         }
     }
 }
