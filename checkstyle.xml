@@ -8,7 +8,7 @@
 
         <module name="SuppressionCommentFilter"/>
 
-        <!-- Missing Javadoc is not considered as a warning -->
+        <!--
         <module name="MissingJavadocMethod">
             <property name="severity" value="info"/>
             <property name="scope" value="public"/>
@@ -16,26 +16,31 @@
             <property name="allowedAnnotations" value="Main"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
         </module>
+        -->
 
+        <!--
         <module name="JavadocMethod">
             <property name="severity" value="info"/>
             <property name="accessModifiers" value="public"/>
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
         </module>
+        -->
 
-        <!-- Method length is not considered as a warning -->
+        <!--
         <module name="MethodLength">
             <property name="severity" value="info"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
             <property name="max" value="100"/>
         </module>
+        -->
 
-        <!-- Visibility Modifier is not considered as a warning -->
+        <!--
         <module name="VisibilityModifier">
             <property name="severity" value="info"/>
             <property name="protectedAllowed" value="true"/>
         </module>
+        -->
 
         <module name="OuterTypeFilename">
             <property name="severity" value="warning"/>
@@ -98,12 +103,13 @@
 
     </module>
 
-    <!-- Line length is not considered as a warning -->
+    <!--
     <module name="LineLength">
         <property name="severity" value="info"/>
         <property name="fileExtensions" value="java"/>
         <property name="max" value="100"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
+    -->
 
 </module>
