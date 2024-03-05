@@ -48,7 +48,7 @@ public class ParticipantController {
     public ResponseEntity<Participant> createOne(
             @PathVariable("eventCode") String eventCode,
             @RequestBody ParticipantBody body
-            ){
+    ){
         try{
             return new ResponseEntity<>(participantService.createOne(eventCode, body), HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e){
