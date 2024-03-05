@@ -24,15 +24,15 @@
             <property name="allowMissingReturnTag" value="false"/>
         </module>
 
-        <!-- Missing Javadoc is not considered as a warning -->
         <module name="MethodLength">
             <property name="severity" value="warning"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
             <property name="max" value="100"/>
         </module>
 
+        <!-- Visibility Modifier is not considered as a warning -->
         <module name="VisibilityModifier">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="info"/>
             <property name="protectedAllowed" value="true"/>
         </module>
 
