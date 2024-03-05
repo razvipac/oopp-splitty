@@ -98,8 +98,9 @@
 
     </module>
 
+    <!-- Line length is not considered as a warning -->
     <module name="LineLength">
-        <property name="severity" value="warning"/>
+        <property name="severity" value="info"/>
         <property name="fileExtensions" value="java"/>
         <property name="max" value="100"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
