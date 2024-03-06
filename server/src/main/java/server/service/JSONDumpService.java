@@ -6,9 +6,9 @@ import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import server.api.request_bodies.json_dump.EventDump;
-import server.api.request_bodies.json_dump.ExpenseDump;
-import server.api.request_bodies.json_dump.ParticipantDump;
+import server.api.pojo.response_body.EventResponseBody;
+import server.api.pojo.response_body.ExpenseResponseBody;
+import server.api.pojo.response_body.ParticipantResponseBody;
 import server.database.EventRepository;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
@@ -47,38 +47,38 @@ public class JSONDumpService {
      * This state can be restored from by using the restoreFromDump function.
      * @return state of the server in List<EventDump>
      */
-    public List<EventDump> createDump(){
+    public List<EventResponseBody> createDump(){
 
-        List<EventDump> response = new ArrayList<>();
+        List<EventResponseBody> response = new ArrayList<>();
 
         List<Event> events = eventService.getAll();
 
         for (Event event : events) {
-            EventDump eventDump = new EventDump(event, new ArrayList<>(), new ArrayList<>());
+            EventResponseBody eventResponseBody = new EventResponseBody(event, new ArrayList<>(), new ArrayList<>());
 
             List<Participant> participants = participantService.getAll(event.getCode());
             List<Expense> expenses = expenseService.getAllInEvent(event.getCode());
 
             for (Participant participant : participants) {
-                ParticipantDump participantDump = new ParticipantDump(
+                ParticipantResponseBody participantResponseBody = new ParticipantResponseBody(
                         participant.getName(),
                         participant.getEmail(),
                         participant.getIban(),
                         participant.getBic()
                 );
-                eventDump.participants().add(participantDump);
+                eventResponseBody.participants().add(participantResponseBody);
             }
 
             for (Expense expense : expenses) {
-                ExpenseDump expenseDump = new ExpenseDump(
+                ExpenseResponseBody expenseResponseBody = new ExpenseResponseBody(
                         expense.getId(),
                         expense.getPaidBy().getName(),
                         expense.getPrice(),
                         expense.getItem()
                 );
-                eventDump.expenses().add(expenseDump);
+                eventResponseBody.expenses().add(expenseResponseBody);
             }
-            response.add(eventDump);
+            response.add(eventResponseBody);
         }
         return response;
     }
@@ -89,31 +89,31 @@ public class JSONDumpService {
      * @throws ImproperDumpFormatException if the passed jsonDump is formatted improperly
      */
     @Transactional
-    public void restoreFromDump(List<EventDump> jsonDump) throws ImproperDumpFormatException {
+    public void restoreFromDump(List<EventResponseBody> jsonDump) throws ImproperDumpFormatException {
         expenseRepository.deleteAll();
         participantRepository.deleteAll();
         eventRepository.deleteAll();
         try {
-            for (EventDump eventDump : jsonDump){
-                Event event = eventDump.event();
+            for (EventResponseBody eventResponseBody : jsonDump){
+                Event event = eventResponseBody.event();
                 eventRepository.save(event);
 
-                for (ParticipantDump participantDump : eventDump.participants()){
+                for (ParticipantResponseBody participantResponseBody : eventResponseBody.participants()){
                     Participant participant = new Participant(
-                            participantDump.name(),
+                            participantResponseBody.name(),
                             event,
-                            participantDump.email(),
-                            participantDump.iban(),
-                            participantDump.bic()
+                            participantResponseBody.email(),
+                            participantResponseBody.iban(),
+                            participantResponseBody.bic()
                     );
                     participantRepository.save(participant);
                 }
 
-                for (ExpenseDump expenseDump : eventDump.expenses()){
+                for (ExpenseResponseBody expenseResponseBody : eventResponseBody.expenses()){
                     Expense expense = new Expense(
-                            expenseDump.price(),
-                            expenseDump.item(),
-                            participantRepository.findParticipantByEventCodeAndName(expenseDump.paidBy(), event.getCode()).get()
+                            expenseResponseBody.price(),
+                            expenseResponseBody.item(),
+                            participantRepository.findParticipantByEventCodeAndName(expenseResponseBody.paidBy(), event.getCode()).get()
                     );
                     expenseRepository.save(expense);
                 }

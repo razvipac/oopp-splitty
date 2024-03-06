@@ -1,15 +1,15 @@
-package server.api.request_bodies.json_dump;
+package server.api.pojo.response_body;
 
 import commons.Participant;
 
-public record ParticipantDump (
+public record ParticipantResponseBody(
         String name,
         String email,
         String iban,
         String bic
 ) {
-    public static ParticipantDump build(Participant participant){
-        return new ParticipantDump(
+    public static ParticipantResponseBody build(Participant participant){
+        return new ParticipantResponseBody(
                 participant.getName(),
                 participant.getEmail(),
                 participant.getIban(),

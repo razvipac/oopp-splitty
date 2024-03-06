@@ -1,4 +1,4 @@
-package server.api.request_bodies;
+package server.api.pojo.response_body;
 
 public enum WSAction {
     CREATED,

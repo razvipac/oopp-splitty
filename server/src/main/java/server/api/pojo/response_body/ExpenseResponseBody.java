@@ -1,15 +1,15 @@
-package server.api.request_bodies.json_dump;
+package server.api.pojo.response_body;
 
 import commons.Expense;
 
-public record ExpenseDump (
+public record ExpenseResponseBody(
        Long id,
        String paidBy,
        Integer price,
        String item
 ) {
-    public static ExpenseDump build(Expense expense){
-        return new ExpenseDump(
+    public static ExpenseResponseBody build(Expense expense){
+        return new ExpenseResponseBody(
                 expense.getId(),
                 expense.getPaidBy().getName(),
                 expense.getPrice(),

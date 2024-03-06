@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.api.request_bodies.json_dump.EventDump;
+import server.api.pojo.response_body.EventResponseBody;
 import server.service.JSONDumpService;
 import server.service.exceptions.ImproperDumpFormatException;
 
@@ -24,7 +24,7 @@ public class JSONDumpController {
      * Returns a JSON object corresponding to the current state of the server
      */
     @GetMapping("")
-    public ResponseEntity<List<EventDump>> getJSONDump(){
+    public ResponseEntity<List<EventResponseBody>> getJSONDump(){
         return new ResponseEntity<>(jsonDumpService.createDump(), HttpStatus.OK);
     }
 
@@ -34,7 +34,7 @@ public class JSONDumpController {
      */
     @PostMapping("")
     public ResponseEntity<String> restoreFromJSONDump(
-            @RequestBody List<EventDump> body
+            @RequestBody List<EventResponseBody> body
     ){
         try {
             jsonDumpService.restoreFromDump(body);

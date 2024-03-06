@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import server.api.request_bodies.ExpenseBody;
-import server.api.request_bodies.WSAction;
-import server.api.request_bodies.WSWrapper;
-import server.api.request_bodies.json_dump.ExpenseDump;
+import server.api.pojo.request_body.ExpenseRequestBody;
+import server.api.pojo.response_body.WSAction;
+import server.api.pojo.response_body.WSWrapperResponseBody;
+import server.api.pojo.response_body.ExpenseResponseBody;
 import server.service.ExpenseService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -43,20 +43,20 @@ public class ExpenseController {
      * and with id {id} will be returned
      */
     @GetMapping("")
-    public ResponseEntity<List<ExpenseDump>> getAllOrOne(
+    public ResponseEntity<List<ExpenseResponseBody>> getAllOrOne(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "participantName", required = false) String participantName,
             @PathVariable("eventCode") String eventCode
     ) {
         if (id == null && participantName == null) {
             List<Expense> expenses = expenseService.getAllInEvent(eventCode);
-            List<ExpenseDump> responseBodies = expenses.stream().map(ExpenseDump::build).toList();
+            List<ExpenseResponseBody> responseBodies = expenses.stream().map(ExpenseResponseBody::build).toList();
             return new ResponseEntity<>(responseBodies, HttpStatus.OK);
         }
 
         try {
             return new ResponseEntity<>(List.of(
-                    ExpenseDump.build(expenseService.getOne(eventCode, participantName, id))
+                    ExpenseResponseBody.build(expenseService.getOne(eventCode, participantName, id))
             ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,17 +64,17 @@ public class ExpenseController {
     }
 
     /**
-     * POST api/v1/{eventCode}/expense with request body in format of ExpenseBody
+     * POST api/v1/{eventCode}/expense with request body in format of ExpenseRequestBody
      * creates a new Expense populated with data from body under an event with {eventCode}
      */
     @PostMapping("")
-    public ResponseEntity<ExpenseDump> createOne(
+    public ResponseEntity<ExpenseResponseBody> createOne(
             @PathVariable("eventCode") String eventCode,
-            @RequestBody ExpenseBody body
+            @RequestBody ExpenseRequestBody body
     ) {
         try {
             return new ResponseEntity<>(
-                    ExpenseDump.build(
+                    ExpenseResponseBody.build(
                             expenseService.createOne(eventCode, body)
                     ), HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
@@ -88,14 +88,14 @@ public class ExpenseController {
      * event with code {eventCode}
      */
     @DeleteMapping("")
-    public ResponseEntity<ExpenseDump> deleteOne(
+    public ResponseEntity<ExpenseResponseBody> deleteOne(
             @RequestParam("id") Long id,
             @RequestParam("participantName") String participantName,
             @PathVariable("eventCode") String eventCode
     ) {
         try {
             return new ResponseEntity<>(
-                    ExpenseDump.build(
+                    ExpenseResponseBody.build(
                             expenseService.deleteOne(eventCode, participantName, id)
                     ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
@@ -104,23 +104,23 @@ public class ExpenseController {
     }
 
     /**
-     * PUT api/v1/{eventCode}/expense?id={id} with request body in format of ExpenseBody
+     * PUT api/v1/{eventCode}/expense?id={id} with request body in format of ExpenseRequestBody
      * Updates the data of expense object with id {id} under event with code {eventCode}
      * Overwrites data with that in passed body, YOU CANNOT CHANGE THE NAME OF THE PARTICIPANT
      */
     @PutMapping("")
-    public ResponseEntity<ExpenseDump> updateOneById(
+    public ResponseEntity<ExpenseResponseBody> updateOneById(
             @RequestParam("id") Long id,
             @PathVariable("eventCode") String eventCode,
-            @RequestBody ExpenseBody body
+            @RequestBody ExpenseRequestBody body
     ) {
         try {
             Expense updated = expenseService.updateOne(eventCode, id, body);
-            ExpenseDump response = ExpenseDump.build(updated);
+            ExpenseResponseBody response = ExpenseResponseBody.build(updated);
 
             simpMessagingTemplate.convertAndSend(
                     "/topic/" + eventCode + "/expense",
-                    new WSWrapper<>(
+                    new WSWrapperResponseBody<>(
                             WSAction.MODIFIED,
                             response
                     ));

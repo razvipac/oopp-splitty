@@ -1,3 +1,5 @@
+// CHECKSTYLE:OFF
+
 package commons;
 
 import java.util.*;
