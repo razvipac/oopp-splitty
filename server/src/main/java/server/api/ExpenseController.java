@@ -4,8 +4,13 @@ import commons.Expense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.core.AbstractDestinationResolvingMessagingTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.api.request_bodies.ExpenseBody;
+import server.api.request_bodies.WSAction;
+import server.api.request_bodies.WSWrapper;
+import server.api.request_bodies.json_dump.ExpenseDump;
 import server.service.ExpenseService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -15,10 +20,13 @@ import java.util.List;
 @RequestMapping("api/v1/{eventCode}/expense")
 public class ExpenseController {
     private final ExpenseService expenseService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public ExpenseController(ExpenseService expenseService) {
+    public ExpenseController(ExpenseService expenseService,
+                             SimpMessagingTemplate simpMessagingTemplate) {
         this.expenseService = expenseService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
 //    @GetMapping("")
@@ -40,14 +48,14 @@ public class ExpenseController {
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "participantName", required = false) String participantName,
             @PathVariable("eventCode") String eventCode
-            ){
-        if (id == null && participantName == null){
+    ) {
+        if (id == null && participantName == null) {
             return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
         }
 
-        try{
+        try {
             return new ResponseEntity<>(List.of(expenseService.getOne(eventCode, participantName, id)), HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e){
+        } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -60,10 +68,10 @@ public class ExpenseController {
     public ResponseEntity<Expense> createOne(
             @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseBody body
-    ){
-        try{
+    ) {
+        try {
             return new ResponseEntity<>(expenseService.createOne(eventCode, body), HttpStatus.CREATED);
-        } catch (NotFoundInDatabaseException e){
+        } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -78,10 +86,10 @@ public class ExpenseController {
             @RequestParam("id") Long id,
             @RequestParam("participantName") String participantName,
             @PathVariable("eventCode") String eventCode
-    ){
-        try{
+    ) {
+        try {
             return new ResponseEntity<>(expenseService.deleteOne(eventCode, participantName, id), HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e){
+        } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -92,17 +100,27 @@ public class ExpenseController {
      * Overwrites data with that in passed body, YOU CANNOT CHANGE THE NAME OF THE PARTICIPANT
      */
     @PutMapping("")
-    public ResponseEntity<Expense> updateOneById(
+    public ResponseEntity<ExpenseDump> updateOneById(
             @RequestParam("id") Long id,
             @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseBody body
-    ){
-        try{
-            return new ResponseEntity<>(expenseService.updateOne(eventCode, id, body), HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e){
+    ) {
+        try {
+            Expense updated = expenseService.updateOne(eventCode, id, body);
+            ExpenseDump response = ExpenseDump.build(updated);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/topic/" + eventCode + "/expense",
+                    new WSWrapper<>(
+                            WSAction.MODIFIED,
+                            response
+                    ));
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
     }
 }
-
 
