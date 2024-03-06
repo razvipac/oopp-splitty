@@ -280,13 +280,10 @@ public class EventOverview {
                     item.setManaged(true);
                 }
                 case FROM -> {
-                    if (((ExpenseItem) item).expense.equals(selectedParticipant)) {
-                        item.setVisible(true);
-                        item.setManaged(true);
-                    } else {
-                        item.setVisible(false);
-                        item.setManaged(false);
-                    }
+                    ExpenseItem e = (ExpenseItem) item;
+                    boolean isMatchingParticipant = e.expense.equals(selectedParticipant);
+                    item.setVisible(isMatchingParticipant);
+                    item.setManaged(isMatchingParticipant);
                 }
             }
         }

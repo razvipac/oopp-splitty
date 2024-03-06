@@ -116,7 +116,10 @@ public class Event {
         if (o == null || getClass() != o.getClass())
             return false;
         Event event = (Event) o;
-        return code.equals(event.code) && name.equals(event.name) && creationDate.equals(event.creationDate) && lastActivity.equals(event.lastActivity);
+        return code.equals(event.code)
+                && name.equals(event.name)
+                && creationDate.equals(event.creationDate)
+                && lastActivity.equals(event.lastActivity);
     }
 
     /**

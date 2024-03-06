@@ -40,7 +40,7 @@ public class ExpenseController {
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "participantName", required = false) String participantName,
             @PathVariable("eventCode") String eventCode
-            ){
+    ) {
         if (id == null && participantName == null){
             return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
         }

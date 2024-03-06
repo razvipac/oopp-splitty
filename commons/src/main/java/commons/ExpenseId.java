@@ -12,8 +12,8 @@ public class ExpenseId implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
-            @JoinColumn(name = "paidBy_name", referencedColumnName = "name"),
-            @JoinColumn(name = "paidBy_event_code", referencedColumnName = "event_code")
+        @JoinColumn(name = "paidBy_name", referencedColumnName = "name"),
+        @JoinColumn(name = "paidBy_event_code", referencedColumnName = "event_code")
     })
     private Participant paidBy;
 
