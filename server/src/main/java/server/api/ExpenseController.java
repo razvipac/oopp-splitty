@@ -4,7 +4,6 @@ import commons.Expense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.core.AbstractDestinationResolvingMessagingTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.api.request_bodies.ExpenseBody;
@@ -44,17 +43,21 @@ public class ExpenseController {
      * and with id {id} will be returned
      */
     @GetMapping("")
-    public ResponseEntity<List<Expense>> getAllOrOne(
+    public ResponseEntity<List<ExpenseDump>> getAllOrOne(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "participantName", required = false) String participantName,
             @PathVariable("eventCode") String eventCode
     ) {
         if (id == null && participantName == null) {
-            return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
+            List<Expense> expenses = expenseService.getAllInEvent(eventCode);
+            List<ExpenseDump> responseBodies = expenses.stream().map(ExpenseDump::build).toList();
+            return new ResponseEntity<>(responseBodies, HttpStatus.OK);
         }
 
         try {
-            return new ResponseEntity<>(List.of(expenseService.getOne(eventCode, participantName, id)), HttpStatus.OK);
+            return new ResponseEntity<>(List.of(
+                    ExpenseDump.build(expenseService.getOne(eventCode, participantName, id))
+            ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -65,12 +68,15 @@ public class ExpenseController {
      * creates a new Expense populated with data from body under an event with {eventCode}
      */
     @PostMapping("")
-    public ResponseEntity<Expense> createOne(
+    public ResponseEntity<ExpenseDump> createOne(
             @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseBody body
     ) {
         try {
-            return new ResponseEntity<>(expenseService.createOne(eventCode, body), HttpStatus.CREATED);
+            return new ResponseEntity<>(
+                    ExpenseDump.build(
+                            expenseService.createOne(eventCode, body)
+                    ), HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -82,13 +88,16 @@ public class ExpenseController {
      * event with code {eventCode}
      */
     @DeleteMapping("")
-    public ResponseEntity<Expense> deleteOne(
+    public ResponseEntity<ExpenseDump> deleteOne(
             @RequestParam("id") Long id,
             @RequestParam("participantName") String participantName,
             @PathVariable("eventCode") String eventCode
     ) {
         try {
-            return new ResponseEntity<>(expenseService.deleteOne(eventCode, participantName, id), HttpStatus.OK);
+            return new ResponseEntity<>(
+                    ExpenseDump.build(
+                            expenseService.deleteOne(eventCode, participantName, id)
+                    ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -1,11 +1,13 @@
 package server.api;
 
 import commons.Participant;
+import jakarta.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.api.request_bodies.ParticipantBody;
+import server.api.request_bodies.json_dump.ParticipantDump;
 import server.service.exceptions.NotFoundInDatabaseException;
 import server.service.ParticipantService;
 
@@ -27,14 +29,21 @@ public class ParticipantController {
      * if it is given a Participant belonging to a Event with {eventCode} and given name will be returned
      */
     @GetMapping
-    public ResponseEntity<List<Participant>> getAllOrOne(
+    public ResponseEntity<List<ParticipantDump>> getAllOrOne(
             @PathVariable(value = "eventCode") String eventCode,
             @RequestParam(value = "name", required = false) String name){
-        if (name == null)
-            return new ResponseEntity<>(participantService.getAll(eventCode), HttpStatus.OK);
+        if (name == null){
+            List<Participant> participants = participantService.getAll(eventCode);
+            List<ParticipantDump> participantResponseBodies = participants.stream().map(ParticipantDump::build).toList();
+            return new ResponseEntity<>(participantResponseBodies, HttpStatus.OK);
+        }
+
 
         try {
-            return new ResponseEntity<>(List.of(participantService.getOne(eventCode, name)), HttpStatus.OK);
+            return new ResponseEntity<>(List.of(
+                    ParticipantDump.build(
+                            participantService.getOne(eventCode, name)
+                    )), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -45,37 +54,43 @@ public class ParticipantController {
      * Creates a new Participant populated with the data in body
      */
     @PostMapping
-    public ResponseEntity<Participant> createOne(
+    public ResponseEntity<ParticipantDump> createOne(
             @PathVariable("eventCode") String eventCode,
             @RequestBody ParticipantBody body
     ){
         try{
-            return new ResponseEntity<>(participantService.createOne(eventCode, body), HttpStatus.CREATED);
+            return new ResponseEntity<>(ParticipantDump.build(
+                    participantService.createOne(eventCode, body)
+            ), HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("")
-    public ResponseEntity<Participant> deleteOne(
+    public ResponseEntity<ParticipantDump> deleteOne(
             @RequestParam("participantName") String participantName,
             @PathVariable("eventCode") String eventCode
     ){
         try{
-            return new ResponseEntity<>(participantService.deleteOne(eventCode, participantName), HttpStatus.OK);
+            return new ResponseEntity<>(ParticipantDump.build(
+                    participantService.deleteOne(eventCode, participantName)
+            ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("")
-    public ResponseEntity<Participant> updateOneById(
+    public ResponseEntity<ParticipantDump> updateOneById(
             @RequestParam("name") String name,
             @PathVariable("eventCode") String eventCode,
             @RequestBody ParticipantBody body
     ){
         try{
-            return new ResponseEntity<>(participantService.updateOne(eventCode, name, body), HttpStatus.OK);
+            return new ResponseEntity<>(ParticipantDump.build(
+                    participantService.updateOne(eventCode, name, body)
+            ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
