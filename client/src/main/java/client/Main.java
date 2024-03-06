@@ -100,7 +100,7 @@ public class Main extends Application {
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
         // adding elements to layout
-        layout.getChildren().addAll(startButton, cdButton, invitationButton,
+        layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton,
                 odButton,languageButton);
 
         // Scene

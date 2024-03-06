@@ -41,7 +41,9 @@ public class Debt {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Debt debt = (Debt) o;
-        return Double.compare(amount, debt.amount) == 0 && received == debt.received && Objects.equals(debtor, debt.debtor) && Objects.equals(creditor, debt.creditor);
+        return Double.compare(amount, debt.amount) == 0
+                && received == debt.received && Objects.equals(debtor, debt.debtor)
+                && Objects.equals(creditor, debt.creditor);
     }
 
     @Override
@@ -59,7 +61,8 @@ public class Debt {
                 '}';
     }
 
-    public List<Debt> SettleDebts(List<Participant> allParticipants, Event event, List<Expense> expenses) {
+    public List<Debt> settleDebts(List<Participant> allParticipants,
+                                  Event event, List<Expense> expenses) {
         Map<Participant, Double> debtMap = new HashMap<>();
 
         for (Expense expense : expenses) {
@@ -67,7 +70,7 @@ public class Debt {
             double totalExpense = expense.getPrice();
 
             // For this first draft, we are going to
-            List<Participant> participants = BasicGetParticipants(allParticipants, event);
+            List<Participant> participants = basicGetParticipants(allParticipants, event);
             double individualShare = totalExpense / participants.size();
 
             for (Participant participant : participants) {
@@ -88,7 +91,7 @@ public class Debt {
         return debts;
     }
 
-    private List<Participant> BasicGetParticipants(List<Participant> allParticipants, Event event) {
+    private List<Participant> basicGetParticipants(List<Participant> allParticipants, Event event) {
         List<Participant> participants = new ArrayList<>();
         for(Participant participant : allParticipants)
             if(participant.getEvent().equals(event))
@@ -96,7 +99,7 @@ public class Debt {
         return participants;
     }
 
-    private List<Participant> AdvancedGetParticipants(Expense expense) {
+    private List<Participant> advancedGetParticipants(Expense expense) {
         List<Participant> participants = new ArrayList<>();
         participants.add(expense.getPaidBy());
         // Logic to be added for participants
