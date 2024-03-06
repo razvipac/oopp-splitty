@@ -1,4 +1,4 @@
-package server.api.request_bodies;
+package server.api.pojo.request_body;
 
 /**
  * The structure of the request body for the Participant object
@@ -8,7 +8,7 @@ package server.api.request_bodies;
  * @param iban iban number of the participant
  * @param bic bic number of the participant
  */
-public record ParticipantBody(
+public record ParticipantRequestBody(
         String name,
         String email,
         String iban,

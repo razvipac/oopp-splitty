@@ -1,4 +1,4 @@
-package server.api.request_bodies;
+package server.api.pojo.request_body;
 
 /**
  * Structure of the request body for Create/Update operations on expenses
@@ -7,7 +7,7 @@ package server.api.request_bodies;
  * @param item item for which a person paid
  * @param participantName name of the participant who paid
  */
-public record ExpenseBody(
+public record ExpenseRequestBody(
         Integer price,
         String item,
         String participantName

@@ -3,7 +3,7 @@ package server.service;
 import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.api.request_bodies.ParticipantBody;
+import server.api.pojo.request_body.ParticipantRequestBody;
 import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -60,7 +60,7 @@ public class ParticipantService {
      * @throws NotFoundInDatabaseException if a event with the given eventCode is not present in the database
      */
     public Participant createOne(String eventCode,
-                                 ParticipantBody body) throws NotFoundInDatabaseException {
+                                 ParticipantRequestBody body) throws NotFoundInDatabaseException {
         Event event = eventService.getOne(eventCode);
 
         Participant newParticipant = new Participant(
@@ -86,7 +86,7 @@ public class ParticipantService {
         return found;
     }
 
-    public Participant updateOne(String eventCode,String name, ParticipantBody body) throws NotFoundInDatabaseException {
+    public Participant updateOne(String eventCode,String name, ParticipantRequestBody body) throws NotFoundInDatabaseException {
         Participant found = getOne(eventCode, body.name());
         // if not found exception will be thrown
         found.setEmail(body.email());

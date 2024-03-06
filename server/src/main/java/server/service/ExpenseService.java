@@ -5,7 +5,7 @@ import commons.ExpenseId;
 import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.api.request_bodies.ExpenseBody;
+import server.api.pojo.request_body.ExpenseRequestBody;
 import server.database.ExpenseRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -71,7 +71,7 @@ public class ExpenseService {
      * @throws NotFoundInDatabaseException if a owner of the Expense or the specified Event does not exist
      */
     public Expense createOne(String eventCode,
-                             ExpenseBody body) throws NotFoundInDatabaseException {
+                             ExpenseRequestBody body) throws NotFoundInDatabaseException {
 
         Participant paidBy = participantService.getOne(eventCode, body.participantName());
 
@@ -110,7 +110,7 @@ public class ExpenseService {
      * @return the updated expense object
      * @throws NotFoundInDatabaseException if a owner of the Expense or the specified Event does not exist
      */
-    public Expense updateOne(String eventCode, Long id, ExpenseBody body) throws NotFoundInDatabaseException {
+    public Expense updateOne(String eventCode, Long id, ExpenseRequestBody body) throws NotFoundInDatabaseException {
         Expense found = getOne(eventCode, body.participantName(), id);
         // if not found exception will be thrown
 
