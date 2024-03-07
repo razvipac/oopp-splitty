@@ -1,9 +1,6 @@
 package client;
 
-public class UserPreferences {
-    public enum Language {
-        ENGLISH, DUTCH
-    }
+public class UserPreferences extends LanguageOption {
     //in case of future preferences, add them here
     private Language preferredLanguage;
 
