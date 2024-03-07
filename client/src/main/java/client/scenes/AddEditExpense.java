@@ -70,6 +70,7 @@ public class AddEditExpense {
 
         // Labels and fields for the expense details
         Label whoPaidLabel = new Label("Who paid?");
+        whoPaidLabel.setFont(Font.font("Arial", FontWeight.BOLD , 12));
         ComboBox<String> whoPaidDropdown = new ComboBox<>();
         for (Expense expense : addEditExpenseList) {
             String name = expense.getPaidBy().getName();
@@ -79,9 +80,11 @@ public class AddEditExpense {
 
         Label whatForLabel = new Label("What for?");
         TextField whatForField = new TextField();
+        whatForField.setMaxSize(300, 20);
 
         Label howMuchLabel = new Label("How much?");
         TextField howMuchField = new TextField();
+        howMuchField.setMaxSize(250, 20);
 
         Label whenLabel = new Label("When?");
         DatePicker whenPicker = new DatePicker();
@@ -104,13 +107,10 @@ public class AddEditExpense {
             checkboxContainer.getChildren().add(participantCheckbox);
         }
 
-//        CheckBox johnCheckbox = new CheckBox("John");
-//        CheckBox chrisCheckbox = new CheckBox("Chris");
-//        CheckBox annaCheckbox = new CheckBox("Anna");
-//        CheckBox davidCheckbox = new CheckBox("David");
 
         Label expenseTypeLabel = new Label("Expense Type");
         TextField expenseTypeField = new TextField();
+        expenseTypeField.setMaxSize(300, 20);
 
         // Buttons for abort and add
         Button abortButton = new Button("Abort");
