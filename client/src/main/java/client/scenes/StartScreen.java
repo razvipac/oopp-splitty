@@ -1,7 +1,7 @@
 package client.scenes;
 
-
 import client.Main;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,11 +14,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import commons.Event;
+import client.utils.EventUtils;
 
 public class StartScreen {
 
+    private EventUtils server = new EventUtils();
+
     private Scene scene;
     private Main main;
+    private EventOverview eventOverview = new EventOverview(main);
 
     /**
      * Constructor for the start screen that calls the method to create the GUI
@@ -65,8 +70,10 @@ public class StartScreen {
         Button createButton = new Button("Create");
         createButton.setFont(Font.font("Arial"));
         createButton.setOnAction(e -> {
-            // create the event (not implemented)
-            System.out.println("Event created: " + createEvent.getText());
+            String eventName = createEvent.getText();
+            Event event = server.addEvent(eventName);
+            System.out.println(event.toString());
+            main.getPrimaryStage().setScene(eventOverview.getScene());
         });
 
         Button joinButton = new Button("Join");
