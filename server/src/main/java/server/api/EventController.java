@@ -40,6 +40,9 @@ public class EventController {
     /**
      * POST /api/v1/?name={name}
      * Creates a new Event with name {name}
+     *
+     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/event
+     * with WSAction CREATED
      */
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestParam("name") String name){

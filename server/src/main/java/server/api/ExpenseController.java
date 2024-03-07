@@ -4,15 +4,12 @@ import commons.Expense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
 import server.api.pojo.request_body.ExpenseRequestBody;
+import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.WSAction;
 import server.api.pojo.response_body.WSWrapperResponseBody;
-import server.api.pojo.response_body.ExpenseResponseBody;
 import server.service.ExpenseService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -72,6 +69,9 @@ public class ExpenseController {
     /**
      * POST api/v1/{eventCode}/expense with request body in format of ExpenseRequestBody
      * creates a new Expense populated with data from body under an event with {eventCode}
+     *
+     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/{eventCode}/expense
+     * with WSAction CREATED
      */
     @PostMapping("")
     public ResponseEntity<ExpenseResponseBody> createOne(
@@ -99,6 +99,9 @@ public class ExpenseController {
      * DELETE api/v1/{eventCode}/expense?id={id}&participantName={name}
      * deletes expense belonging to a Participant with name {name} and id {id} from
      * event with code {eventCode}
+     *
+     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/{eventCode}/expense
+     * with WSAction DELETED
      */
     @DeleteMapping("")
     public ResponseEntity<ExpenseResponseBody> deleteOne(
@@ -127,6 +130,9 @@ public class ExpenseController {
      * PUT api/v1/{eventCode}/expense?id={id} with request body in format of ExpenseRequestBody
      * Updates the data of expense object with id {id} under event with code {eventCode}
      * Overwrites data with that in passed body, YOU CANNOT CHANGE THE NAME OF THE PARTICIPANT
+     *
+     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/{eventCode}/expense
+     * with WSAction MODIFIED
      */
     @PutMapping("")
     public ResponseEntity<ExpenseResponseBody> updateOneById(

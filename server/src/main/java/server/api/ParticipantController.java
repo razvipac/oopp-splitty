@@ -4,10 +4,7 @@ import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
 import server.api.pojo.request_body.ParticipantRequestBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
@@ -70,6 +67,9 @@ public class ParticipantController {
     /**
      * POST /api/v1/{eventCode}/participant with body in ParticipantRequestBody format
      * Creates a new Participant populated with the data in body
+     *
+     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/{eventCode}/participant
+     * with WSAction CREATED
      */
     @PostMapping
     public ResponseEntity<ParticipantResponseBody> createOne(
