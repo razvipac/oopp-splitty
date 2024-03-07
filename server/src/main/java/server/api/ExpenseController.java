@@ -4,7 +4,10 @@ import commons.Expense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
 import server.api.pojo.request_body.ExpenseRequestBody;
 import server.api.pojo.response_body.WSAction;
@@ -63,6 +66,16 @@ public class ExpenseController {
         }
     }
 
+    @MessageMapping("v1/{eventCode}/expense")
+    @SendToUser("/api/websocket/v1/channel/{eventCode}/expense")
+    public WSWrapperResponseBody<List<ExpenseResponseBody>> getAll(
+            @DestinationVariable("eventCode") String eventCode
+    ){
+        List<Expense> expenses = expenseService.getAllInEvent(eventCode);
+        List<ExpenseResponseBody> responseBodies = expenses.stream().map(ExpenseResponseBody::build).toList();
+        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
+    }
+
     /**
      * POST api/v1/{eventCode}/expense with request body in format of ExpenseRequestBody
      * creates a new Expense populated with data from body under an event with {eventCode}
@@ -73,10 +86,17 @@ public class ExpenseController {
             @RequestBody ExpenseRequestBody body
     ) {
         try {
-            return new ResponseEntity<>(
-                    ExpenseResponseBody.build(
-                            expenseService.createOne(eventCode, body)
-                    ), HttpStatus.CREATED);
+            Expense expense = expenseService.createOne(eventCode, body);
+            ExpenseResponseBody responseBody = ExpenseResponseBody.build(expense);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/expense",
+                    new WSWrapperResponseBody<>(
+                            WSAction.CREATED,
+                            responseBody
+                    ));
+
+            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -94,10 +114,17 @@ public class ExpenseController {
             @PathVariable("eventCode") String eventCode
     ) {
         try {
-            return new ResponseEntity<>(
-                    ExpenseResponseBody.build(
-                            expenseService.deleteOne(eventCode, participantName, id)
-                    ), HttpStatus.OK);
+            Expense expense = expenseService.deleteOne(eventCode, participantName, id);
+            ExpenseResponseBody responseBody = ExpenseResponseBody.build(expense);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/expense",
+                    new WSWrapperResponseBody<>(
+                            WSAction.DELETED,
+                            responseBody
+                    ));
+
+            return new ResponseEntity<>(responseBody, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -119,7 +146,7 @@ public class ExpenseController {
             ExpenseResponseBody response = ExpenseResponseBody.build(updated);
 
             simpMessagingTemplate.convertAndSend(
-                    "/topic/" + eventCode + "/expense",
+                    "/api/websocket/v1/channel/" + eventCode + "/expense",
                     new WSWrapperResponseBody<>(
                             WSAction.MODIFIED,
                             response
