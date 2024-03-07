@@ -48,7 +48,7 @@ public class EventController {
     public ResponseEntity<Event> createEvent(@RequestParam("name") String name){
         Event event = eventService.createOne(name);
 
-        simpMessagingTemplate.convertAndSend("api/websocket/v1/channel/event",
+        simpMessagingTemplate.convertAndSend("/api/websocket/v1/channel/event",
                 new WSWrapperResponseBody<>(
                         WSAction.CREATED,
                         event

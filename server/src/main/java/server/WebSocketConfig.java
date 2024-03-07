@@ -12,7 +12,7 @@ public class  WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("api/websocket/v1/channel");
+        config.enableSimpleBroker("/api/websocket/v1/channel");
         config.setApplicationDestinationPrefixes("/api/websocket");
     }
 
