@@ -166,7 +166,7 @@ public class EventOverview {
     }
 
     /**
-     * Gets HBox radioSelectBox, which includes a ToggleGroup with the following three radio buttons:
+     * Gets HBox radioSelectBox, which includes a ToggleGroup with the following radio buttons:
      * 1) All expenses
      * 2) Expenses from [selectedParticipant]
      * 3) Expenses including [selectedParticipant]
