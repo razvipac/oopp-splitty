@@ -101,6 +101,12 @@ public class AddEditExpense {
         layout.add(howMuchLabel, 0, 3);
         layout.add(howMuchField, 1, 3);
 
+        Label currencyLabel = new Label("Currency");
+        ComboBox<String> currencyDropdown = new ComboBox<>();
+        currencyDropdown.getItems().addAll("USD", "EUR", "GBP");
+        layout.add(currencyLabel, 2, 3);
+        layout.add(currencyDropdown, 3, 3);
+
         Label whenLabel = new Label("When?");
         DatePicker whenPicker = new DatePicker();
         layout.add(whenLabel, 0, 4);
