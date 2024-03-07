@@ -1,5 +1,9 @@
 package client.scenes;
 
+import commons.Event;
+import commons.Expense;
+import commons.Participant;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,8 +13,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class AddEditExpense {
     private Scene scene;
+
+    private ArrayList<Expense> addEditExpenseList;
 
     /**
      * Getter for the scene
@@ -24,6 +34,31 @@ public class AddEditExpense {
      * Constructor for the AddEditExpense that calls the method to create the scene
      */
     public AddEditExpense() {
+        // Data for testing purposes
+        Participant john = new Participant("John",
+                new Event("Abby's birthday party", "code1",
+                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                "John@mail.com", "1234", "1234");
+        Participant david = new Participant("David",
+                new Event("Davidson's birthday party", "code2",
+                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                "David@mail.com", "2341", "2341");
+        Participant chris = new Participant("Chris",
+                new Event("Stoffer's birthday party", "code3",
+                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                "Chris@mail.com", "3412", "3412");
+        Participant anna = new Participant("Anna",
+                new Event("Belle's birthday party", "code4",
+                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                "Anna@mail.com", "4123", "4123");
+
+        addEditExpenseList = new ArrayList<>();
+        addEditExpenseList.add(new Expense(123, "Food", john));
+        addEditExpenseList.add(new Expense(34, "Drinks", chris));
+        addEditExpenseList.add(new Expense(345, "Cake", anna));
+        addEditExpenseList.add(new Expense(567, "Candles", david));
+
+
         createSceneAddEditExpense();
     }
 
@@ -38,6 +73,7 @@ public class AddEditExpense {
         // Labels and fields for the expense details
         Label whoPaidLabel = new Label("Who paid?");
         ComboBox<String> whoPaidDropdown = new ComboBox<>();
+
 
         Label whatForLabel = new Label("What for?");
         TextField whatForField = new TextField();
