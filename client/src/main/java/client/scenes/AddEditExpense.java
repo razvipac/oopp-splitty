@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -68,26 +69,38 @@ public class AddEditExpense {
         Text title = new Text("Add/Edit Expense");
         title.setFont(Font.font("Arial", FontWeight.BOLD , 20));
 
-        // Labels and fields for the expense details
+    // GridPane for the layout
+        GridPane layout = new GridPane();
+        layout.setHgap(10);
+        layout.setVgap(10);
+        layout.setPadding(new Insets(20, 20, 20, 20));
+        layout.add(title, 0, 0);
+
+    // Labels and fields for the expense details
         Label whoPaidLabel = new Label("Who paid?");
-        whoPaidLabel.setFont(Font.font("Arial", FontWeight.BOLD , 12));
         ComboBox<String> whoPaidDropdown = new ComboBox<>();
+
         for (Expense expense : addEditExpenseList) {
             String name = expense.getPaidBy().getName();
             whoPaidDropdown.getItems().add(name);
         }
-
+        layout.add(whoPaidLabel, 0, 1);
+        layout.add(whoPaidDropdown, 1, 1);
 
         Label whatForLabel = new Label("What for?");
         TextField whatForField = new TextField();
-        whatForField.setMaxSize(300, 20);
+        layout.add(whatForLabel, 0, 2);
+        layout.add(whatForField, 1, 2);
 
         Label howMuchLabel = new Label("How much?");
         TextField howMuchField = new TextField();
-        howMuchField.setMaxSize(250, 20);
+        layout.add(howMuchLabel, 0, 3);
+        layout.add(howMuchField, 1, 3);
 
         Label whenLabel = new Label("When?");
         DatePicker whenPicker = new DatePicker();
+        layout.add(whenLabel, 0, 4);
+        layout.add(whenPicker, 1, 4);
 
         Label howToSplitLabel = new Label("How to Split?");
         RadioButton equallyButton = new RadioButton("Equally Between Everybody");
@@ -95,41 +108,32 @@ public class AddEditExpense {
         ToggleGroup group = new ToggleGroup();
         equallyButton.setToggleGroup(group);
         somePeopleButton.setToggleGroup(group);
-
+        layout.add(howToSplitLabel, 0, 5);
+        layout.add(equallyButton, 1, 5);
+        layout.add(somePeopleButton, 1, 6);
 
         VBox checkboxContainer = new VBox();
         checkboxContainer.setAlignment(Pos.CENTER);
-
         for (Expense expense : addEditExpenseList) {
             String name = expense.getPaidBy().getName();
             CheckBox participantCheckbox = new CheckBox(name);
             participantCheckbox.setPadding(new Insets(2, 2, 2, 2));
             checkboxContainer.getChildren().add(participantCheckbox);
         }
-
+        layout.add(checkboxContainer, 1, 7);
 
         Label expenseTypeLabel = new Label("Expense Type");
         TextField expenseTypeField = new TextField();
-        expenseTypeField.setMaxSize(300, 20);
+        layout.add(expenseTypeLabel, 0, 8);
+        layout.add(expenseTypeField, 1, 8);
 
         // Buttons for abort and add
         Button abortButton = new Button("Abort");
         Button addButton = new Button("Add");
-
-        // layout
-        VBox layout = new VBox();
-        layout.setSpacing(10);
-        layout.setPadding(new Insets(20, 20, 20, 20));
-        layout.getChildren().addAll(title, whoPaidLabel, whoPaidDropdown,
-                whatForLabel, whatForField,
-                howMuchLabel, howMuchField, whenLabel, whenPicker, howToSplitLabel, equallyButton,
-                somePeopleButton, checkboxContainer,
-                expenseTypeLabel, expenseTypeField, abortButton, addButton);
+        layout.add(abortButton, 0, 9);
+        layout.add(addButton, 1, 9);
         layout.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout, 270, 300);
-
-        layout.prefWidthProperty().bind(scene.widthProperty());
-        layout.prefHeightProperty().bind(scene.heightProperty());
+        scene = new Scene(layout, 500, 600);
     }
 }
