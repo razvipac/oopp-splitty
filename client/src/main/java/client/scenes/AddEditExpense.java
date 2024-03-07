@@ -3,7 +3,6 @@ package client.scenes;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,7 +14,6 @@ import javafx.scene.text.Text;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class AddEditExpense {
     private Scene scene;
@@ -73,6 +71,10 @@ public class AddEditExpense {
         // Labels and fields for the expense details
         Label whoPaidLabel = new Label("Who paid?");
         ComboBox<String> whoPaidDropdown = new ComboBox<>();
+        for (Expense expense : addEditExpenseList) {
+            String name = expense.getPaidBy().getName();
+            whoPaidDropdown.getItems().add(name);
+        }
 
 
         Label whatForLabel = new Label("What for?");
@@ -91,10 +93,21 @@ public class AddEditExpense {
         equallyButton.setToggleGroup(group);
         somePeopleButton.setToggleGroup(group);
 
-        CheckBox johnCheckbox = new CheckBox("John");
-        CheckBox chrisCheckbox = new CheckBox("Chris");
-        CheckBox annaCheckbox = new CheckBox("Anna");
-        CheckBox davidCheckbox = new CheckBox("David");
+
+        VBox checkboxContainer = new VBox();
+        checkboxContainer.setAlignment(Pos.CENTER);
+
+        for (Expense expense : addEditExpenseList) {
+            String name = expense.getPaidBy().getName();
+            CheckBox participantCheckbox = new CheckBox(name);
+            participantCheckbox.setPadding(new Insets(2, 2, 2, 2));
+            checkboxContainer.getChildren().add(participantCheckbox);
+        }
+
+//        CheckBox johnCheckbox = new CheckBox("John");
+//        CheckBox chrisCheckbox = new CheckBox("Chris");
+//        CheckBox annaCheckbox = new CheckBox("Anna");
+//        CheckBox davidCheckbox = new CheckBox("David");
 
         Label expenseTypeLabel = new Label("Expense Type");
         TextField expenseTypeField = new TextField();
@@ -110,7 +123,7 @@ public class AddEditExpense {
         layout.getChildren().addAll(title, whoPaidLabel, whoPaidDropdown,
                 whatForLabel, whatForField,
                 howMuchLabel, howMuchField, whenLabel, whenPicker, howToSplitLabel, equallyButton,
-                somePeopleButton, johnCheckbox, chrisCheckbox, annaCheckbox, davidCheckbox,
+                somePeopleButton, checkboxContainer,
                 expenseTypeLabel, expenseTypeField, abortButton, addButton);
         layout.setAlignment(Pos.CENTER);
 
