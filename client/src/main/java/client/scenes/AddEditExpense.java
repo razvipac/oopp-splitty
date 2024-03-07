@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 
 public class AddEditExpense {
     private Scene scene;
+    private Main main;
 
     private ArrayList<Expense> addEditExpenseList;
 
@@ -31,8 +33,10 @@ public class AddEditExpense {
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param main scene of the main class
      */
-    public AddEditExpense() {
+    public AddEditExpense(Main main) {
+        this.main = main;
         // Data for testing purposes
         Participant john = new Participant("John",
                 new Event("Abby's birthday party", "code1",
@@ -133,6 +137,10 @@ public class AddEditExpense {
         layout.add(abortButton, 0, 9);
         layout.add(addButton, 1, 9);
         layout.setAlignment(Pos.CENTER);
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        layout.add(backButton, 0, 10);
 
         scene = new Scene(layout, 500, 600);
     }
