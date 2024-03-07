@@ -43,7 +43,7 @@ public class Main extends Application {
     private final ContactDetails cd = new ContactDetails(this);
     private final EventOverview eo = new EventOverview(this);
     private final StartScreen sc = new StartScreen(this);
-    private final AddEditExpense aed = new AddEditExpense();
+    private final AddEditExpense aed = new AddEditExpense(this);
 
     private Stage primaryStage; // added this line
     private Scene mainScene; // added this line
