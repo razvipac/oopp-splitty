@@ -4,7 +4,12 @@ import commons.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
+import server.api.pojo.response_body.WSAction;
+import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.service.EventService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -14,9 +19,12 @@ import java.util.List;
 @RequestMapping("api/v1/")
 public class EventController {
     private final EventService eventService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public EventController(@Autowired EventService eventService) {
+    public EventController(@Autowired EventService eventService,
+                           @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.eventService = eventService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -35,7 +43,15 @@ public class EventController {
      */
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestParam("name") String name){
-        return new ResponseEntity<>(eventService.createOne(name), HttpStatus.CREATED);
+        Event event = eventService.createOne(name);
+
+        simpMessagingTemplate.convertAndSend("api/websocket/v1/channel/event",
+                new WSWrapperResponseBody<>(
+                        WSAction.CREATED,
+                        event
+                ));
+
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
     /**
