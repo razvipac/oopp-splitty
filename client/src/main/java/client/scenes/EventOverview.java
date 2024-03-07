@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 public class EventOverview {
 
-    // JavaFX Scene
     private Scene scene;
 
     private Main main;
@@ -73,42 +72,36 @@ public class EventOverview {
      * Creates the scene.
      */
     public void createScene() {
-        // Main layout
         VBox layout = new VBox(5);
         layout.setPadding(new Insets(10));
 
         // eventBox, includes Event Name and Send Invite button
         HBox eventBox = getEventBox();
+
         // participantsBox, includes header and buttons to edit/add participant
         HBox participantsBox = getParticipantsBox();
-        // Text listing the names of the participants
         Text participantNames = new Text(participantsToString());
-        // Expenses header
         Text expensesHeader = new Text("Expenses");
         expensesHeader.setFont(h2);
-        // 'Add Expense' button
-        // TODO: button is non-functional
+        // TODO: add expense button is non-functional
         Button expenseAddButton = new Button("Add Expense");
-        // radioSelectBox, includes radio button selection for currentView
+
         HBox radioSelectBox = getRadioSelectBox();
-        // participantDropdown, ComboBox that sets selectedParticipant
         ComboBox<String> participantDropdown = getParticipantDropdown();
+
         // expensesScroller, which includes all expense items in arraylist expenses
         ScrollPane expensesScroller = getExpensesScroller();
-        // 'Settle Debts' button
         // TODO: button is non-functional
         Button settleDebtsButton = new Button("Settle Debts");
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
 
-        // add all elements to layout
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesHeader, expenseAddButton,
                 participantDropdown, radioSelectBox, expensesScroller,
                 settleDebtsButton, backButton);
 
-        // Scene
         scene = new Scene(layout, 350, 380);
     }
 
@@ -120,14 +113,12 @@ public class EventOverview {
         HBox eventBox = new HBox(5);
 
         // TODO: Event name is hardcoded
-        // Event Name
         Text eventName = new Text("Event Name");
         eventName.setFont(h1);
-        // Send Invite button
+
         // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
 
-        // Add to eventBox
         eventBox.getChildren().addAll(eventName, sendInviteButton);
 
         return eventBox;
@@ -141,17 +132,15 @@ public class EventOverview {
     private HBox getParticipantsBox() {
         HBox participantsBox = new HBox(5);
 
-        // Participants header
         Text participantsHeader = new Text("Participants");
         participantsHeader.setFont(h2);
-        // Edit Participant button
+
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
-        // Add Participant button
+
         // TODO: Button is non-functional
         Button participantAddButton = new Button("Add");
 
-        // Add to participantBox
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);
 
@@ -186,7 +175,6 @@ public class EventOverview {
     private HBox getRadioSelectBox() {
         HBox radioSelectBox = new HBox(5);
 
-        // Toggle Group chooseView with three radio buttons
         chooseView = new ToggleGroup();
         // 'All expenses' radio button
         allRadio = new RadioButton("All");
@@ -199,7 +187,6 @@ public class EventOverview {
         includingRadio = new RadioButton("Including " + selectedParticipant);
         includingRadio.setToggleGroup(chooseView);
 
-        // Add to radioSelectBox
         radioSelectBox.getChildren().addAll(allRadio, fromRadio, includingRadio);
 
         return radioSelectBox;
@@ -235,7 +222,6 @@ public class EventOverview {
      * @return ScrollPane expensesScroller
      */
     private ScrollPane getExpensesScroller() {
-        // The scrollable pane
         ScrollPane expensesScroller = new ScrollPane();
         expensesScroller.setPrefHeight(140);
 
@@ -317,18 +303,19 @@ public class EventOverview {
             this.setVgap(2);
 
             // TODO: implement this for actual Expense values
-            // Date of expense, hardcoded
             Text date = new Text("01-01-2024");
             this.add(date, 0, 0, 1, 2);
-            // Participant tied to expense
+
             Text expenseInfo = new Text(expense + " paid 99 Euro for Item");
             this.add(expenseInfo, 1, 0);
-            // Expense includes ..., hardcoded to 'all'
+
+            // TODO: 'expense includes ...' is currently hardcoded to 'all'
             Text expenseIncludes = new Text("(all)");
             this.add(expenseIncludes, 1, 1);
-            // Edit Expense button
+
             Button expenseEditButton = new Button("Edit");
             this.add(expenseEditButton, 2, 0, 1, 2);
         }
+
     }
 }
