@@ -4,11 +4,17 @@ import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
 import server.api.pojo.request_body.ParticipantRequestBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
-import server.service.exceptions.NotFoundInDatabaseException;
+import server.api.pojo.response_body.WSAction;
+import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.service.ParticipantService;
+import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.List;
 
@@ -16,9 +22,12 @@ import java.util.List;
 @RequestMapping("/api/v1/{eventCode}/participant")
 public class ParticipantController {
     private final ParticipantService participantService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public ParticipantController(@Autowired ParticipantService participantService) {
+    public ParticipantController(@Autowired ParticipantService participantService,
+                                 @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.participantService = participantService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -48,6 +57,16 @@ public class ParticipantController {
         }
     }
 
+    @MessageMapping("v1/{eventCode}/participant")
+    @SendToUser("/api/websocket/v1/channel/{eventCode}/participant")
+    public WSWrapperResponseBody<List<ParticipantResponseBody>> getAll(
+            @DestinationVariable("eventCode") String eventCode
+    ){
+        List<Participant> participants = participantService.getAll(eventCode);
+        List<ParticipantResponseBody> responseBodies = participants.stream().map(ParticipantResponseBody::build).toList();
+        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
+    }
+
     /**
      * POST /api/v1/{eventCode}/participant with body in ParticipantRequestBody format
      * Creates a new Participant populated with the data in body
@@ -58,9 +77,17 @@ public class ParticipantController {
             @RequestBody ParticipantRequestBody body
     ){
         try{
-            return new ResponseEntity<>(ParticipantResponseBody.build(
-                    participantService.createOne(eventCode, body)
-            ), HttpStatus.CREATED);
+            Participant participant = participantService.createOne(eventCode, body);
+            ParticipantResponseBody responseBody = ParticipantResponseBody.build(participant);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/participant",
+                    new WSWrapperResponseBody<>(
+                            WSAction.CREATED,
+                            responseBody
+                    ));
+
+            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
