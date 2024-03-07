@@ -31,13 +31,6 @@ public class ExpenseController {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-//    @GetMapping("")
-//    public ResponseEntity<List<Expense>> getAllInEvent(
-//            @PathVariable("eventCode") String eventCode
-//    ){
-//        return new ResponseEntity<>(expenseService.getAllInEvent(eventCode), HttpStatus.OK);
-//    }
-
     /**
      * GET api/v1/{eventCode}/expense?id={id}&participantName={name}
      * id and participantName are optional
@@ -65,16 +58,16 @@ public class ExpenseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    @MessageMapping("v1/{eventCode}/expense")
-    @SendToUser("/api/websocket/v1/channel/{eventCode}/expense")
-    public WSWrapperResponseBody<List<ExpenseResponseBody>> getAll(
-            @DestinationVariable("eventCode") String eventCode
-    ){
-        List<Expense> expenses = expenseService.getAllInEvent(eventCode);
-        List<ExpenseResponseBody> responseBodies = expenses.stream().map(ExpenseResponseBody::build).toList();
-        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
-    }
+//
+//    @MessageMapping("v1/{eventCode}/expense")
+//    @SendToUser("/api/websocket/v1/channel/{eventCode}/expense")
+//    public WSWrapperResponseBody<List<ExpenseResponseBody>> getAll(
+//            @DestinationVariable("eventCode") String eventCode
+//    ){
+//        List<Expense> expenses = expenseService.getAllInEvent(eventCode);
+//        List<ExpenseResponseBody> responseBodies = expenses.stream().map(ExpenseResponseBody::build).toList();
+//        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
+//    }
 
     /**
      * POST api/v1/{eventCode}/expense with request body in format of ExpenseRequestBody

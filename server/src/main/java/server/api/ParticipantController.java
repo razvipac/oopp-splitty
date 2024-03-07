@@ -57,15 +57,15 @@ public class ParticipantController {
         }
     }
 
-    @MessageMapping("v1/{eventCode}/participant")
-    @SendToUser("/api/websocket/v1/channel/{eventCode}/participant")
-    public WSWrapperResponseBody<List<ParticipantResponseBody>> getAll(
-            @DestinationVariable("eventCode") String eventCode
-    ){
-        List<Participant> participants = participantService.getAll(eventCode);
-        List<ParticipantResponseBody> responseBodies = participants.stream().map(ParticipantResponseBody::build).toList();
-        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
-    }
+//    @MessageMapping("v1/{eventCode}/participant")
+//    @SendToUser("/api/websocket/v1/channel/{eventCode}/participant")
+//    public WSWrapperResponseBody<List<ParticipantResponseBody>> getAll(
+//            @DestinationVariable("eventCode") String eventCode
+//    ){
+//        List<Participant> participants = participantService.getAll(eventCode);
+//        List<ParticipantResponseBody> responseBodies = participants.stream().map(ParticipantResponseBody::build).toList();
+//        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
+//    }
 
     /**
      * POST /api/v1/{eventCode}/participant with body in ParticipantRequestBody format
