@@ -43,7 +43,7 @@ public class Main extends Application {
     private final ContactDetails cd = new ContactDetails(this);
     private final EventOverview eo = new EventOverview(this);
     private final StartScreen sc = new StartScreen(this);
-    private final AddEditExpense aed = new AddEditExpense();
+    private final AddEditExpense aed = new AddEditExpense(this);
 
     private Stage primaryStage; // added this line
     private Scene mainScene; // added this line
@@ -101,7 +101,7 @@ public class Main extends Application {
         layout.setPadding(new Insets(10));
         // adding elements to layout
         layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton,
-                odButton,languageButton);
+                odButton,languageButton, addExpenseButton);
 
         // Scene
         mainScene = new Scene(layout, 400, 300); // changed this line
