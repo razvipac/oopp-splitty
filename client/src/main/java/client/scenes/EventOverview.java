@@ -67,11 +67,12 @@ public class EventOverview {
         eventName = event.getName();
         // Participants for testing purposes
         participants = server.getParticipants(event.getCode());
-        // participants.add(new Participant("test", event, "test", "test", "test"));
+        Participant test = new Participant("test", event, "test", "test", "test");
+        participants.add(test);
 
         // Expenses for testing purposes
         expenses = new ArrayList<>();
-//        expenses.add("Chris");
+        expenses.add(new Expense(10, "Drinks", test));
 //        expenses.add("John");
 //        expenses.add("John");
 //        expenses.add("Anna");
@@ -273,10 +274,10 @@ public class EventOverview {
         // The VBox that actually contains all ExpenseItem objects
         expensesContainer = new VBox(5);
         // for every expense, add ExpenseItem to expensesContainer
-//        for(Expense expense : expenses) {
-//            ExpenseItem item = new ExpenseItem(expense);
-//            expensesContainer.getChildren().add(item);
-//        }
+        for(Expense expense : expenses) {
+            ExpenseItem item = new ExpenseItem(expense);
+            expensesContainer.getChildren().add(item);
+        }
 
         // Set the content of the scrollable pane to the container
         expensesScroller.setContent(expensesContainer);
@@ -312,7 +313,7 @@ public class EventOverview {
                 }
                 case FROM -> {
                     ExpenseItem e = (ExpenseItem) item;
-                    boolean isMatchingParticipant = e.expense.equals(selectedParticipant);
+                    boolean isMatchingParticipant = e.paidBy.equals(selectedParticipant);
                     item.setVisible(isMatchingParticipant);
                     item.setManaged(isMatchingParticipant);
                 }
@@ -333,28 +334,39 @@ public class EventOverview {
      */
     public static class ExpenseItem extends GridPane {
 
-        // the participant tied to the Expense
-        public String expense;
+        private Expense expense;
+        private int price;
+        private String item;
+        private Participant paidBy;
+        private String paidByName;
 
         /**
          * Creates ExpenseItem, a GridPane containing an Expense's date, participant,
          * and an 'Edit' button.
-         * @param expense the participant tied to the Expense
+         * @param expense the expense to create an item for
          */
-        public ExpenseItem(String expense) {
+        public ExpenseItem(Expense expense) {
             this.expense = expense;
+            price = expense.getPrice();
+            item = expense.getItem();
+            paidBy = expense.getPaidBy();
+            paidByName = paidBy.getName();
 
+            createItemBox();
+        }
+
+        private void createItemBox() {
             this.setHgap(12);
             this.setVgap(2);
 
-            // TODO: implement this for actual Expense values
+            // TODO: implement this for actual Expense date
             Text date = new Text("01-01-2024");
             this.add(date, 0, 0, 1, 2);
 
-            Text expenseInfo = new Text(expense + " paid 99 Euro for Item");
+            Text expenseInfo = new Text(paidByName + " paid " + price + " Euro for " + item);
             this.add(expenseInfo, 1, 0);
 
-            // TODO: 'expense includes ...' is currently hardcoded to 'all'
+            // TODO: 'paidBy includes ...' is currently hardcoded to 'all'
             Text expenseIncludes = new Text("(all)");
             this.add(expenseIncludes, 1, 1);
 
