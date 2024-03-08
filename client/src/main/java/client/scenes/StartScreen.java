@@ -17,13 +17,18 @@ import javafx.scene.text.Text;
 import commons.Event;
 import client.utils.EventUtils;
 
+import java.util.List;
+import java.util.Optional;
+
 public class StartScreen {
 
     private EventUtils server = new EventUtils();
 
     private Scene scene;
     private Main main;
-    private EventOverview eventOverview = new EventOverview(main);
+    private EventOverview eventOverview;
+
+    private List<Event> events;
 
     /**
      * Constructor for the start screen that calls the method to create the GUI
@@ -31,6 +36,8 @@ public class StartScreen {
      */
     public StartScreen(Main main) {
         this.main = main;
+        events = server.getAllEvents();
+
         createSceneStartScreen();
     }
 
@@ -73,14 +80,21 @@ public class StartScreen {
             String eventName = createEvent.getText();
             Event event = server.addEvent(eventName);
             System.out.println(event.toString());
+            eventOverview = new EventOverview(main, event);
             main.getPrimaryStage().setScene(eventOverview.getScene());
         });
 
         Button joinButton = new Button("Join");
         joinButton.setFont(Font.font("Arial"));
         joinButton.setOnAction(e -> {
-            // join the event (not implemented)
-            System.out.println("Event joined: " + joinEvent.getText());
+            String code = joinEvent.getText();
+            Optional<Event> found = getEvent(code);
+            if(found.isPresent()) {
+                Event event = found.get();
+                eventOverview = new EventOverview(main, event);
+                main.getPrimaryStage().setScene(eventOverview.getScene());
+            }
+            else System.out.println("Event with code: " + code + " doesn't exist");
         });
 
         Button backButton = new Button("Back");
@@ -184,6 +198,12 @@ public class StartScreen {
         hbox.setSpacing(spacing);
         hbox.setAlignment(alignment);
         return hbox;
+    }
+
+    public Optional<Event> getEvent(String code) {
+        return events.stream()
+                .filter(event -> event.getCode().equals(code))
+                .findFirst();
     }
 
 }

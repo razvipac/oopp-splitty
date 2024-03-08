@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import commons.Participant;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -9,20 +10,26 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import commons.Event;
+import client.utils.EventUtils;
 
 public class EventOverview {
 
+    private EventUtils server = new EventUtils();
     private Scene scene;
-
     private Main main;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
+    // Event attributes
+    private String eventName;
     // TODO: use actual Objects Participant and Expense instead of ArrayList<String>
-    // Arraylists containing participants and expenses for testing purposes
-    private ArrayList<String> participants;
+    private List<Participant> participants;
     private ArrayList<String> expenses;
 
     // Currently selected participant (whose expenses to view)
@@ -45,14 +52,21 @@ public class EventOverview {
      * Creates Event Overview.
      * @param main to call the main scene
      */
-    public EventOverview(Main main) {
+    public EventOverview(Main main, Event event) {
         this.main = main;
+
+        if(event == null) {
+            VBox layout = new VBox(5);
+            Text noEventText = new Text("No event found");
+            layout.getChildren().add(noEventText);
+            scene = new Scene(layout, 350, 380);
+            return;
+        }
+
+        eventName = event.getName();
         // Participants for testing purposes
-        participants = new ArrayList<>();
-        participants.add("Chris");
-        participants.add("John");
-        participants.add("Anna");
-        participants.add("David");
+        participants = server.getParticipants(event.getCode());
+        participants.add(new Participant("test", event, "test", "test", "test"));
 
         // Expenses for testing purposes
         expenses = new ArrayList<>();
@@ -62,7 +76,7 @@ public class EventOverview {
         expenses.add("Anna");
 
         // Show the expenses of the first person in the list by default
-        selectedParticipant = participants.getFirst();
+        selectedParticipant = participants.getFirst().getName();
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;
         createScene();
@@ -113,13 +127,13 @@ public class EventOverview {
         HBox eventBox = new HBox(5);
 
         // TODO: Event name is hardcoded
-        Text eventName = new Text("Event Name");
-        eventName.setFont(h1);
+        Text eventNameText = new Text(eventName);
+        eventNameText.setFont(h1);
 
         // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
 
-        eventBox.getChildren().addAll(eventName, sendInviteButton);
+        eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 
         return eventBox;
     }
@@ -155,8 +169,8 @@ public class EventOverview {
     public String participantsToString() {
         StringBuilder sb = new StringBuilder();
 
-        for(String person : participants) {
-            sb.append(person).append(", ");
+        for(Participant person : participants) {
+            sb.append(person.getName()).append(", ");
         }
 
         // remove trailing comma and space
@@ -200,7 +214,12 @@ public class EventOverview {
     private ComboBox<String> getParticipantDropdown() {
         // Dropdown comboBox with all participants of event to select from
         ComboBox<String> participantDropdown = new ComboBox<>();
-        participantDropdown.getItems().addAll(participants);
+        participantDropdown.getItems().addAll(
+                participants
+                        .stream()
+                        .map(Participant::getName)
+                        .toList()
+        );
         participantDropdown.getSelectionModel().selectFirst();
 
         // Listener for participantDropdown, sets selectedParticipant and updates radio button text
