@@ -41,7 +41,7 @@ public class Main extends Application {
     private final OpenDebts od = new OpenDebts(this);
     private final Invitations inv = new Invitations(this);
     private final ContactDetails cd = new ContactDetails(this);
-    private final EventOverview eo = new EventOverview(this);
+    private final EventOverview eo = new EventOverview(this, null);
     private final StartScreen sc = new StartScreen(this);
     private final AddEditExpense aed = new AddEditExpense(this);
 

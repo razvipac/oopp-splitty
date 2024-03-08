@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.Main;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -9,31 +8,41 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import client.Main;
+import client.utils.EventUtils;
+import commons.Expense;
+import commons.Participant;
+import commons.Event;
 
 public class EventOverview {
 
-    // JavaFX Scene
+    private EventUtils server = new EventUtils();
     private Scene scene;
-
     private Main main;
+    private ContactDetails contactDetails;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
+    // Event attributes
+    private Event event;
+    private String eventName;
+    private String eventCode;
     // TODO: use actual Objects Participant and Expense instead of ArrayList<String>
-    // Arraylists containing participants and expenses for testing purposes
-    private ArrayList<String> participants;
-    private ArrayList<String> expenses;
+    private List<Participant> participants;
+    private List<Expense> expenses;
 
     // Currently selected participant (whose expenses to view)
-    private String selectedParticipant;
+    private Participant selectedParticipant;
     
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
         ALL, FROM, INCLUDING
     }
-    View currentView;
+    private View currentView;
 
     // Attributes of elements needed by several methods
     private ToggleGroup chooseView;
@@ -43,72 +52,86 @@ public class EventOverview {
     private VBox expensesContainer;
 
     /**
-     * Creates Event Overview.
+     * Creates an Event Overview.
      * @param main to call the main scene
+     * @param event the event to show
      */
-    public EventOverview(Main main) {
+    public EventOverview(Main main, Event event) {
         this.main = main;
+        this.event = event;
+        this.contactDetails = new ContactDetails(main);
+
+        if(event == null) {
+            createSceneNoEvent();
+            return;
+        }
+
+        eventName = event.getName();
+        eventCode = event.getCode();
+
         // Participants for testing purposes
-        participants = new ArrayList<>();
-        participants.add("Chris");
-        participants.add("John");
-        participants.add("Anna");
-        participants.add("David");
+        participants = server.getParticipants(event.getCode());
+        Participant test = new Participant("test", event, "test", "test", "test");
+        participants.add(test);
 
         // Expenses for testing purposes
         expenses = new ArrayList<>();
-        expenses.add("Chris");
-        expenses.add("John");
-        expenses.add("John");
-        expenses.add("Anna");
+        expenses.add(new Expense(10, "Drinks", test));
 
-        // Show the expenses of the first person in the list by default
-        selectedParticipant = participants.getFirst();
+        // If participants isn't empty, select the first participant by default
+        if(!(participants.isEmpty())) {
+            selectedParticipant = participants.getFirst();
+        }
+
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;
         createScene();
     }
 
     /**
+     * Creates the scene for if there is no event found
+     */
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("No event found");
+        layout.getChildren().add(noEventText);
+        scene = new Scene(layout, 350, 380);
+    }
+
+    /**
      * Creates the scene.
      */
-    public void createScene() {
-        // Main layout
+    private void createScene() {
         VBox layout = new VBox(5);
         layout.setPadding(new Insets(10));
 
         // eventBox, includes Event Name and Send Invite button
         HBox eventBox = getEventBox();
+
         // participantsBox, includes header and buttons to edit/add participant
         HBox participantsBox = getParticipantsBox();
-        // Text listing the names of the participants
         Text participantNames = new Text(participantsToString());
-        // Expenses header
         Text expensesHeader = new Text("Expenses");
         expensesHeader.setFont(h2);
-        // 'Add Expense' button
-        // TODO: button is non-functional
+        // TODO: add expense button is non-functional
         Button expenseAddButton = new Button("Add Expense");
-        // radioSelectBox, includes radio button selection for currentView
+
         HBox radioSelectBox = getRadioSelectBox();
-        // participantDropdown, ComboBox that sets selectedParticipant
         ComboBox<String> participantDropdown = getParticipantDropdown();
+
         // expensesScroller, which includes all expense items in arraylist expenses
         ScrollPane expensesScroller = getExpensesScroller();
-        // 'Settle Debts' button
         // TODO: button is non-functional
         Button settleDebtsButton = new Button("Settle Debts");
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
 
-        // add all elements to layout
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesHeader, expenseAddButton,
                 participantDropdown, radioSelectBox, expensesScroller,
                 settleDebtsButton, backButton);
 
-        // Scene
         scene = new Scene(layout, 350, 380);
     }
 
@@ -120,15 +143,13 @@ public class EventOverview {
         HBox eventBox = new HBox(5);
 
         // TODO: Event name is hardcoded
-        // Event Name
-        Text eventName = new Text("Event Name");
-        eventName.setFont(h1);
-        // Send Invite button
+        Text eventNameText = new Text(eventName);
+        eventNameText.setFont(h1);
+
         // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
 
-        // Add to eventBox
-        eventBox.getChildren().addAll(eventName, sendInviteButton);
+        eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 
         return eventBox;
     }
@@ -141,17 +162,18 @@ public class EventOverview {
     private HBox getParticipantsBox() {
         HBox participantsBox = new HBox(5);
 
-        // Participants header
         Text participantsHeader = new Text("Participants");
         participantsHeader.setFont(h2);
-        // Edit Participant button
+
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
-        // Add Participant button
+
         // TODO: Button is non-functional
         Button participantAddButton = new Button("Add");
+        participantAddButton.setOnAction(e -> {
+            contactDetails.displayAlertBox();
+        });
 
-        // Add to participantBox
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);
 
@@ -163,11 +185,13 @@ public class EventOverview {
      * in the form: firstname_1, ..., firstname_n.
      * @return String representation of participants
      */
-    public String participantsToString() {
+    private String participantsToString() {
+        if(participants.isEmpty()) return "(No participants in event)";
+
         StringBuilder sb = new StringBuilder();
 
-        for(String person : participants) {
-            sb.append(person).append(", ");
+        for(Participant person : participants) {
+            sb.append(person.getName()).append(", ");
         }
 
         // remove trailing comma and space
@@ -177,7 +201,7 @@ public class EventOverview {
     }
 
     /**
-     * Gets HBox radioSelectBox, which includes a ToggleGroup with the following three radio buttons:
+     * Gets HBox radioSelectBox, which includes a ToggleGroup with the following radio buttons:
      * 1) All expenses
      * 2) Expenses from [selectedParticipant]
      * 3) Expenses including [selectedParticipant]
@@ -186,20 +210,20 @@ public class EventOverview {
     private HBox getRadioSelectBox() {
         HBox radioSelectBox = new HBox(5);
 
-        // Toggle Group chooseView with three radio buttons
         chooseView = new ToggleGroup();
         // 'All expenses' radio button
         allRadio = new RadioButton("All");
         allRadio.setToggleGroup(chooseView);
         allRadio.setSelected(true);
         // 'Expenses from <selectedParticipant>' radio button
-        fromRadio = new RadioButton("From " + selectedParticipant);
+        fromRadio = new RadioButton();
         fromRadio.setToggleGroup(chooseView);
         // 'Expenses including <selectedParticipant>' radio button
-        includingRadio = new RadioButton("Including " + selectedParticipant);
+        includingRadio = new RadioButton();
         includingRadio.setToggleGroup(chooseView);
 
-        // Add to radioSelectBox
+        setRadioButton();
+
         radioSelectBox.getChildren().addAll(allRadio, fromRadio, includingRadio);
 
         return radioSelectBox;
@@ -213,16 +237,19 @@ public class EventOverview {
     private ComboBox<String> getParticipantDropdown() {
         // Dropdown comboBox with all participants of event to select from
         ComboBox<String> participantDropdown = new ComboBox<>();
-        participantDropdown.getItems().addAll(participants);
+        participantDropdown.getItems().addAll(
+                participants
+                        .stream()
+                        .map(Participant::getName)
+                        .toList()
+        );
         participantDropdown.getSelectionModel().selectFirst();
 
         // Listener for participantDropdown, sets selectedParticipant and updates radio button text
-        participantDropdown.getSelectionModel().selectedItemProperty().addListener(
+        participantDropdown.getSelectionModel().selectedIndexProperty().addListener(
                 (v, oldValue, newValue) -> {
-                    selectedParticipant = newValue;
-                    // update text of radio buttons 'from' and 'including'
-                    fromRadio.setText("From " + selectedParticipant);
-                    includingRadio.setText("Including " + selectedParticipant);
+                    selectedParticipant = participants.get((Integer) newValue);
+                    setRadioButton();
                     expenseItemVisibility(expensesContainer);
                 }
         );
@@ -231,18 +258,38 @@ public class EventOverview {
     }
 
     /**
+     * Sets the text of the radio buttons to match selectedParticipant, and disables
+     * them if there are no expenses
+     */
+    private void setRadioButton() {
+        if(expenses.isEmpty()) {
+            allRadio.setDisable(true);
+            fromRadio.setDisable(true);
+            includingRadio.setDisable(true);
+        }
+
+        String name;
+        if(selectedParticipant == null) {
+            name = "(participant)";
+        }
+        else name = selectedParticipant.getName();
+
+        fromRadio.setText("From " + name);
+        includingRadio.setText("Including " + name);
+    }
+
+    /**
      * Gets expensesScroller, which includes a VBox container for all ExpenseItem objects.
      * @return ScrollPane expensesScroller
      */
     private ScrollPane getExpensesScroller() {
-        // The scrollable pane
         ScrollPane expensesScroller = new ScrollPane();
         expensesScroller.setPrefHeight(140);
 
         // The VBox that actually contains all ExpenseItem objects
         expensesContainer = new VBox(5);
         // for every expense, add ExpenseItem to expensesContainer
-        for(String expense : expenses) {
+        for(Expense expense : expenses) {
             ExpenseItem item = new ExpenseItem(expense);
             expensesContainer.getChildren().add(item);
         }
@@ -281,7 +328,7 @@ public class EventOverview {
                 }
                 case FROM -> {
                     ExpenseItem e = (ExpenseItem) item;
-                    boolean isMatchingParticipant = e.expense.equals(selectedParticipant);
+                    boolean isMatchingParticipant = e.paidBy.equals(selectedParticipant);
                     item.setVisible(isMatchingParticipant);
                     item.setManaged(isMatchingParticipant);
                 }
@@ -302,33 +349,45 @@ public class EventOverview {
      */
     public static class ExpenseItem extends GridPane {
 
-        // the participant tied to the Expense
-        public String expense;
+        private Expense expense;
+        private int price;
+        private String item;
+        private Participant paidBy;
+        private String paidByName;
 
         /**
          * Creates ExpenseItem, a GridPane containing an Expense's date, participant,
          * and an 'Edit' button.
-         * @param expense the participant tied to the Expense
+         * @param expense the expense to create an item for
          */
-        public ExpenseItem(String expense) {
+        public ExpenseItem(Expense expense) {
             this.expense = expense;
+            price = expense.getPrice();
+            item = expense.getItem();
+            paidBy = expense.getPaidBy();
+            paidByName = paidBy.getName();
 
+            createItemBox();
+        }
+
+        private void createItemBox() {
             this.setHgap(12);
             this.setVgap(2);
 
-            // TODO: implement this for actual Expense values
-            // Date of expense, hardcoded
+            // TODO: implement this for actual Expense date
             Text date = new Text("01-01-2024");
             this.add(date, 0, 0, 1, 2);
-            // Participant tied to expense
-            Text expenseInfo = new Text(expense + " paid 99 Euro for Item");
+
+            Text expenseInfo = new Text(paidByName + " paid " + price + " Euro for " + item);
             this.add(expenseInfo, 1, 0);
-            // Expense includes ..., hardcoded to 'all'
+
+            // TODO: 'paidBy includes ...' is currently hardcoded to 'all'
             Text expenseIncludes = new Text("(all)");
             this.add(expenseIncludes, 1, 1);
-            // Edit Expense button
+
             Button expenseEditButton = new Button("Edit");
             this.add(expenseEditButton, 2, 0, 1, 2);
         }
+
     }
 }

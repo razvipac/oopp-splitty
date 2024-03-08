@@ -12,6 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class ContactDetails {
     private Scene scene;
@@ -151,5 +153,13 @@ public class ContactDetails {
      */
     public Scene getScene() {
         return this.scene;
+    }
+
+    public void displayAlertBox() {
+        Stage window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Add Participant");
+        window.setScene(scene);
+        window.showAndWait();
     }
 }
