@@ -62,15 +62,13 @@ public class EventOverview {
         this.contactDetails = new ContactDetails(main);
 
         if(event == null) {
-            VBox layout = new VBox(5);
-            Text noEventText = new Text("No event found");
-            layout.getChildren().add(noEventText);
-            scene = new Scene(layout, 350, 380);
+            createSceneNoEvent();
             return;
         }
 
         eventName = event.getName();
         eventCode = event.getCode();
+
         // Participants for testing purposes
         participants = server.getParticipants(event.getCode());
         Participant test = new Participant("test", event, "test", "test", "test");
@@ -79,23 +77,31 @@ public class EventOverview {
         // Expenses for testing purposes
         expenses = new ArrayList<>();
         expenses.add(new Expense(10, "Drinks", test));
-//        expenses.add("John");
-//        expenses.add("John");
-//        expenses.add("Anna");
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {
             selectedParticipant = participants.getFirst();
         }
+
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;
         createScene();
     }
 
     /**
+     * Creates the scene for if there is no event found
+     */
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("No event found");
+        layout.getChildren().add(noEventText);
+        scene = new Scene(layout, 350, 380);
+    }
+
+    /**
      * Creates the scene.
      */
-    public void createScene() {
+    private void createScene() {
         VBox layout = new VBox(5);
         layout.setPadding(new Insets(10));
 
@@ -179,7 +185,7 @@ public class EventOverview {
      * in the form: firstname_1, ..., firstname_n.
      * @return String representation of participants
      */
-    public String participantsToString() {
+    private String participantsToString() {
         if(participants.isEmpty()) return "(No participants in event)";
 
         StringBuilder sb = new StringBuilder();
