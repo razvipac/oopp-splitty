@@ -27,7 +27,9 @@ public class EventOverview {
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
     // Event attributes
+    private Event event;
     private String eventName;
+    private String eventCode;
     // TODO: use actual Objects Participant and Expense instead of ArrayList<String>
     private List<Participant> participants;
     private List<Expense> expenses;
@@ -55,6 +57,7 @@ public class EventOverview {
      */
     public EventOverview(Main main, Event event) {
         this.main = main;
+        this.event = event;
 
         if(event == null) {
             VBox layout = new VBox(5);
@@ -65,6 +68,7 @@ public class EventOverview {
         }
 
         eventName = event.getName();
+        eventCode = event.getCode();
         // Participants for testing purposes
         participants = server.getParticipants(event.getCode());
         Participant test = new Participant("test", event, "test", "test", "test");
@@ -158,6 +162,11 @@ public class EventOverview {
 
         // TODO: Button is non-functional
         Button participantAddButton = new Button("Add");
+        participantAddButton.setOnAction(e -> {
+//            Participant p = server.addParticipant(new Participant("Tom",
+//                    event, "test", "test", "test"));
+//            System.out.println(p.toString());
+        });
 
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);

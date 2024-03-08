@@ -16,6 +16,10 @@ public class EventUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
+    /**
+     * Gets all events.
+     * @return All events as a List
+     */
     public List<Event> getAllEvents() {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/")
@@ -25,7 +29,12 @@ public class EventUtils {
                 });
     }
 
-    public Event addEvent(String eventName) {
+    /**
+     * Creates an event with the given event name.
+     * @param eventName the name of the event
+     * @return the created Event
+     */
+    public Event createEvent(String eventName) {
 
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/")
@@ -35,6 +44,11 @@ public class EventUtils {
                 .post(Entity.entity(eventName, APPLICATION_JSON), Event.class);
     }
 
+    /**
+     * Gets all the participants of an event.
+     * @param code The code of the event
+     * @return All participants of the event as a List
+     */
     public List<Participant> getParticipants(String code) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/" + code + "/expense")
@@ -43,5 +57,20 @@ public class EventUtils {
                 .get(new GenericType<List<Participant>>() {
                 });
     }
+
+//    public Participant addParticipant(Participant p) {
+//        String code = p.getEvent().getCode();
+//        String endpoint = "api/v1/" + code + "/participant";
+//        String name = p.getName();
+//        String email = p.getEmail();
+//        String iban = p.getIban();
+//        String bic = p.getBic();
+//
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(SERVER).path(endpoint)
+//                .request(APPLICATION_JSON)
+//                .accept(APPLICATION_JSON)
+//                .post(Entity.entity(..., APPLICATION_JSON), Participant.class);
+//    }
 
 }

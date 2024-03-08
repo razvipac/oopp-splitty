@@ -78,7 +78,7 @@ public class StartScreen {
         createButton.setFont(Font.font("Arial"));
         createButton.setOnAction(e -> {
             String eventName = createEvent.getText();
-            Event event = server.addEvent(eventName);
+            Event event = server.createEvent(eventName);
             System.out.println(event.toString());
             eventOverview = new EventOverview(main, event);
             main.getPrimaryStage().setScene(eventOverview.getScene());
@@ -200,6 +200,11 @@ public class StartScreen {
         return hbox;
     }
 
+    /**
+     * Get event corresponding to the given code
+     * @param code Code of the event
+     * @return The event
+     */
     public Optional<Event> getEvent(String code) {
         return events.stream()
                 .filter(event -> event.getCode().equals(code))
