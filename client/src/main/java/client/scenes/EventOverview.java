@@ -21,6 +21,7 @@ public class EventOverview {
     private EventUtils server = new EventUtils();
     private Scene scene;
     private Main main;
+    private ContactDetails contactDetails;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -58,6 +59,7 @@ public class EventOverview {
     public EventOverview(Main main, Event event) {
         this.main = main;
         this.event = event;
+        this.contactDetails = new ContactDetails(main);
 
         if(event == null) {
             VBox layout = new VBox(5);
@@ -163,9 +165,7 @@ public class EventOverview {
         // TODO: Button is non-functional
         Button participantAddButton = new Button("Add");
         participantAddButton.setOnAction(e -> {
-//            Participant p = server.addParticipant(new Participant("Tom",
-//                    event, "test", "test", "test"));
-//            System.out.println(p.toString());
+            contactDetails.displayAlertBox();
         });
 
         participantsBox.getChildren().addAll(participantsHeader,
