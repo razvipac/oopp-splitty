@@ -1,7 +1,5 @@
 package client.scenes;
 
-import client.Main;
-import commons.Participant;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -12,8 +10,11 @@ import javafx.scene.text.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import commons.Event;
+import client.Main;
 import client.utils.EventUtils;
+import commons.Expense;
+import commons.Participant;
+import commons.Event;
 
 public class EventOverview {
 
@@ -29,16 +30,16 @@ public class EventOverview {
     private String eventName;
     // TODO: use actual Objects Participant and Expense instead of ArrayList<String>
     private List<Participant> participants;
-    private ArrayList<String> expenses;
+    private List<Expense> expenses;
 
     // Currently selected participant (whose expenses to view)
-    private String selectedParticipant;
+    private Participant selectedParticipant;
     
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
         ALL, FROM, INCLUDING
     }
-    View currentView;
+    private View currentView;
 
     // Attributes of elements needed by several methods
     private ToggleGroup chooseView;
@@ -48,8 +49,9 @@ public class EventOverview {
     private VBox expensesContainer;
 
     /**
-     * Creates Event Overview.
+     * Creates an Event Overview.
      * @param main to call the main scene
+     * @param event the event to show
      */
     public EventOverview(Main main, Event event) {
         this.main = main;
@@ -65,17 +67,19 @@ public class EventOverview {
         eventName = event.getName();
         // Participants for testing purposes
         participants = server.getParticipants(event.getCode());
-        participants.add(new Participant("test", event, "test", "test", "test"));
+        // participants.add(new Participant("test", event, "test", "test", "test"));
 
         // Expenses for testing purposes
         expenses = new ArrayList<>();
-        expenses.add("Chris");
-        expenses.add("John");
-        expenses.add("John");
-        expenses.add("Anna");
+//        expenses.add("Chris");
+//        expenses.add("John");
+//        expenses.add("John");
+//        expenses.add("Anna");
 
-        // Show the expenses of the first person in the list by default
-        selectedParticipant = participants.getFirst().getName();
+        // If participants isn't empty, select the first participant by default
+        if(!(participants.isEmpty())) {
+            selectedParticipant = participants.getFirst();
+        }
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;
         createScene();
@@ -166,6 +170,8 @@ public class EventOverview {
      * @return String representation of participants
      */
     public String participantsToString() {
+        if(participants.isEmpty()) return "(No participants in event)";
+
         StringBuilder sb = new StringBuilder();
 
         for(Participant person : participants) {
@@ -194,11 +200,13 @@ public class EventOverview {
         allRadio.setToggleGroup(chooseView);
         allRadio.setSelected(true);
         // 'Expenses from <selectedParticipant>' radio button
-        fromRadio = new RadioButton("From " + selectedParticipant);
+        fromRadio = new RadioButton();
         fromRadio.setToggleGroup(chooseView);
         // 'Expenses including <selectedParticipant>' radio button
-        includingRadio = new RadioButton("Including " + selectedParticipant);
+        includingRadio = new RadioButton();
         includingRadio.setToggleGroup(chooseView);
+
+        setRadioButton();
 
         radioSelectBox.getChildren().addAll(allRadio, fromRadio, includingRadio);
 
@@ -222,17 +230,36 @@ public class EventOverview {
         participantDropdown.getSelectionModel().selectFirst();
 
         // Listener for participantDropdown, sets selectedParticipant and updates radio button text
-        participantDropdown.getSelectionModel().selectedItemProperty().addListener(
+        participantDropdown.getSelectionModel().selectedIndexProperty().addListener(
                 (v, oldValue, newValue) -> {
-                    selectedParticipant = newValue;
-                    // update text of radio buttons 'from' and 'including'
-                    fromRadio.setText("From " + selectedParticipant);
-                    includingRadio.setText("Including " + selectedParticipant);
+                    selectedParticipant = participants.get((Integer) newValue);
+                    setRadioButton();
                     expenseItemVisibility(expensesContainer);
                 }
         );
 
         return participantDropdown;
+    }
+
+    /**
+     * Sets the text of the radio buttons to match selectedParticipant, and disables
+     * them if there are no expenses
+     */
+    private void setRadioButton() {
+        if(expenses.isEmpty()) {
+            allRadio.setDisable(true);
+            fromRadio.setDisable(true);
+            includingRadio.setDisable(true);
+        }
+
+        String name;
+        if(selectedParticipant == null) {
+            name = "(participant)";
+        }
+        else name = selectedParticipant.getName();
+
+        fromRadio.setText("From " + name);
+        includingRadio.setText("Including " + name);
     }
 
     /**
@@ -246,10 +273,10 @@ public class EventOverview {
         // The VBox that actually contains all ExpenseItem objects
         expensesContainer = new VBox(5);
         // for every expense, add ExpenseItem to expensesContainer
-        for(String expense : expenses) {
-            ExpenseItem item = new ExpenseItem(expense);
-            expensesContainer.getChildren().add(item);
-        }
+//        for(Expense expense : expenses) {
+//            ExpenseItem item = new ExpenseItem(expense);
+//            expensesContainer.getChildren().add(item);
+//        }
 
         // Set the content of the scrollable pane to the container
         expensesScroller.setContent(expensesContainer);
