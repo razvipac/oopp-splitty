@@ -2,20 +2,45 @@
 
 package commons;
 
+import jakarta.persistence.*;
+
 import java.util.*;
 
+@Entity
+@Table(name = "debt")
 public class Debt {
 
-    private Participant debtor;      // person who owes money
-    private Participant creditor;    // person who is owed money
-    private double amount;      // amount of money owed, in euros
-    private boolean received;   // true if money is received, false otherwise
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "debtor_name", referencedColumnName = "name"),
+            @JoinColumn(name = "debtor_event_code", referencedColumnName = "event_code")
+    })
+    private Participant debtor;
+
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "creditor_name", referencedColumnName = "name"),
+            @JoinColumn(name = "creditor_event_code", referencedColumnName = "event_code")
+    })
+    private Participant creditor;
+
+    private double amount;          // amount of money owed, in euros
+
+    private boolean received;       // true if money is received, false otherwise
 
     public Debt(Participant debtor, Participant creditor, double amount) {
         this.debtor = debtor;
         this.creditor = creditor;
         this.amount = amount;
         this.received = false;
+    }
+
+    public Debt() {
+
     }
 
     public Participant getDebtor() {
