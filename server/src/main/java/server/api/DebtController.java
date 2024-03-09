@@ -22,6 +22,12 @@ public class DebtController {
     private final DebtService debtService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
+    /**
+     * Constructs a DebtController with the specified DebtService and SimpMessagingTemplate
+     *
+     * @param debtService           The service for managing Debt entities
+     * @param simpMessagingTemplate The template for sending WebSocket messages
+     */
     @Autowired
     public DebtController(DebtService debtService, SimpMessagingTemplate simpMessagingTemplate) {
         this.debtService = debtService;
@@ -29,10 +35,12 @@ public class DebtController {
     }
 
     /**
-     * READ /api/v1/events/{eventCode}/debts
-     * Retrieves all settled debts for a specific event
-     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/{eventCode}/debts
-     * with WSAction RESPONDED
+     * Retrieves all settled debts for a specific event.
+     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/{eventCode}/debts"
+     * with WSAction RESPONDED.
+     *
+     * @param eventCode The code of the event for which settled debts are to be retrieved
+     * @return A ResponseEntity containing the list of settled debts and HTTP status OK
      */
     @GetMapping
     public ResponseEntity<List<Debt>> getAllSettledDebts(@PathVariable String eventCode) {

@@ -11,11 +11,22 @@ import java.util.List;
 public class DebtService {
     private final DebtRepository debtRepository;
 
+    /**
+     * Constructs a DebtService with the specified DebtRepository
+     *
+     * @param debtRepository The repository for accessing and managing Debt entities
+     */
     @Autowired
     public DebtService(DebtRepository debtRepository) {
         this.debtRepository = debtRepository;
     }
 
+    /**
+     * Retrieves a list of settled debts for a specific event
+     *
+     * @param eventCode The code of the event for which settled debts are to be retrieved
+     * @return A list of settled debts for the specified event.
+     */
     public List<Debt> getAllSettledDebtsForEvent(String eventCode) {
         return debtRepository.findAllSettledDebtsForEvent(eventCode);
     }
