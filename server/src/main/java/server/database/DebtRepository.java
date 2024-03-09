@@ -17,6 +17,6 @@ public interface DebtRepository extends CrudRepository<Debt, Long> {
      * @param eventCode The code of the event for which settled debts are to be retrieved
      * @return A list of settled debts for the specified event
      */
-     //@Query("SELECT d FROM Debt d WHERE d.received = true AND d.debtor.pkey.event.code = :eventCode")
+    //@Query("SELECT d FROM Debt d WHERE d.received = true AND d.debtor.pkey.event.code = :eventCode")
     List<Debt> findAllSettledDebtsForEvent(@Param("eventCode") String eventCode);
 }
