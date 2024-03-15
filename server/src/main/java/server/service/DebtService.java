@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.DebtRepository;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -28,6 +29,8 @@ public class DebtService {
      * @return A list of settled debts for the specified event.
      */
     public List<Debt> getAllSettledDebtsForEvent(String eventCode) {
-        return debtRepository.findAllSettledDebtsForEvent(eventCode);
+        List<Debt> debts = new LinkedList<>();
+        debtRepository.findAllSettledDebtsForEvent(eventCode).iterator().forEachRemaining(debts::add);
+        return debts;
     }
 }
