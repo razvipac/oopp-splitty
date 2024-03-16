@@ -152,7 +152,7 @@ public class AddEditExpense {
         layout.add(abortButton, 0, 9);
         layout.add(addButton, 1, 9);
 
-        // Create a "Back" button, set its action to switch to the main scene, and add it to the layout
+        // Create a "Back" button, set its action to switch to the main scene and add it to layout
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
         layout.add(backButton, 0, 10);

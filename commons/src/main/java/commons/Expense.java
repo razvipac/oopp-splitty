@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+/**
+ * Represents an expense entity.
+ */
 @Entity
 @Table(name = "expense")
 public class Expense {
@@ -14,9 +17,19 @@ public class Expense {
     private Integer price;
     private String item;
 
+    /**
+     * Default constructor.
+     */
     public Expense() {
     }
 
+    /**
+     * Parameterized constructor to initialize an expense object.
+     *
+     * @param price  The price of the expense.
+     * @param item   The item description of the expense.
+     * @param paidBy The participant who paid for the expense.
+     */
     public Expense(Integer price, String item, Participant paidBy) {
         ExpenseId eid = new ExpenseId();
         eid.setPaidBy(paidBy);
@@ -25,38 +38,83 @@ public class Expense {
         this.item = item;
     }
 
+    /**
+     * Retrieves the ID of the expense.
+     *
+     * @return The ID of the expense.
+     */
     public Long getId() {
         return pkey.getId();
     }
 
+    /**
+     * Sets the ID of the expense.
+     *
+     * @param id The ID of the expense to set.
+     */
     public void setId(Long id) {
         pkey.setId(id);
     }
 
+    /**
+     * Retrieves the price of the expense.
+     *
+     * @return The price of the expense.
+     */
     public Integer getPrice() {
         return price;
     }
 
+    /**
+     * Sets the price of the expense.
+     *
+     * @param price The price of the expense to set.
+     */
     public void setPrice(Integer price) {
         this.price = price;
     }
 
+    /**
+     * Retrieves the item description of the expense.
+     *
+     * @return The item description of the expense.
+     */
     public String getItem() {
         return item;
     }
 
+    /**
+     * Sets the item description of the expense.
+     *
+     * @param item The item description of the expense to set.
+     */
     public void setItem(String item) {
         this.item = item;
     }
 
+    /**
+     * Retrieves the participant who paid for the expense.
+     *
+     * @return The participant who paid for the expense.
+     */
     public Participant getPaidBy() {
         return pkey.getPaidBy();
     }
 
+    /**
+     * Sets the participant who paid for the expense.
+     *
+     * @param paidBy The participant who paid for the expense to set.
+     */
     public void setPaidBy(Participant paidBy) {
         pkey.setPaidBy(paidBy);
     }
 
+    /**
+     * Returns a string representation of the expense.
+     *
+     * @return A string representation of the expense.
+     */
     @Override
     public String toString() {
         return "Expense{" +
@@ -66,14 +124,26 @@ public class Expense {
                 '}';
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param o The reference object with which to compare.
+     * @return true if this object is the same as the obj argument; false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Expense expense = (Expense) o;
-        return Objects.equals(pkey, expense.pkey) && Objects.equals(price, expense.price) && Objects.equals(item, expense.item);
+        return Objects.equals(pkey, expense.pkey)
+                && Objects.equals(price, expense.price) && Objects.equals(item, expense.item);
     }
 
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(pkey, price, item);

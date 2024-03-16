@@ -25,6 +25,11 @@ import client.scenes.QuoteOverviewCtrl;
 
 public class MyModule implements Module {
 
+    /**
+     * Configures dependency injection bindings.
+     *
+     * @param binder The Guice binder.
+     */
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);

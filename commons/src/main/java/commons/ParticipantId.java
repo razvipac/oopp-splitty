@@ -16,30 +16,64 @@ public class ParticipantId implements Serializable {
     @JoinColumn(name = "event_code")
     private Event event;
 
+    /**
+     * Default constructor
+     */
     public ParticipantId() {
     }
 
+    /**
+     * Parameterized constructor
+     *
+     * @param name  The name of the participant
+     * @param event The associated event
+     */
     public ParticipantId(String name, Event event) {
         this.name = name;
         this.event = event;
     }
 
+    /**
+     * Getter for event
+     *
+     * @return The associated event
+     */
     public Event getEvent() {
         return event;
     }
 
+    /**
+     * Setter for event
+     *
+     * @param event The associated event to set
+     */
     public void setEvent(Event event) {
         this.event = event;
     }
 
+    /**
+     * Getter for name
+     *
+     * @return The name of the participant
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for name
+     *
+     * @param name The name of the participant to set
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * toString method
+     *
+     * @return String representation of the ParticipantId
+     */
     @Override
     public String toString() {
         return "ParticipantId{" +
@@ -48,6 +82,12 @@ public class ParticipantId implements Serializable {
                 '}';
     }
 
+    /**
+     * Equals method
+     *
+     * @param o The object to compare
+     * @return True if the objects are equal; false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,6 +96,11 @@ public class ParticipantId implements Serializable {
         return Objects.equals(name, that.name) && Objects.equals(event, that.event);
     }
 
+    /**
+     * HashCode method
+     *
+     * @return HashCode of the ParticipantId
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name, event);

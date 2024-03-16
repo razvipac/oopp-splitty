@@ -20,7 +20,8 @@ public class Participant {
 
     /**
      *
-     * @param name is the primary key of this entity as it has to be unique because this is the only information available for participants
+     * @param name is the primary key of this entity as it has to be unique
+     *             because this is the only information available for participants
      * @param event contains the code of the event that the participant is in
      * @param email for payment information purposes
      * @param iban for payment information purposes
@@ -125,9 +126,15 @@ public class Participant {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Participant that = (Participant) o;
-        return Objects.equals(pkey, that.pkey) && Objects.equals(email, that.email) && Objects.equals(iban, that.iban) && Objects.equals(bic, that.bic);
+        return Objects.equals(pkey, that.pkey) && Objects.equals(email, that.email)
+                && Objects.equals(iban, that.iban) && Objects.equals(bic, that.bic);
     }
 
+    /**
+     * Returns a hash code value for the participant.
+     *
+     * @return A hash code value based on the fields of the participant.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(pkey, email, iban, bic);

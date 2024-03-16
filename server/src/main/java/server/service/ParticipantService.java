@@ -19,6 +19,12 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final EventService eventService;
 
+    /**
+     * Constructor for ParticipantService
+     *
+     * @param participantRepository The ParticipantRepository instance to interact with the database
+     * @param eventService          The EventService instance to handle event-related operations
+     */
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
                               @Autowired EventService eventService) {
         this.participantRepository = participantRepository;
@@ -27,13 +33,15 @@ public class ParticipantService {
 
     /**
      * Fetches a specific Participant object
+     *
      * @param eventCode eventCode of the event to which the Participant belongs
-     * @param name name of the participant
+     * @param name      name of the participant
      * @return the fetched Participant object
      * @throws NotFoundInDatabaseException if such a Participant is not present in the database
      */
     public Participant getOne(String eventCode, String name) throws NotFoundInDatabaseException {
-        Optional<Participant> searchResult = participantRepository.findParticipantByEventCodeAndName(name, eventCode);
+        Optional<Participant> searchResult = participantRepository
+                .findParticipantByEventCodeAndName(name, eventCode);
         if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
                 "A Participant of event " + eventCode + " with name " + name + "cannot be found!"
         );
@@ -43,24 +51,29 @@ public class ParticipantService {
 
     /**
      * Fetches all participants in given event
+     *
      * @param eventCode a code of the event from which to fetch participants
      * @return a LinkedList of Participant objects
      */
-    public List<Participant> getAll(String eventCode){
+    public List<Participant> getAll(String eventCode) {
         List<Participant> result = new LinkedList<>();
-        participantRepository.findAllParticipantsInEvent(eventCode).iterator().forEachRemaining(result::add);
+        participantRepository.findAllParticipantsInEvent(eventCode)
+                .iterator()
+                .forEachRemaining(result::add);
         return result;
     }
 
     /**
      * Creates and saves a new Participant entity
+     *
      * @param eventCode code of the event for which the participant should be created
-     * @param body data to be used when creating the participant object
+     * @param body      data to be used when creating the participant object
      * @return the newly created Participant entity
-     * @throws NotFoundInDatabaseException if a event with the given eventCode is not present in the database
+     * @throws NotFoundInDatabaseException if an event with the given eventCode
+     *                                     is not present in the database
      */
-    public Participant createOne(String eventCode,
-                                 ParticipantRequestBody body) throws NotFoundInDatabaseException {
+    public Participant createOne(String eventCode, ParticipantRequestBody body)
+            throws NotFoundInDatabaseException {
         Event event = eventService.getOne(eventCode);
 
         Participant newParticipant = new Participant(
@@ -75,7 +88,16 @@ public class ParticipantService {
         return newParticipant;
     }
 
-    public Participant deleteOne(String eventCode, String participantName) throws NotFoundInDatabaseException {
+    /**
+     * Deletes a participant from the database.
+     *
+     * @param eventCode       The code of the event.
+     * @param participantName The name of the participant.
+     * @return The deleted participant.
+     * @throws NotFoundInDatabaseException If the participant is not found in the database.
+     */
+    public Participant deleteOne(String eventCode, String participantName)
+            throws NotFoundInDatabaseException {
         Participant found = getOne(eventCode, participantName);
         // if not found exception will be thrown
 
@@ -86,7 +108,17 @@ public class ParticipantService {
         return found;
     }
 
-    public Participant updateOne(String eventCode,String name, ParticipantRequestBody body) throws NotFoundInDatabaseException {
+    /**
+     * Updates a participant in the database.
+     *
+     * @param eventCode The code of the event.
+     * @param name      The name of the participant.
+     * @param body      The request body containing updated participant information.
+     * @return The updated participant.
+     * @throws NotFoundInDatabaseException If the participant is not found in the database.
+     */
+    public Participant updateOne(String eventCode, String name, ParticipantRequestBody body)
+            throws NotFoundInDatabaseException {
         Participant found = getOne(eventCode, body.name());
         // if not found exception will be thrown
         found.setEmail(body.email());
@@ -97,9 +129,18 @@ public class ParticipantService {
         return found;
     }
 
+    /**
+     * Retrieves the participant ID based on the event code and participant name.
+     *
+     * @param eventCode       The code of the event.
+     * @param participantName The name of the participant.
+     * @return The participant ID.
+     * @throws NotFoundInDatabaseException If the event corresponding to the event code
+     *                                     is not found in the database.
+     */
     private ParticipantId getParticipantId(String eventCode, String participantName)
-            throws NotFoundInDatabaseException{
+            throws NotFoundInDatabaseException {
         Event event = eventService.getOne(eventCode);
-        return  new ParticipantId(participantName, event);
+        return new ParticipantId(participantName, event);
     }
 }

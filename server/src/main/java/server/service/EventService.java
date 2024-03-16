@@ -19,15 +19,22 @@ import java.util.Optional;
 public class EventService {
     private EventRepository eventRepository;
 
+    /**
+     * Constructs an EventService instance with the specified EventRepository.
+     *
+     * @param eventRepository The EventRepository to be injected into the service.
+     */
     public EventService(@Autowired EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
     /**
      * Fetches an Event object with given code
+     *
      * @param code code of the fetched Event object
      * @return a fetched Event object
-     * @throws NotFoundInDatabaseException if a object with given code is not present in the database
+     * @throws NotFoundInDatabaseException if an object with given code
+     *                                     is not present in the database
      */
     public Event getOne(String code) throws NotFoundInDatabaseException {
         Optional<Event> searchResult = eventRepository.findById(code);
@@ -42,9 +49,10 @@ public class EventService {
 
     /**
      * Fetches all Events in the database
+     *
      * @return a linked list with all stored Event instances
      */
-    public List<Event> getAll(){
+    public List<Event> getAll() {
         List<Event> events = new LinkedList<>();
         eventRepository.findAll().iterator().forEachRemaining(events::add);
         return events;
@@ -52,10 +60,11 @@ public class EventService {
 
     /**
      * Creates and saves an Event with given name
+     *
      * @param name name of the event to be created
      * @return the newly created Event object
      */
-    public Event createOne(String name){
+    public Event createOne(String name) {
         String code = generateCode();
         LocalDateTime creationDate = LocalDateTime.now();
 
@@ -66,6 +75,13 @@ public class EventService {
         return newEvent;
     }
 
+    /**
+     * Deletes the event with the specified event code.
+     *
+     * @param eventCode The event code of the event to be deleted.
+     * @return The deleted event.
+     * @throws NotFoundInDatabaseException If the event with the specified event code is not found.
+     */
     public Event deleteOne(String eventCode) throws NotFoundInDatabaseException {
         Event found = getOne(eventCode);
         // if not found exception will be thrown
@@ -74,6 +90,14 @@ public class EventService {
         return found;
     }
 
+    /**
+     * Updates the name of the event with the specified event code.
+     *
+     * @param eventCode The event code of the event to be updated.
+     * @param newName The new name for the event.
+     * @return The updated event.
+     * @throws NotFoundInDatabaseException If the event with the specified event code is not found.
+     */
     public Event updateOne(String eventCode, String newName) throws NotFoundInDatabaseException {
         Event found = getOne(eventCode);
         // if not found exception will be thrown
@@ -89,26 +113,27 @@ public class EventService {
      * Generates a UNIQUE 8 character code.
      * Checks if it is already present in the Event database table, if it is the code gets
      * regenerated until it is unique.
+     *
      * @return a unique 8 character code to be used as a Event code
      */
-    private String generateCode(){
+    private String generateCode() {
         // Creates a list of characters [[0-9], [A-Z], [a-z]]
         List<Character> possibleCharacters = new ArrayList<>();
-        for (int i = 48; i <= 57; i++){
+        for (int i = 48; i <= 57; i++) {
             possibleCharacters.add((char) i);
         }
-        for (int i = 65; i <= 90; i++){
+        for (int i = 65; i <= 90; i++) {
             possibleCharacters.add((char) i);
         }
-        for (int i = 97; i <= 122; i++){
+        for (int i = 97; i <= 122; i++) {
             possibleCharacters.add((char) i);
         }
 
         String code = "";
 
-        while (code.isEmpty() || eventRepository.findById(code).isPresent()){
+        while (code.isEmpty() || eventRepository.findById(code).isPresent()) {
             code = "";
-            for (int i = 0; i < 8; i++){
+            for (int i = 0; i < 8; i++) {
                 Character c = possibleCharacters.get(
                         (int) ((Math.random() * Integer.MAX_VALUE) % possibleCharacters.size())
                 );

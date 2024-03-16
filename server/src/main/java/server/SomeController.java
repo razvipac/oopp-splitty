@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/")
 public class SomeController {
 
+    /**
+     * Handles the index endpoint.
+     *
+     * @return A string message "Hello world!".
+     */
     @GetMapping("/")
     @ResponseBody
     public String index() {

@@ -20,14 +20,17 @@ public class LanguageManager {
         File file = new File(PREFERENCES_FILE_PATH);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(file, new TypeReference<LanguageOption>() {});
+            return objectMapper.readValue(file, new TypeReference<LanguageOption>() {
+            });
         } catch (IOException e) {
-            return new LanguageOption(); // Default preferences if the file doesn't exist or there's an issue reading it
+            return new LanguageOption();
+            // Default preferences if the file doesn't exist or there's an issue reading it
         }
     }
 
     /**
      * This method saves a language to the config file
+     *
      * @param language is the language option that we want to save in the config file
      */
     public static void saveLanguage(LanguageOption language) {
@@ -50,13 +53,14 @@ public class LanguageManager {
     }
 
     /**
-     *
-     * @param key takes a key and we want to
+     * @param language The language option representing the current language.
+     * @param key      takes a key and we want to
      * @return its associated value from the json file corresponding to the current language in use
      */
+
     public static String get(LanguageOption language, String key) {
         File file = new File("userSettings/English.json");
-        if(language.getLanguage().equals(LanguageOption.Language.DUTCH)){
+        if (language.getLanguage().equals(LanguageOption.Language.DUTCH)) {
             file = new File("userSettings/Dutch.json");
 
         }

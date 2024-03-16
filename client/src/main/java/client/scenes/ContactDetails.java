@@ -155,6 +155,9 @@ public class ContactDetails {
         return this.scene;
     }
 
+    /**
+     * Displays a modal alert box for adding a participant.
+     */
     public void displayAlertBox() {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);

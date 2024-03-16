@@ -21,6 +21,12 @@ public class ExpenseController {
     private final ExpenseService expenseService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
+    /**
+     * Constructor for initializing the ExpenseController.
+     *
+     * @param expenseService        The ExpenseService instance to be used.
+     * @param simpMessagingTemplate The SimpMessagingTemplate instance to be used.
+     */
     @Autowired
     public ExpenseController(ExpenseService expenseService,
                              SimpMessagingTemplate simpMessagingTemplate) {
@@ -31,9 +37,17 @@ public class ExpenseController {
     /**
      * GET api/v1/{eventCode}/expense?id={id}&participantName={name}
      * id and participantName are optional
-     * if any of them is omitted all Expenses of event with {eventCode} will be returned
-     * if they are both given a Expense belonging to a participant with name {name} of Event with {eventCode}
-     * and with id {id} will be returned
+     * If any of them is omitted all Expenses of event with {eventCode} will be returned
+     * If they are both given an Expense belonging to a participant with name {name} of Event
+     * with {eventCode} and with id {id} will be returned
+     *
+     * @param id               The ID of the expense (optional).
+     * @param participantName  The name of the participant (optional).
+     * @param eventCode        The event code.
+     * @return                 A ResponseEntity containing a list of ExpenseResponseBody objects
+     *                         if id and participantName are omitted
+     *                         or a single ExpenseResponseBody
+     *                         object if both id and participantName are provided.
      */
     @GetMapping("")
     public ResponseEntity<List<ExpenseResponseBody>> getAllOrOne(
@@ -43,7 +57,9 @@ public class ExpenseController {
     ) {
         if (id == null && participantName == null) {
             List<Expense> expenses = expenseService.getAllInEvent(eventCode);
-            List<ExpenseResponseBody> responseBodies = expenses.stream().map(ExpenseResponseBody::build).toList();
+            List<ExpenseResponseBody> responseBodies = expenses.stream()
+                                                               .map(ExpenseResponseBody::build)
+                                                               .toList();
             return new ResponseEntity<>(responseBodies, HttpStatus.OK);
         }
 
@@ -62,16 +78,22 @@ public class ExpenseController {
 //            @DestinationVariable("eventCode") String eventCode
 //    ){
 //        List<Expense> expenses = expenseService.getAllInEvent(eventCode);
-//        List<ExpenseResponseBody> responseBodies = expenses.stream().map(ExpenseResponseBody::build).toList();
+//        List<ExpenseResponseBody> responseBodies = expenses.stream()
+//        .map(ExpenseResponseBody::build).toList();
 //        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
 //    }
 
     /**
      * POST api/v1/{eventCode}/expense with request body in format of ExpenseRequestBody
      * creates a new Expense populated with data from body under an event with {eventCode}
+     * <p>
+     * Sends out a WebSocket STOMP message to all listeners
+     * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction CREATED
      *
-     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/{eventCode}/expense
-     * with WSAction CREATED
+     * @param eventCode The event code.
+     * @param body      The ExpenseRequestBody containing data for creating the expense.
+     * @return A ResponseEntity containing the ExpenseResponseBody of the created expense
+     *         if successful, or a NOT_FOUND response if the event is not found.
      */
     @PostMapping("")
     public ResponseEntity<ExpenseResponseBody> createOne(
@@ -99,9 +121,15 @@ public class ExpenseController {
      * DELETE api/v1/{eventCode}/expense?id={id}&participantName={name}
      * deletes expense belonging to a Participant with name {name} and id {id} from
      * event with code {eventCode}
+     * <p>
+     * Sends out a WebSocket STOMP message to all listeners
+     * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction DELETED
      *
-     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/{eventCode}/expense
-     * with WSAction DELETED
+     * @param id              The ID of the expense.
+     * @param participantName The name of the participant.
+     * @param eventCode       The event code.
+     * @return A ResponseEntity containing the ExpenseResponseBody of the deleted expense
+     *         if successful, or a NOT_FOUND response if the expense is not found.
      */
     @DeleteMapping("")
     public ResponseEntity<ExpenseResponseBody> deleteOne(
@@ -130,9 +158,15 @@ public class ExpenseController {
      * PUT api/v1/{eventCode}/expense?id={id} with request body in format of ExpenseRequestBody
      * Updates the data of expense object with id {id} under event with code {eventCode}
      * Overwrites data with that in passed body, YOU CANNOT CHANGE THE NAME OF THE PARTICIPANT
+     * <p>
+     * Sends out a WebSocket STOMP message to all listeners
+     * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction MODIFIED
      *
-     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/{eventCode}/expense
-     * with WSAction MODIFIED
+     * @param id         The ID of the expense.
+     * @param eventCode  The event code.
+     * @param body       The ExpenseRequestBody containing data for updating the expense.
+     * @return A ResponseEntity containing the ExpenseResponseBody of the updated expense
+     *         if successful, or a NOT_FOUND response if the expense is not found.
      */
     @PutMapping("")
     public ResponseEntity<ExpenseResponseBody> updateOneById(

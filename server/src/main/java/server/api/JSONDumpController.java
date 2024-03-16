@@ -15,6 +15,11 @@ import java.util.List;
 public class JSONDumpController {
     private final JSONDumpService jsonDumpService;
 
+    /**
+     * Constructs a JSONDumpController with the specified JSONDumpService.
+     *
+     * @param jsonDumpService The JSONDumpService instance to be injected.
+     */
     public JSONDumpController(@Autowired JSONDumpService jsonDumpService) {
         this.jsonDumpService = jsonDumpService;
     }
@@ -22,6 +27,9 @@ public class JSONDumpController {
     /**
      * GET api/v1/admin/jsondump
      * Returns a JSON object corresponding to the current state of the server
+     *
+     * @return A ResponseEntity containing a list of EventResponseBody objects if successful.
+     *         Returns HttpStatus.OK if successful.
      */
     @GetMapping("")
     public ResponseEntity<List<EventResponseBody>> getJSONDump(){
@@ -31,6 +39,14 @@ public class JSONDumpController {
     /**
      * POST api/v1/admin/jsondump with a request body in List<EventDump> format
      * Restores the server to the state in accordance with the passed JSON object
+     *
+     * @param body The request body in List<EventResponseBody> format.
+     * @return A ResponseEntity with a status message.
+     *         Returns "Restored Successfully" if the restoration is successful (HttpStatus.OK).
+     *         Returns "Improper JSON dump format!" if the JSON dump format
+     *         is improper (HttpStatus.NOT_MODIFIED).
+     *         Returns "Unknown Error!" if an unknown error occurs
+     *         (HttpStatus.INTERNAL_SERVER_ERROR).
      */
     @PostMapping("")
     public ResponseEntity<String> restoreFromJSONDump(

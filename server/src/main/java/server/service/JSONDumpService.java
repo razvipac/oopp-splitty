@@ -26,7 +26,16 @@ public class JSONDumpService {
     private final ParticipantRepository participantRepository;
     private final ExpenseRepository expenseRepository;
 
-
+    /**
+     * Constructs a JSONDumpService with the specified dependencies.
+     *
+     * @param eventService          The EventService instance.
+     * @param participantService    The ParticipantService instance.
+     * @param expenseService        The ExpenseService instance.
+     * @param eventRepository       The EventRepository instance.
+     * @param participantRepository The ParticipantRepository instance.
+     * @param expenseRepository     The ExpenseRepository instance.
+     */
     public JSONDumpService(
             @Autowired EventService eventService,
             @Autowired ParticipantService participantService,
@@ -45,16 +54,18 @@ public class JSONDumpService {
     /**
      * Freezes the state of the server into a JSON dump format.
      * This state can be restored from by using the restoreFromDump function.
+     *
      * @return state of the server in List<EventDump>
      */
-    public List<EventResponseBody> createDump(){
+    public List<EventResponseBody> createDump() {
 
         List<EventResponseBody> response = new ArrayList<>();
 
         List<Event> events = eventService.getAll();
 
         for (Event event : events) {
-            EventResponseBody eventResponseBody = new EventResponseBody(event, new ArrayList<>(), new ArrayList<>());
+            EventResponseBody eventResponseBody =
+                    new EventResponseBody(event, new ArrayList<>(), new ArrayList<>());
 
             List<Participant> participants = participantService.getAll(event.getCode());
             List<Expense> expenses = expenseService.getAllInEvent(event.getCode());
@@ -85,20 +96,23 @@ public class JSONDumpService {
 
     /**
      * Restores the state of the server to that stored inside the passed List<EventDump>
+     *
      * @param jsonDump List<EventDump> containing the desired state of the server
      * @throws ImproperDumpFormatException if the passed jsonDump is formatted improperly
      */
     @Transactional
-    public void restoreFromDump(List<EventResponseBody> jsonDump) throws ImproperDumpFormatException {
+    public void restoreFromDump(List<EventResponseBody> jsonDump)
+            throws ImproperDumpFormatException {
         expenseRepository.deleteAll();
         participantRepository.deleteAll();
         eventRepository.deleteAll();
         try {
-            for (EventResponseBody eventResponseBody : jsonDump){
+            for (EventResponseBody eventResponseBody : jsonDump) {
                 Event event = eventResponseBody.event();
                 eventRepository.save(event);
 
-                for (ParticipantResponseBody participantResponseBody : eventResponseBody.participants()){
+                for (ParticipantResponseBody participantResponseBody :
+                        eventResponseBody.participants()) {
                     Participant participant = new Participant(
                             participantResponseBody.name(),
                             event,
@@ -109,16 +123,18 @@ public class JSONDumpService {
                     participantRepository.save(participant);
                 }
 
-                for (ExpenseResponseBody expenseResponseBody : eventResponseBody.expenses()){
+                for (ExpenseResponseBody expenseResponseBody : eventResponseBody.expenses()) {
                     Expense expense = new Expense(
                             expenseResponseBody.price(),
                             expenseResponseBody.item(),
-                            participantRepository.findParticipantByEventCodeAndName(expenseResponseBody.paidBy(), event.getCode()).get()
+                            participantRepository.
+                                    findParticipantByEventCodeAndName
+                                            (expenseResponseBody.paidBy(), event.getCode()).get()
                     );
                     expenseRepository.save(expense);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ImproperDumpFormatException("Improper dump format");
         }
     }

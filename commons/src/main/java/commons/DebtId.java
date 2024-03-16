@@ -1,6 +1,7 @@
 package commons;
 
 import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -8,15 +9,15 @@ import java.util.Objects;
 public class DebtId implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumns({
-            @JoinColumn(name = "debtor_name", referencedColumnName = "name"),
-            @JoinColumn(name = "debtor_event_code", referencedColumnName = "event_code")
+        @JoinColumn(name = "debtor_name", referencedColumnName = "name"),
+        @JoinColumn(name = "debtor_event_code", referencedColumnName = "event_code")
     })
     private Participant debtor;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumns({
-            @JoinColumn(name = "creditor_name", referencedColumnName = "name"),
-            @JoinColumn(name = "creditor_event_code", referencedColumnName = "event_code")
+        @JoinColumn(name = "creditor_name", referencedColumnName = "name"),
+        @JoinColumn(name = "creditor_event_code", referencedColumnName = "event_code")
     })
     private Participant creditor;
 
@@ -28,7 +29,8 @@ public class DebtId implements Serializable {
 
     /**
      * Instantiate a new primary key for a Debt object
-     * @param debtor The debtor of the debt
+     *
+     * @param debtor   The debtor of the debt
      * @param creditor The creditor of the debt
      */
     public DebtId(Participant debtor, Participant creditor) {
@@ -37,7 +39,6 @@ public class DebtId implements Serializable {
     }
 
     /**
-     *
      * @return Returns the current debitor
      */
     public Participant getDebtor() {
@@ -46,6 +47,7 @@ public class DebtId implements Serializable {
 
     /**
      * Sets the current debitor to be another
+     *
      * @param debtor Represents another participant
      */
     public void setDebtor(Participant debtor) {
@@ -53,7 +55,6 @@ public class DebtId implements Serializable {
     }
 
     /**
-     *
      * @return Returns the current creditor
      */
     public Participant getCreditor() {
@@ -62,6 +63,7 @@ public class DebtId implements Serializable {
 
     /**
      * Sets the current creditor to be another
+     *
      * @param creditor Represents another participant
      */
     public void setCreditor(Participant creditor) {
@@ -69,7 +71,6 @@ public class DebtId implements Serializable {
     }
 
     /**
-     *
      * @return Returns a simple string format for the primary key of Debt
      */
     @Override
@@ -81,7 +82,6 @@ public class DebtId implements Serializable {
     }
 
     /**
-     *
      * @param o Another object to be compared with
      * @return Returns whether two objects are equal
      */
@@ -94,7 +94,6 @@ public class DebtId implements Serializable {
     }
 
     /**
-     *
      * @return Returns a hash code for a specific primary key
      */
     @Override

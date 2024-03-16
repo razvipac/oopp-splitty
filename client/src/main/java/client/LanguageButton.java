@@ -11,10 +11,16 @@ import java.util.Locale;
 //todo class need complete refactoring
 public class LanguageButton extends Button {
 
+    /**
+     * Constructs a LanguageButton.
+     */
     public LanguageButton() {
 //        initialize();
     }
 
+    /**
+     * Initializes the language button.
+     */
     private void initialize() {
 //        setGraphic(createFlagIcon()); // Set the initial flag icon
 //        setOnMouseClicked(event -> handleMouseClicked(event));
@@ -22,10 +28,16 @@ public class LanguageButton extends Button {
 //        loadCurrentLanguage(); // Load the persisted language choice
     }
 
+    /**
+     * Loads available languages.
+     */
     private void loadAvailableLanguages() {
 //        availableLanguages = LanguageManager.getSupportedLocales();
     }
 
+    /**
+     * Loads the current language.
+     */
     private void loadCurrentLanguage() {
 //        currentLanguage = LanguageManager.loadSelectedLocale();
 //        if (currentLanguage == null) {
@@ -34,6 +46,11 @@ public class LanguageButton extends Button {
 //        updateFlagIcon();
     }
 
+    /**
+     * Creates a flag icon image view.
+     *
+     * @return The flag icon image view.
+     */
     private ImageView createFlagIcon() {
 //        Image flagImage = LanguageManager.getFlagImage(currentLanguage);
 //        ImageView imageView = new ImageView(flagImage);
@@ -43,16 +60,27 @@ public class LanguageButton extends Button {
         return null;
     }
 
+    /**
+     * Updates the flag icon.
+     */
     private void updateFlagIcon() {
 //        setGraphic(createFlagIcon());
     }
 
+    /**
+     * Handles mouse clicked event.
+     *
+     * @param event The mouse event.
+     */
     private void handleMouseClicked(javafx.scene.input.MouseEvent event) {
 //        if (event.getButton() == MouseButton.PRIMARY) {
 //            showLanguageMenu();
 //        }
     }
 
+    /**
+     * Shows the language menu.
+     */
     private void showLanguageMenu() {
 //        ContextMenu contextMenu = new ContextMenu();
 //
@@ -70,6 +98,11 @@ public class LanguageButton extends Button {
 //        contextMenu.setOnHidden(hiddenEvent -> setGraphic(createFlagIcon()));
     }
 
+    /**
+     * Selects a language.
+     *
+     * @param selectedLocale The selected locale.
+     */
     private void selectLanguage(Locale selectedLocale) {
 //        currentLanguage = selectedLocale;
 //

@@ -30,7 +30,9 @@ public class DebtService {
      */
     public List<Debt> getAllSettledDebtsForEvent(String eventCode) {
         List<Debt> debts = new LinkedList<>();
-        debtRepository.findAllSettledDebtsForEvent(eventCode).iterator().forEachRemaining(debts::add);
+        debtRepository.findAllSettledDebtsForEvent(eventCode)
+                      .iterator()
+                      .forEachRemaining(debts::add);
         return debts;
     }
 }

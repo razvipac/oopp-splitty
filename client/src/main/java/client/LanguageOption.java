@@ -1,28 +1,52 @@
 package client;
+
 public class LanguageOption {
+    /**
+     * Enumerates supported languages.
+     */
     public enum Language {
         ENGLISH, DUTCH
     }
-    Language language;
 
+    private Language language;
+
+    /**
+     * Constructs a LanguageOption with the specified language.
+     *
+     * @param language The language option.
+     */
     public LanguageOption(Language language) {
         this.language = language;
     }
-    public LanguageOption(){
+
+    /**
+     * Constructs a LanguageOption with the default language (English).
+     */
+    public LanguageOption() {
         this.language = Language.ENGLISH;
     }
 
+    /**
+     * Returns a string representation of the language.
+     *
+     * @return The string representation of the language.
+     */
     @Override
     public String toString() {
-        if(this.language.equals(Language.ENGLISH)){
+        if (this.language.equals(Language.ENGLISH)) {
             return "English";
         }
-        if(this.language.equals(Language.DUTCH)){
+        if (this.language.equals(Language.DUTCH)) {
             return "Dutch";
         }
         return "";
     }
 
+    /**
+     * Retrieves the language option.
+     *
+     * @return The language option.
+     */
     public Language getLanguage() {
         return this.language;
     }

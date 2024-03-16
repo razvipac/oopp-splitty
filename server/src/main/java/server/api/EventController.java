@@ -19,6 +19,12 @@ public class EventController {
     private final EventService eventService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
+    /**
+     * Constructs an EventController with the specified EventService and SimpMessagingTemplate.
+     *
+     * @param eventService          The EventService to be injected into the controller.
+     * @param simpMessagingTemplate The SimpMessagingTemplate to be injected into the controller.
+     */
     public EventController(@Autowired EventService eventService,
                            @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.eventService = eventService;
@@ -26,24 +32,29 @@ public class EventController {
     }
 
     /**
-     * GET /api/v1/
-     * Gets all Events
+     * Retrieves all events through a GET request to /api/v1/.
+     *
+     * @return A ResponseEntity containing a list of all events fetched from the database.
+     * Returns HttpStatus.OK if successful.
      */
     @GetMapping
-    public ResponseEntity<List<Event>> getAll(){
+    public ResponseEntity<List<Event>> getAll() {
         return new ResponseEntity<>(eventService.getAll(), HttpStatus.OK);
     }
 
 
     /**
-     * POST /api/v1/?name={name}
-     * Creates a new Event with name {name}
+     * Creates a new Event with the specified name through a POST request to /api/v1/?name={name}.
+     * <p>
+     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/event"
+     * with WSAction CREATED.
      *
-     * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/event
-     * with WSAction CREATED
+     * @param name The name of the new event.
+     * @return A ResponseEntity containing the newly created event.
+     * Returns HttpStatus.CREATED if successful.
      */
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestParam("name") String name){
+    public ResponseEntity<Event> createEvent(@RequestParam("name") String name) {
         Event event = eventService.createOne(name);
 
         simpMessagingTemplate.convertAndSend("/api/websocket/v1/channel/event",
@@ -55,31 +66,47 @@ public class EventController {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
+
     /**
-     * DELETE api/v1/?code={eventCode}/
-     * deletes the whole event with the Event Code {eventCode}
+     * Deletes the event with the specified Event Code
+     * through a DELETE request to api/v1/?code={eventCode}.
+     *
+     * @param eventCode The Event Code of the event to be deleted.
+     * @return A ResponseEntity containing the deleted event if successful.
+     *         Returns HttpStatus.OK if successful.
+     *         Returns HttpStatus.NOT_FOUND if the event is not found in the database.
      */
+
     @DeleteMapping("")
     public ResponseEntity<Event> deleteOne(
             @RequestParam("eventCode") String eventCode
-    ){
-        try{
+    ) {
+        try {
             return new ResponseEntity<>(eventService.deleteOne(eventCode), HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e){
+        } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     /**
-     * PUT api/v1/{eventCode}/expense?id={id}
+     * Updates the event with the specified Event Code by changing its name through a PUT request to
+     * api/v1/{eventCode}/expense?id={id}.
+     *
+     * @param name The new name for the event.
+     * @param eventCode The Event Code of the event to be updated.
+     * @return A ResponseEntity containing the updated event if successful.
+     *         Returns HttpStatus.OK if successful.
+     *         Returns HttpStatus.NOT_FOUND if the event is not found in the database.
      */
+
     @PutMapping("")
     public ResponseEntity<Event> updateOneByName(
             @RequestParam("name") String name,
             @RequestParam("eventCode") String eventCode
-    ){
-        try{
+    ) {
+        try {
             return new ResponseEntity<>(eventService.updateOne(eventCode, name), HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e){
+        } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

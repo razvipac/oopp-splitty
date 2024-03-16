@@ -8,6 +8,13 @@ public record ExpenseResponseBody(
        Integer price,
        String item
 ) {
+
+    /**
+     * Builds an ExpenseResponseBody from an Expense object.
+     *
+     * @param expense The Expense object to build the response body from.
+     * @return An ExpenseResponseBody object built from the provided Expense.
+     */
     public static ExpenseResponseBody build(Expense expense){
         return new ExpenseResponseBody(
                 expense.getId(),

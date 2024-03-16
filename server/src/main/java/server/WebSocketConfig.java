@@ -10,12 +10,22 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class  WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    /**
+     * Configures message broker.
+     *
+     * @param config The message broker registry.
+     */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/api/websocket/v1/channel");
         config.setApplicationDestinationPrefixes("/api/websocket");
     }
 
+    /**
+     * Registers Stomp endpoints.
+     *
+     * @param registry The Stomp endpoint registry.
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-connect");
