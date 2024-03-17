@@ -1,9 +1,14 @@
 package client.scenes;
 
 import client.Main;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class Statistics {
     private Scene scene;
@@ -32,7 +37,22 @@ public class Statistics {
         pieChart.getData().add(slice3);
         pieChart.getData().add(slice4);
 
-        VBox vbox = new VBox(pieChart);
+
+        int totalCost = (int) (slice1.getPieValue() + slice2.getPieValue() + slice3.getPieValue() + slice4.getPieValue());
+
+
+        Label totalCostLabel = new Label("Total Cost of Event: " + totalCost + "€");
+        totalCostLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+
+        Label titleLabel = new Label("Statistics");
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+
+
+        VBox vbox = new VBox(titleLabel, totalCostLabel, pieChart);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(10, 10, 10, 10));
 
         scene = new Scene(vbox, 400, 200);
     }
