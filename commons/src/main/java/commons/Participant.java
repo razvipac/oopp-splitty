@@ -2,6 +2,8 @@ package commons;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Objects;
 @Entity
 @Table(name = "participant")
@@ -11,6 +13,9 @@ public class Participant {
     private String email;
     private String iban;
     private String bic;
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "pkey.paidBy")
+    private List<Expense> expenses;
+
 
     /**
      * Default constructor needed for the JPA
