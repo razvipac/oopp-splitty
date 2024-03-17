@@ -34,6 +34,6 @@ public class Statistics {
 
         VBox vbox = new VBox(pieChart);
 
-        Scene scene = new Scene(vbox, 400, 200);
+        scene = new Scene(vbox, 400, 200);
     }
 }
