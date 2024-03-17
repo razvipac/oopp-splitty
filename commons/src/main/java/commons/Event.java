@@ -3,9 +3,7 @@ package commons;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -189,6 +187,68 @@ public class Event {
         return expenses.stream()
                 .mapToInt(Expense::getPrice)
                 .sum();
+    }
+
+    /**
+     *
+     * @param allParticipants Represents all the participants from the server
+     * @param event The event to be taken into consideration
+     * @param expenses The list of expenses within an event
+     * @return Returns a list of debts to be settled
+     */
+    public static List<Debt> settleDebts(List<Participant> allParticipants,
+                                  Event event, List<Expense> expenses) {
+        Map<Participant, Double> debtMap = new HashMap<>();
+
+        for (Expense expense : expenses) {
+            Participant paidBy = expense.getPaidBy();
+            double totalExpense = expense.getPrice();
+
+            List<Participant> participants = basicGetParticipants(allParticipants, event);
+            double individualShare = totalExpense / participants.size();
+
+            for (Participant participant : participants) {
+                if (!participant.equals(paidBy)) {
+                    double currentDebt = debtMap.getOrDefault(participant, 0.0);
+                    debtMap.put(participant, currentDebt + individualShare);
+                }
+            }
+        }
+
+        List<Debt> debts = new ArrayList<>();
+        for (Map.Entry<Participant, Double> entry : debtMap.entrySet()) {
+            Participant debtor = entry.getKey();
+            double amount = entry.getValue();
+            debts.add(new Debt(debtor, null, amount)); // Leave the creditor null for now
+        }
+
+        return debts;
+    }
+
+    /**
+     *
+     * @param allParticipants Represents all the participants from the entire server
+     * @param event The event to be taken into consideration
+     * @return Returns the list of participants who are present within one specific event
+     */
+    private static List<Participant> basicGetParticipants(List<Participant> allParticipants, Event event) {
+        List<Participant> participants = new ArrayList<>();
+        for(Participant participant : allParticipants)
+            if(participant.getEvent().equals(event))
+                participants.add(participant);
+        return participants;
+    }
+
+    /**
+     *
+     * @param expense The expense to be taken into consideration
+     * @return Returns the list of people who participated in this event
+     */
+    private static List<Participant> advancedGetParticipants(Expense expense) {
+        List<Participant> participants = new ArrayList<>();
+        participants.add(expense.getPaidBy());
+        // Logic to be added for participants
+        return participants;
     }
 
 }
