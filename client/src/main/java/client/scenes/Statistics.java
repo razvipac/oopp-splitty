@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -38,7 +39,8 @@ public class Statistics {
         pieChart.getData().add(slice4);
 
 
-        int totalCost = (int) (slice1.getPieValue() + slice2.getPieValue() + slice3.getPieValue() + slice4.getPieValue());
+        int totalCost = (int) (slice1.getPieValue() + slice2.getPieValue() +
+                slice3.getPieValue() + slice4.getPieValue());
 
 
         Label totalCostLabel = new Label("Total Cost of Event: " + totalCost + "€");
@@ -48,12 +50,15 @@ public class Statistics {
         Label titleLabel = new Label("Statistics");
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
 
-        VBox vbox = new VBox(titleLabel, totalCostLabel, pieChart);
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setSpacing(10);
-        vbox.setPadding(new Insets(10, 10, 10, 10));
+        VBox layout = new VBox();
+        layout.setAlignment(Pos.CENTER);
+        layout.setSpacing(10);
+        layout.setPadding(new Insets(10, 10, 10, 10));
+        layout.getChildren().addAll(titleLabel, pieChart, totalCostLabel, backButton);
 
-        scene = new Scene(vbox, 400, 200);
+        scene = new Scene(layout, 400, 200);
     }
 }
