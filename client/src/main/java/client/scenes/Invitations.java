@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.Main;
+import commons.Event;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +20,7 @@ public class Invitations {
     private Scene scene;
     private TextArea boxToPutEmails;
     private Main main; // reference to Main class
+    private Event event;
 
     /**
      * Getter for the scene
@@ -31,9 +34,21 @@ public class Invitations {
      * Constructor for the invitation that calls the method to create the scene
      * @param main scene of the main class
      */
-    public Invitations(Main main) {
+    public Invitations(Main main, Event event) {
         this.main = main;
-        createSceneInvitation();
+        this.event = event;
+        if(event == null) createSceneNoEvent();
+        else createSceneInvitation();
+    }
+
+    /**
+     * Creates the scene for if there is no event found
+     */
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("No event found");
+        layout.getChildren().add(noEventText);
+        scene = new Scene(layout, 350, 380);
     }
 
     /**

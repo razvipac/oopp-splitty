@@ -61,7 +61,7 @@ public class EventOverview {
         this.main = main;
         this.event = event;
         this.contactDetails = new ContactDetails(main);
-        this.invitations = new Invitations(main);
+        this.invitations = new Invitations(main, event);
 
         if(event == null) {
             createSceneNoEvent();
