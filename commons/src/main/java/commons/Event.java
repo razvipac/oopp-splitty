@@ -251,4 +251,23 @@ public class Event {
         return participants;
     }
 
+    /**
+     * Retrieves the debtors from within a specific expense.
+     *
+     * @param expense The expense for which debtors are to be retrieved.
+     * @return A set of participants who are debtors within the expense.
+     */
+    public Set<Participant> getDebtorsWithinExpense(List<Participant> allParticipants, Expense expense) {
+        Set<Participant> debtors = new HashSet<>();
+        Participant creditor = expense.getPaidBy(); // The participant who paid for the expense is the creditor
+
+        for (Debt debt : settleDebts(allParticipants, expense.getPaidBy().getEvent(), List.of(expense))) {
+            if (!debt.getCreditor().equals(creditor)) {
+                debtors.add(debt.getDebtor());
+            }
+        }
+
+        return debtors;
+    }
+
 }
