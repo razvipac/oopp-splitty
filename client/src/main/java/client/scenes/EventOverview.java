@@ -23,6 +23,7 @@ public class EventOverview {
     private Main main;
     private ContactDetails contactDetails;
     private Invitations invitations;
+    private AddEditExpense addEditExpense;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -60,8 +61,9 @@ public class EventOverview {
     public EventOverview(Main main, Event event) {
         this.main = main;
         this.event = event;
-        this.contactDetails = new ContactDetails(main);
-        this.invitations = new Invitations(main, event);
+        contactDetails = new ContactDetails(main);
+        invitations = new Invitations(main, event);
+        addEditExpense = new AddEditExpense(main);
 
         if(event == null) {
             createSceneNoEvent();
@@ -115,8 +117,11 @@ public class EventOverview {
         Text participantNames = new Text(participantsToString());
         Text expensesHeader = new Text("Expenses");
         expensesHeader.setFont(h2);
-        // TODO: add expense button is non-functional
+
         Button expenseAddButton = new Button("Add Expense");
+        expenseAddButton.setOnAction(e -> {
+            addEditExpense.displayAlertBox();
+        });
 
         HBox radioSelectBox = getRadioSelectBox();
         ComboBox<String> participantDropdown = getParticipantDropdown();
