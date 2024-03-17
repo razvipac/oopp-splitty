@@ -17,6 +17,9 @@ public class Event {
     private String code;
     private LocalDateTime creationDate;
     private LocalDateTime lastActivity;
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "pkey.event")
+    private List<Participant> participants;
+
 
     /**
      * Initializing an empty Event

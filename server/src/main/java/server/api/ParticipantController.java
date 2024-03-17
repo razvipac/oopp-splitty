@@ -110,16 +110,27 @@ public class ParticipantController {
      */
     @DeleteMapping("")
     public ResponseEntity<ParticipantResponseBody> deleteOne(
-            @RequestParam("participantName") String participantName,
-            @PathVariable("eventCode") String eventCode) {
-        try {
-            return new ResponseEntity<>(ParticipantResponseBody.build(
-                    participantService.deleteOne(eventCode, participantName)
-            ), HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e) {
+            @RequestParam("name") String participantName,
+            @PathVariable("eventCode") String eventCode
+    ){
+        try{
+            Participant participant = participantService.deleteOne(eventCode, participantName);
+            ParticipantResponseBody responseBody = ParticipantResponseBody.build(participant);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/participant",
+                    new WSWrapperResponseBody<>(
+                            WSAction.DELETED,
+                            responseBody
+                    ));
+            return new ResponseEntity<>(responseBody, HttpStatus.OK);
+        } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
+
 
     /**
      * PUT /api/v1/{eventCode}/participant with parameter name and body
@@ -137,9 +148,17 @@ public class ParticipantController {
             @PathVariable("eventCode") String eventCode,
             @RequestBody ParticipantRequestBody body) {
         try {
-            return new ResponseEntity<>(ParticipantResponseBody.build(
-                    participantService.updateOne(eventCode, name, body)
-            ), HttpStatus.OK);
+            Participant updated = participantService.updateOne(eventCode, name, body);
+            ParticipantResponseBody response = ParticipantResponseBody.build(updated);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/participant",
+                    new WSWrapperResponseBody<>(
+                            WSAction.MODIFIED,
+                            response
+                    ));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
