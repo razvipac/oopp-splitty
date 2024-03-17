@@ -81,9 +81,9 @@ public class EventController {
     public ResponseEntity<Event> deleteOne(
             @RequestParam("eventCode") String eventCode
     ) throws NotFoundInDatabaseException {
-        Event event = eventService.createOne(eventCode);
+        Event event = eventService.deleteOne(eventCode);
         simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/event",
+                "/api/websocket/v1/channel/" + eventCode,
                 new WSWrapperResponseBody<>(
                         WSAction.DELETED,
                         event
@@ -111,7 +111,7 @@ public class EventController {
         try {
             Event event = eventService.updateOne(eventCode, name);
             simpMessagingTemplate.convertAndSend(
-                    "/api/websocket/v1/channel/event",
+                    "/api/websocket/v1/channel/" + eventCode,
                     new WSWrapperResponseBody<>(
                             WSAction.MODIFIED,
                             event
