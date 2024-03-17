@@ -80,12 +80,16 @@ public class EventController {
     @DeleteMapping("")
     public ResponseEntity<Event> deleteOne(
             @RequestParam("eventCode") String eventCode
-    ) {
-        try {
-            return new ResponseEntity<>(eventService.deleteOne(eventCode), HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    ) throws NotFoundInDatabaseException {
+        Event event = eventService.createOne(eventCode);
+        simpMessagingTemplate.convertAndSend(
+                "/api/websocket/v1/channel/event",
+                new WSWrapperResponseBody<>(
+                        WSAction.DELETED,
+                        event
+                ));
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     /**
@@ -105,7 +109,15 @@ public class EventController {
             @RequestParam("eventCode") String eventCode
     ) {
         try {
-            return new ResponseEntity<>(eventService.updateOne(eventCode, name), HttpStatus.OK);
+            Event event = eventService.updateOne(eventCode, name);
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/event",
+                    new WSWrapperResponseBody<>(
+                            WSAction.MODIFIED,
+                            event
+                    ));
+
+            return new ResponseEntity<>(event, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
