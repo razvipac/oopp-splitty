@@ -1,25 +1,33 @@
 package server.service;
 
 import commons.Debt;
+import commons.DebtId;
+import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import server.api.pojo.request_body.DebtRequestBody;
 import server.database.DebtRepository;
+import server.service.exceptions.NotFoundInDatabaseException;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Optional;
 
 @Service
 public class DebtService {
     private final DebtRepository debtRepository;
+    private ParticipantService participantService;
 
     /**
      * Constructs a DebtService with the specified DebtRepository
      *
      * @param debtRepository The repository for accessing and managing Debt entities
+     * @param participantService Todo
      */
     @Autowired
-    public DebtService(DebtRepository debtRepository) {
+    public DebtService(DebtRepository debtRepository, ParticipantService participantService) {
         this.debtRepository = debtRepository;
+        this.participantService = participantService;
     }
 
     /**
@@ -28,11 +36,58 @@ public class DebtService {
      * @param eventCode The code of the event for which settled debts are to be retrieved
      * @return A list of settled debts for the specified event.
      */
-    public List<Debt> getAllSettledDebtsForEvent(String eventCode) {
+    public List<Debt> getAllUnsettledDebtsForEvent(String eventCode) {
         List<Debt> debts = new LinkedList<>();
-        debtRepository.findAllSettledDebtsForEvent(eventCode)
-                      .iterator()
-                      .forEachRemaining(debts::add);
+        debtRepository.findAllUnsettledDebtsForEvent(eventCode)
+                .iterator().
+                forEachRemaining(debts::add);
         return debts;
+
     }
+
+    /**
+     * Gets a Debt object from the given names that form its primary key
+     * @param eventCode of the object
+     * @param debtorName todo
+     * @param creditorName todo
+     * @return the Debt object if it is found
+     * @throws NotFoundInDatabaseException
+     */
+    public Debt getOne(String eventCode, String debtorName,
+                       String creditorName) throws NotFoundInDatabaseException {
+
+        Optional<Debt> search = debtRepository.findById(getDebtId(
+                eventCode,
+                debtorName,
+                creditorName
+        ));
+        if (search.isPresent()) {
+            return search.get();
+        }
+        throw new NotFoundInDatabaseException("Debt was not found in the database");
+    }
+
+    /**
+     * Changes the 'recieved state of the object'
+     * @param eventCode of the object
+     * @param body of the object
+     * @return the object
+     * @throws NotFoundInDatabaseException
+     */
+    public Debt updateOne(String eventCode, DebtRequestBody body)
+            throws NotFoundInDatabaseException {
+        Debt found = getOne(eventCode, body.debtor_name(), body.creditor_name());
+        // if not found exception will be thrown
+        found.setReceived(!body.received());
+        debtRepository.save(found);
+        return found;
+
+    }
+    private DebtId getDebtId(String eventCode, String debtorName, String creditorName)
+            throws NotFoundInDatabaseException {
+        Participant debtor = participantService.getOne(eventCode, debtorName);
+        Participant creditor = participantService.getOne(eventCode, creditorName);
+        return new DebtId(debtor, creditor);
+    }
+
 }
