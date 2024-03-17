@@ -16,15 +16,26 @@ public class Statistics {
 
     private Main main;
 
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
     public Scene getScene() {
         return scene;
     }
 
+    /**
+     * Constructor for the statistics that calls the method to create the scene
+     * @param main scene of the main class
+     */
     public Statistics(Main main) {
         this.main = main;
         createSceneStatistics();
     }
 
+    /**
+     * Creates the GUI for the statistics
+     */
     public void createSceneStatistics() {
         // Created a pie chart hard coded for now
         PieChart pieChart = new PieChart();
