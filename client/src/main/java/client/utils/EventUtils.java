@@ -16,18 +16,18 @@ public class EventUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
-    /**
-     * Gets all events.
-     * @return All events as a List
-     */
-    public List<Event> getAllEvents() {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Event>>() {
-                });
-    }
+//    /**
+//     * Gets all events.
+//     * @return All events as a List
+//     */
+//    public List<Event> getAllEvents() {
+//       return ClientBuilder.newClient(new ClientConfig())
+//               .target(SERVER).path("api/v1/")
+//               .request(APPLICATION_JSON)
+//               .accept(APPLICATION_JSON)
+//               .get(new GenericType<List<Event>>() {
+//               });
+//   }
 
     /**
      * Creates an event with the given event name.
@@ -54,7 +54,7 @@ public class EventUtils {
                 .target(SERVER).path("api/v1/" + code + "/expense")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Participant>>() {
+                .get(new GenericType<>() {
                 });
     }
 
