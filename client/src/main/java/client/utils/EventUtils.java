@@ -20,14 +20,14 @@ public class EventUtils {
      * Gets all events.
      * @return All events as a List
      */
-    public List<Event> getAllEvents() {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Event>>() {
-                });
-    }
+//    public List<Event> getAllEvents() {
+//       return ClientBuilder.newClient(new ClientConfig())
+//               .target(SERVER).path("api/v1/")
+//               .request(APPLICATION_JSON)
+//               .accept(APPLICATION_JSON)
+//               .get(new GenericType<List<Event>>() {
+//               });
+//   }
 
     /**
      * Creates an event with the given event name.
