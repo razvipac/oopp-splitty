@@ -36,7 +36,7 @@ public class StartScreen {
      */
     public StartScreen(Main main) {
         this.main = main;
-//       events = server.getAllEvents();
+        events = server.getAllEvents();
 
         createSceneStartScreen();
     }
