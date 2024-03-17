@@ -44,6 +44,7 @@ public class Main extends Application {
     private final EventOverview eo = new EventOverview(this, null);
     private final StartScreen sc = new StartScreen(this);
     private final AddEditExpense aed = new AddEditExpense(this);
+    private final Statistics statistics = new Statistics(this);
 
     private Stage primaryStage; // added this line
     private Scene mainScene; // added this line
@@ -93,6 +94,9 @@ public class Main extends Application {
         Button addExpenseButton = new Button("Add Expense");
         addExpenseButton.setOnAction(e -> primaryStage.setScene(aed.getScene()));
 
+        Button statisticsButton = new Button("Statistics");
+        statisticsButton.setOnAction(e -> primaryStage.setScene(statistics.getScene()));
+
         // Button for language selection
         Button languageButton = new LanguageButton();
 
@@ -101,7 +105,7 @@ public class Main extends Application {
         layout.setPadding(new Insets(10));
         // adding elements to layout
         layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton,
-                odButton,languageButton, addExpenseButton);
+                odButton,languageButton, addExpenseButton, statisticsButton);
 
         // Scene
         mainScene = new Scene(layout, 400, 300); // changed this line
