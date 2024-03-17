@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class Invitations {
     private Scene scene;
@@ -81,5 +83,16 @@ public class Invitations {
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());
+    }
+
+    /**
+     * Displays a modal alert box for the Invitations page.
+     */
+    public void displayAlertBox() {
+        Stage window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Send Invite");
+        window.setScene(scene);
+        window.showAndWait();
     }
 }

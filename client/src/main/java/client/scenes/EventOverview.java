@@ -22,6 +22,7 @@ public class EventOverview {
     private Scene scene;
     private Main main;
     private ContactDetails contactDetails;
+    private Invitations invitations;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -60,6 +61,7 @@ public class EventOverview {
         this.main = main;
         this.event = event;
         this.contactDetails = new ContactDetails(main);
+        this.invitations = new Invitations(main);
 
         if(event == null) {
             createSceneNoEvent();
@@ -148,6 +150,9 @@ public class EventOverview {
 
         // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
+        sendInviteButton.setOnAction(e -> {
+            invitations.displayAlertBox();
+        });
 
         eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 
