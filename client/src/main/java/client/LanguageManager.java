@@ -3,13 +3,11 @@ package client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.IOException;
-//import java.util.List;
-//import java.util.Locale;
-
 public class LanguageManager {
     private static final String PREFERENCES_FILE_PATH = "userSettings/userPreferences.json";
 
@@ -23,6 +21,7 @@ public class LanguageManager {
             return objectMapper.readValue(file, new TypeReference<LanguageOption>() {
             });
         } catch (IOException e) {
+            System.out.println("The system defaulted to english");
             return new LanguageOption();
             // Default preferences if the file doesn't exist or there's an issue reading it
         }
@@ -34,10 +33,18 @@ public class LanguageManager {
      * @param language is the language option that we want to save in the config file
      */
     public static void saveLanguage(LanguageOption language) {
-        File file = new File(PREFERENCES_FILE_PATH);
         try {
+            File file = new File(PREFERENCES_FILE_PATH);
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(file, language);
+            JsonNode rootNode = objectMapper.readTree(file);
+
+            // Modify the value of the "language" parameter
+            if (rootNode.has("language")) {
+                ((ObjectNode) rootNode).put("language", language.toString());
+            }
+
+            // Write modified JSON back to file
+            objectMapper.writeValue(file, rootNode);
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception appropriately in your application
         }
