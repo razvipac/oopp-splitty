@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import java.io.File;
 import java.io.IOException;
 public class LanguageManager {
-    private static final String PREFERENCES_FILE_PATH = "userSettings/userPreferences.json";
+    private static final String PREFERENCES_FILE_PATH = "client\\src\\main\\resources\\userSettings\\userPreferences.json";
 
     /**
      * @return the current language stored in the PREFERENCES_FILE_PATH address
@@ -66,18 +66,22 @@ public class LanguageManager {
      */
 
     public static String get(LanguageOption language, String key) {
-        File file = new File("userSettings/English.json");
-        if (language.getLanguage().equals(LanguageOption.Language.DUTCH)) {
-            file = new File("userSettings/Dutch.json");
-
-        }
         try {
+            File file = new File(PREFERENCES_FILE_PATH);
             // Read JSON from file
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
 
+            String languageString = rootNode.get("language").asText();
+            JsonNode languageSection = rootNode.get(languageString);
+
             // Get the value associated with the key
-            return rootNode.get(key).asText();
+            if(languageSection.has(key)){
+                return languageSection.get(key).asText();
+            }else{
+                return "NotFound";
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
