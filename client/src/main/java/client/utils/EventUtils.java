@@ -4,7 +4,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -28,7 +27,7 @@ public class EventUtils {
                 .target(SERVER).path("api/v1/")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Event>>() {
+                .get(new GenericType<>() {
                 });
     }
 
@@ -63,6 +62,10 @@ public class EventUtils {
                 });
     }
 
+    /**
+     * Adds Participant to server
+     * @param p Participant to add
+     */
     public void addParticipant(Participant p) {
         String code = p.getEvent().getCode();
         String endpoint = "api/v1/" + code + "/participant";
