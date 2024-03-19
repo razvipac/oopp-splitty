@@ -7,8 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.util.Locale;
 //todo class need complete refactoring
 public class LanguageButton extends Button {
     private LanguageOption currentLanguage;
