@@ -9,7 +9,8 @@ import javafx.scene.image.Image;
 import java.io.File;
 import java.io.IOException;
 public class LanguageManager {
-    private static final String PREFERENCES_FILE_PATH = "client\\src\\main\\resources\\userSettings\\userPreferences.json";
+    private static final String PREFERENCES_FILE_PATH
+            = "client\\src\\main\\resources\\userSettings\\userPreferences.json";
 
     /**
      * @return the current language stored in the PREFERENCES_FILE_PATH address
@@ -57,8 +58,8 @@ public class LanguageManager {
      */
     public static Image getFlagImage(LanguageOption language) {
         // URL = "file:\\client\\src\\main\\resources\\userSettings\\English.png";
-        String URL = "file:///client/src/main/resources/userSettings/English.png";
-        Image image = new Image(URL);
+        String url = "file:///client/src/main/resources/userSettings/English.png";
+        Image image = new Image(url);
         return image;
     }
 

@@ -95,7 +95,8 @@ public class LanguageButton extends Button {
 
         // Add menu items for each available language
         for (LanguageOption languageOption : availableLanguages) {
-            MenuItem menuItem = new MenuItem(LanguageManager.get(languageOption,languageOption.toString()));
+            MenuItem menuItem =
+                    new MenuItem(LanguageManager.get(languageOption,languageOption.toString()));
             menuItem.setOnAction(actionEvent -> selectLanguage(languageOption));
             contextMenu.getItems().add(menuItem);
         }
