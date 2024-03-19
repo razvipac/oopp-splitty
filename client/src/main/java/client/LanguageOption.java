@@ -1,5 +1,8 @@
 package client;
-
+/**
+ * This class is supposed to work as a Language in its own, with the ability to have
+ * some getters and setters
+ */
 public class LanguageOption {
     /**
      * Enumerates supported languages.
