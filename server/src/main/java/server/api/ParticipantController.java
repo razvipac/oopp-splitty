@@ -35,7 +35,7 @@ public class ParticipantController {
     }
 
     /**
-     * GET api/v1/{eventCode}/expense?name={name}
+     * GET api/v1/{eventCode}/participant?name={name}
      * name is optional
      * if it is omitted all Participants of event with {eventCode} will be returned
      * if it is given a Participant belonging to an Event
