@@ -34,9 +34,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 public class Main extends Application {
 
-    private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
-
     // add your page as a private object below
     private final OpenDebts od = new OpenDebts(this);
     private final Invitations inv = new Invitations(this, null);
