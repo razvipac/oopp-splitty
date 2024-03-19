@@ -29,6 +29,7 @@ public class ContactDetails {
     /**
      * Constructor for the contact details that calls the method to create the scene
      * @param main scene of the main class
+     * @param event the event to add to
      */
     public ContactDetails(Main main, Event event){
         this.main = main;

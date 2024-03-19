@@ -16,7 +16,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import commons.Event;
-import client.utils.EventUtils;
 
 import java.util.List;
 import java.util.Optional;
