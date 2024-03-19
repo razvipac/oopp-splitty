@@ -1,7 +1,5 @@
 package commons.request_body;
 
-import commons.Participant;
-
 /**
  * The structure of the request body for the Participant object
  *
