@@ -2,7 +2,9 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -61,19 +63,22 @@ public class EventUtils {
                 });
     }
 
-//    public Participant addParticipant(Participant p) {
-//        String code = p.getEvent().getCode();
-//        String endpoint = "api/v1/" + code + "/participant";
-//        String name = p.getName();
-//        String email = p.getEmail();
-//        String iban = p.getIban();
-//        String bic = p.getBic();
-//
-//        return ClientBuilder.newClient(new ClientConfig())
-//                .target(SERVER).path(endpoint)
-//                .request(APPLICATION_JSON)
-//                .accept(APPLICATION_JSON)
-//                .post(Entity.entity(..., APPLICATION_JSON), Participant.class);
-//    }
+    public void addParticipant(Participant p) {
+        String code = p.getEvent().getCode();
+        String endpoint = "api/v1/" + code + "/participant";
+
+        ParticipantRequestBody requestBody = new ParticipantRequestBody(
+                p.getName(),
+                p.getEmail(),
+                p.getIban(),
+                p.getBic()
+        );
+
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(requestBody, APPLICATION_JSON));
+    }
 
 }

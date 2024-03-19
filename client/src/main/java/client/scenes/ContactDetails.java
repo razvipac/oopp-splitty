@@ -109,7 +109,7 @@ public class ContactDetails {
             Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
                     boxIBAN.getText(), boxBIC.getText());
             System.out.println(p.toString());
-            //System.out.println(server.addParticipant(p));
+            server.addParticipant(p);
         });
 
         Button backButton = new Button("Back");
