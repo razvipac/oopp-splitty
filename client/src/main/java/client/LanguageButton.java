@@ -1,10 +1,10 @@
 package client;
 import javafx.scene.control.Button;
-//import javafx.scene.control.ContextMenu;
-//import javafx.scene.control.MenuItem;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-//import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseButton;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,42 +78,40 @@ public class LanguageButton extends Button {
      * @param event The mouse event.
      */
     private void handleMouseClicked(javafx.scene.input.MouseEvent event) {
-//        if (event.getButton() == MouseButton.PRIMARY) {
-//            showLanguageMenu();
-//        }
+        if (event.getButton() == MouseButton.PRIMARY) {
+            showLanguageMenu();
+        }
     }
 
     /**
      * Shows the language menu.
      */
     private void showLanguageMenu() {
-//        ContextMenu contextMenu = new ContextMenu();
-//
-//        // Add menu items for each available language
-//        for (Locale locale : availableLanguages) {
-//            MenuItem menuItem = new MenuItem(locale.getDisplayLanguage());
-//            menuItem.setOnAction(actionEvent -> selectLanguage(locale));
-//            contextMenu.getItems().add(menuItem);
-//        }
-//
-//        // Show the context menu below the button
-//        contextMenu.show(this, 0, getHeight());
-//
-//        // Set a listener to hide the menu when the user clicks outside of it
-//        contextMenu.setOnHidden(hiddenEvent -> setGraphic(createFlagIcon()));
+        ContextMenu contextMenu = new ContextMenu();
+
+        // Add menu items for each available language
+        for (LanguageOption languageOption : availableLanguages) {
+            MenuItem menuItem = new MenuItem(LanguageManager.get(languageOption,languageOption.toString()));
+            menuItem.setOnAction(actionEvent -> selectLanguage(languageOption));
+            contextMenu.getItems().add(menuItem);
+        }
+
+        // Show the context menu below the button
+        contextMenu.show(this, 0, getHeight());
+
+        // Set a listener to hide the menu when the user clicks outside of it
+        contextMenu.setOnHidden(hiddenEvent -> setGraphic(createFlagIcon()));
     }
 
     /**
      * Selects a language.
      *
-     * @param selectedLocale The selected locale.
+     * @param languageOption is the language you want to switch to
      */
-    private void selectLanguage(Locale selectedLocale) {
-//        currentLanguage = selectedLocale;
-//
-//        // TODO: Save the selected language to storage for persistence
-//        LanguageManager.saveSelectedLocale(currentLanguage);
-//
-//        updateFlagIcon();
+    private void selectLanguage(LanguageOption languageOption) {
+        currentLanguage = languageOption;
+        LanguageManager.saveLanguage(currentLanguage);
+        updateFlagIcon();
+        this.setText(LanguageManager.get(currentLanguage,"Test"));
     }
 }
