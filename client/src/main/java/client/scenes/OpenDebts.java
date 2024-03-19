@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 import commons.Debt;
 import commons.Participant;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class OpenDebts {
 
@@ -150,6 +152,17 @@ public class OpenDebts {
         debtLine.getChildren().addAll(moreInfo, debtStringLabel, receivedButton);
         debtItem.getChildren().addAll(debtLine, debtInfo);
         layout.getChildren().add(debtItem);
+    }
+
+    /**
+     * Displays a modal alert box for viewing Open Debts.
+     */
+    public void displayAlertBox() {
+        Stage window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Add Participant");
+        window.setScene(scene);
+        window.showAndWait();
     }
 
 }

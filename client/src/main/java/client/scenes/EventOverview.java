@@ -24,6 +24,7 @@ public class EventOverview {
     private ContactDetails contactDetails;
     private Invitations invitations;
     private AddEditExpense addEditExpense;
+    private OpenDebts openDebts;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -61,14 +62,16 @@ public class EventOverview {
     public EventOverview(Main main, Event event) {
         this.main = main;
         this.event = event;
-        contactDetails = new ContactDetails(main);
-        invitations = new Invitations(main, event);
-        addEditExpense = new AddEditExpense(main);
 
         if(event == null) {
             createSceneNoEvent();
             return;
         }
+
+        contactDetails = new ContactDetails(main);
+        invitations = new Invitations(main, event);
+        addEditExpense = new AddEditExpense(main);
+        openDebts = new OpenDebts(main);
 
         eventName = event.getName();
         eventCode = event.getCode();
@@ -130,6 +133,9 @@ public class EventOverview {
         ScrollPane expensesScroller = getExpensesScroller();
         // TODO: button is non-functional
         Button settleDebtsButton = new Button("Settle Debts");
+        settleDebtsButton.setOnAction(e -> {
+            openDebts.displayAlertBox();
+        });
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
