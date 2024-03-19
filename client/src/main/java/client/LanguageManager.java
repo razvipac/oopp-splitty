@@ -89,4 +89,17 @@ public class LanguageManager {
         }
     }
 
+    /**
+     * This is the function used to communicate mostly between the front end and
+     * the translation interface. It will translate take the key and call the function get
+     * with the current language on it.
+     * !!Note that you should put the key with its corresponding values in both English and Dutch
+     * parts of the userPrefences.json
+     * @param key takes a key
+     * @return the associated value with it in the json config file
+     */
+    public static String get(String key){
+        return LanguageManager.get(LanguageButton.getCurrentLanguage(),key);
+    }
+
 }
