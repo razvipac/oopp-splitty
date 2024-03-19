@@ -1,3 +1,5 @@
+#Meeting
+
 #### Meeting Organization
 
 Mark: Pass/Fail
@@ -29,9 +31,6 @@ Feedback: Excellent
 
 
 #### Chair performance
-
-*TA Instructions:*
-Please consider the following dimensions in your assessment:
 
 - Did the chair ensure that all topics of the agenda were covered?
 - Were all topics covered for an appropriate amount of time?
