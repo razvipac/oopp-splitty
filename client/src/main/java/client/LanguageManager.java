@@ -3,15 +3,13 @@ package client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.IOException;
-//import java.util.List;
-//import java.util.Locale;
-
 public class LanguageManager {
-    private static final String PREFERENCES_FILE_PATH = "userSettings/userPreferences.json";
+    private static final String PREFERENCES_FILE_PATH = "client\\src\\main\\resources\\userSettings\\userPreferences.json";
 
     /**
      * @return the current language stored in the PREFERENCES_FILE_PATH address
@@ -23,6 +21,7 @@ public class LanguageManager {
             return objectMapper.readValue(file, new TypeReference<LanguageOption>() {
             });
         } catch (IOException e) {
+            System.out.println("The system defaulted to english");
             return new LanguageOption();
             // Default preferences if the file doesn't exist or there's an issue reading it
         }
@@ -34,10 +33,18 @@ public class LanguageManager {
      * @param language is the language option that we want to save in the config file
      */
     public static void saveLanguage(LanguageOption language) {
-        File file = new File(PREFERENCES_FILE_PATH);
         try {
+            File file = new File(PREFERENCES_FILE_PATH);
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(file, language);
+            JsonNode rootNode = objectMapper.readTree(file);
+
+            // Modify the value of the "language" parameter
+            if (rootNode.has("language")) {
+                ((ObjectNode) rootNode).put("language", language.toString());
+            }
+
+            // Write modified JSON back to file
+            objectMapper.writeValue(file, rootNode);
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception appropriately in your application
         }
@@ -59,18 +66,22 @@ public class LanguageManager {
      */
 
     public static String get(LanguageOption language, String key) {
-        File file = new File("userSettings/English.json");
-        if (language.getLanguage().equals(LanguageOption.Language.DUTCH)) {
-            file = new File("userSettings/Dutch.json");
-
-        }
         try {
+            File file = new File(PREFERENCES_FILE_PATH);
             // Read JSON from file
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
 
+            String languageString = rootNode.get("language").asText();
+            JsonNode languageSection = rootNode.get(languageString);
+
             // Get the value associated with the key
-            return rootNode.get(key).asText();
+            if(languageSection.has(key)){
+                return languageSection.get(key).asText();
+            }else{
+                return "NotFound";
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
