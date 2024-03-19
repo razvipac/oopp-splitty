@@ -2,48 +2,53 @@ package client;
 import javafx.scene.control.Button;
 //import javafx.scene.control.ContextMenu;
 //import javafx.scene.control.MenuItem;
-//import javafx.scene.image.Image;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 //import javafx.scene.input.MouseButton;
-//import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Locale;
 //todo class need complete refactoring
 public class LanguageButton extends Button {
-
+    private LanguageOption currentLanguage;
+    private static List<LanguageOption> availableLanguages;
     /**
      * Constructs a LanguageButton.
      */
     public LanguageButton() {
-//        initialize();
+        initialize();
     }
 
     /**
      * Initializes the language button.
      */
     private void initialize() {
-//        setGraphic(createFlagIcon()); // Set the initial flag icon
-//        setOnMouseClicked(event -> handleMouseClicked(event));
-//        loadAvailableLanguages();
-//        loadCurrentLanguage(); // Load the persisted language choice
+        setGraphic(createFlagIcon()); // Set the initial flag icon
+        setOnMouseClicked(event -> handleMouseClicked(event));
+        loadAvailableLanguages();
+        loadCurrentLanguage(); // Load the persisted language choice
+        this.setText(LanguageManager.get(currentLanguage,"Test"));
     }
 
     /**
      * Loads available languages.
      */
     private void loadAvailableLanguages() {
-//        availableLanguages = LanguageManager.getSupportedLocales();
+        availableLanguages = new ArrayList<>();
+        availableLanguages.add(new LanguageOption(LanguageOption.Language.ENGLISH));
+        availableLanguages.add(new LanguageOption(LanguageOption.Language.DUTCH));
+
     }
 
     /**
      * Loads the current language.
      */
     private void loadCurrentLanguage() {
-//        currentLanguage = LanguageManager.loadSelectedLocale();
-//        if (currentLanguage == null) {
-//            currentLanguage = Locale.getDefault();
-//        }
-//        updateFlagIcon();
+        //check code of loadLanguage for more details. In case no language exists in the preferences
+        //the algorithm defaults to english
+        currentLanguage = LanguageManager.loadLanguage();
+        updateFlagIcon();
     }
 
     /**
@@ -52,19 +57,19 @@ public class LanguageButton extends Button {
      * @return The flag icon image view.
      */
     private ImageView createFlagIcon() {
-//        Image flagImage = LanguageManager.getFlagImage(currentLanguage);
-//        ImageView imageView = new ImageView(flagImage);
-//        imageView.setFitWidth(20);
-//        imageView.setFitHeight(15);
-//        return imageView;
-        return null;
+        //getFlagImage currently returns null
+        Image flagImage = LanguageManager.getFlagImage(currentLanguage);
+        ImageView imageView = new ImageView(flagImage);
+        imageView.setFitWidth(20);
+        imageView.setFitHeight(15);
+        return imageView;
     }
 
     /**
      * Updates the flag icon.
      */
     private void updateFlagIcon() {
-//        setGraphic(createFlagIcon());
+        setGraphic(createFlagIcon());
     }
 
     /**
