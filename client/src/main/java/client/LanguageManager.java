@@ -56,7 +56,9 @@ public class LanguageManager {
      * @return an appropriate flag associated with this language
      */
     public static Image getFlagImage(LanguageOption language) {
-        return null;
+        String URL = "file:\\client\\src\\main\\resources\\userSettings\\English.png";
+        Image image = new Image(URL);
+        return image;
     }
 
     /**
