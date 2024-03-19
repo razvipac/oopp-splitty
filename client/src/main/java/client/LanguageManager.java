@@ -9,15 +9,22 @@ import javafx.scene.image.Image;
 import java.io.File;
 import java.io.IOException;
 public class LanguageManager {
-    private static final String PREFERENCES_FILE_PATH
-            = "client\\src\\main\\resources\\userSettings\\userPreferences.json";
+    private String preferencesFilePath;
+
+    /**
+     *
+     * @param preferencesFilePath initialize this to create better injection
+     */
+    public LanguageManager(String preferencesFilePath) {
+        this.preferencesFilePath = preferencesFilePath;
+    }
 
     /**
      * @return the current language stored in the PREFERENCES_FILE_PATH address
      */
-    public static LanguageOption loadLanguage() {
+    public LanguageOption loadLanguage() {
         try {
-            File file = new File(PREFERENCES_FILE_PATH);
+            File file = new File(preferencesFilePath);
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(file, new TypeReference<LanguageOption>() {
             });
@@ -33,9 +40,9 @@ public class LanguageManager {
      *
      * @param language is the language option that we want to save in the config file
      */
-    public static void saveLanguage(LanguageOption language) {
+    public void saveLanguage(LanguageOption language) {
         try {
-            File file = new File(PREFERENCES_FILE_PATH);
+            File file = new File(preferencesFilePath);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
 
@@ -69,9 +76,9 @@ public class LanguageManager {
      * @return its associated value from the json file corresponding to the current language in use
      */
 
-    public static String get(LanguageOption language, String key) {
+    public String get(LanguageOption language, String key) {
         try {
-            File file = new File(PREFERENCES_FILE_PATH);
+            File file = new File(preferencesFilePath);
             // Read JSON from file
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
@@ -102,8 +109,8 @@ public class LanguageManager {
      * @param key takes a key
      * @return the associated value with it in the json config file
      */
-    public static String get(String key){
-        return LanguageManager.get(LanguageButton.getCurrentLanguage(),key);
+    public String get(String key){
+        return this.get(LanguageButton.getCurrentLanguage(),key);
     }
 
 }

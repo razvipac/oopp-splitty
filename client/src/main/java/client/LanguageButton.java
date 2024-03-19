@@ -11,6 +11,7 @@ import java.util.List;
 public class LanguageButton extends Button {
     private static LanguageOption currentLanguage;
     private static List<LanguageOption> availableLanguages;
+    private static LanguageManager languageManager;
     /**
      * @return the language chosen by the user
      */
@@ -28,11 +29,13 @@ public class LanguageButton extends Button {
      * Initializes the language button.
      */
     private void initialize() {
+        languageManager = new LanguageManager("client" +
+                "\\src\\main\\resources\\userSettings\\userPreferences.json");
         setGraphic(createFlagIcon()); // Set the initial flag icon
         setOnMouseClicked(event -> handleMouseClicked(event));
         loadAvailableLanguages();
         loadCurrentLanguage(); // Load the persisted language choice
-        this.setText(LanguageManager.get("Test"));
+        this.setText(languageManager.get("Test"));
     }
 
     /**
@@ -51,7 +54,7 @@ public class LanguageButton extends Button {
     private void loadCurrentLanguage() {
         //check code of loadLanguage for more details. In case no language exists in the preferences
         //the algorithm defaults to english
-        currentLanguage = LanguageManager.loadLanguage();
+        currentLanguage = languageManager.loadLanguage();
         updateFlagIcon();
     }
 
@@ -96,7 +99,7 @@ public class LanguageButton extends Button {
         // Add menu items for each available language
         for (LanguageOption languageOption : availableLanguages) {
             MenuItem menuItem =
-                    new MenuItem(LanguageManager.get(languageOption,languageOption.toString()));
+                    new MenuItem(languageManager.get(languageOption,languageOption.toString()));
             menuItem.setOnAction(actionEvent -> selectLanguage(languageOption));
             contextMenu.getItems().add(menuItem);
         }
@@ -115,8 +118,8 @@ public class LanguageButton extends Button {
      */
     private void selectLanguage(LanguageOption languageOption) {
         currentLanguage = languageOption;
-        LanguageManager.saveLanguage(currentLanguage);
+        languageManager.saveLanguage(currentLanguage);
         updateFlagIcon();
-        this.setText(LanguageManager.get("Test"));
+        this.setText(languageManager.get("Test"));
     }
 }
