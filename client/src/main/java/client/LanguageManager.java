@@ -15,8 +15,8 @@ public class LanguageManager {
      * @return the current language stored in the PREFERENCES_FILE_PATH address
      */
     public static LanguageOption loadLanguage() {
-        File file = new File(PREFERENCES_FILE_PATH);
         try {
+            File file = new File(PREFERENCES_FILE_PATH);
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(file, new TypeReference<LanguageOption>() {
             });
@@ -56,7 +56,8 @@ public class LanguageManager {
      * @return an appropriate flag associated with this language
      */
     public static Image getFlagImage(LanguageOption language) {
-        String URL = "file:\\client\\src\\main\\resources\\userSettings\\English.png";
+        // URL = "file:\\client\\src\\main\\resources\\userSettings\\English.png";
+        String URL = "file:///client/src/main/resources/userSettings/English.png";
         Image image = new Image(URL);
         return image;
     }
