@@ -9,8 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 //todo class need complete refactoring
 public class LanguageButton extends Button {
-    private LanguageOption currentLanguage;
+    private static LanguageOption currentLanguage;
     private static List<LanguageOption> availableLanguages;
+    /**
+     * @return the language chosen by the user
+     */
+    public static LanguageOption getCurrentLanguage() {
+        return LanguageButton.currentLanguage;
+    }
     /**
      * Constructs a LanguageButton.
      */
@@ -26,7 +32,7 @@ public class LanguageButton extends Button {
         setOnMouseClicked(event -> handleMouseClicked(event));
         loadAvailableLanguages();
         loadCurrentLanguage(); // Load the persisted language choice
-        this.setText(LanguageManager.get(currentLanguage,"Test"));
+        this.setText(LanguageManager.get("Test"));
     }
 
     /**
@@ -110,6 +116,6 @@ public class LanguageButton extends Button {
         currentLanguage = languageOption;
         LanguageManager.saveLanguage(currentLanguage);
         updateFlagIcon();
-        this.setText(LanguageManager.get(currentLanguage,"Test"));
+        this.setText(LanguageManager.get("Test"));
     }
 }
