@@ -1,7 +1,7 @@
 package client.scenes;
 
 import client.Main;
-import client.utils.EventUtils;
+import client.utils.ServerUtils;
 import commons.Event;
 import commons.Participant;
 
@@ -24,7 +24,7 @@ public class ContactDetails {
     private Main main;
     private Event event;
 
-    private EventUtils server = new EventUtils();
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     /**
      * Constructor for the contact details that calls the method to create the scene
@@ -109,7 +109,7 @@ public class ContactDetails {
             Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
                     boxIBAN.getText(), boxBIC.getText());
             System.out.println(p.toString());
-            server.addParticipant(p);
+            server.getParticipantUtils().addParticipant(p);
         });
 
         Button backButton = new Button("Back");
