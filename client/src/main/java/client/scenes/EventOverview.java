@@ -68,7 +68,7 @@ public class EventOverview {
             return;
         }
 
-        contactDetails = new ContactDetails(main);
+        contactDetails = new ContactDetails(main, event);
         invitations = new Invitations(main, event);
         addEditExpense = new AddEditExpense(main);
         openDebts = new OpenDebts(main);

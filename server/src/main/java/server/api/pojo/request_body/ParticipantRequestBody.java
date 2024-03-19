@@ -1,5 +1,7 @@
 package server.api.pojo.request_body;
 
+import commons.Participant;
+
 /**
  * The structure of the request body for the Participant object
  *
@@ -14,4 +16,12 @@ public record ParticipantRequestBody(
         String iban,
         String bic
 ) {
+    public ParticipantRequestBody build(Participant p){
+        return new ParticipantRequestBody(
+                p.getName(),
+                p.getEmail(),
+                p.getIban(),
+                p.getBic()
+        );
+    }
 }
