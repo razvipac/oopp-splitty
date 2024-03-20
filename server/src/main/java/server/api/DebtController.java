@@ -13,6 +13,9 @@ import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
+
+
 
 @RestController
 @RequestMapping("api/v1/events/{eventCode}/debts")
@@ -31,15 +34,19 @@ public class DebtController {
     }
 
     /**
-     * Retrieves all settled debts for a specific event.
+     * Retrieves all unsettled debts for a specific event.
      *
-     * @param eventCode The code of the event for which settled debts are to be retrieved
-     * @return A DeferredResult containing the list of settled debts
+     * @param eventCode The code of the event for which unsettled debts are to be retrieved
+     * @return A DeferredResult containing the list of unsettled debts
      */
     @GetMapping
-    public DeferredResult<ResponseEntity<List<Debt>>>
-        getAllUnsettledDebts(@PathVariable String eventCode) {
-        DeferredResult<ResponseEntity<List<Debt>>> output = new DeferredResult<>();
+    public DeferredResult<ResponseEntity<List<Debt>>> getAllUnsettledDebts
+    (@PathVariable String eventCode) {
+        DeferredResult<ResponseEntity<List<Debt>>> output = new DeferredResult<>(5000L);
+        output.onTimeout(() -> output.setErrorResult(
+                ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                        .body("Request timed out. Please try again.")));
+
         ForkJoinPool.commonPool().submit(() -> {
             List<Debt> unsettledDebts = debtService.getAllUnsettledDebtsForEvent(eventCode);
             output.setResult(new ResponseEntity<>(unsettledDebts, HttpStatus.OK));
