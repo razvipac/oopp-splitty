@@ -42,7 +42,7 @@ public class DebtController {
     @GetMapping
     public DeferredResult<ResponseEntity<List<Debt>>> getAllUnsettledDebts
     (@PathVariable String eventCode) {
-        DeferredResult<ResponseEntity<List<Debt>>> output = new DeferredResult<>(5000L);
+        DeferredResult<ResponseEntity<List<Debt>>> output = new DeferredResult<>(300000L);
         output.onTimeout(() -> output.setErrorResult(
                 ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
                         .body("Request timed out. Please try again.")));
