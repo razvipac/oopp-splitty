@@ -10,18 +10,22 @@ import javafx.scene.text.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import client.utils.ServerUtils;
 import client.Main;
-import client.utils.EventUtils;
 import commons.Expense;
 import commons.Participant;
 import commons.Event;
 
 public class EventOverview {
 
-    private EventUtils server = new EventUtils();
     private Scene scene;
     private Main main;
     private ContactDetails contactDetails;
+    private Invitations invitations;
+    private AddEditExpense addEditExpense;
+    private OpenDebts openDebts;
+
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -59,18 +63,22 @@ public class EventOverview {
     public EventOverview(Main main, Event event) {
         this.main = main;
         this.event = event;
-        this.contactDetails = new ContactDetails(main);
 
         if(event == null) {
             createSceneNoEvent();
             return;
         }
 
+        contactDetails = new ContactDetails(main, event);
+        invitations = new Invitations(main, event);
+        addEditExpense = new AddEditExpense(main);
+        openDebts = new OpenDebts(main);
+
         eventName = event.getName();
         eventCode = event.getCode();
 
         // Participants for testing purposes
-        participants = server.getParticipants(event.getCode());
+        participants = server.getParticipantUtils().getParticipants(event.getCode());
         Participant test = new Participant("test", event, "test", "test", "test");
         participants.add(test);
 
@@ -113,8 +121,11 @@ public class EventOverview {
         Text participantNames = new Text(participantsToString());
         Text expensesHeader = new Text("Expenses");
         expensesHeader.setFont(h2);
-        // TODO: add expense button is non-functional
+
         Button expenseAddButton = new Button("Add Expense");
+        expenseAddButton.setOnAction(e -> {
+            addEditExpense.displayAlertBox();
+        });
 
         HBox radioSelectBox = getRadioSelectBox();
         ComboBox<String> participantDropdown = getParticipantDropdown();
@@ -123,6 +134,9 @@ public class EventOverview {
         ScrollPane expensesScroller = getExpensesScroller();
         // TODO: button is non-functional
         Button settleDebtsButton = new Button("Settle Debts");
+        settleDebtsButton.setOnAction(e -> {
+            openDebts.displayAlertBox();
+        });
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
@@ -148,6 +162,9 @@ public class EventOverview {
 
         // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
+        sendInviteButton.setOnAction(e -> {
+            invitations.displayAlertBox();
+        });
 
         eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 

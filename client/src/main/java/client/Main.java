@@ -15,17 +15,11 @@
  */
 package client;
 
-import static com.google.inject.Guice.createInjector;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import client.scenes.*;
-import com.google.inject.Injector;
 import client.scenes.OpenDebts;
-//import client.scenes.AddQuoteCtrl;
-//import client.scenes.MainCtrl;
-//import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -34,13 +28,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 public class Main extends Application {
 
-    private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
-
     // add your page as a private object below
     private final OpenDebts od = new OpenDebts(this);
-    private final Invitations inv = new Invitations(this);
-    private final ContactDetails cd = new ContactDetails(this);
+    private final Invitations inv = new Invitations(this, null);
+    private final ContactDetails cd = new ContactDetails(this, null);
     private final EventOverview eo = new EventOverview(this, null);
     private final StartScreen sc = new StartScreen(this);
     private final AddEditExpense aed = new AddEditExpense(this);

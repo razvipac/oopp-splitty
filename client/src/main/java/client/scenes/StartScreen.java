@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Main;
 
+import client.utils.ServerUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,18 +16,17 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import commons.Event;
-import client.utils.EventUtils;
 
 import java.util.List;
 import java.util.Optional;
 
 public class StartScreen {
 
-    private EventUtils server = new EventUtils();
-
     private Scene scene;
     private Main main;
     private EventOverview eventOverview;
+
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     private List<Event> events;
 
@@ -36,7 +36,7 @@ public class StartScreen {
      */
     public StartScreen(Main main) {
         this.main = main;
-//       events = server.getAllEvents();
+        events = server.getEventUtils().getAllEvents();
 
         createSceneStartScreen();
     }
@@ -78,7 +78,7 @@ public class StartScreen {
         createButton.setFont(Font.font("Arial"));
         createButton.setOnAction(e -> {
             String eventName = createEvent.getText();
-            Event event = server.createEvent(eventName);
+            Event event = server.getEventUtils().createEvent(eventName);
             System.out.println(event.toString());
             eventOverview = new EventOverview(main, event);
             main.getPrimaryStage().setScene(eventOverview.getScene());

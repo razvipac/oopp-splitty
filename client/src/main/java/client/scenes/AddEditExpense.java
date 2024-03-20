@@ -13,6 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -159,6 +161,17 @@ public class AddEditExpense {
 
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 500, 600);
+    }
+
+    /**
+     * Displays a modal alert box for adding a participant.
+     */
+    public void displayAlertBox() {
+        Stage window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Add/Edit Expense");
+        window.setScene(scene);
+        window.showAndWait();
     }
 
 }

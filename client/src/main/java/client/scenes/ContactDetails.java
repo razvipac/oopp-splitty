@@ -1,6 +1,10 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.ServerUtils;
+import commons.Event;
+import commons.Participant;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,14 +22,32 @@ import javafx.stage.Stage;
 public class ContactDetails {
     private Scene scene;
     private Main main;
+    private Event event;
+
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     /**
      * Constructor for the contact details that calls the method to create the scene
      * @param main scene of the main class
+     * @param event the event to add to
      */
-    public ContactDetails(Main main){
+    public ContactDetails(Main main, Event event){
         this.main = main;
+        this.event = event;
+
+        if(event == null) {
+            createSceneNoEvent();
+            return;
+        }
+
         createSceneContactDetails();
+    }
+
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("No event found");
+        layout.getChildren().add(noEventText);
+        scene = new Scene(layout, 350, 380);
     }
 
     /**
@@ -84,8 +106,11 @@ public class ContactDetails {
 
         // non functional
         Button ok = new Button("Ok");
-        abort.setOnAction(e -> {
-            // add it to the server
+        ok.setOnAction(e -> {
+            Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
+                    boxIBAN.getText(), boxBIC.getText());
+            System.out.println(p.toString());
+            server.getParticipantUtils().addParticipant(p);
         });
 
         Button backButton = new Button("Back");
