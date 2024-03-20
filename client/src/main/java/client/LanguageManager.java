@@ -1,6 +1,4 @@
 package client;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -26,13 +24,21 @@ public class LanguageManager {
         try {
             File file = new File(preferencesFilePath);
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(file, new TypeReference<LanguageOption>() {
-            });
+            JsonNode rootNode = objectMapper.readTree(file);
+
+            // Modify the value of the "language" parameter
+            if (rootNode.has("language")) {
+                if(rootNode.get("language").asText().equals("Dutch")){
+                    return new LanguageOption(LanguageOption.Language.DUTCH);
+                }
+                return new LanguageOption();
+            }
         } catch (IOException e) {
             System.out.println("The system defaulted to english");
             return new LanguageOption();
             // Default preferences if the file doesn't exist or there's an issue reading it
         }
+        return null;
     }
 
     /**
