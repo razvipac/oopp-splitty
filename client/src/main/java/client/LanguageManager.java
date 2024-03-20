@@ -83,7 +83,8 @@ public class LanguageManager {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
 
-            String languageString = rootNode.get("language").asText();
+            //String languageString = rootNode.get("language").asText();
+            String languageString = language.toString();
             JsonNode languageSection = rootNode.get(languageString);
 
             // Get the value associated with the key
