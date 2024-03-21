@@ -21,8 +21,8 @@ import javafx.stage.Stage;
 
 public class ContactDetails {
     private Scene scene;
-    private Main main;
-    private Event event;
+    private final Main main;
+    private final Event event;
 
     private final ServerUtils server = ServerUtils.getServerUtils();
 
@@ -54,21 +54,17 @@ public class ContactDetails {
      * create a GUI for the contact details
      */
     public void createSceneContactDetails() {
-        Text title = new Text("Add/Edit Expense");
+        Text title = new Text("Add/Edit Participant");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-
-
 
         // Create a label
         Label nameLabel = new Label("Name:");
         // Create a text field
         TextArea boxName = createTextArea("Enter the name here", 350, 100);
 
-
         // Create an HBox to hold the label and text field
         HBox hBoxName = createHBox(nameLabel, boxName, 10, 10);
         hBoxName.setAlignment(Pos.CENTER);
-
 
         Label emailLabel = new Label("Email:");
         // Create a text field
@@ -77,7 +73,6 @@ public class ContactDetails {
         // Create an HBox to hold the label and text field
         HBox hBoxEmail = createHBox(emailLabel, boxEmail, 10, 10);
         hBoxEmail.setAlignment(Pos.CENTER);
-
 
         Label ibanLabel = new Label("IBAN:");
         // Create a text field
@@ -88,7 +83,6 @@ public class ContactDetails {
         hBoxIban.setPadding(new Insets(10)); // Padding around the HBox
         hBoxIban.getChildren().addAll(ibanLabel, boxIBAN);
         hBoxIban.setAlignment(Pos.CENTER);
-
 
         Label bicLabel = new Label("BIC:");
         // Create a text field
