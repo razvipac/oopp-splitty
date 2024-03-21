@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 
 public class ContactDetails {
 
-    private final Stage window = new Stage();
+    private Stage window;
     private Scene scene;
     private final Main main;
     private final Event event;
@@ -33,6 +33,7 @@ public class ContactDetails {
     private final TextField boxEmail = new TextField();
     private final TextField boxIban = new TextField();
     private final TextField boxBic = new TextField();
+    private final Text errorText = new Text();
 
     /**
      * Constructor for the contact details that calls the method to create the scene
@@ -71,17 +72,10 @@ public class ContactDetails {
 
         // Adding buttons
         Button abort = new Button("Abort");
-        abort.setOnAction(e -> {
-            // return back
-        });
+        abort.setOnAction(e -> closeAlertBox());
 
         Button ok = new Button("Ok");
-        ok.setOnAction(e -> {
-            Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
-                    boxName.getText(), boxBic.getText());
-            System.out.println(p);
-            server.getParticipantUtils().addParticipant(p);
-        });
+        ok.setOnAction(e -> validateAndAddParticipant());
 
         HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
         hBoxButtons.getChildren().addAll(abort, ok);
@@ -89,9 +83,39 @@ public class ContactDetails {
         // create the layout
         VBox layout = new VBox(20);
         layout.setPadding(new Insets(20));
-        layout.getChildren().addAll(title, gridPane, hBoxButtons);
+        layout.getChildren().addAll(title, errorText, gridPane, hBoxButtons);
 
         scene = new Scene(layout, 300, 250);
+    }
+
+    private void validateAndAddParticipant() {
+        String name = boxName.getText();
+        String email = boxEmail.getText();
+        String iban = boxIban.getText();
+        String bic = boxBic.getText();
+
+        // Should in theory never be true
+        if(event.getCode().isEmpty()) {
+            errorText.setText("This event is invalid");
+            return;
+        }
+
+        if(name.isEmpty()) {
+            errorText.setText("Please fill in the name field");
+            return;
+        }
+
+        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        if(!(email.isEmpty()) && !(email.matches(regexPattern))) {
+            errorText.setText("Please enter a valid email address");
+            return;
+        }
+
+        Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
+                boxIban.getText(), boxBic.getText());
+        System.out.println(p);
+        server.getParticipantUtils().addParticipant(p);
     }
 
     /**
@@ -124,9 +148,22 @@ public class ContactDetails {
      * Displays a modal alert box for adding a participant.
      */
     public void displayAlertBox() {
+        window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Add Participant");
         window.setScene(scene);
+        window.setOnCloseRequest(e -> closeAlertBox());
         window.showAndWait();
+    }
+
+    /**
+     * Closes the modal alert box and clears up the input fields.
+     */
+    public void closeAlertBox() {
+        boxName.clear();
+        boxEmail.clear();
+        boxIban.clear();
+        boxBic.clear();
+        window.close();
     }
 }
