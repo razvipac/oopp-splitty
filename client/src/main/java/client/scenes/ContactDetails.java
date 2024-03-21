@@ -20,6 +20,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ContactDetails {
+
+    private final Stage window = new Stage();
     private Scene scene;
     private final Main main;
     private final Event event;
@@ -41,19 +43,15 @@ public class ContactDetails {
         this.main = main;
         this.event = event;
 
-        if(event == null) {
-            createSceneNoEvent();
-            return;
-        }
-
-        createSceneContactDetails();
+        if(event == null) createSceneNoEvent();
+        else createSceneContactDetails();
     }
 
     private void createSceneNoEvent() {
         VBox layout = new VBox(5);
         Text noEventText = new Text("No event found");
         layout.getChildren().add(noEventText);
-        scene = new Scene(layout, 350, 380);
+        scene = new Scene(layout, 300, 250);
     }
 
     /**
@@ -126,7 +124,6 @@ public class ContactDetails {
      * Displays a modal alert box for adding a participant.
      */
     public void displayAlertBox() {
-        Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Add Participant");
         window.setScene(scene);
