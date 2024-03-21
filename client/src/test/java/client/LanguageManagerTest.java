@@ -8,14 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LanguageManagerTest {
     @Test
     void checkFileExist()  {
-        String path = "src\\test\\java\\client\\testFile.json";
+        String path = "client\\src\\test\\java\\client\\testFile.json";
         File file = new File(path);
         assertTrue(file.exists());
     }
 
     @Test
     void loadSaveLanguage() {
-        String path = "src\\test\\java\\client\\testFile.json";
+        String path = "client\\src\\test\\java\\client\\testFile.json";
         LanguageManager languageManager = new LanguageManager(path);
         languageManager.saveLanguage(new LanguageOption());
         LanguageOption languageOption= languageManager.loadLanguage();
@@ -37,7 +37,7 @@ class LanguageManagerTest {
 
     @Test
     void get() {
-        String path = "src\\test\\java\\client\\testFile.json";
+        String path = "client\\src\\test\\java\\client\\testFile.json";
         LanguageManager languageManager = new LanguageManager(path);
         LanguageOption languageOptionEnglish = new LanguageOption(LanguageOption.Language.ENGLISH);
         LanguageOption languageOptionDutch = new LanguageOption(LanguageOption.Language.DUTCH);
