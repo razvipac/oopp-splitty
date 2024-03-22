@@ -3,8 +3,8 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import commons.Event;
-import commons.Participant;
 
+import commons.Participant;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,7 +17,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.checkerframework.checker.units.qual.A;
 
 public class ContactDetails {
 
@@ -48,6 +47,9 @@ public class ContactDetails {
         else createSceneContactDetails();
     }
 
+    /**
+     * Creates the scene for if there is no event found
+     */
     private void createSceneNoEvent() {
         VBox layout = new VBox(5);
         Text noEventText = new Text("No event found");
@@ -112,7 +114,11 @@ public class ContactDetails {
         abort.setOnAction(e -> closeAlertBox());
 
         Button ok = new Button("Ok");
-        ok.setOnAction(e -> validateAndAddParticipant());
+        ok.setOnAction(e -> {
+            if(inputIsValid())
+                addToServer(new Participant(boxName.getText(), event, boxEmail.getText(),
+                        boxIban.getText(), boxBic.getText()));
+        });
 
         HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
         hBoxButtons.getChildren().addAll(abort, ok);
@@ -125,6 +131,12 @@ public class ContactDetails {
         scene = new Scene(layout, 300, 260);
     }
 
+    /**
+     * Formats the user-inputted IBAN by:
+     *  a) Adding spaces to the right places
+     *  b) Converting all letters to uppercase
+     * The format of IBAN used is 'NL12 XXXX 0123 4567 89'
+     */
     private void formatIban() {
         // delete all spaces
         String formattedIban = boxIban.getText().replaceAll("\\s+", "");
@@ -149,7 +161,15 @@ public class ContactDetails {
         }
     }
 
-    private boolean inputIsInvalid(String regex, String input, String errorMessage) {
+    /**
+     * Checks whether the given input is invalid (not empty and doesn't match regex), and displays
+     * an error message if it is.
+     * @param input Input String to check
+     * @param regex Specifies pattern that decides if it's invalid
+     * @param errorMessage The error message to set errorText to
+     * @return true iff input is invalid, false iff it's valid
+     */
+    private boolean inputIsInvalid(String input, String regex, String errorMessage) {
         if(!(input.isEmpty()) && !(input.matches(regex))) {
             errorText.setText(errorMessage);
             return true;
@@ -157,32 +177,41 @@ public class ContactDetails {
         else return false;
     }
 
-    private void validateAndAddParticipant() {
+    /**
+     * Checks if the user-inputted Strings are valid.
+     */
+    private boolean inputIsValid() {
         // Should in theory never be true
         if(event.getCode().isEmpty()) {
             errorText.setText("This event is invalid");
-            return;
+            return false;
         }
 
         if(boxName.getText().isEmpty()) {
             errorText.setText("Please fill in the name field");
-            return;
+            return false;
         }
 
         String regexEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        if(inputIsInvalid(regexEmail, boxEmail.getText(), "Please enter a valid email")) return;
+        if(inputIsInvalid(boxEmail.getText(), regexEmail, "Please enter a valid email"))
+            return false;
 
         // NL12 XXXX 0123 4567 89
         String regexIban = "^NL\\d{2}\\s[A-Z0-9]{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
-        if(inputIsInvalid(regexIban, boxIban.getText(), "Please enter a valid IBAN")) return;
+        if(inputIsInvalid(boxIban.getText(), regexIban, "Please enter a valid IBAN"))
+            return false;
 
         // XXXXXXXX
         String regexBic = "\\b[A-Z0-9]{8}\\b";
-        if(inputIsInvalid(regexBic, boxBic.getText(), "Please enter a valid BIC")) return;
+        return !inputIsInvalid(boxBic.getText(), regexBic, "Please enter a valid BIC");
+    }
 
-        Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
-                boxIban.getText(), boxBic.getText());
+    /**
+     * Adds the given Participant to the server, and displays an alert box with the outcome.
+     * @param p The (validated) participant to add
+     */
+    private void addToServer(Participant p) {
         boolean success = server.getParticipantUtils().addParticipant(p);
 
         if(success) {
@@ -203,6 +232,14 @@ public class ContactDetails {
         closeAlertBox();
     }
 
+    /**
+     * Creates an alert window
+     * @param type The type of alert (e.g. CONFIRMATION or ERROR)
+     * @param title The title of the window
+     * @param header The header of the window
+     * @param content The content of the window
+     * @return Alert object
+     */
     private Alert createAlert(Alert.AlertType type, String title, String header, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
