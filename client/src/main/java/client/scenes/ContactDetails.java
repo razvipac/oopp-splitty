@@ -83,20 +83,7 @@ public class ContactDetails {
         boxIban.setTextFormatter(ibanFormatter);
         boxIban.focusedProperty().addListener((v, oldValue, newValue) -> {
             if(!newValue) {
-                String formattedIBAN = boxIban.getText().replaceAll("\\s+", "");
-                if (formattedIBAN.length() > 2 && formattedIBAN.length() <= 18) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < formattedIBAN.length(); i++) {
-                        if (i > 0 && i % 4 == 0) {
-                            sb.append(" ");
-                        }
-                        sb.append(formattedIBAN.charAt(i));
-                    }
-                    formattedIBAN = sb.toString();
-                }
-                if (!boxIban.getText().equals(formattedIBAN)) {
-                    boxIban.setText(formattedIBAN);
-                }
+                formatIban();
             }
         } );
 
@@ -116,6 +103,28 @@ public class ContactDetails {
         layout.getChildren().addAll(title, errorText, gridPane, hBoxButtons);
 
         scene = new Scene(layout, 300, 280);
+    }
+
+    private void formatIban() {
+        // delete all spaces
+        String formattedIban = boxIban.getText().replaceAll("\\s+", "");
+
+        // add spaces at right places
+        if (formattedIban.length() > 2 && formattedIban.length() <= 18) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < formattedIban.length(); i++) {
+                if (i > 0 && i % 4 == 0) {
+                    sb.append(" ");
+                }
+                sb.append(formattedIban.charAt(i));
+            }
+            formattedIban = sb.toString();
+        }
+
+        // change if not equal to formattedIban already
+        if (!boxIban.getText().equals(formattedIban)) {
+            boxIban.setText(formattedIban);
+        }
     }
 
     private void validateAndAddParticipant() {
@@ -141,8 +150,6 @@ public class ContactDetails {
             errorText.setText("Please enter a valid email address");
             return;
         }
-
-        String regexIban = "^NL\\d{2}\\s\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
 
         Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
                 boxIban.getText(), boxBic.getText());
