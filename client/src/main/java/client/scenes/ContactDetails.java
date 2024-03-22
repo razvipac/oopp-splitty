@@ -7,10 +7,7 @@ import commons.Participant;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -20,6 +17,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.checkerframework.checker.units.qual.A;
 
 public class ContactDetails {
 
@@ -185,9 +183,32 @@ public class ContactDetails {
 
         Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
                 boxIban.getText(), boxBic.getText());
-        System.out.println(p);
-        server.getParticipantUtils().addParticipant(p);
+        boolean success = server.getParticipantUtils().addParticipant(p);
+
+        if(success) {
+            Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
+                    "Success", "Participant Added Successfully",
+                    p.getName() + " has been added to the event");
+            confirmation.getButtonTypes().clear();
+            confirmation.getButtonTypes().add(ButtonType.OK);
+            confirmation.showAndWait();
+        }
+        else {
+            Alert alert = createAlert(Alert.AlertType.ERROR,
+                    "Error", "Adding Participant Failed",
+                    "The participant has not been added due to an error. Please try again");
+            alert.showAndWait();
+        }
+
         closeAlertBox();
+    }
+
+    private Alert createAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
     }
 
     /**
