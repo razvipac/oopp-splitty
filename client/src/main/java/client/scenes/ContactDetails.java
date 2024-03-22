@@ -127,48 +127,41 @@ public class ContactDetails {
         }
     }
 
-    private boolean inputIsValid(String regex, String input, String errorMessage) {
+    private boolean inputIsInvalid(String regex, String input, String errorMessage) {
         if(!(input.isEmpty()) && !(input.matches(regex))) {
             errorText.setText(errorMessage);
-            return false;
+            return true;
         }
-        else return true;
+        else return false;
     }
 
     private void validateAndAddParticipant() {
-        String name = boxName.getText();
-        String email = boxEmail.getText();
-        String iban = boxIban.getText();
-        String bic = boxBic.getText();
-
         // Should in theory never be true
         if(event.getCode().isEmpty()) {
             errorText.setText("This event is invalid");
             return;
         }
 
-        if(name.isEmpty()) {
+        if(boxName.getText().isEmpty()) {
             errorText.setText("Please fill in the name field");
             return;
         }
 
         String regexEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        if(inputIsValid(regexEmail, boxEmail.getText(), "Please enter a valid email"))
-            return;
+        if(inputIsInvalid(regexEmail, boxEmail.getText(), "Please enter a valid email")) return;
 
         String regexIban = "^NL\\d{2}\\s\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
-        if(inputIsValid(regexIban, boxIban.getText(), "Please enter a valid IBAN"))
-            return;
+        if(inputIsInvalid(regexIban, boxIban.getText(), "Please enter a valid IBAN")) return;
 
         String regexBic = "\\b[A-Z0-9]{8}\\b";
-        if(inputIsValid(regexBic, boxBic.getText(), "Please enter a valid BIC"))
-            return;
+        if(inputIsInvalid(regexBic, boxBic.getText(), "Please enter a valid BIC")) return;
 
         Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
                 boxIban.getText(), boxBic.getText());
         System.out.println(p);
         server.getParticipantUtils().addParticipant(p);
+        closeAlertBox();
     }
 
     /**
@@ -217,6 +210,7 @@ public class ContactDetails {
         boxEmail.clear();
         boxIban.clear();
         boxBic.clear();
+        errorText.setText("");
         window.close();
     }
 }
