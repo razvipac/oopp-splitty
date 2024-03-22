@@ -66,10 +66,10 @@ public class ContactDetails {
         gridPane.setVgap(5);
         gridPane.setHgap(10);
 
-        addToGridPane(boxName, "Name:", "Enter your name here", 200, 0);
-        addToGridPane(boxEmail, "Email:", "Enter your email here", 200, 1);
-        addToGridPane(boxIban, "IBAN:", "Enter your IBAN here", 200, 2);
-        addToGridPane(boxBic, "BIC:", "Enter your BIC here", 200, 3);
+        addToGridPane(boxName, "Name*:", "John", 200, 0);
+        addToGridPane(boxEmail, "Email:", "johndoe@email.com", 200, 1);
+        addToGridPane(boxIban, "IBAN:", "NL12 3456 7890 1234 56", 200, 2);
+        addToGridPane(boxBic, "BIC:", "ABCDEFGH", 200, 3);
 
         TextFormatter<String> ibanFormatter = new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
@@ -127,6 +127,14 @@ public class ContactDetails {
         }
     }
 
+    private boolean inputIsValid(String regex, String input, String errorMessage) {
+        if(!(input.isEmpty()) && !(input.matches(regex))) {
+            errorText.setText(errorMessage);
+            return false;
+        }
+        else return true;
+    }
+
     private void validateAndAddParticipant() {
         String name = boxName.getText();
         String email = boxEmail.getText();
@@ -146,10 +154,16 @@ public class ContactDetails {
 
         String regexEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        if(!(email.isEmpty()) && !(email.matches(regexEmail))) {
-            errorText.setText("Please enter a valid email address");
+        if(inputIsValid(regexEmail, boxEmail.getText(), "Please enter a valid email"))
             return;
-        }
+
+        String regexIban = "^NL\\d{2}\\s\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
+        if(inputIsValid(regexIban, boxIban.getText(), "Please enter a valid IBAN"))
+            return;
+
+        String regexBic = "\\b[A-Z0-9]{8}\\b";
+        if(inputIsValid(regexBic, boxBic.getText(), "Please enter a valid BIC"))
+            return;
 
         Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
                 boxIban.getText(), boxBic.getText());
