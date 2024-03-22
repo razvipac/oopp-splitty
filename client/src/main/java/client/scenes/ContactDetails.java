@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -70,6 +71,35 @@ public class ContactDetails {
         addToGridPane(boxIban, "IBAN:", "Enter your IBAN here", 200, 2);
         addToGridPane(boxBic, "BIC:", "Enter your BIC here", 200, 3);
 
+        TextFormatter<String> ibanFormatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            int nonSpaceCount = (int) newText.chars().filter(c -> c != ' ').count();
+            if (nonSpaceCount <= 18) {
+                return change;
+            } else {
+                return null;
+            }
+        });
+        boxIban.setTextFormatter(ibanFormatter);
+        boxIban.focusedProperty().addListener((v, oldValue, newValue) -> {
+            if(!newValue) {
+                String formattedIBAN = boxIban.getText().replaceAll("\\s+", "");
+                if (formattedIBAN.length() > 2 && formattedIBAN.length() <= 18) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < formattedIBAN.length(); i++) {
+                        if (i > 0 && i % 4 == 0) {
+                            sb.append(" ");
+                        }
+                        sb.append(formattedIBAN.charAt(i));
+                    }
+                    formattedIBAN = sb.toString();
+                }
+                if (!boxIban.getText().equals(formattedIBAN)) {
+                    boxIban.setText(formattedIBAN);
+                }
+            }
+        } );
+
         // Adding buttons
         Button abort = new Button("Abort");
         abort.setOnAction(e -> closeAlertBox());
@@ -85,7 +115,7 @@ public class ContactDetails {
         layout.setPadding(new Insets(20));
         layout.getChildren().addAll(title, errorText, gridPane, hBoxButtons);
 
-        scene = new Scene(layout, 300, 250);
+        scene = new Scene(layout, 300, 280);
     }
 
     private void validateAndAddParticipant() {
@@ -105,12 +135,14 @@ public class ContactDetails {
             return;
         }
 
-        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+        String regexEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        if(!(email.isEmpty()) && !(email.matches(regexPattern))) {
+        if(!(email.isEmpty()) && !(email.matches(regexEmail))) {
             errorText.setText("Please enter a valid email address");
             return;
         }
+
+        String regexIban = "^NL\\d{2}\\s\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
 
         Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
                 boxIban.getText(), boxBic.getText());
