@@ -14,6 +14,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -34,7 +35,7 @@ public class ContactDetails {
     private final TextField boxEmail = new TextField();
     private final TextField boxIban = new TextField();
     private final TextField boxBic = new TextField();
-    private final Text errorText = new Text();
+    private Text errorText;
 
     /**
      * Constructor for the contact details that calls the method to create the scene
@@ -63,8 +64,12 @@ public class ContactDetails {
         Text title = new Text("Add/Edit Participant");
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
+        errorText = new Text();
+        errorText.setFill(Color.RED);
+
         gridPane.setVgap(5);
         gridPane.setHgap(10);
+        gridPane.setPadding(new Insets(0, 0, 10, 0));
 
         addToGridPane(boxName, "Name*:", "John", 200, 0);
         addToGridPane(boxEmail, "Email:", "johndoe@email.com", 200, 1);
@@ -115,11 +120,11 @@ public class ContactDetails {
         hBoxButtons.getChildren().addAll(abort, ok);
 
         // create the layout
-        VBox layout = new VBox(20);
+        VBox layout = new VBox(10);
         layout.setPadding(new Insets(20));
         layout.getChildren().addAll(title, errorText, gridPane, hBoxButtons);
 
-        scene = new Scene(layout, 300, 280);
+        scene = new Scene(layout, 300, 260);
     }
 
     private void formatIban() {
