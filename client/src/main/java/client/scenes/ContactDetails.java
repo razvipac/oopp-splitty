@@ -108,6 +108,8 @@ public class ContactDetails {
     private void formatIban() {
         // delete all spaces
         String formattedIban = boxIban.getText().replaceAll("\\s+", "");
+        // make uppercase
+        formattedIban = formattedIban.toUpperCase();
 
         // add spaces at right places
         if (formattedIban.length() > 2 && formattedIban.length() <= 18) {
@@ -151,9 +153,11 @@ public class ContactDetails {
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         if(inputIsInvalid(regexEmail, boxEmail.getText(), "Please enter a valid email")) return;
 
-        String regexIban = "^NL\\d{2}\\s\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
+        // NL12 XXXX 0123 4567 89
+        String regexIban = "^NL\\d{2}\\s[A-Z0-9]{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
         if(inputIsInvalid(regexIban, boxIban.getText(), "Please enter a valid IBAN")) return;
 
+        // XXXXXXXX
         String regexBic = "\\b[A-Z0-9]{8}\\b";
         if(inputIsInvalid(regexBic, boxBic.getText(), "Please enter a valid BIC")) return;
 
