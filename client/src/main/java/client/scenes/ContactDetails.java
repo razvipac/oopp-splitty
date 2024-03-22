@@ -71,6 +71,7 @@ public class ContactDetails {
         addToGridPane(boxIban, "IBAN:", "NL12 3456 7890 1234 56", 200, 2);
         addToGridPane(boxBic, "BIC:", "ABCDEFGH", 200, 3);
 
+        // IBAN max character limit: 18
         TextFormatter<String> ibanFormatter = new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
             int nonSpaceCount = (int) newText.chars().filter(c -> c != ' ').count();
@@ -81,9 +82,25 @@ public class ContactDetails {
             }
         });
         boxIban.setTextFormatter(ibanFormatter);
+
+        // properly format the IBAN
         boxIban.focusedProperty().addListener((v, oldValue, newValue) -> {
             if(!newValue) {
                 formatIban();
+            }
+        } );
+
+        // BIC max character limit: 8
+        TextFormatter<String> bicFormatter = new TextFormatter<>(change -> {
+            if(change.getControlNewText().length() > 8) return null;
+            else return change;
+        });
+        boxBic.setTextFormatter(bicFormatter);
+
+        // turn the BIC to uppercase
+        boxBic.focusedProperty().addListener((v, oldValue, newValue) -> {
+            if(!newValue) {
+                boxBic.setText(boxBic.getText().toUpperCase());
             }
         } );
 
