@@ -3,21 +3,23 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class LanguageManagerTest {
     @Test
-    void checkFileExist()  {
-        String path = "src\\test\\java\\client\\testFile.json";
+    void checkFileExist() {
+        String path = "client/src/test/java/client/test.json";
         File file = new File(path);
         //assertTrue(file.exists());
     }
 
     @Test
     void loadSaveLanguage() {
-        String path = "src\\test\\java\\client\\testFile.json";
+        String path = "client/src/test/java/client/test.json";
         LanguageManager languageManager = new LanguageManager(path);
         languageManager.saveLanguage(new LanguageOption());
         LanguageOption languageOption= languageManager.loadLanguage();
-        //assertEquals(LanguageOption.Language.ENGLISH, languageOption.getLanguage());
+        assertEquals(LanguageOption.Language.ENGLISH, languageOption.getLanguage());
 
         languageManager.saveLanguage(new LanguageOption(LanguageOption.Language.DUTCH));
         languageOption= languageManager.loadLanguage();
@@ -35,7 +37,7 @@ class LanguageManagerTest {
 
     @Test
     void get() {
-        String path = "src\\test\\java\\client\\testFile.json";
+        String path = "src\\test\\java\\client\\test.json";
         LanguageManager languageManager = new LanguageManager(path);
         LanguageOption languageOptionEnglish = new LanguageOption(LanguageOption.Language.ENGLISH);
         LanguageOption languageOptionDutch = new LanguageOption(LanguageOption.Language.DUTCH);
