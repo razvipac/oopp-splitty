@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 //import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 // import javafx.stage.Stage;
@@ -77,7 +78,7 @@ public class OpenDebts {
         layout.getChildren().addAll(header);
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
         layout.getChildren().add(backButton);
 
         // Adding each debt
@@ -86,7 +87,14 @@ public class OpenDebts {
         }
         // Scene
         scene = new Scene(layout, 400, 500);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
 
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**

@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -47,13 +48,20 @@ public class ContactDetails {
         VBox layout = new VBox(5);
         Text noEventText = new Text("No event found");
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         layout.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(noEventText, backButton);
         layout.setPadding(new Insets(20));
 
         scene = new Scene(layout, 340, 280);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**
@@ -120,7 +128,7 @@ public class ContactDetails {
         });
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
         hBoxBic.setPadding(new Insets(10)); // Padding around the HBox
@@ -140,6 +148,9 @@ public class ContactDetails {
         layout.setAlignment(Pos.CENTER);
 
         scene = new Scene(layout, 555, 555);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());

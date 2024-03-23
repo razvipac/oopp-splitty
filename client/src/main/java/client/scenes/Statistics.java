@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -62,7 +63,7 @@ public class Statistics {
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         VBox layout = new VBox();
         layout.setAlignment(Pos.CENTER);
@@ -71,5 +72,12 @@ public class Statistics {
         layout.getChildren().addAll(titleLabel, pieChart, totalCostLabel, backButton);
 
         scene = new Scene(layout, 600, 550);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 }
