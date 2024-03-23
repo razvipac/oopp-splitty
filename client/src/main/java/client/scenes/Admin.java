@@ -3,18 +3,12 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import commons.Event;
-import commons.Expense;
-import commons.Participant;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import java.util.Comparator;
 import java.util.List;
@@ -23,17 +17,23 @@ import java.util.Objects;
 public class Admin {
     private Main main;
     private Scene scene;
-    private GridPane gridPane;
     private EventOverview eventOverview;
     private ServerUtils server = new ServerUtils();
     private VBox eventsField;
 
+    /**
+     * Constructor for the Admin page that creates the GUI
+     * @param main
+     */
     public Admin(Main main) {
         this.main = main;
-        createSceneStartScreen();
+        createSceneAdmin();
     }
 
-    public void createSceneStartScreen() {
+    /**
+     * Creates GUI
+     */
+    public void createSceneAdmin() {
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
 
@@ -74,7 +74,7 @@ public class Admin {
             // For now, let's just print the selected option
         });
 
-        layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton); // Added eventsField
+        layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton);
 
 
         // Show events
@@ -114,7 +114,8 @@ public class Admin {
         delete.setOnAction(e -> {
             //eventsField.getChildren().clear();
             server.deleteEvent(event.getCode());
-            createSceneStartScreen();
+            eventsField.getChildren().clear();
+            showEvent(2);
         });
         return delete;
     }
@@ -129,6 +130,10 @@ public class Admin {
         return openPage;
     }
 
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
     public Scene getScene() {
         return scene;
     }
