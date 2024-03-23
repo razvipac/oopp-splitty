@@ -166,7 +166,6 @@ class EventTest {
 //
 //        Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
 //
-//        // Assuming that participant1 paid for the expense, participant2 and participant3 should be the debtors
 //        assertTrue(debtors.contains(participant2));
 //        assertTrue(debtors.contains(participant3));
 //        assertFalse(debtors.contains(participant1));
@@ -181,10 +180,6 @@ class EventTest {
 //
 //        List<Debt> debts = Event.settleDebts(allParticipants, event, List.of(expense1, expense2));
 //
-//        // Assuming that each participant has to pay an equal share of the total expenses,
-//        // participant1 should owe 50 (100 from expense2 - 50 from expense1),
-//        // participant2 should owe 50 (100 from expense1 - 50 from expense2),
-//        // and participant3 should owe 100 (50 from expense1 + 50 from expense2).
 //        for (Debt debt : debts) {
 //            if (debt.getDebtor().equals(participant1)) {
 //                assertEquals(50, debt.getAmount());
