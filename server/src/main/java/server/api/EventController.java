@@ -99,7 +99,7 @@ public class EventController {
 
     /**
      * Updates the event with the specified Event Code by changing its name through a PUT request to
-     * api/v1/{eventCode}/expense?id={id}.
+     * api/v1/{eventCode}?name={name}
      *
      * @param name The new name for the event.
      * @param eventCode The Event Code of the event to be updated.
@@ -108,10 +108,10 @@ public class EventController {
      *         Returns HttpStatus.NOT_FOUND if the event is not found in the database.
      */
 
-    @PutMapping("")
+    @PutMapping("/{eventCode}")
     public ResponseEntity<Event> updateOneByName(
             @RequestParam("name") String name,
-            @RequestParam("eventCode") String eventCode
+            @PathVariable("eventCode") String eventCode
     ) {
         try {
             Event event = eventService.updateOne(eventCode, name);
