@@ -46,8 +46,14 @@ public class ContactDetails {
     private void createSceneNoEvent() {
         VBox layout = new VBox(5);
         Text noEventText = new Text("No event found");
-        layout.getChildren().add(noEventText);
-        scene = new Scene(layout, 350, 380);
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 340, 280);
     }
 
     /**
