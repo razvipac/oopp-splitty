@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 //import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 // import javafx.stage.Stage;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 
 import commons.Debt;
 import commons.Participant;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class OpenDebts {
 
@@ -75,7 +78,7 @@ public class OpenDebts {
         layout.getChildren().addAll(header);
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
         layout.getChildren().add(backButton);
 
         // Adding each debt
@@ -83,8 +86,15 @@ public class OpenDebts {
             addDebtToLayout(d, layout);
         }
         // Scene
-        scene = new Scene(layout, 400, 400);
+        scene = new Scene(layout, 400, 500);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
 
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**
@@ -150,6 +160,17 @@ public class OpenDebts {
         debtLine.getChildren().addAll(moreInfo, debtStringLabel, receivedButton);
         debtItem.getChildren().addAll(debtLine, debtInfo);
         layout.getChildren().add(debtItem);
+    }
+
+    /**
+     * Displays a modal alert box for viewing Open Debts.
+     */
+    public void displayAlertBox() {
+        Stage window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Add Participant");
+        window.setScene(scene);
+        window.showAndWait();
     }
 
 }

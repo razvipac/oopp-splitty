@@ -2,12 +2,14 @@ package client.scenes;
 
 import client.Main;
 
+import client.utils.ServerUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -15,19 +17,18 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import commons.Event;
-import client.utils.EventUtils;
 
 import java.util.List;
 import java.util.Optional;
 
 public class StartScreen {
 
-    private EventUtils server = new EventUtils();
-
     private Scene scene;
     private Main main;
     private Admin admin = new Admin(main);;
     private EventOverview eventOverview;
+
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     private List<Event> events;
 
@@ -37,7 +38,7 @@ public class StartScreen {
      */
     public StartScreen(Main main) {
         this.main = main;
-//       events = server.getAllEvents();
+        events = server.getEventUtils().getAllEvents();
 
         createSceneStartScreen();
     }
@@ -67,45 +68,35 @@ public class StartScreen {
 
 
         // Text fields for creating and joining events
-        TextField createEvent = createTextField("Arial", 20, "Enter event name here", 300,
+        TextField createEventTextField = createTextField("Arial", 20, "Enter event name here", 300,
                 new Insets(10, 10, 10, 10));
+        createEventTextField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) createEventFromTextField(createEventTextField);
+        });
 
-        TextField joinEvent = createTextField("Arial", 20, "Enter event code here", 300,
+        TextField joinEventTextField = createTextField("Arial", 20, "Enter event code here", 300,
                 new Insets(10, 10, 10, 10));
+        joinEventTextField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) joinEventFromTextField(joinEventTextField);
+        });
 
 
         // Buttons for creating and joining events
         Button createButton = new Button("Create");
         createButton.setFont(Font.font("Arial"));
-        createButton.setOnAction(e -> {
-            String eventName = createEvent.getText();
-            Event event = server.createEvent(eventName);
-            System.out.println(event.toString());
-            eventOverview = new EventOverview(main, event);
-            main.getPrimaryStage().setScene(eventOverview.getScene());
-            admin.showEvent(1);
-        });
+        createButton.setOnAction(e -> createEventFromTextField(createEventTextField));
 
         Button joinButton = new Button("Join");
         joinButton.setFont(Font.font("Arial"));
-        joinButton.setOnAction(e -> {
-            String code = joinEvent.getText();
-            Optional<Event> found = getEvent(code);
-            if(found.isPresent()) {
-                Event event = found.get();
-                eventOverview = new EventOverview(main, event);
-                main.getPrimaryStage().setScene(eventOverview.getScene());
-            }
-            else System.out.println("Event with code: " + code + " doesn't exist");
-        });
+        joinButton.setOnAction(e -> joinEventFromTextField(joinEventTextField));
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         // HBoxes for creating and joining events
-        HBox createEventBox = createHBox(10, Pos.CENTER, createEvent, createButton);
+        HBox createEventBox = createHBox(10, Pos.CENTER, createEventTextField, createButton);
 
-        HBox joinEventBox = createHBox(10, Pos.CENTER, joinEvent, joinButton);
+        HBox joinEventBox = createHBox(10, Pos.CENTER, joinEventTextField, joinButton);
 
 
         // hardcoded data of recently viewed events
@@ -130,10 +121,36 @@ public class StartScreen {
                 skiTripBox, museumVisitBox, giftForJohnBox, newYearPartyBox, backButton);
         layout.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout, 300, 300);
+        scene = new Scene(layout);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
+    }
+
+    private void joinEventFromTextField(TextField joinEvent) {
+        String code = joinEvent.getText();
+        Optional<Event> found = getEvent(code);
+        if(found.isPresent()) {
+            Event event = found.get();
+            eventOverview = new EventOverview(main, event);
+            main.getPrimaryStage().setScene(eventOverview.getScene());
+        }
+        else System.out.println("Event with code: " + code + " doesn't exist");
+    }
+
+    private void createEventFromTextField(TextField createEvent) {
+        String eventName = createEvent.getText();
+        Event event = server.getEventUtils().createEvent(eventName);
+        System.out.println(event.toString());
+        eventOverview = new EventOverview(main, event);
+        main.getPrimaryStage().setScene(eventOverview.getScene());
     }
 
     /**

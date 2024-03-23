@@ -15,32 +15,26 @@
  */
 package client;
 
-import static com.google.inject.Guice.createInjector;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import client.scenes.*;
-import com.google.inject.Injector;
 import client.scenes.OpenDebts;
-//import client.scenes.AddQuoteCtrl;
-//import client.scenes.MainCtrl;
-//import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 public class Main extends Application {
 
-    private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
-
     // add your page as a private object below
     private final OpenDebts od = new OpenDebts(this);
-    private final Invitations inv = new Invitations(this);
-    private final ContactDetails cd = new ContactDetails(this);
+    private final Invitations inv = new Invitations(this, null);
+    private final ContactDetails cd = new ContactDetails(this, null);
     private final EventOverview eo = new EventOverview(this, null);
     private final StartScreen sc = new StartScreen(this);
     private final AddEditExpense aed = new AddEditExpense(this);
@@ -105,15 +99,24 @@ public class Main extends Application {
         // Button for language selection
         Button languageButton = new LanguageButton();
 
+        // Hbox for the language button
+        HBox languageBox = new HBox(languageButton);
+        languageBox.setAlignment(Pos.TOP_RIGHT);
+        HBox.setHgrow(languageButton, Priority.ALWAYS);
+
         // Layout
         VBox layout = new VBox();
+        layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
         // adding elements to layout
         layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton,
                 odButton, languageButton, addExpenseButton, statisticsButton, adminButton);
 
+        // adding elements to layout
+        layout.getChildren().addAll(languageBox, startButton, eoButton, cdButton,
+                invitationButton, odButton, addExpenseButton, statisticsButton);
         // Scene
-        mainScene = new Scene(layout, 400, 300); // changed this line
+        mainScene = new Scene(layout, 600, 480); // changed this line
 
         // Window
         primaryStage.setTitle("Main");

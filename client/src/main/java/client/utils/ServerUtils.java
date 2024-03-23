@@ -35,33 +35,51 @@ import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
+    private static ServerUtils serverUtils;
+    private EventUtils eventUtils;
+    private ParticipantUtils participantUtils;
+
+    // Server address
     private static final String SERVER = "http://localhost:8080/";
 
-    public void getQuotesTheHardWay() throws IOException, URISyntaxException {
-        var url = new URI("http://localhost:8080/api/quotes").toURL();
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
+    /**
+     * Utility class for managing server-related functionality. Follows the Singleton design
+     * pattern (ensures only one instance exists throughout the application).
+     */
+    private ServerUtils() {
+        eventUtils = new EventUtils(SERVER);
+        participantUtils = new ParticipantUtils(SERVER);
+    }
+
+    /**
+     * Gets single instance of ServerUtils.
+     * If the instance does not exist, a new one is created.
+     *
+     * @return The instance of ServerUtils
+     */
+    public static synchronized ServerUtils getServerUtils() {
+        if (serverUtils == null) {
+            serverUtils = new ServerUtils();
         }
+        return serverUtils;
     }
 
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Quote>>() {
-                });
+    /**
+     * Gets the EventUtils instance.
+     *
+     * @return The EventUtils instance
+     */
+    public EventUtils getEventUtils() {
+        return eventUtils;
     }
 
-    public Quote addQuote(Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+    /**
+     * Gets the ParticipantUtils instance.
+     *
+     * @return The ParticipantUtils instance
+     */
+    public ParticipantUtils getParticipantUtils() {
+        return participantUtils;
     }
 
         /**

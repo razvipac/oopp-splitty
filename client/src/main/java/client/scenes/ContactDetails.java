@@ -1,12 +1,17 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.ServerUtils;
+import commons.Event;
+import commons.Participant;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -18,14 +23,45 @@ import javafx.stage.Stage;
 public class ContactDetails {
     private Scene scene;
     private Main main;
+    private Event event;
+
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     /**
      * Constructor for the contact details that calls the method to create the scene
      * @param main scene of the main class
+     * @param event the event to add to
      */
-    public ContactDetails(Main main){
+    public ContactDetails(Main main, Event event){
         this.main = main;
+        this.event = event;
+
+        if(event == null) {
+            createSceneNoEvent();
+            return;
+        }
+
         createSceneContactDetails();
+    }
+
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("No event found");
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> goBack());
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 340, 280);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**
@@ -84,12 +120,15 @@ public class ContactDetails {
 
         // non functional
         Button ok = new Button("Ok");
-        abort.setOnAction(e -> {
-            // add it to the server
+        ok.setOnAction(e -> {
+            Participant p = new Participant(boxName.getText(), event, boxEmail.getText(),
+                    boxIBAN.getText(), boxBIC.getText());
+            System.out.println(p.toString());
+            server.getParticipantUtils().addParticipant(p);
         });
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
         hBoxBic.setPadding(new Insets(10)); // Padding around the HBox
@@ -109,6 +148,9 @@ public class ContactDetails {
         layout.setAlignment(Pos.CENTER);
 
         scene = new Scene(layout, 555, 555);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());
