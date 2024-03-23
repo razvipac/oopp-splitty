@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class AddEditExpense {
+
+    private Stage window;
     private Scene scene;
     private Main main;
 
@@ -150,14 +152,10 @@ public class AddEditExpense {
 
         // Create "Abort" and "Add" buttons and add them to the layout
         Button abortButton = new Button("Abort");
+        abortButton.setOnAction(e -> closeAlertBox());
         Button addButton = new Button("Add");
         layout.add(abortButton, 0, 9);
         layout.add(addButton, 1, 9);
-
-        // Create a "Back" button, set its action to switch to the main scene and add it to layout
-        Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
-        layout.add(backButton, 0, 10);
 
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 500, 600);
@@ -167,11 +165,19 @@ public class AddEditExpense {
      * Displays a modal alert box for adding a participant.
      */
     public void displayAlertBox() {
-        Stage window = new Stage();
+        window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Add/Edit Expense");
+        window.setTitle("Add Expense");
         window.setScene(scene);
+        window.setOnCloseRequest(e -> closeAlertBox());
         window.showAndWait();
+    }
+
+    /**
+     * Closes the modal alert box and clears up the input fields.
+     */
+    public void closeAlertBox() {
+        window.close();
     }
 
 }
