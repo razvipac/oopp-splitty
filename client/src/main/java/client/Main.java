@@ -22,8 +22,11 @@ import client.scenes.*;
 import client.scenes.OpenDebts;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 public class Main extends Application {
@@ -91,15 +94,22 @@ public class Main extends Application {
         // Button for language selection
         Button languageButton = new LanguageButton();
 
+        // Hbox for the language button
+        HBox languageBox = new HBox(languageButton);
+        languageBox.setAlignment(Pos.TOP_RIGHT);
+        HBox.setHgrow(languageButton, Priority.ALWAYS);
+
         // Layout
         VBox layout = new VBox();
+        layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
-        // adding elements to layout
-        layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton,
-                odButton,languageButton, addExpenseButton, statisticsButton);
+        layout.setSpacing(15);
 
+        // adding elements to layout
+        layout.getChildren().addAll(languageBox, startButton, eoButton, cdButton,
+                invitationButton, odButton, addExpenseButton, statisticsButton);
         // Scene
-        mainScene = new Scene(layout, 400, 300); // changed this line
+        mainScene = new Scene(layout, 600, 480); // changed this line
 
         // Window
         primaryStage.setTitle("Main");

@@ -70,6 +70,6 @@ public class Statistics {
         layout.setPadding(new Insets(10, 10, 10, 10));
         layout.getChildren().addAll(titleLabel, pieChart, totalCostLabel, backButton);
 
-        scene = new Scene(layout, 400, 200);
+        scene = new Scene(layout, 600, 550);
     }
 }
