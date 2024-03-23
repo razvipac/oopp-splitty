@@ -105,8 +105,8 @@ class ParticipantTest {
 
     @Test
     void testEquals() {
-        assertTrue(p1.equals(p2));
-        assertFalse(p1.equals(p3));
+        assertEquals(p1, p2);
+        assertNotEquals(p1, p3);
     }
 
     @Test
