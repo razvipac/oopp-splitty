@@ -30,7 +30,7 @@ public class ParticipantUtils {
      */
     public List<Participant> getParticipants(String code) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/" + code + "/expense")
+                .target(SERVER).path("api/v1/" + code + "/participant")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
