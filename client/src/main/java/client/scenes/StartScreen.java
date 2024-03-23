@@ -128,7 +128,7 @@ public class StartScreen {
                 skiTripBox, museumVisitBox, giftForJohnBox, newYearPartyBox, backButton);
         layout.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout, 300, 300);
+        scene = new Scene(layout, 600, 500);
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());

@@ -1,6 +1,7 @@
 package client.scenes;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -101,9 +102,15 @@ public class EventOverview {
      */
     private void createSceneNoEvent() {
         VBox layout = new VBox(5);
-        Text noEventText = new Text("No event found");
-        layout.getChildren().add(noEventText);
-        scene = new Scene(layout, 350, 380);
+        Text noEventText = new Text("No event found.");
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 350, 280);
     }
 
     /**
@@ -146,7 +153,7 @@ public class EventOverview {
                 participantDropdown, radioSelectBox, expensesScroller,
                 settleDebtsButton, backButton);
 
-        scene = new Scene(layout, 350, 380);
+        scene = new Scene(layout, 550, 430);
     }
 
     /**

@@ -160,7 +160,7 @@ public class AddEditExpense {
         layout.add(backButton, 0, 10);
 
         // Create a scene with the layout and set its size
-        scene = new Scene(layout, 500, 600);
+        scene = new Scene(layout, 570, 500);
     }
 
     /**

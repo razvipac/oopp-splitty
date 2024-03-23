@@ -51,9 +51,15 @@ public class Invitations {
      */
     private void createSceneNoEvent() {
         VBox layout = new VBox(5);
-        Text noEventText = new Text("No event found");
-        layout.getChildren().add(noEventText);
-        scene = new Scene(layout, 350, 380);
+        Text noEventText = new Text("You have to join an event before inviting people.");
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 360, 290);
     }
 
     /**
@@ -74,7 +80,7 @@ public class Invitations {
         boxToPutEmails = new TextArea();
         boxToPutEmails.setPromptText("Enter email addresses here");
         boxToPutEmails.setMaxWidth(350);
-        boxToPutEmails.setMaxHeight(100);
+        boxToPutEmails.setMaxHeight(50);
 
         // send invites button (not functional)
         Button sendInvitesButton = new Button("Send Invites");
@@ -96,7 +102,7 @@ public class Invitations {
                 boxToPutEmails, sendInvitesButton, backButton);
         layout.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout, 270, 300);
+        scene = new Scene(layout, 450, 300);
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());

@@ -85,7 +85,7 @@ public class OpenDebts {
             addDebtToLayout(d, layout);
         }
         // Scene
-        scene = new Scene(layout, 400, 400);
+        scene = new Scene(layout, 400, 500);
 
     }
 
