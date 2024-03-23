@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -68,19 +69,25 @@ public class StartScreen {
         // Text fields for creating and joining events
         TextField createEventTextField = createTextField("Arial", 20, "Enter event name here", 300,
                 new Insets(10, 10, 10, 10));
+        createEventTextField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) createEventFromTextField(createEventTextField);
+        });
 
         TextField joinEventTextField = createTextField("Arial", 20, "Enter event code here", 300,
                 new Insets(10, 10, 10, 10));
+        joinEventTextField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) joinEventFromTextField(joinEventTextField);
+        });
 
 
         // Buttons for creating and joining events
         Button createButton = new Button("Create");
         createButton.setFont(Font.font("Arial"));
-        createButton.setOnAction(e -> createEvent(createEventTextField));
+        createButton.setOnAction(e -> createEventFromTextField(createEventTextField));
 
         Button joinButton = new Button("Join");
         joinButton.setFont(Font.font("Arial"));
-        joinButton.setOnAction(e -> joinEvent(joinEventTextField));
+        joinButton.setOnAction(e -> joinEventFromTextField(joinEventTextField));
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> goBack());
@@ -126,7 +133,7 @@ public class StartScreen {
         main.getPrimaryStage().setScene(main.getMainScene());
     }
 
-    private void joinEvent(TextField joinEvent) {
+    private void joinEventFromTextField(TextField joinEvent) {
         String code = joinEvent.getText();
         Optional<Event> found = getEvent(code);
         if(found.isPresent()) {
@@ -137,7 +144,7 @@ public class StartScreen {
         else System.out.println("Event with code: " + code + " doesn't exist");
     }
 
-    private void createEvent(TextField createEvent) {
+    private void createEventFromTextField(TextField createEvent) {
         String eventName = createEvent.getText();
         Event event = server.getEventUtils().createEvent(eventName);
         System.out.println(event.toString());
