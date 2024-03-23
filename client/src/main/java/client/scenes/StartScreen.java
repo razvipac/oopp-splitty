@@ -66,44 +66,29 @@ public class StartScreen {
 
 
         // Text fields for creating and joining events
-        TextField createEvent = createTextField("Arial", 20, "Enter event name here", 300,
+        TextField createEventTextField = createTextField("Arial", 20, "Enter event name here", 300,
                 new Insets(10, 10, 10, 10));
 
-        TextField joinEvent = createTextField("Arial", 20, "Enter event code here", 300,
+        TextField joinEventTextField = createTextField("Arial", 20, "Enter event code here", 300,
                 new Insets(10, 10, 10, 10));
 
 
         // Buttons for creating and joining events
         Button createButton = new Button("Create");
         createButton.setFont(Font.font("Arial"));
-        createButton.setOnAction(e -> {
-            String eventName = createEvent.getText();
-            Event event = server.getEventUtils().createEvent(eventName);
-            System.out.println(event.toString());
-            eventOverview = new EventOverview(main, event);
-            main.getPrimaryStage().setScene(eventOverview.getScene());
-        });
+        createButton.setOnAction(e -> createEvent(createEventTextField));
 
         Button joinButton = new Button("Join");
         joinButton.setFont(Font.font("Arial"));
-        joinButton.setOnAction(e -> {
-            String code = joinEvent.getText();
-            Optional<Event> found = getEvent(code);
-            if(found.isPresent()) {
-                Event event = found.get();
-                eventOverview = new EventOverview(main, event);
-                main.getPrimaryStage().setScene(eventOverview.getScene());
-            }
-            else System.out.println("Event with code: " + code + " doesn't exist");
-        });
+        joinButton.setOnAction(e -> joinEvent(joinEventTextField));
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         // HBoxes for creating and joining events
-        HBox createEventBox = createHBox(10, Pos.CENTER, createEvent, createButton);
+        HBox createEventBox = createHBox(10, Pos.CENTER, createEventTextField, createButton);
 
-        HBox joinEventBox = createHBox(10, Pos.CENTER, joinEvent, joinButton);
+        HBox joinEventBox = createHBox(10, Pos.CENTER, joinEventTextField, joinButton);
 
 
         // hardcoded data of recently viewed events
@@ -132,6 +117,29 @@ public class StartScreen {
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
+    }
+
+    private void joinEvent(TextField joinEvent) {
+        String code = joinEvent.getText();
+        Optional<Event> found = getEvent(code);
+        if(found.isPresent()) {
+            Event event = found.get();
+            eventOverview = new EventOverview(main, event);
+            main.getPrimaryStage().setScene(eventOverview.getScene());
+        }
+        else System.out.println("Event with code: " + code + " doesn't exist");
+    }
+
+    private void createEvent(TextField createEvent) {
+        String eventName = createEvent.getText();
+        Event event = server.getEventUtils().createEvent(eventName);
+        System.out.println(event.toString());
+        eventOverview = new EventOverview(main, event);
+        main.getPrimaryStage().setScene(eventOverview.getScene());
     }
 
     /**
