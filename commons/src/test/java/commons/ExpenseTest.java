@@ -1,0 +1,72 @@
+package commons;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ExpenseTest {
+    Participant participant1;
+    Participant participant2;
+    Expense expense1;
+    Expense expense2;
+    Expense expense3;
+
+    @BeforeEach
+    void setUp() {
+        participant1 = new Participant("A", null, "a@mail.com", "1234", "1234");
+        participant2 = new Participant("B", null, "b@mail.com", "5678", "5678");
+        expense1 = new Expense(100, "Item", participant1);
+        expense2 = new Expense(100, "Item", participant1);
+        expense3 = new Expense(200, "Another Item", participant2);
+    }
+
+    @Test
+    void testDefaultConstructor() {
+        Expense expense = new Expense();
+        assertNotNull(expense);
+    }
+
+    @Test
+    void testParameterizedConstructor() {
+        assertNotNull(expense1);
+        assertEquals(100, expense1.getPrice());
+        assertEquals("Item", expense1.getItem());
+        assertEquals(participant1, expense1.getPaidBy());
+    }
+
+    @Test
+    void testGetAndSetId() {
+        expense1.setId(1L);
+        assertEquals(1L, expense1.getId());
+    }
+
+    @Test
+    void testGetAndSetPrice() {
+        expense1.setPrice(200);
+        assertEquals(200, expense1.getPrice());
+    }
+
+    @Test
+    void testGetAndSetItem() {
+        expense1.setItem("New Item");
+        assertEquals("New Item", expense1.getItem());
+    }
+
+    @Test
+    void testGetAndSetPaidBy() {
+        expense1.setPaidBy(participant2);
+        assertEquals(participant2, expense1.getPaidBy());
+    }
+
+    @Test
+    void testEquals() {
+        assertEquals(expense1, expense2);
+        assertNotEquals(expense1, expense3);
+    }
+
+    @Test
+    void testHashCode() {
+        assertEquals(expense1.hashCode(), expense2.hashCode());
+    }
+}
