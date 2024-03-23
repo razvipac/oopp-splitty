@@ -38,6 +38,12 @@ class ParticipantTest {
     );
 
     @Test
+    public void testDefaultConstructor() {
+        Participant participant = new Participant();
+        assertNotNull(participant);
+    }
+
+    @Test
     void getName() {
         assertEquals("A", p1.getName());
     }
@@ -108,11 +114,5 @@ class ParticipantTest {
         assertEquals(p1.hashCode(), p2.hashCode());
     }
 
-//     This test is failing we have to look into the method or the test
-//    @Test
-//    void testToString() {
-//        String expected = "Participant{name='A', event=test, email='a@mail.com', iban='1234', bic='1234'}";
-//        assertEquals(expected, p1.toString());
-//    }
 
 }

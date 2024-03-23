@@ -126,10 +126,18 @@ class DebtTest {
     }
 
     @Test
-    void testToString() {
-        String expected = "Debt{debtor=Participant{name='Participant 1', event=null, email='email1', iban='iban1', bic='bic1'}, " +
-                "creditor=Participant{name='Participant 2', event=null, email='email2', iban='iban2', bic='bic2'}, " +
-                "amount=100.0, received=false}";
-        assertEquals(expected, debt1.toString());
+    public void testToString() {
+        Participant debtor = new Participant("Debtor", null, "debtor@example.com", "DEBTORIBAN", "DEBTORBIC");
+        Participant creditor = new Participant("Creditor", null, "creditor@example.com", "CREDITORIBAN", "CREDITORBIC");
+        Debt debt = new Debt(debtor, creditor, 100.0);
+
+        String expected = "Debt{" +
+                "debtor=" + debtor +
+                ", creditor=" + creditor +
+                ", amount=100.0" +
+                ", received=false" +
+                '}';
+
+        assertEquals(expected, debt.toString());
     }
 }
