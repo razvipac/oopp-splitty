@@ -114,6 +114,10 @@ public class StartScreen {
         layout.setAlignment(Pos.CENTER);
 
         scene = new Scene(layout);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
+
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());
     }
