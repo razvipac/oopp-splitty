@@ -26,6 +26,7 @@ public class StartScreen {
 
     private Scene scene;
     private Main main;
+    private Admin admin = new Admin(main);;
     private EventOverview eventOverview;
 
     private List<Event> events;
@@ -82,6 +83,7 @@ public class StartScreen {
             System.out.println(event.toString());
             eventOverview = new EventOverview(main, event);
             main.getPrimaryStage().setScene(eventOverview.getScene());
+            admin.showEvent(1);
         });
 
         Button joinButton = new Button("Join");
