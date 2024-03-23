@@ -94,7 +94,7 @@ public class EventController {
 
     /**
      * Updates the event with the specified Event Code by changing its name through a PUT request to
-     * api/v1/{eventCode}/expense?id={id}.
+     * api/v1/{eventCode}/?name={name}.
      *
      * @param name The new name for the event.
      * @param eventCode The Event Code of the event to be updated.
