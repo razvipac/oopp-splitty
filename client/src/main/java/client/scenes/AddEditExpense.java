@@ -24,6 +24,7 @@ public class AddEditExpense {
     private Stage window;
     private Scene scene;
     private Main main;
+    private Event event;
 
     private ArrayList<Expense> addEditExpenseList;
 
@@ -38,9 +39,12 @@ public class AddEditExpense {
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
      * @param main scene of the main class
+     * @param event the event to add to
      */
-    public AddEditExpense(Main main) {
+    public AddEditExpense(Main main, Event event) {
         this.main = main;
+        this.event = event;
+
         // Data for testing purposes
         Participant john = new Participant("John",
                 new Event("Abby's birthday party", "code1",
@@ -65,8 +69,18 @@ public class AddEditExpense {
         addEditExpenseList.add(new Expense(345, "Cake", anna));
         addEditExpenseList.add(new Expense(567, "Candles", david));
 
+        if(event == null) createSceneNoEvent();
+        else createSceneAddEditExpense();
+    }
 
-        createSceneAddEditExpense();
+    /**
+     * Creates the scene for if there is no event found
+     */
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("No event found");
+        layout.getChildren().add(noEventText);
+        scene = new Scene(layout, 300, 250);
     }
 
     /**
