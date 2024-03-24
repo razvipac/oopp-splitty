@@ -18,7 +18,7 @@ import java.util.concurrent.ForkJoinPool;
 
 
 @RestController
-@RequestMapping("api/v1/events/{eventCode}/debts")
+@RequestMapping("api/v1/{eventCode}/debts")
 public class DebtController {
 
     private final DebtService debtService;

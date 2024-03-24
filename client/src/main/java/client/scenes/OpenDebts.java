@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
 import commons.Event;
 import client.Main;
 import javafx.geometry.Insets;
@@ -24,6 +25,7 @@ public class OpenDebts {
     private Scene scene;
     private ArrayList<Debt> debtList;
     private Main main;
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     /**
      * Getter for the scene
