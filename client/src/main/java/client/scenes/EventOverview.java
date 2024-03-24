@@ -84,6 +84,7 @@ public class EventOverview {
         participants.add(test);
 
         // Expenses for testing purposes
+//        expenses = server.getParticipantUtils().getExpenses(event.getCode());
         expenses = new ArrayList<>();
         expenses.add(new Expense(10, "Drinks", test));
 

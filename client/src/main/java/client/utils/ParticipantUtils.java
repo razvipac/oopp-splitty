@@ -3,6 +3,7 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import commons.Expense;
 import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
@@ -62,6 +63,21 @@ public class ParticipantUtils {
         // Check the response status code
         if (response.getStatus() == Response.Status.CREATED.getStatusCode()) return true;
         else return false;
+    }
+
+    /**
+     * Gets all the expenses of an event.
+     *
+     * @param code The code of the event
+     * @return All expenses of the event as a List
+     */
+    public List<Expense> getExpenses(String code) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/" + code + "/expense")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
 }
