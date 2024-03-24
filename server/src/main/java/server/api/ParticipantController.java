@@ -70,7 +70,7 @@ public class ParticipantController {
     /**
      * POST /api/v1/{eventCode}/participant with body in ParticipantRequestBody format
      * Creates a new Participant populated with the data in body
-     *
+     * <p>
      * Sends out a WebSocket STOMP message to all listeners
      * on "/api/websocket/v1/channel/{eventCode}/participant
      * with WSAction CREATED
@@ -101,7 +101,7 @@ public class ParticipantController {
     }
 
     /**
-     * DELETE /api/v1/{eventCode}/participant?name={Participant's name} with parameter participantName
+     * DELETE /api/v1/{eventCode}/participant with parameter participantName
      * Deletes a Participant specified by the participantName and eventCode
      *
      * @param participantName The participant's name
@@ -133,19 +133,22 @@ public class ParticipantController {
 
 
     /**
-     * PUT /api/v1/{eventCode}/participant with parameter name and body in ParticipantRequestBody format
-     * Updates a Participant specified by the eventCode and name passed in the body with the contents of the body.
+     * PUT /api/v1/{eventCode}/participant with parameter name and body
+     * in ParticipantRequestBody format
+     * Updates a Participant specified by the eventCode and name with data in the body
      *
+     * @param name      The participant's name
      * @param eventCode The event code
      * @param body      The ParticipantRequestBody instance
      * @return ResponseEntity with ParticipantResponseBody or HttpStatus.NOT_FOUND if not found
      */
     @PutMapping("")
     public ResponseEntity<ParticipantResponseBody> updateOneById(
+            @RequestParam("name") String name,
             @PathVariable("eventCode") String eventCode,
             @RequestBody ParticipantRequestBody body) {
         try {
-            Participant updated = participantService.updateOne(eventCode, body);
+            Participant updated = participantService.updateOne(eventCode, name, body);
             ParticipantResponseBody response = ParticipantResponseBody.build(updated);
 
             simpMessagingTemplate.convertAndSend(

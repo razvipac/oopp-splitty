@@ -117,7 +117,7 @@ public class ParticipantService {
      * @return The updated participant.
      * @throws NotFoundInDatabaseException If the participant is not found in the database.
      */
-    public Participant updateOne(String eventCode, ParticipantRequestBody body)
+    public Participant updateOne(String eventCode, String name, ParticipantRequestBody body)
             throws NotFoundInDatabaseException {
         Participant found = getOne(eventCode, body.name());
         // if not found exception will be thrown
