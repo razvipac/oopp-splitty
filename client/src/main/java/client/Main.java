@@ -111,7 +111,7 @@ public class Main extends Application {
         // adding elements to layout
         layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton,
                 odButton, languageButton, addExpenseButton, statisticsButton, adminButton);
-        
+
         // Scene
         mainScene = new Scene(layout, 600, 480); // changed this line
 
