@@ -2,8 +2,13 @@ package server.service;
 
 import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import server.api.pojo.request_body.ParticipantRequestBody;
+import server.api.pojo.response_body.ExpenseResponseBody;
+import server.api.pojo.response_body.ParticipantResponseBody;
+import server.api.pojo.response_body.WSAction;
+import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -18,6 +23,8 @@ import java.util.Optional;
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final EventService eventService;
+    private final ExpenseService expenseService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * Constructor for ParticipantService
@@ -26,9 +33,13 @@ public class ParticipantService {
      * @param eventService          The EventService instance to handle event-related operations
      */
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
-                              @Autowired EventService eventService) {
+                              @Autowired EventService eventService,
+                              @Autowired ExpenseService expenseService,
+                              @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.participantRepository = participantRepository;
         this.eventService = eventService;
+        this.expenseService = expenseService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -99,12 +110,29 @@ public class ParticipantService {
     public Participant deleteOne(String eventCode, String participantName)
             throws NotFoundInDatabaseException {
         Participant found = getOne(eventCode, participantName);
-        // if not found exception will be thrown
+        // if not found, exception will be thrown
+
+        List<Expense> dependantExpenses = expenseService.getAllInEventAndPaidByParticipant(eventCode, found);
+        dependantExpenses.forEach((Expense expense) -> {
+            try {
+                Expense deletedExpense = expenseService.deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
+            } catch (NotFoundInDatabaseException e) {
+                throw new RuntimeException("Dependant expense not found in db!");
+            }
+        });
 
         participantRepository.deleteById(getParticipantId(
                 eventCode,
                 participantName
         ));
+
+        simpMessagingTemplate.convertAndSend(
+                "/api/websocket/v1/channel/" + eventCode + "/participant",
+                new WSWrapperResponseBody<>(
+                        WSAction.CREATED,
+                        ParticipantResponseBody.build(found)
+                ));
+
         return found;
     }
 

@@ -4,14 +4,20 @@ import commons.Expense;
 import commons.ExpenseId;
 import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import server.api.pojo.request_body.ExpenseRequestBody;
+import server.api.pojo.response_body.ExpenseResponseBody;
+import server.api.pojo.response_body.WSAction;
+import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.ExpenseRepository;
+import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Handles input and output of saved Expense objects
@@ -19,20 +25,23 @@ import java.util.Optional;
 @Service
 public class ExpenseService {
     private ExpenseRepository expenseRepository;
-    private ParticipantService participantService;
+    private ParticipantRepository participantRepository;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * Constructs an ExpenseService instance with
-     * the specified ExpenseRepository and ParticipantService.
+     * the specified ExpenseRepository and ParticipantRepository.
      *
      * @param expenseRepository  The ExpenseRepository to be injected into the service.
-     * @param participantService The ParticipantService to be injected into the service.
+     * @param participantService The ParticipantRepository to be injected into the service.
      */
     public ExpenseService(
             @Autowired ExpenseRepository expenseRepository,
-            @Autowired ParticipantService participantService) {
+            @Autowired ParticipantRepository participantService,
+            @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.expenseRepository = expenseRepository;
-        this.participantService = participantService;
+        this.participantRepository = participantService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -50,12 +59,26 @@ public class ExpenseService {
     }
 
     /**
+     * Fetches all Expenses in a given Event and paid by given participant
+     *
+     * @param eventCode code of the Event to which the Expenses belong
+     * @return a LinkedList containing all Expense objects in a given Event
+     */
+    public List<Expense> getAllInEventAndPaidByParticipant(String eventCode, Participant paidBy) {
+        List<Expense> result = new LinkedList<>();
+        expenseRepository.findAllExpensesInEventDependantOnParticipant(eventCode, paidBy.getName())
+                .iterator()
+                .forEachRemaining(result::add);
+        return result;
+    }
+
+    /**
      * Fetches one Expense object
      *
      * @param eventCode       code of the Event to which the Expense belongs
      * @param participantName name of the owner of the Expense
      * @param id              id of the Expense
-     * @return a given Expense object
+     * @return                a given Expense object
      * @throws NotFoundInDatabaseException if an owner of the Expense
      *                                     or the specified Event does not exist
      */
@@ -86,7 +109,7 @@ public class ExpenseService {
     public Expense createOne(String eventCode,
                              ExpenseRequestBody body) throws NotFoundInDatabaseException {
 
-        Participant paidBy = participantService.getOne(eventCode, body.participantName());
+        Participant paidBy = getOneParticipant(eventCode, body.participantName());
 
         Expense newExpense = new Expense(body.price(), body.item(), paidBy);
 
@@ -114,6 +137,14 @@ public class ExpenseService {
                 participantName,
                 id
         ));
+
+        simpMessagingTemplate.convertAndSend(
+                "/api/websocket/v1/channel/" + eventCode + "/expense",
+                new WSWrapperResponseBody<>(
+                        WSAction.DELETED,
+                        ExpenseResponseBody.build(found)
+                ));
+
         return found;
     }
 
@@ -153,7 +184,17 @@ public class ExpenseService {
      */
     private ExpenseId getExpenseId(String eventCode, String participantName, Long id)
             throws NotFoundInDatabaseException {
-        Participant paidBy = participantService.getOne(eventCode, participantName);
+        Participant paidBy = getOneParticipant(eventCode, participantName);
         return new ExpenseId(id, paidBy);
+    }
+
+    public Participant getOneParticipant(String eventCode, String name) throws NotFoundInDatabaseException {
+        Optional<Participant> searchResult = participantRepository
+                .findParticipantByEventCodeAndName(name, eventCode);
+        if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
+                "A Participant of event " + eventCode + " with name " + name + "cannot be found!"
+        );
+
+        return searchResult.get();
     }
 }

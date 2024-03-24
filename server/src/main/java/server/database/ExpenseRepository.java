@@ -2,6 +2,7 @@ package server.database;
 
 import commons.Expense;
 import commons.ExpenseId;
+import commons.ParticipantId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +20,9 @@ public interface ExpenseRepository extends CrudRepository<Expense, ExpenseId> {
      */
     @Query("SELECT e FROM Expense e WHERE e.pkey.paidBy.pkey.event.code = :eventCode")
     Collection<Expense> findAllExpensesInEvent(@Param("eventCode") String eventCode);
+
+    @Query("SELECT e FROM Expense e WHERE e.pkey.paidBy.pkey.event.code = :eventCode AND e.pkey.paidBy.pkey.name = :paidByName")
+    Collection<Expense> findAllExpensesInEventDependantOnParticipant(@Param("eventCode") String eventCode,
+                                                                     @Param("paidByName") String paidByName);
 }
 

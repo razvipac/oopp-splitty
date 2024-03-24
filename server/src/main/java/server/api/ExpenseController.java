@@ -93,13 +93,6 @@ public class ExpenseController {
             Expense expense = expenseService.createOne(eventCode, body);
             ExpenseResponseBody responseBody = ExpenseResponseBody.build(expense);
 
-            simpMessagingTemplate.convertAndSend(
-                    "/api/websocket/v1/channel/" + eventCode + "/expense",
-                    new WSWrapperResponseBody<>(
-                            WSAction.CREATED,
-                            responseBody
-                    ));
-
             return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
