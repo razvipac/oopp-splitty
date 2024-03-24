@@ -18,7 +18,9 @@ import javafx.stage.Stage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddEditExpense {
 
@@ -88,9 +90,11 @@ public class AddEditExpense {
         Label whoPaidLabel = new Label("Who paid?");
         ComboBox<String> whoPaidDropdown = new ComboBox<>();
         // Populate the dropdown with names from the expense list
+        Map<String, Participant> participantMap = new HashMap<>();
         for (Participant p : participants) {
             String name = p.getName();
             whoPaidDropdown.getItems().add(name);
+            participantMap.put(name, p);
         }
         // Add the label and dropdown to the layout
         layout.add(whoPaidLabel, 0, 1);
@@ -154,6 +158,14 @@ public class AddEditExpense {
         Button abortButton = new Button("Abort");
         abortButton.setOnAction(e -> closeAlertBox());
         Button addButton = new Button("Add");
+        addButton.setOnAction(e -> {
+            Integer price = Integer.valueOf(howMuchField.getText());
+            String item = whatForField.getText();
+            Participant payer = participantMap.get(whoPaidDropdown.getValue());
+            Expense expense = new Expense(price, item, payer);
+            System.out.println(expense);
+        });
+
         layout.add(abortButton, 0, 9);
         layout.add(addButton, 1, 9);
 
