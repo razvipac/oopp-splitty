@@ -132,6 +132,24 @@ public class ContactDetails {
     }
 
     /**
+     * Adds the given TextField to gridPane at the given coordinates, along with a label.
+     * @param textField The (empty) TextField object
+     * @param labelText The String of the Label
+     * @param promptText The prompt text of the TextField
+     * @param prefWidth The preferred width of the TextField
+     * @param gridY The y coordinate of gridPane to add to.
+     */
+    public void addToGridPane(TextField textField, String labelText,
+                              String promptText, int prefWidth, int gridY) {
+        Label label = new Label(labelText);
+        textField.setPromptText(promptText);
+        textField.setPrefWidth(prefWidth);
+
+        gridPane.add(label, 0, gridY);
+        gridPane.add(textField, 1, gridY);
+    }
+
+    /**
      * Formats the user-inputted IBAN by:
      *  a) Adding spaces to the right places
      *  b) Converting all letters to uppercase
@@ -246,24 +264,6 @@ public class ContactDetails {
         alert.setHeaderText(header);
         alert.setContentText(content);
         return alert;
-    }
-
-    /**
-     * Adds the given TextField to gridPane at the given coordinates, along with a label.
-     * @param textField The (empty) TextField object
-     * @param labelText The String of the Label
-     * @param promptText The prompt text of the TextField
-     * @param prefWidth The preferred width of the TextField
-     * @param gridY The y coordinate of gridPane to add to.
-     */
-    public void addToGridPane(TextField textField, String labelText,
-                              String promptText, int prefWidth, int gridY) {
-        Label label = new Label(labelText);
-        textField.setPromptText(promptText);
-        textField.setPrefWidth(prefWidth);
-
-        gridPane.add(label, 0, gridY);
-        gridPane.add(textField, 1, gridY);
     }
 
     /**
