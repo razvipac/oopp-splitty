@@ -4,6 +4,7 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import commons.Expense;
+import commons.request_body.ExpenseRequestBody;
 import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
@@ -78,6 +79,30 @@ public class ParticipantUtils {
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
                 });
+    }
+
+    /**
+     * Adds Expense to server
+     * @param e Expense to add
+     * @return True iff add was successful, false otherwise
+     */
+    public boolean addExpense(Expense e, String code) {
+        String endpoint = "api/v1/" + code + "/expense";
+
+        ExpenseRequestBody requestBody = new ExpenseRequestBody(
+                e.getPrice(),
+                e.getItem(),
+                e.getPaidBy().getName()
+        );
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(requestBody, APPLICATION_JSON));
+
+        // Check the response status code
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
 }
