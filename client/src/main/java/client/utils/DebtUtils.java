@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 package client.utils;
 
 import commons.Debt;

@@ -13,8 +13,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 // import javafx.stage.Stage;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import commons.Debt;
@@ -40,6 +38,7 @@ public class OpenDebts {
     /**
      * Constructor for Open Debts page
      * @param main to the main class
+     * @param event the event we are considering
      */
     public OpenDebts(Main main, Event event) {
         this.main = main;
