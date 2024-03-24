@@ -32,7 +32,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     // add your page as a private object below
-    private final OpenDebts od = new OpenDebts(this);
+    private final OpenDebts od = new OpenDebts(this, null);
     private final Invitations inv = new Invitations(this, null);
     private final ContactDetails cd = new ContactDetails(this, null);
     private final EventOverview eo = new EventOverview(this, null);
@@ -112,9 +112,6 @@ public class Main extends Application {
         layout.getChildren().addAll(startButton, eoButton, cdButton, invitationButton,
                 odButton, languageButton, addExpenseButton, statisticsButton, adminButton);
 
-        // adding elements to layout
-        layout.getChildren().addAll(languageBox, startButton, eoButton, cdButton,
-                invitationButton, odButton, addExpenseButton, statisticsButton);
         // Scene
         mainScene = new Scene(layout, 600, 480); // changed this line
 

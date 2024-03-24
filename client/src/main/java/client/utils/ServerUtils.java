@@ -38,6 +38,7 @@ public class ServerUtils {
     private static ServerUtils serverUtils;
     private EventUtils eventUtils;
     private ParticipantUtils participantUtils;
+    private DebtUtils debtUtils;
 
     // Server address
     private static final String SERVER = "http://localhost:8080/";
@@ -49,6 +50,7 @@ public class ServerUtils {
     private ServerUtils() {
         eventUtils = new EventUtils(SERVER);
         participantUtils = new ParticipantUtils(SERVER);
+        debtUtils = new DebtUtils(SERVER);
     }
 
     /**
@@ -82,4 +84,12 @@ public class ServerUtils {
         return participantUtils;
     }
 
+    /**
+     * Gets the DebtUtils instance.
+     *
+     * @return The DebtUtils instance
+     */
+    public DebtUtils getDebtUtils() {
+        return debtUtils;
+    }
 }

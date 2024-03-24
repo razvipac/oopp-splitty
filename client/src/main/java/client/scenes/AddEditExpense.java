@@ -6,6 +6,7 @@ import commons.Expense;
 import commons.Participant;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -25,6 +26,13 @@ public class AddEditExpense {
     private Main main;
 
     private ArrayList<Expense> addEditExpenseList;
+
+    private ComboBox<String> whoPaidDropdown;
+    private TextField whatForField;
+    private TextField howMuchField;
+    private ComboBox<String> currencyDropdown;
+    private VBox checkboxContainer;
+    private TextField expenseTypeField;
 
     /**
      * Getter for the scene
@@ -83,56 +91,61 @@ public class AddEditExpense {
         layout.setPadding(new Insets(20, 20, 20, 20)); // Padding around the grid
         layout.add(title, 0, 0); // Add the title to the layout at position (0,0)
 
-        // Create a label and a dropdown for "Who paid?" field
+        // Create labels for additional fields
+        Label whenLabel = new Label("When?");
+        Label currencyLabel = new Label("Currency");
         Label whoPaidLabel = new Label("Who paid?");
-        ComboBox<String> whoPaidDropdown = new ComboBox<>();
+        Label howMuchLabel = new Label("How much?");
+        Label whatForLabel = new Label("What for?");
+        Label howToSplitLabel = new Label("How to Split?");
+        Label expenseTypeLabel = new Label("Expense Type");
+
+        // Add labels to the layout
+        layout.add(whenLabel, 0, 4);
+        layout.add(currencyLabel, 2, 3);
+        layout.add(whoPaidLabel, 0, 1);
+        layout.add(whatForLabel, 0, 2);
+        layout.add(howToSplitLabel, 0, 5);
+        layout.add(expenseTypeLabel, 0, 8);
+
+        // Create a label and a dropdown for "Who paid?" field
+        whoPaidDropdown = new ComboBox<>();
         // Populate the dropdown with names from the expense list
         for (Expense expense : addEditExpenseList) {
             String name = expense.getPaidBy().getName();
             whoPaidDropdown.getItems().add(name);
         }
-        // Add the label and dropdown to the layout
-        layout.add(whoPaidLabel, 0, 1);
         layout.add(whoPaidDropdown, 1, 1);
 
         // Create a label and a text field for "What for?" field and add them to the layout
-        Label whatForLabel = new Label("What for?");
-        TextField whatForField = new TextField();
-        layout.add(whatForLabel, 0, 2);
+        whatForField = new TextField();
         layout.add(whatForField, 1, 2);
 
         // Create a label and a text field for "How much?" field and add them to the layout
-        Label howMuchLabel = new Label("How much?");
-        TextField howMuchField = new TextField();
+        howMuchField = new TextField();
         layout.add(howMuchLabel, 0, 3);
         layout.add(howMuchField, 1, 3);
 
-        // Create a label and a dropdown for "Currency" field and add them to the layout
-        Label currencyLabel = new Label("Currency");
-        ComboBox<String> currencyDropdown = new ComboBox<>();
+        // Create a dropdown for "Currency" field and add it to the layout
+        currencyDropdown = new ComboBox<>();
         currencyDropdown.getItems().addAll("USD", "EUR", "GBP"); // Add currencies to the dropdown
-        layout.add(currencyLabel, 2, 3);
         layout.add(currencyDropdown, 3, 3);
 
-        // Create a label and a date picker for "When?" field and add them to the layout
-        Label whenLabel = new Label("When?");
+        // Create a date picker for "When?" field and add it to the layout
         DatePicker whenPicker = new DatePicker();
-        layout.add(whenLabel, 0, 4);
         layout.add(whenPicker, 1, 4);
 
-        // Create a label and radio buttons for "How to Split?" field and add them to the layout
-        Label howToSplitLabel = new Label("How to Split?");
+        // Create radio buttons for "How to Split?" field and add them to the layout
         RadioButton equallyButton = new RadioButton("Equally Between Everybody");
         RadioButton somePeopleButton = new RadioButton("Only Some People");
         ToggleGroup group = new ToggleGroup(); // Group the radio buttons
         equallyButton.setToggleGroup(group);
         somePeopleButton.setToggleGroup(group);
-        layout.add(howToSplitLabel, 0, 5);
         layout.add(equallyButton, 1, 5);
         layout.add(somePeopleButton, 1, 6);
 
         // Create a container for checkboxes
-        VBox checkboxContainer = new VBox();
+        checkboxContainer = new VBox();
         checkboxContainer.setAlignment(Pos.CENTER);
         // Create a checkbox for each participant and add it to the container
         for (Expense expense : addEditExpenseList) {
@@ -143,32 +156,56 @@ public class AddEditExpense {
         }
         layout.add(checkboxContainer, 1, 7); // Add the container to the layout
 
-        // Create a label and a text field for "Expense Type" field and add them to the layout
-        Label expenseTypeLabel = new Label("Expense Type");
-        TextField expenseTypeField = new TextField();
-        layout.add(expenseTypeLabel, 0, 8);
+        // Create a text field for "Expense Type" field and add it to the layout
+        expenseTypeField = new TextField();
         layout.add(expenseTypeField, 1, 8);
 
         // Create "Abort" and "Add" buttons and add them to the layout
         Button abortButton = new Button("Abort");
+        abortButton.setOnAction(e -> goBack(true)); // Pass true to clear fields
         Button addButton = new Button("Add");
+        addButton.setOnAction(e -> goBack(false)); // TODO : to be implemented
         layout.add(abortButton, 0, 9);
         layout.add(addButton, 1, 9);
 
         // Create a "Back" button, set its action to switch to the main scene and add it to layout
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> goBack());
+        backButton.setOnAction(e -> goBack(false)); // Pass false to keep fields
         layout.add(backButton, 0, 10);
 
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 570, 500);
         scene.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack(false);
         });
     }
 
-    private void goBack() {
+    /**
+     * Navigates back to the main scene and optionally clears the form fields.
+     *
+     * @param clearFields if true, clears all form fields; otherwise, keeps them unchanged.
+     */
+    private void goBack(boolean clearFields) {
+        if (clearFields) {
+            clearFields();
+        }
         main.getPrimaryStage().setScene(main.getMainScene());
+    }
+
+    /**
+     * Clears all the form fields.
+     */
+    private void clearFields() {
+        whoPaidDropdown.getSelectionModel().clearSelection();
+        whatForField.clear();
+        howMuchField.clear();
+        currencyDropdown.getSelectionModel().clearSelection();
+        for (Node node : checkboxContainer.getChildren()) {
+            if (node instanceof CheckBox checkBox) {
+                checkBox.setSelected(false);
+            }
+        }
+        expenseTypeField.clear();
     }
 
     /**
