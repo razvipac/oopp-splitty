@@ -8,6 +8,7 @@ import commons.Participant;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -120,7 +121,8 @@ public class AddEditExpense {
         // Create a label and a dropdown for "Currency" field and add them to the layout
         Label currencyLabel = new Label("Currency");
         ComboBox<String> currencyDropdown = new ComboBox<>();
-        currencyDropdown.getItems().addAll("USD", "EUR", "GBP"); // Add currencies to the dropdown
+        currencyDropdown.getItems().addAll("EUR", "USD", "GBP"); // Add currencies to the dropdown
+        currencyDropdown.getSelectionModel().selectFirst();
         gridPane.add(currencyLabel, 2, 3);
         gridPane.add(currencyDropdown, 3, 3);
 
@@ -133,10 +135,11 @@ public class AddEditExpense {
         // Create a label and radio buttons for "How to Split?" field and add them to the layout
         Label howToSplitLabel = new Label("How to Split?");
         RadioButton equallyButton = new RadioButton("Equally Between Everybody");
+        equallyButton.setSelected(true);
         RadioButton somePeopleButton = new RadioButton("Only Some People");
-        ToggleGroup group = new ToggleGroup(); // Group the radio buttons
-        equallyButton.setToggleGroup(group);
-        somePeopleButton.setToggleGroup(group);
+        ToggleGroup radioGroup = new ToggleGroup(); // Group the radio buttons
+        equallyButton.setToggleGroup(radioGroup);
+        somePeopleButton.setToggleGroup(radioGroup);
         gridPane.add(howToSplitLabel, 0, 5);
         gridPane.add(equallyButton, 1, 5);
         gridPane.add(somePeopleButton, 1, 6);
@@ -148,10 +151,29 @@ public class AddEditExpense {
         for (Participant p : participants) {
             String name = p.getName();
             CheckBox participantCheckbox = new CheckBox(name);
+            participantCheckbox.setDisable(true);
             participantCheckbox.setPadding(new Insets(2, 2, 2, 2));
             checkboxContainer.getChildren().add(participantCheckbox);
         }
         gridPane.add(checkboxContainer, 1, 7); // Add the container to the layout
+
+        radioGroup.selectedToggleProperty().addListener((v, oldValue, newValue) -> {
+            if (newValue == somePeopleButton) {
+                // Enable checkboxes when somePeopleButton is selected
+                for (Node node : checkboxContainer.getChildren()) {
+                    if (node instanceof CheckBox) {
+                        node.setDisable(false);
+                    }
+                }
+            } else {
+                // Disable checkboxes when equallyButton is selected
+                for (Node node : checkboxContainer.getChildren()) {
+                    if (node instanceof CheckBox) {
+                        node.setDisable(true);
+                    }
+                }
+            }
+        });
 
         // Create a label and a text field for "Expense Type" field and add them to the layout
         Label expenseTypeLabel = new Label("Expense Type");
