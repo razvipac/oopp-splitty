@@ -25,6 +25,7 @@ public class StartScreen {
 
     private Scene scene;
     private Main main;
+    private Admin admin = new Admin(main);;
     private EventOverview eventOverview;
 
     private final ServerUtils server = ServerUtils.getServerUtils();
