@@ -77,13 +77,15 @@ public class EventOverview {
         eventName = event.getName();
         eventCode = event.getCode();
 
-        // Participants for testing purposes
+        // TODO: get participants from server
 //        participants = server.getParticipantUtils().getParticipants(event.getCode());
         participants = new ArrayList<>();
-        Participant test = new Participant("test", event, "test", "test", "test");
+        Participant test = new Participant("Test", event, "test", "test", "test");
+        Participant john = new Participant("John", event, "test", "test", "test");
         participants.add(test);
+        participants.add(john);
 
-        // Expenses for testing purposes
+        // TODO: get expenses from server
 //        expenses = server.getParticipantUtils().getExpenses(event.getCode());
         expenses = new ArrayList<>();
         expenses.add(new Expense(10, "Drinks", test));
