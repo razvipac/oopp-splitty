@@ -167,7 +167,7 @@ public class AddEditExpense {
             Participant payer = participantMap.get(whoPaidDropdown.getValue());
             Expense expense = new Expense(price, item, payer);
             System.out.println(expense);
-            server.getParticipantUtils().addExpense(expense, event.getCode());
+            addExpenseToServer(expense);
         });
 
         layout.add(abortButton, 0, 9);
@@ -175,6 +175,46 @@ public class AddEditExpense {
 
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 500, 600);
+    }
+
+    /**
+     * Adds the given Expense to the server, and displays an alert box with the outcome.
+     * @param e The (validated) expense to add
+     */
+    private void addExpenseToServer(Expense e) {
+        boolean success = server.getParticipantUtils().addExpense(e, event.getCode());
+        if(success) {
+            Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
+                    "Success", "Expense Added Successfully",
+                    "Expense has been added to the event");
+            confirmation.getButtonTypes().clear();
+            confirmation.getButtonTypes().add(ButtonType.OK);
+            confirmation.showAndWait();
+        }
+        else {
+            Alert alert = createAlert(Alert.AlertType.ERROR,
+                    "Error", "Adding Expense Failed",
+                    "The expense has not been added due to an error. Please try again");
+            alert.showAndWait();
+        }
+
+        closeAlertBox();
+    }
+
+    /**
+     * Creates an alert window
+     * @param type The type of alert (e.g. CONFIRMATION or ERROR)
+     * @param title The title of the window
+     * @param header The header of the window
+     * @param content The content of the window
+     * @return Alert object
+     */
+    private Alert createAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
     }
 
     /**
