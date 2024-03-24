@@ -62,8 +62,7 @@ public class ParticipantUtils {
                 .post(Entity.entity(requestBody, APPLICATION_JSON));
 
         // Check the response status code
-        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) return true;
-        else return false;
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
     /**
