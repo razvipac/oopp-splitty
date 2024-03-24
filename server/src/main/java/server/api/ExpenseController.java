@@ -71,17 +71,6 @@ public class ExpenseController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-//
-//    @MessageMapping("v1/{eventCode}/expense")
-//    @SendToUser("/api/websocket/v1/channel/{eventCode}/expense")
-//    public WSWrapperResponseBody<List<ExpenseResponseBody>> getAll(
-//            @DestinationVariable("eventCode") String eventCode
-//    ){
-//        List<Expense> expenses = expenseService.getAllInEvent(eventCode);
-//        List<ExpenseResponseBody> responseBodies = expenses.stream()
-//        .map(ExpenseResponseBody::build).toList();
-//        return new WSWrapperResponseBody<>(WSAction.RESPONDED, responseBodies);
-//    }
 
     /**
      * POST api/v1/{eventCode}/expense with request body in format of ExpenseRequestBody
@@ -93,7 +82,7 @@ public class ExpenseController {
      * @param eventCode The event code.
      * @param body      The ExpenseRequestBody containing data for creating the expense.
      * @return A ResponseEntity containing the ExpenseResponseBody of the created expense
-     *         if successful, or a NOT_FOUND response if the event is not found.
+     *         if successful, or a NOT_FOUND response if the event or participant is not found.
      */
     @PostMapping("")
     public ResponseEntity<ExpenseResponseBody> createOne(
@@ -121,7 +110,7 @@ public class ExpenseController {
      * DELETE api/v1/{eventCode}/expense?id={id}&participantName={name}
      * deletes expense belonging to a Participant with name {name} and id {id} from
      * event with code {eventCode}
-     * <p>
+     *
      * Sends out a WebSocket STOMP message to all listeners
      * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction DELETED
      *
