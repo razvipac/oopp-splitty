@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddEditExpense {
 
@@ -26,6 +27,7 @@ public class AddEditExpense {
     private final Main main;
     private final Event event;
 
+    private List<Participant> participants;
     private ArrayList<Expense> addEditExpenseList;
 
     /**
@@ -41,33 +43,11 @@ public class AddEditExpense {
      * @param main scene of the main class
      * @param event the event to add to
      */
-    public AddEditExpense(Main main, Event event) {
+    public AddEditExpense(Main main, Event event, List<Participant> participants) {
         this.main = main;
         this.event = event;
-
-        // Data for testing purposes
-        Participant john = new Participant("John",
-                new Event("Abby's birthday party", "code1",
-                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                "John@mail.com", "1234", "1234");
-        Participant david = new Participant("David",
-                new Event("Davidson's birthday party", "code2",
-                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                "David@mail.com", "2341", "2341");
-        Participant chris = new Participant("Chris",
-                new Event("Stoffer's birthday party", "code3",
-                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                "Chris@mail.com", "3412", "3412");
-        Participant anna = new Participant("Anna",
-                new Event("Belle's birthday party", "code4",
-                        LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                "Anna@mail.com", "4123", "4123");
-
-        addEditExpenseList = new ArrayList<>();
-        addEditExpenseList.add(new Expense(123, "Food", john));
-        addEditExpenseList.add(new Expense(34, "Drinks", chris));
-        addEditExpenseList.add(new Expense(345, "Cake", anna));
-        addEditExpenseList.add(new Expense(567, "Candles", david));
+        // TODO: handle empty participants list
+        this.participants = participants;
 
         if(event == null) createSceneNoEvent();
         else createSceneAddEditExpense();
@@ -108,8 +88,8 @@ public class AddEditExpense {
         Label whoPaidLabel = new Label("Who paid?");
         ComboBox<String> whoPaidDropdown = new ComboBox<>();
         // Populate the dropdown with names from the expense list
-        for (Expense expense : addEditExpenseList) {
-            String name = expense.getPaidBy().getName();
+        for (Participant p : participants) {
+            String name = p.getName();
             whoPaidDropdown.getItems().add(name);
         }
         // Add the label and dropdown to the layout
@@ -156,8 +136,8 @@ public class AddEditExpense {
         VBox checkboxContainer = new VBox();
         checkboxContainer.setAlignment(Pos.CENTER);
         // Create a checkbox for each participant and add it to the container
-        for (Expense expense : addEditExpenseList) {
-            String name = expense.getPaidBy().getName();
+        for (Participant p : participants) {
+            String name = p.getName();
             CheckBox participantCheckbox = new CheckBox(name);
             participantCheckbox.setPadding(new Insets(2, 2, 2, 2));
             checkboxContainer.getChildren().add(participantCheckbox);

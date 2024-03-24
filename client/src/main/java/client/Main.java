@@ -34,7 +34,7 @@ public class Main extends Application {
     private final ContactDetails cd = new ContactDetails(this, null);
     private final EventOverview eo = new EventOverview(this, null);
     private final StartScreen sc = new StartScreen(this);
-    private final AddEditExpense aed = new AddEditExpense(this, null);
+    private final AddEditExpense aed = new AddEditExpense(this, null, null);
     private final Statistics statistics = new Statistics(this);
 
     private Stage primaryStage; // added this line

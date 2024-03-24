@@ -69,11 +69,6 @@ public class EventOverview {
             return;
         }
 
-        contactDetails = new ContactDetails(main, event);
-        invitations = new Invitations(main, event);
-        addEditExpense = new AddEditExpense(main, event);
-        openDebts = new OpenDebts(main);
-
         eventName = event.getName();
         eventCode = event.getCode();
 
@@ -84,6 +79,11 @@ public class EventOverview {
         Participant john = new Participant("John", event, "test", "test", "test");
         participants.add(test);
         participants.add(john);
+
+        contactDetails = new ContactDetails(main, event);
+        invitations = new Invitations(main, event);
+        addEditExpense = new AddEditExpense(main, event, participants);
+        openDebts = new OpenDebts(main);
 
         // TODO: get expenses from server
 //        expenses = server.getParticipantUtils().getExpenses(event.getCode());
