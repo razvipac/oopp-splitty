@@ -134,7 +134,7 @@ public class EventOverview {
 
         // expensesScroller, which includes all expense items in arraylist expenses
         ScrollPane expensesScroller = getExpensesScroller();
-        // TODO: button is non-functional
+
         Button settleDebtsButton = new Button("Settle Debts");
         settleDebtsButton.setOnAction(e -> {
             openDebts.displayAlertBox();
@@ -158,11 +158,9 @@ public class EventOverview {
     private HBox getEventBox() {
         HBox eventBox = new HBox(5);
 
-        // TODO: Event name is hardcoded
         Text eventNameText = new Text(eventName);
         eventNameText.setFont(h1);
 
-        // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
         sendInviteButton.setOnAction(e -> {
             invitations.displayAlertBox();
@@ -187,7 +185,6 @@ public class EventOverview {
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
 
-        // TODO: Button is non-functional
         Button participantAddButton = new Button("Add");
         participantAddButton.setOnAction(e -> {
             contactDetails.displayAlertBox();
