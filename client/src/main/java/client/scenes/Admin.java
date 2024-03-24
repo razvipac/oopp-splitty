@@ -18,7 +18,7 @@ public class Admin {
     private Main main;
     private Scene scene;
     private EventOverview eventOverview;
-    private ServerUtils server = new ServerUtils();
+    private ServerUtils server = ServerUtils.getServerUtils();
     private VBox eventsField;
 
     /**
@@ -42,7 +42,7 @@ public class Admin {
         gridPane.setPadding(new Insets(10));
 
 
-        List<Event> events = server.getAllEvents();
+        List<Event> events = server.getEventUtils().getAllEvents();
 
         // Adding the grid and back button to the layout
         VBox layout = new VBox();
@@ -82,7 +82,7 @@ public class Admin {
     }
 
     void showEvent(int compare) {
-        List<Event> list = server.getAllEvents();
+        List<Event> list = server.getEventUtils().getAllEvents();
         if(compare==1) list.sort(Comparator.comparing(Event::getName));
         else if(compare==2) list.sort(Comparator.comparing(Event::getCreationDate));
         else if(compare==3) list.sort(Comparator.comparing(Event::getCreationDate));
@@ -113,7 +113,7 @@ public class Admin {
         Button delete = new Button("Delete");
         delete.setOnAction(e -> {
             //eventsField.getChildren().clear();
-            server.deleteEvent(event.getCode());
+            server.getEventUtils().deleteEvent(event.getCode());
             eventsField.getChildren().clear();
             showEvent(2);
         });
