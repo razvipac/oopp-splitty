@@ -62,6 +62,7 @@ public class ParticipantUtils {
                 .post(Entity.entity(requestBody, APPLICATION_JSON));
 
         // Check the response status code
+        // TODO: should check for error types and pass that information on to user
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
@@ -101,6 +102,7 @@ public class ParticipantUtils {
                 .post(Entity.entity(requestBody, APPLICATION_JSON));
 
         // Check the response status code
+        // TODO: should check for error types and pass that information on to user
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
