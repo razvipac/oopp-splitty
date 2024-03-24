@@ -1,8 +1,14 @@
 package server.service;
 
 import commons.Event;
+import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import server.api.pojo.response_body.EventResponseBody;
+import server.api.pojo.response_body.ParticipantResponseBody;
+import server.api.pojo.response_body.WSAction;
+import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.EventRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -18,14 +24,20 @@ import java.util.Optional;
 @Service
 public class EventService {
     private EventRepository eventRepository;
+    private final ParticipantService participantService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * Constructs an EventService instance with the specified EventRepository.
      *
      * @param eventRepository The EventRepository to be injected into the service.
      */
-    public EventService(@Autowired EventRepository eventRepository) {
+    public EventService(@Autowired EventRepository eventRepository,
+                        @Autowired ParticipantService participantService,
+                        @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.eventRepository = eventRepository;
+        this.participantService = participantService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -86,7 +98,24 @@ public class EventService {
         Event found = getOne(eventCode);
         // if not found exception will be thrown
 
+        List<Participant> dependantParticipant = participantService.getAll(eventCode);
+        dependantParticipant.forEach((Participant participant) -> {
+            try {
+                participantService.deleteOne(eventCode, participant.getName());
+            } catch (NotFoundInDatabaseException e) {
+                throw new RuntimeException("Could not find dependant participant!");
+            }
+        });
+
         eventRepository.deleteById(eventCode);
+
+        simpMessagingTemplate.convertAndSend(
+                "/api/websocket/v1/channel/" + eventCode,
+                new WSWrapperResponseBody<>(
+                        WSAction.MODIFIED,
+                        found
+                ));
+
         return found;
     }
 

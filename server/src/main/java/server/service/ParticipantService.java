@@ -9,6 +9,7 @@ import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
 import server.api.pojo.response_body.WSAction;
 import server.api.pojo.response_body.WSWrapperResponseBody;
+import server.database.EventRepository;
 import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -22,7 +23,7 @@ import java.util.Optional;
 @Service
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
-    private final EventService eventService;
+    private final EventRepository eventRepository;
     private final ExpenseService expenseService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -33,11 +34,11 @@ public class ParticipantService {
      * @param eventService          The EventService instance to handle event-related operations
      */
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
-                              @Autowired EventService eventService,
+                              @Autowired EventRepository eventRepository,
                               @Autowired ExpenseService expenseService,
                               @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.participantRepository = participantRepository;
-        this.eventService = eventService;
+        this.eventRepository = eventRepository;
         this.expenseService = expenseService;
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
@@ -85,7 +86,7 @@ public class ParticipantService {
      */
     public Participant createOne(String eventCode, ParticipantRequestBody body)
             throws NotFoundInDatabaseException {
-        Event event = eventService.getOne(eventCode);
+        Event event = getOneEvent(eventCode);
 
         Participant newParticipant = new Participant(
                 body.name(),
@@ -129,7 +130,7 @@ public class ParticipantService {
         simpMessagingTemplate.convertAndSend(
                 "/api/websocket/v1/channel/" + eventCode + "/participant",
                 new WSWrapperResponseBody<>(
-                        WSAction.CREATED,
+                        WSAction.DELETED,
                         ParticipantResponseBody.build(found)
                 ));
 
@@ -168,7 +169,16 @@ public class ParticipantService {
      */
     private ParticipantId getParticipantId(String eventCode, String participantName)
             throws NotFoundInDatabaseException {
-        Event event = eventService.getOne(eventCode);
+        Event event = getOneEvent(eventCode);
         return new ParticipantId(participantName, event);
+    }
+
+    public Event getOneEvent(String eventCode) throws NotFoundInDatabaseException {
+        Optional<Event> searchResult = eventRepository.findById(eventCode);
+
+        if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
+                "Event with code: " + eventCode + " is not present in the database!");
+
+        return searchResult.get();
     }
 }
