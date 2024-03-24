@@ -5,8 +5,6 @@ import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import server.api.pojo.response_body.EventResponseBody;
-import server.api.pojo.response_body.ParticipantResponseBody;
 import server.api.pojo.response_body.WSAction;
 import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.EventRepository;
@@ -31,6 +29,8 @@ public class EventService {
      * Constructs an EventService instance with the specified EventRepository.
      *
      * @param eventRepository The EventRepository to be injected into the service.
+     * @param participantService The ParticipantService to be injected into the service.
+     * @param simpMessagingTemplate The simpMessagingTemplate to be injected into the service.
      */
     public EventService(@Autowired EventRepository eventRepository,
                         @Autowired ParticipantService participantService,

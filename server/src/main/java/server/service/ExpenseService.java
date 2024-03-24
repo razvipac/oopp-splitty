@@ -17,7 +17,6 @@ import server.service.exceptions.NotFoundInDatabaseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Handles input and output of saved Expense objects
@@ -33,14 +32,15 @@ public class ExpenseService {
      * the specified ExpenseRepository and ParticipantRepository.
      *
      * @param expenseRepository  The ExpenseRepository to be injected into the service.
-     * @param participantService The ParticipantRepository to be injected into the service.
+     * @param participantRepository The ParticipantRepository to be injected into the service.
+     * @param simpMessagingTemplate The SimpMessagingTemplate to be injected into the service.
      */
     public ExpenseService(
             @Autowired ExpenseRepository expenseRepository,
-            @Autowired ParticipantRepository participantService,
+            @Autowired ParticipantRepository participantRepository,
             @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.expenseRepository = expenseRepository;
-        this.participantRepository = participantService;
+        this.participantRepository = participantRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
@@ -62,6 +62,7 @@ public class ExpenseService {
      * Fetches all Expenses in a given Event and paid by given participant
      *
      * @param eventCode code of the Event to which the Expenses belong
+     * @param paidBy Participant who paid the seeked Expenses
      * @return a LinkedList containing all Expense objects in a given Event
      */
     public List<Expense> getAllInEventAndPaidByParticipant(String eventCode, Participant paidBy) {
@@ -188,7 +189,16 @@ public class ExpenseService {
         return new ExpenseId(id, paidBy);
     }
 
-    public Participant getOneParticipant(String eventCode, String name) throws NotFoundInDatabaseException {
+    /**
+     * Fetches a specific Participant object
+     *
+     * @param eventCode eventCode of the event to which the Participant belongs
+     * @param name      name of the participant
+     * @return the fetched Participant object
+     * @throws NotFoundInDatabaseException if such a Participant is not present in the database
+     */
+    public Participant getOneParticipant(String eventCode, String name)
+            throws NotFoundInDatabaseException {
         Optional<Participant> searchResult = participantRepository
                 .findParticipantByEventCodeAndName(name, eventCode);
         if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(

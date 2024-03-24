@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import server.api.pojo.request_body.ParticipantRequestBody;
-import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
 import server.api.pojo.response_body.WSAction;
 import server.api.pojo.response_body.WSWrapperResponseBody;
@@ -31,7 +30,9 @@ public class ParticipantService {
      * Constructor for ParticipantService
      *
      * @param participantRepository The ParticipantRepository instance to interact with the database
-     * @param eventService          The EventService instance to handle event-related operations
+     * @param eventRepository The EventRepository instance to interact with the database
+     * @param expenseService The ExpenseService instance to interact with the expenses
+     * @param simpMessagingTemplate The SimpMessagingService instance to send STOMP messages
      */
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
                               @Autowired EventRepository eventRepository,
@@ -113,10 +114,12 @@ public class ParticipantService {
         Participant found = getOne(eventCode, participantName);
         // if not found, exception will be thrown
 
-        List<Expense> dependantExpenses = expenseService.getAllInEventAndPaidByParticipant(eventCode, found);
+        List<Expense> dependantExpenses = expenseService
+                .getAllInEventAndPaidByParticipant(eventCode, found);
         dependantExpenses.forEach((Expense expense) -> {
             try {
-                Expense deletedExpense = expenseService.deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
+                Expense deletedExpense = expenseService
+                        .deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
             } catch (NotFoundInDatabaseException e) {
                 throw new RuntimeException("Dependant expense not found in db!");
             }
@@ -173,6 +176,14 @@ public class ParticipantService {
         return new ParticipantId(participantName, event);
     }
 
+    /**
+     * Fetches an Event object with given code
+     *
+     * @param eventCode code of the fetched Event object
+     * @return a fetched Event object
+     * @throws NotFoundInDatabaseException if an object with given code
+     *                                     is not present in the database
+     */
     public Event getOneEvent(String eventCode) throws NotFoundInDatabaseException {
         Optional<Event> searchResult = eventRepository.findById(eventCode);
 
