@@ -159,11 +159,7 @@ public class OpenDebts {
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);
-        Text bankInfo = new Text("""
-                Bank information available, transfer money to:
-                Account Holder: John Doe
-                IBAN: NL12 3456 7890 1234 56
-                BIC: 2138908420""");
+        Text bankInfo = new Text(getBankInfoText(d));
         debtInfo.setPadding(new Insets(0, 0, 10, 0));
         debtInfo.getChildren().addAll(bankInfo);
         debtInfo.setVisible(false);
@@ -187,6 +183,25 @@ public class OpenDebts {
         debtLine.getChildren().addAll(moreInfo, debtStringLabel, receivedButton);
         debtItem.getChildren().addAll(debtLine, debtInfo);
         layout.getChildren().add(debtItem);
+    }
+
+    private static String getBankInfoText(Debt d)
+    {
+        Participant debtor = d.getDebtor();
+        Participant creditor = d.getCreditor();
+        double amount = d.getAmount();
+
+        String creditorBankInfo =
+                "Bank Information for creditor (" + creditor.getName() + "):\n" +
+                "Account Holder: " + creditor.getName() + "\n" +
+                "IBAN: " + creditor.getIban() + "\n" +
+                "BIC: " + creditor.getBic();
+
+        return "Debt Details:\n" +
+                "Debtor: " + debtor.getName() + "\n" +
+                "Creditor: " + creditor.getName() + "\n" +
+                "Amount: " + amount + " Euro\n\n" +
+                creditorBankInfo;
     }
 
     /**
