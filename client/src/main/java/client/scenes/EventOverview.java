@@ -81,7 +81,8 @@ public class EventOverview {
         eventCode = event.getCode();
 
         // Participants for testing purposes
-        participants = server.getParticipantUtils().getParticipants(event.getCode());
+//        participants = server.getParticipantUtils().getParticipants(event.getCode());
+        participants = new ArrayList<>();
         Participant test = new Participant("test", event, "test", "test", "test");
         participants.add(test);
 

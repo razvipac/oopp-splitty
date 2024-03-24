@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -29,7 +30,7 @@ public class ParticipantUtils {
      */
     public List<Participant> getParticipants(String code) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/" + code + "/expense")
+                .target(SERVER).path("api/v1/" + code + "/participant")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -39,8 +40,9 @@ public class ParticipantUtils {
     /**
      * Adds Participant to server
      * @param p Participant to add
+     * @return True iff add was successful, false otherwise
      */
-    public void addParticipant(Participant p) {
+    public boolean addParticipant(Participant p) {
         String code = p.getEvent().getCode();
         String endpoint = "api/v1/" + code + "/participant";
 
@@ -51,11 +53,15 @@ public class ParticipantUtils {
                 p.getBic()
         );
 
-        ClientBuilder.newClient(new ClientConfig())
+        Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(requestBody, APPLICATION_JSON));
+
+        // Check the response status code
+        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) return true;
+        else return false;
     }
 
 }
