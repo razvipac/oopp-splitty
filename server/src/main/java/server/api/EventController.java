@@ -69,7 +69,7 @@ public class EventController {
 
     /**
      * Deletes the event with the specified Event Code
-     * through a DELETE request to api/v1/?code={eventCode}.
+     * through a DELETE request to api/v1/?eventCode={eventCode}.
      *
      * @param eventCode The Event Code of the event to be deleted.
      * @return A ResponseEntity containing the deleted event if successful.
@@ -80,21 +80,26 @@ public class EventController {
     @DeleteMapping("")
     public ResponseEntity<Event> deleteOne(
             @RequestParam("eventCode") String eventCode
-    ) throws NotFoundInDatabaseException {
-        Event event = eventService.deleteOne(eventCode);
-        simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/" + eventCode,
-                new WSWrapperResponseBody<>(
-                        WSAction.DELETED,
-                        event
-                ));
+    ) {
+        try{
+            Event event = eventService.deleteOne(eventCode);
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode,
+                    new WSWrapperResponseBody<>(
+                            WSAction.DELETED,
+                            event
+                    ));
 
-        return new ResponseEntity<>(event, HttpStatus.OK);
+            return new ResponseEntity<>(event, HttpStatus.OK);
+
+        } catch (NotFoundInDatabaseException e){
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
      * Updates the event with the specified Event Code by changing its name through a PUT request to
-     * api/v1/{eventCode}/?name={name}.
+     * api/v1/{eventCode}?name={name}
      *
      * @param name The new name for the event.
      * @param eventCode The Event Code of the event to be updated.
@@ -103,10 +108,10 @@ public class EventController {
      *         Returns HttpStatus.NOT_FOUND if the event is not found in the database.
      */
 
-    @PutMapping("")
+    @PutMapping("/{eventCode}")
     public ResponseEntity<Event> updateOneByName(
             @RequestParam("name") String name,
-            @RequestParam("eventCode") String eventCode
+            @PathVariable("eventCode") String eventCode
     ) {
         try {
             Event event = eventService.updateOne(eventCode, name);
