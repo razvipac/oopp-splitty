@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -32,6 +33,11 @@ public class AddEditExpense {
     private final ServerUtils server = ServerUtils.getServerUtils();
 
     private List<Participant> participants;
+
+    private final ComboBox<String> whoPaidDropdown = new ComboBox<>();
+    private final TextField whatForField = new TextField();
+    private final TextField howMuchField = new TextField();
+    private Text errorText;
 
     /**
      * Getter for the scene
@@ -87,10 +93,12 @@ public class AddEditExpense {
         layout.setVgap(10); // Vertical gap between grid cells
         layout.setPadding(new Insets(20, 20, 20, 20)); // Padding around the grid
         layout.add(title, 0, 0); // Add the title to the layout at position (0,0)
+        errorText = new Text();
+        errorText.setFill(Color.RED);
+        layout.add(errorText, 0, 10);
 
         // Create a label and a dropdown for "Who paid?" field
         Label whoPaidLabel = new Label("Who paid?");
-        ComboBox<String> whoPaidDropdown = new ComboBox<>();
         // Populate the dropdown with names from the expense list
         Map<String, Participant> participantMap = new HashMap<>();
         for (Participant p : participants) {
@@ -104,13 +112,11 @@ public class AddEditExpense {
 
         // Create a label and a text field for "What for?" field and add them to the layout
         Label whatForLabel = new Label("What for?");
-        TextField whatForField = new TextField();
         layout.add(whatForLabel, 0, 2);
         layout.add(whatForField, 1, 2);
 
         // Create a label and a text field for "How much?" field and add them to the layout
         Label howMuchLabel = new Label("How much?");
-        TextField howMuchField = new TextField();
         layout.add(howMuchLabel, 0, 3);
         layout.add(howMuchField, 1, 3);
 
@@ -161,19 +167,56 @@ public class AddEditExpense {
         abortButton.setOnAction(e -> closeAlertBox());
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
-            Integer price = Integer.valueOf(howMuchField.getText());
-            String item = whatForField.getText();
-            Participant payer = participantMap.get(whoPaidDropdown.getValue());
-            Expense expense = new Expense(price, item, payer);
-            System.out.println(expense);
-            addExpenseToServer(expense);
+            if(formIsValid()) {
+                Integer price = Integer.valueOf(howMuchField.getText());
+                String item = whatForField.getText();
+                Participant payer = participantMap.get(whoPaidDropdown.getValue());
+                Expense expense = new Expense(price, item, payer);
+                System.out.println(expense); // for testing
+                addExpenseToServer(expense);
+            }
         });
-
         layout.add(abortButton, 0, 9);
         layout.add(addButton, 1, 9);
 
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 500, 600);
+    }
+
+    /**
+     * Checks if the user-inputted form is valid.
+     */
+    private boolean formIsValid() {
+        // TODO: add validation for the optional fields
+
+        if(whoPaidDropdown.getValue() == null || whoPaidDropdown.getValue().isEmpty()) {
+            errorText.setText("Please select the participant who paid for this expense.");
+            return false;
+        }
+
+        if(howMuchField.getText().isEmpty()) {
+            errorText.setText("Please fill in the price of the expense.");
+            return false;
+        }
+
+        if(whatForField.getText().isEmpty()) {
+            errorText.setText("Please enter what the expense was for.");
+            return false;
+        }
+
+        // check if price is a number
+        try {
+            int price = Integer.parseInt(howMuchField.getText());
+            if (price < 0) {
+                errorText.setText("Price cannot be negative.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            errorText.setText("Price must be a valid integer with no decimals.");
+            return false;
+        }
+
+        return true;
     }
 
     /**
