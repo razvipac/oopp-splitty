@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,8 +18,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ public class AddEditExpense {
     private final ServerUtils server = ServerUtils.getServerUtils();
 
     private List<Participant> participants;
-    private ArrayList<Expense> addEditExpenseList;
 
     /**
      * Getter for the scene
@@ -47,6 +45,7 @@ public class AddEditExpense {
      * Constructor for the AddEditExpense that calls the method to create the scene
      * @param main scene of the main class
      * @param event the event to add to
+     * @param participants list of participants
      */
     public AddEditExpense(Main main, Event event, List<Participant> participants) {
         this.main = main;
