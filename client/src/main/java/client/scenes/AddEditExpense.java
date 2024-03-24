@@ -23,8 +23,8 @@ public class AddEditExpense {
 
     private Stage window;
     private Scene scene;
-    private Main main;
-    private Event event;
+    private final Main main;
+    private final Event event;
 
     private ArrayList<Expense> addEditExpenseList;
 
