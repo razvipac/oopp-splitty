@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.ServerUtils;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
@@ -28,6 +29,8 @@ public class AddEditExpense {
     private Scene scene;
     private final Main main;
     private final Event event;
+
+    private final ServerUtils server = ServerUtils.getServerUtils();
 
     private List<Participant> participants;
     private ArrayList<Expense> addEditExpenseList;
@@ -164,6 +167,7 @@ public class AddEditExpense {
             Participant payer = participantMap.get(whoPaidDropdown.getValue());
             Expense expense = new Expense(price, item, payer);
             System.out.println(expense);
+            server.getParticipantUtils().addExpense(expense, event.getCode());
         });
 
         layout.add(abortButton, 0, 9);
