@@ -30,7 +30,7 @@ public class LanguageButton extends Button {
      */
     private void initialize() {
         languageManager = new LanguageManager("" +
-                "src\\main\\resources\\userSettings\\userPreferences.json");
+                "client/src/main/resources/userSettings/userPreferences.json");
         setGraphic(createFlagIcon()); // Set the initial flag icon
         setOnMouseClicked(event -> handleMouseClicked(event));
         loadAvailableLanguages();
