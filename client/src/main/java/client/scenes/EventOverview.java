@@ -75,7 +75,7 @@ public class EventOverview {
         contactDetails = new ContactDetails(main, event);
         invitations = new Invitations(main, event);
         addEditExpense = new AddEditExpense(main);
-        openDebts = new OpenDebts(main);
+        openDebts = new OpenDebts(main, event);
 
         eventName = event.getName();
         eventCode = event.getCode();

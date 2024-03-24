@@ -5,6 +5,7 @@ import commons.Event;
 import client.Main;
 import javafx.geometry.Insets;
 //import javafx.geometry.Pos;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -14,6 +15,7 @@ import javafx.scene.text.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import commons.Debt;
 import commons.Participant;
@@ -23,7 +25,7 @@ import javafx.stage.Stage;
 public class OpenDebts {
 
     private Scene scene;
-    private ArrayList<Debt> debtList;
+    private List<Debt> debtList;
     private Main main;
     private final ServerUtils server = ServerUtils.getServerUtils();
 
@@ -39,31 +41,54 @@ public class OpenDebts {
      * Constructor for Open Debts page
      * @param main to the main class
      */
-    public OpenDebts(Main main) {
+    public OpenDebts(Main main, Event event) {
         this.main = main;
-        // Data for testing purposes
-        Participant john = new Participant("John",
-                           new Event("Abby's birthday party", "code1",
-                                     LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                               "John@mail.com", "1234", "1234");
-        Participant david = new Participant("David",
-                            new Event("Davidson's birthday party", "code2",
-                                      LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                "David@mail.com", "2341", "2341");
-        Participant chris = new Participant("Chris",
-                            new Event("Stoffer's birthday party", "code3",
-                                      LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                "Chris@mail.com", "3412", "3412");
-        Participant anna = new Participant("Anna",
-                           new Event("Belle's birthday party", "code4",
-                                     LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                               "Anna@mail.com", "4123", "4123");
-        debtList = new ArrayList<>();
-        debtList.add(new Debt(john, david, 123));
-        debtList.add(new Debt(chris, david, 34));
-        debtList.add(new Debt(anna, david, 5.60));
+        if(event == null)
+            createSceneNoEvent();
+        else
+        {
+            debtList = server.getDebtUtils().getAllOpenDebts(event.getCode());
+            createScene();
+            /*
+            // Data for testing purposes
+            Participant john = new Participant("John",
+                               new Event("Abby's birthday party", "code1",
+                                         LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                                   "John@mail.com", "1234", "1234");
+            Participant david = new Participant("David",
+                                new Event("Davidson's birthday party", "code2",
+                                          LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                                    "David@mail.com", "2341", "2341");
+            Participant chris = new Participant("Chris",
+                                new Event("Stoffer's birthday party", "code3",
+                                          LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                                    "Chris@mail.com", "3412", "3412");
+            Participant anna = new Participant("Anna",
+                               new Event("Belle's birthday party", "code4",
+                                         LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
+                                   "Anna@mail.com", "4123", "4123");
+            debtList = new ArrayList<>();
+            debtList.add(new Debt(john, david, 123));
+            debtList.add(new Debt(chris, david, 34));
+            debtList.add(new Debt(anna, david, 5.60));
+            */
+        }
+    }
 
-        createScene();
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("You have to join an event before checking the debts.");
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> goBack());
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 350, 300);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
     }
 
     /**
@@ -138,7 +163,7 @@ public class OpenDebts {
                 Bank information available, transfer money to:
                 Account Holder: John Doe
                 IBAN: NL12 3456 7890 1234 56
-                BIC: ABCDEFGH""");
+                BIC: 2138908420""");
         debtInfo.setPadding(new Insets(0, 0, 10, 0));
         debtInfo.getChildren().addAll(bankInfo);
         debtInfo.setVisible(false);
