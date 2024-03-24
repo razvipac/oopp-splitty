@@ -7,8 +7,10 @@ import commons.Event;
 import commons.Participant;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -53,8 +55,21 @@ public class ContactDetails {
     private void createSceneNoEvent() {
         VBox layout = new VBox(5);
         Text noEventText = new Text("No event found");
-        layout.getChildren().add(noEventText);
-        scene = new Scene(layout, 300, 250);
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> goBack());
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 340, 280);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**

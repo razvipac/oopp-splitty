@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -53,13 +54,20 @@ public class Invitations {
         VBox layout = new VBox(5);
         Text noEventText = new Text("You have to join an event before inviting people.");
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         layout.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(noEventText, backButton);
         layout.setPadding(new Insets(20));
 
         scene = new Scene(layout, 360, 290);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**
@@ -92,7 +100,7 @@ public class Invitations {
 
         // Back button
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         // layout
         VBox layout = new VBox();
@@ -103,6 +111,9 @@ public class Invitations {
         layout.setAlignment(Pos.CENTER);
 
         scene = new Scene(layout, 450, 300);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
 
         layout.prefWidthProperty().bind(scene.widthProperty());
         layout.prefHeightProperty().bind(scene.heightProperty());
