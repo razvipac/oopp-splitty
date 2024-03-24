@@ -88,14 +88,11 @@ public class AddEditExpense {
         title.setFont(Font.font("Arial", FontWeight.BOLD , 20));
 
         // Initialize a GridPane for the layout with specific gaps and padding
-        GridPane layout = new GridPane();
-        layout.setHgap(10); // Horizontal gap between grid cells
-        layout.setVgap(10); // Vertical gap between grid cells
-        layout.setPadding(new Insets(20, 20, 20, 20)); // Padding around the grid
-        layout.add(title, 0, 0); // Add the title to the layout at position (0,0)
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10); // Horizontal gap between grid cells
+        gridPane.setVgap(10); // Vertical gap between grid cells
         errorText = new Text();
         errorText.setFill(Color.RED);
-        layout.add(errorText, 0, 10);
 
         // Create a label and a dropdown for "Who paid?" field
         Label whoPaidLabel = new Label("Who paid?");
@@ -107,31 +104,31 @@ public class AddEditExpense {
             participantMap.put(name, p);
         }
         // Add the label and dropdown to the layout
-        layout.add(whoPaidLabel, 0, 1);
-        layout.add(whoPaidDropdown, 1, 1);
+        gridPane.add(whoPaidLabel, 0, 1);
+        gridPane.add(whoPaidDropdown, 1, 1);
 
         // Create a label and a text field for "What for?" field and add them to the layout
         Label whatForLabel = new Label("What for?");
-        layout.add(whatForLabel, 0, 2);
-        layout.add(whatForField, 1, 2);
+        gridPane.add(whatForLabel, 0, 2);
+        gridPane.add(whatForField, 1, 2);
 
         // Create a label and a text field for "How much?" field and add them to the layout
         Label howMuchLabel = new Label("How much?");
-        layout.add(howMuchLabel, 0, 3);
-        layout.add(howMuchField, 1, 3);
+        gridPane.add(howMuchLabel, 0, 3);
+        gridPane.add(howMuchField, 1, 3);
 
         // Create a label and a dropdown for "Currency" field and add them to the layout
         Label currencyLabel = new Label("Currency");
         ComboBox<String> currencyDropdown = new ComboBox<>();
         currencyDropdown.getItems().addAll("USD", "EUR", "GBP"); // Add currencies to the dropdown
-        layout.add(currencyLabel, 2, 3);
-        layout.add(currencyDropdown, 3, 3);
+        gridPane.add(currencyLabel, 2, 3);
+        gridPane.add(currencyDropdown, 3, 3);
 
         // Create a label and a date picker for "When?" field and add them to the layout
         Label whenLabel = new Label("When?");
         DatePicker whenPicker = new DatePicker();
-        layout.add(whenLabel, 0, 4);
-        layout.add(whenPicker, 1, 4);
+        gridPane.add(whenLabel, 0, 4);
+        gridPane.add(whenPicker, 1, 4);
 
         // Create a label and radio buttons for "How to Split?" field and add them to the layout
         Label howToSplitLabel = new Label("How to Split?");
@@ -140,9 +137,9 @@ public class AddEditExpense {
         ToggleGroup group = new ToggleGroup(); // Group the radio buttons
         equallyButton.setToggleGroup(group);
         somePeopleButton.setToggleGroup(group);
-        layout.add(howToSplitLabel, 0, 5);
-        layout.add(equallyButton, 1, 5);
-        layout.add(somePeopleButton, 1, 6);
+        gridPane.add(howToSplitLabel, 0, 5);
+        gridPane.add(equallyButton, 1, 5);
+        gridPane.add(somePeopleButton, 1, 6);
 
         // Create a container for checkboxes
         VBox checkboxContainer = new VBox();
@@ -154,13 +151,13 @@ public class AddEditExpense {
             participantCheckbox.setPadding(new Insets(2, 2, 2, 2));
             checkboxContainer.getChildren().add(participantCheckbox);
         }
-        layout.add(checkboxContainer, 1, 7); // Add the container to the layout
+        gridPane.add(checkboxContainer, 1, 7); // Add the container to the layout
 
         // Create a label and a text field for "Expense Type" field and add them to the layout
         Label expenseTypeLabel = new Label("Expense Type");
         TextField expenseTypeField = new TextField();
-        layout.add(expenseTypeLabel, 0, 8);
-        layout.add(expenseTypeField, 1, 8);
+        gridPane.add(expenseTypeLabel, 0, 8);
+        gridPane.add(expenseTypeField, 1, 8);
 
         // Create "Abort" and "Add" buttons and add them to the layout
         Button abortButton = new Button("Abort");
@@ -176,8 +173,12 @@ public class AddEditExpense {
                 addExpenseToServer(expense);
             }
         });
-        layout.add(abortButton, 0, 9);
-        layout.add(addButton, 1, 9);
+        gridPane.add(abortButton, 0, 9);
+        gridPane.add(addButton, 1, 9);
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(20));
+        layout.getChildren().addAll(title, errorText, gridPane);
 
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 500, 600);
