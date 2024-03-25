@@ -19,7 +19,7 @@ import commons.Event;
 public class EventOverview {
 
     private Scene scene;
-    private Main main;
+    private final Main main;
     private ContactDetails contactDetails;
     private Invitations invitations;
     private AddEditExpense addEditExpense;
@@ -148,9 +148,7 @@ public class EventOverview {
         ScrollPane expensesScroller = getExpensesScroller();
 
         Button settleDebtsButton = new Button("Settle Debts");
-        settleDebtsButton.setOnAction(e -> {
-            openDebts.displayAlertBox();
-        });
+        settleDebtsButton.setOnAction(e -> openDebts.displayAlertBox());
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
@@ -174,9 +172,7 @@ public class EventOverview {
         eventNameText.setFont(h1);
 
         Button sendInviteButton = new Button("Send Invite");
-        sendInviteButton.setOnAction(e -> {
-            invitations.displayAlertBox();
-        });
+        sendInviteButton.setOnAction(e -> invitations.displayAlertBox());
 
         eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 
@@ -198,9 +194,7 @@ public class EventOverview {
         Button participantEditButton = new Button("Edit");
 
         Button participantAddButton = new Button("Add");
-        participantAddButton.setOnAction(e -> {
-            contactDetails.displayAlertBox();
-        });
+        participantAddButton.setOnAction(e -> contactDetails.displayAlertBox());
 
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);
