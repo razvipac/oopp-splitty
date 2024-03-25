@@ -19,5 +19,18 @@ public interface ExpenseRepository extends CrudRepository<Expense, ExpenseId> {
      */
     @Query("SELECT e FROM Expense e WHERE e.pkey.paidBy.pkey.event.code = :eventCode")
     Collection<Expense> findAllExpensesInEvent(@Param("eventCode") String eventCode);
+
+    /**
+     * Fetches all Expenses paid by a given Participant in a given Event
+     * @param eventCode code of the event
+     * @param paidByName name of the participant
+     * @return Collection of fetched Expenses
+     */
+    @Query("SELECT e FROM Expense e " +
+            "WHERE e.pkey.paidBy.pkey.event.code = :eventCode " +
+            "AND e.pkey.paidBy.pkey.name = :paidByName")
+    Collection<Expense> findAllExpensesInEventDependantOnParticipant(
+            @Param("eventCode") String eventCode,
+            @Param("paidByName") String paidByName);
 }
 
