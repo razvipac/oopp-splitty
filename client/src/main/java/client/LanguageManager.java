@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.scene.image.Image;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+
 public class LanguageManager {
     private String preferencesFilePath;
 
@@ -70,10 +70,20 @@ public class LanguageManager {
      * @return an appropriate flag associated with this language
      */
     public static Image getFlagImage(LanguageOption language) {
-        // URL = "file:\\client\\src\\main\\resources\\userSettings\\English.png";
-        String url = "file:///client/src/main/resources/userSettings/English.png";
-        Image image = new Image(url);
-        return image;
+        try {
+
+            InputStream inputStream =
+                    new FileInputStream("client/src/main/resources/userSettings/English.png");
+            if (language.getLanguage() == LanguageOption.Language.DUTCH) {
+                inputStream =
+                        new FileInputStream("client/src/main/resources/userSettings/Dutch.png");
+            }
+            return new Image(inputStream);
+        }
+        catch (Exception e){
+            System.out.println("The image flag is not found");
+            return null;
+        }
     }
 
     /**
