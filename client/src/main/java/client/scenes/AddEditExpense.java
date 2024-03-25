@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -40,6 +41,13 @@ public class AddEditExpense {
     private final TextField howMuchField = new TextField();
     private Map<String, Participant> participantMap = new HashMap<>();
     private Text errorText;
+
+    private ComboBox<String> whoPaidDropdown;
+    private TextField whatForField;
+    private TextField howMuchField;
+    private ComboBox<String> currencyDropdown;
+    private VBox checkboxContainer;
+    private TextField expenseTypeField;
 
     /**
      * Getter for the scene
@@ -189,7 +197,7 @@ public class AddEditExpense {
         gridPane.add(somePeopleButton, 1, 6);
 
         // Create a container for checkboxes
-        VBox checkboxContainer = new VBox();
+        checkboxContainer = new VBox();
         checkboxContainer.setAlignment(Pos.CENTER);
         // Create a checkbox for each participant and add it to the container
         for (Participant p : participants) {

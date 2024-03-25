@@ -2,8 +2,13 @@ package server.service;
 
 import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import server.api.pojo.request_body.ParticipantRequestBody;
+import server.api.pojo.response_body.ParticipantResponseBody;
+import server.api.pojo.response_body.WSAction;
+import server.api.pojo.response_body.WSWrapperResponseBody;
+import server.database.EventRepository;
 import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -17,18 +22,26 @@ import java.util.Optional;
 @Service
 public class ParticipantService {
     private final ParticipantRepository participantRepository;
-    private final EventService eventService;
+    private final EventRepository eventRepository;
+    private final ExpenseService expenseService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * Constructor for ParticipantService
      *
      * @param participantRepository The ParticipantRepository instance to interact with the database
-     * @param eventService          The EventService instance to handle event-related operations
+     * @param eventRepository The EventRepository instance to interact with the database
+     * @param expenseService The ExpenseService instance to interact with the expenses
+     * @param simpMessagingTemplate The SimpMessagingService instance to send STOMP messages
      */
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
-                              @Autowired EventService eventService) {
+                              @Autowired EventRepository eventRepository,
+                              @Autowired ExpenseService expenseService,
+                              @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.participantRepository = participantRepository;
-        this.eventService = eventService;
+        this.eventRepository = eventRepository;
+        this.expenseService = expenseService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -74,7 +87,7 @@ public class ParticipantService {
      */
     public Participant createOne(String eventCode, ParticipantRequestBody body)
             throws NotFoundInDatabaseException {
-        Event event = eventService.getOne(eventCode);
+        Event event = getOneEvent(eventCode);
 
         Participant newParticipant = new Participant(
                 body.name(),
@@ -99,12 +112,31 @@ public class ParticipantService {
     public Participant deleteOne(String eventCode, String participantName)
             throws NotFoundInDatabaseException {
         Participant found = getOne(eventCode, participantName);
-        // if not found exception will be thrown
+        // if not found, exception will be thrown
+
+        List<Expense> dependantExpenses = expenseService
+                .getAllInEventAndPaidByParticipant(eventCode, found);
+        dependantExpenses.forEach((Expense expense) -> {
+            try {
+                Expense deletedExpense = expenseService
+                        .deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
+            } catch (NotFoundInDatabaseException e) {
+                throw new RuntimeException("Dependant expense not found in db!");
+            }
+        });
 
         participantRepository.deleteById(getParticipantId(
                 eventCode,
                 participantName
         ));
+
+        simpMessagingTemplate.convertAndSend(
+                "/api/websocket/v1/channel/" + eventCode + "/participant",
+                new WSWrapperResponseBody<>(
+                        WSAction.DELETED,
+                        ParticipantResponseBody.build(found)
+                ));
+
         return found;
     }
 
@@ -140,7 +172,24 @@ public class ParticipantService {
      */
     private ParticipantId getParticipantId(String eventCode, String participantName)
             throws NotFoundInDatabaseException {
-        Event event = eventService.getOne(eventCode);
+        Event event = getOneEvent(eventCode);
         return new ParticipantId(participantName, event);
+    }
+
+    /**
+     * Fetches an Event object with given code
+     *
+     * @param eventCode code of the fetched Event object
+     * @return a fetched Event object
+     * @throws NotFoundInDatabaseException if an object with given code
+     *                                     is not present in the database
+     */
+    public Event getOneEvent(String eventCode) throws NotFoundInDatabaseException {
+        Optional<Event> searchResult = eventRepository.findById(eventCode);
+
+        if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
+                "Event with code: " + eventCode + " is not present in the database!");
+
+        return searchResult.get();
     }
 }

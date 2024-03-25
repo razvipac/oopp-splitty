@@ -114,7 +114,7 @@ public class Event {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || this.getClass() != o.getClass())
             return false;
         Event event = (Event) o;
         return code.equals(event.code)
@@ -231,7 +231,8 @@ public class Event {
      * @param event The event to be taken into consideration
      * @return Returns the list of participants who are present within one specific event
      */
-    private static List<Participant> basicGetParticipants(List<Participant> allParticipants, Event event) {
+    private static List<Participant> basicGetParticipants(List<Participant> allParticipants,
+                                                          Event event) {
         List<Participant> participants = new ArrayList<>();
         for(Participant participant : allParticipants)
             if(participant.getEvent().equals(event))
@@ -252,16 +253,21 @@ public class Event {
     }
 
     /**
-     * Retrieves the debtors from within a specific expense.
+     * Retrieves the debtors within a specific expense.
      *
-     * @param expense The expense for which debtors are to be retrieved.
+     * @param allParticipants A list of all participants involved.
+     * @param expense         The expense for which debtors are to be retrieved.
      * @return A set of participants who are debtors within the expense.
      */
-    public Set<Participant> getDebtorsWithinExpense(List<Participant> allParticipants, Expense expense) {
+    public Set<Participant> getDebtorsWithinExpense(List<Participant> allParticipants,
+                                                    Expense expense) {
         Set<Participant> debtors = new HashSet<>();
-        Participant creditor = expense.getPaidBy(); // The participant who paid for the expense is the creditor
+        Participant creditor = expense.getPaidBy();
+        // The participant who paid for the expense is the creditor
 
-        for (Debt debt : settleDebts(allParticipants, expense.getPaidBy().getEvent(), List.of(expense))) {
+        for (Debt debt : settleDebts(allParticipants,
+                                     expense.getPaidBy().getEvent(),
+                                     List.of(expense))) {
             if (!debt.getCreditor().equals(creditor)) {
                 debtors.add(debt.getDebtor());
             }

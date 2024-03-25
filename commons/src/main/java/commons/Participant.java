@@ -15,7 +15,8 @@ public class Participant {
     private String bic;
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "pkey.paidBy")
     private List<Expense> expenses;
-
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "id.debtor")
+    private List<Debt> debts;
 
     /**
      * Default constructor needed for the JPA

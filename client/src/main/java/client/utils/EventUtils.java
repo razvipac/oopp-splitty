@@ -49,5 +49,19 @@ public class EventUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(eventName, APPLICATION_JSON), Event.class);
     }
+    /**
+     * Creates an event with the given event name.
+     * @param eventCode the name of the event
+     * @return the created Event
+     */
+    public Event deleteEvent(String eventCode) {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/")
+                .queryParam("eventCode", eventCode)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete(Event.class);
+    }
 
 }

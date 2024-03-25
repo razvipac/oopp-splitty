@@ -87,13 +87,6 @@ public class ParticipantController {
             Participant participant = participantService.createOne(eventCode, body);
             ParticipantResponseBody responseBody = ParticipantResponseBody.build(participant);
 
-            simpMessagingTemplate.convertAndSend(
-                    "/api/websocket/v1/channel/" + eventCode + "/participant",
-                    new WSWrapperResponseBody<>(
-                            WSAction.CREATED,
-                            responseBody
-                    ));
-
             return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -117,12 +110,6 @@ public class ParticipantController {
             Participant participant = participantService.deleteOne(eventCode, participantName);
             ParticipantResponseBody responseBody = ParticipantResponseBody.build(participant);
 
-            simpMessagingTemplate.convertAndSend(
-                    "/api/websocket/v1/channel/" + eventCode + "/participant",
-                    new WSWrapperResponseBody<>(
-                            WSAction.DELETED,
-                            responseBody
-                    ));
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

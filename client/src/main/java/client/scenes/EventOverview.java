@@ -1,9 +1,11 @@
 package client.scenes;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
@@ -19,6 +21,7 @@ import commons.Event;
 public class EventOverview {
 
     private Scene scene;
+    private Scene previous;
     private final Main main;
     private ContactDetails contactDetails;
     private Invitations invitations;
@@ -69,6 +72,11 @@ public class EventOverview {
             return;
         }
 
+        contactDetails = new ContactDetails(main, event);
+        invitations = new Invitations(main, event);
+        addEditExpense = new AddEditExpense(main, event, participants);
+        openDebts = new OpenDebts(main);
+
         eventName = event.getName();
         eventCode = event.getCode();
 
@@ -79,11 +87,6 @@ public class EventOverview {
         Participant john = new Participant("John", event, "test", "test", "test");
         participants.add(test);
         participants.add(john);
-
-        contactDetails = new ContactDetails(main, event);
-        invitations = new Invitations(main, event);
-        addEditExpense = new AddEditExpense(main, event, participants);
-        openDebts = new OpenDebts(main);
 
         // TODO: get expenses from server
 //        expenses = server.getParticipantUtils().getExpenses(event.getCode());
@@ -105,9 +108,22 @@ public class EventOverview {
      */
     private void createSceneNoEvent() {
         VBox layout = new VBox(5);
-        Text noEventText = new Text("No event found");
-        layout.getChildren().add(noEventText);
-        scene = new Scene(layout, 350, 380);
+        Text noEventText = new Text("No event found.");
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> goBack());
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 350, 280);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
+    }
+
+    private void goBack() {
+        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**
@@ -151,14 +167,17 @@ public class EventOverview {
         settleDebtsButton.setOnAction(e -> openDebts.displayAlertBox());
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         layout.getChildren().addAll(eventBox, participantsBox, participantNames,
                 expensesHeader, expenseAddButton,
                 participantDropdown, radioSelectBox, expensesScroller,
                 settleDebtsButton, backButton);
 
-        scene = new Scene(layout, 350, 380);
+        scene = new Scene(layout, 550, 430);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
     }
 
     /**
