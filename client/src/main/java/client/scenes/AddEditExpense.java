@@ -41,9 +41,7 @@ public class AddEditExpense {
     private final TextField howMuchField = new TextField();
     private Map<String, Participant> participantMap = new HashMap<>();
     private Text errorText;
-    private ComboBox<String> currencyDropdown;
     private VBox checkboxContainer;
-    private TextField expenseTypeField;
 
     /**
      * Getter for the scene
