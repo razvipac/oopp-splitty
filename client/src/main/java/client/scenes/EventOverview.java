@@ -77,8 +77,8 @@ public class EventOverview {
         participants = new ArrayList<>();
         Participant test = new Participant("Test", event, "test", "test", "test");
         Participant john = new Participant("John", event, "test", "test", "test");
-        participants.add(test);
-        participants.add(john);
+//        participants.add(test);
+//        participants.add(john);
 
         contactDetails = new ContactDetails(main, event);
         invitations = new Invitations(main, event);
@@ -128,6 +128,16 @@ public class EventOverview {
 
         Button expenseAddButton = new Button("Add Expense");
         expenseAddButton.setOnAction(e -> {
+            if(participants == null || participants.isEmpty()) {
+                Alert noParticipants = createAlert(Alert.AlertType.INFORMATION, "Alert",
+                        "Event has no participants",
+                        "Cannot add expenses because this event has no participants. " +
+                                "Please add at least one participant first.");
+                noParticipants.getButtonTypes().clear();
+                noParticipants.getButtonTypes().add(ButtonType.OK);
+                noParticipants.showAndWait();
+                return;
+            }
             addEditExpense.displayAlertBox();
         });
 
@@ -352,6 +362,22 @@ public class EventOverview {
                 }
             }
         }
+    }
+
+    /**
+     * Creates an alert window
+     * @param type The type of alert (e.g. CONFIRMATION or ERROR)
+     * @param title The title of the window
+     * @param header The header of the window
+     * @param content The content of the window
+     * @return Alert object
+     */
+    private Alert createAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
     }
 
     /**
