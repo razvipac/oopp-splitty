@@ -72,11 +72,6 @@ public class EventOverview {
             return;
         }
 
-        contactDetails = new ContactDetails(main, event);
-        invitations = new Invitations(main, event);
-        addEditExpense = new AddEditExpense(main, event, participants);
-        openDebts = new OpenDebts(main);
-
         eventName = event.getName();
         eventCode = event.getCode();
 
@@ -97,6 +92,11 @@ public class EventOverview {
         if(!(participants.isEmpty())) {
             selectedParticipant = participants.getFirst();
         }
+
+        contactDetails = new ContactDetails(main, event);
+        invitations = new Invitations(main, event);
+        addEditExpense = new AddEditExpense(main, event, participants);
+        openDebts = new OpenDebts(main, event);
 
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;

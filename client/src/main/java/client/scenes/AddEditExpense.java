@@ -41,10 +41,6 @@ public class AddEditExpense {
     private final TextField howMuchField = new TextField();
     private Map<String, Participant> participantMap = new HashMap<>();
     private Text errorText;
-
-    private ComboBox<String> whoPaidDropdown;
-    private TextField whatForField;
-    private TextField howMuchField;
     private ComboBox<String> currencyDropdown;
     private VBox checkboxContainer;
     private TextField expenseTypeField;
