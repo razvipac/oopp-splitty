@@ -131,6 +131,9 @@ public class AddEditExpense {
 
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 500, 600);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) closeAlertBox();
+        });
     }
 
     private void addWhoPaidField(GridPane gridPane) {
