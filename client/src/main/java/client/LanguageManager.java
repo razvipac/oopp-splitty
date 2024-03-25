@@ -3,9 +3,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+
 public class LanguageManager {
     private String preferencesFilePath;
 
@@ -70,10 +71,20 @@ public class LanguageManager {
      * @return an appropriate flag associated with this language
      */
     public static Image getFlagImage(LanguageOption language) {
-        // URL = "file:\\client\\src\\main\\resources\\userSettings\\English.png";
-        String url = "file:///client/src/main/resources/userSettings/English.png";
-        Image image = new Image(url);
-        return image;
+        try {
+
+            InputStream inputStream =
+                    new FileInputStream("client/src/main/resources/userSettings/English.png");
+            if (language.getLanguage() == LanguageOption.Language.DUTCH) {
+                inputStream =
+                        new FileInputStream("client/src/main/resources/userSettings/Dutch.png");
+            }
+            return new Image(inputStream);
+        }
+        catch (Exception e){
+            System.out.println("The image flag is not found");
+            return null;
+        }
     }
 
     /**
@@ -116,8 +127,21 @@ public class LanguageManager {
      * @param key takes a key
      * @return the associated value with it in the json config file
      */
-    public String get(String key){
-        return this.get(LanguageButton.getCurrentLanguage(),key);
+    public String get(String key) {
+        return this.get(LanguageButton.getCurrentLanguage(), key);
     }
 
+    /**
+     * @param currentLanguage is a LanguageOption for which we want to return
+     *                        a proper ImageView of its flag
+     * @return a proper ImageView that looks like the language input flag.
+     */
+    public static ImageView createFlagIcon(LanguageOption currentLanguage) {
+        //getFlagImage currently returns null
+        Image flagImage = LanguageManager.getFlagImage(currentLanguage);
+        ImageView imageView = new ImageView(flagImage);
+        imageView.setFitWidth(20);
+        imageView.setFitHeight(15);
+        return imageView;
+    }
 }
