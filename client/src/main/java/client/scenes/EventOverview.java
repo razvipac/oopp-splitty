@@ -77,8 +77,8 @@ public class EventOverview {
         participants = new ArrayList<>();
         Participant test = new Participant("Test", event, "test", "test", "test");
         Participant john = new Participant("John", event, "test", "test", "test");
-//        participants.add(test);
-//        participants.add(john);
+        participants.add(test);
+        participants.add(john);
 
         contactDetails = new ContactDetails(main, event);
         invitations = new Invitations(main, event);
