@@ -298,6 +298,7 @@ public class AddEditExpense {
      * Closes the modal alert box and clears up the input fields.
      */
     public void closeAlertBox() {
+        // TODO: reset fields when closed and reopened
         window.close();
     }
 
