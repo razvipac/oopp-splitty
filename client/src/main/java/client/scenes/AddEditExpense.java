@@ -38,6 +38,7 @@ public class AddEditExpense {
     private final ComboBox<String> whoPaidDropdown = new ComboBox<>();
     private final TextField whatForField = new TextField();
     private final TextField howMuchField = new TextField();
+    private Map<String, Participant> participantMap = new HashMap<>();
     private Text errorText;
 
     /**
@@ -95,10 +96,43 @@ public class AddEditExpense {
         errorText = new Text();
         errorText.setFill(Color.RED);
 
+        addWhoPaidField(gridPane);
+        addWhatForField(gridPane);
+        addHowMuchField(gridPane);
+        addCurrencyDropdown(gridPane);
+        addWhenPicker(gridPane);
+        addHowToSplit(gridPane);
+        addExpenseTypeField(gridPane);
+
+        // Create "Abort" and "Add" buttons and add them to the layout
+        Button abortButton = new Button("Abort");
+        abortButton.setOnAction(e -> closeAlertBox());
+        Button addButton = new Button("Add");
+        addButton.setOnAction(e -> {
+            if(formIsValid()) {
+                Integer price = Integer.valueOf(howMuchField.getText());
+                String item = whatForField.getText();
+                Participant payer = participantMap.get(whoPaidDropdown.getValue());
+                Expense expense = new Expense(price, item, payer);
+                System.out.println(expense); // for testing
+                addExpenseToServer(expense);
+            }
+        });
+        gridPane.add(abortButton, 0, 9);
+        gridPane.add(addButton, 1, 9);
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(20));
+        layout.getChildren().addAll(title, errorText, gridPane);
+
+        // Create a scene with the layout and set its size
+        scene = new Scene(layout, 500, 600);
+    }
+
+    private void addWhoPaidField(GridPane gridPane) {
         // Create a label and a dropdown for "Who paid?" field
         Label whoPaidLabel = new Label("Who paid?");
         // Populate the dropdown with names from the expense list
-        Map<String, Participant> participantMap = new HashMap<>();
         for (Participant p : participants) {
             String name = p.getName();
             whoPaidDropdown.getItems().add(name);
@@ -107,17 +141,23 @@ public class AddEditExpense {
         // Add the label and dropdown to the layout
         gridPane.add(whoPaidLabel, 0, 1);
         gridPane.add(whoPaidDropdown, 1, 1);
+    }
 
+    private void addWhatForField(GridPane gridPane) {
         // Create a label and a text field for "What for?" field and add them to the layout
         Label whatForLabel = new Label("What for?");
         gridPane.add(whatForLabel, 0, 2);
         gridPane.add(whatForField, 1, 2);
+    }
 
+    private void addHowMuchField(GridPane gridPane) {
         // Create a label and a text field for "How much?" field and add them to the layout
         Label howMuchLabel = new Label("How much?");
         gridPane.add(howMuchLabel, 0, 3);
         gridPane.add(howMuchField, 1, 3);
+    }
 
+    private void addCurrencyDropdown(GridPane gridPane) {
         // Create a label and a dropdown for "Currency" field and add them to the layout
         Label currencyLabel = new Label("Currency");
         ComboBox<String> currencyDropdown = new ComboBox<>();
@@ -125,13 +165,17 @@ public class AddEditExpense {
         currencyDropdown.getSelectionModel().selectFirst();
         gridPane.add(currencyLabel, 2, 3);
         gridPane.add(currencyDropdown, 3, 3);
+    }
 
+    private void addWhenPicker(GridPane gridPane) {
         // Create a label and a date picker for "When?" field and add them to the layout
         Label whenLabel = new Label("When?");
         DatePicker whenPicker = new DatePicker();
         gridPane.add(whenLabel, 0, 4);
         gridPane.add(whenPicker, 1, 4);
+    }
 
+    private void addHowToSplit(GridPane gridPane) {
         // Create a label and radio buttons for "How to Split?" field and add them to the layout
         Label howToSplitLabel = new Label("How to Split?");
         RadioButton equallyButton = new RadioButton("Equally Between Everybody");
@@ -158,52 +202,21 @@ public class AddEditExpense {
         gridPane.add(checkboxContainer, 1, 7); // Add the container to the layout
 
         radioGroup.selectedToggleProperty().addListener((v, oldValue, newValue) -> {
-            if (newValue == somePeopleButton) {
-                // Enable checkboxes when somePeopleButton is selected
-                for (Node node : checkboxContainer.getChildren()) {
-                    if (node instanceof CheckBox) {
-                        node.setDisable(false);
-                    }
-                }
-            } else {
-                // Disable checkboxes when equallyButton is selected
-                for (Node node : checkboxContainer.getChildren()) {
-                    if (node instanceof CheckBox) {
-                        node.setDisable(true);
-                    }
+            boolean somePeopleSelected = newValue == somePeopleButton;
+            for (Node node : checkboxContainer.getChildren()) {
+                if (node instanceof CheckBox) {
+                    node.setDisable(!somePeopleSelected);
                 }
             }
         });
+    }
 
+    private void addExpenseTypeField(GridPane gridPane) {
         // Create a label and a text field for "Expense Type" field and add them to the layout
         Label expenseTypeLabel = new Label("Expense Type");
         TextField expenseTypeField = new TextField();
         gridPane.add(expenseTypeLabel, 0, 8);
         gridPane.add(expenseTypeField, 1, 8);
-
-        // Create "Abort" and "Add" buttons and add them to the layout
-        Button abortButton = new Button("Abort");
-        abortButton.setOnAction(e -> closeAlertBox());
-        Button addButton = new Button("Add");
-        addButton.setOnAction(e -> {
-            if(formIsValid()) {
-                Integer price = Integer.valueOf(howMuchField.getText());
-                String item = whatForField.getText();
-                Participant payer = participantMap.get(whoPaidDropdown.getValue());
-                Expense expense = new Expense(price, item, payer);
-                System.out.println(expense); // for testing
-                addExpenseToServer(expense);
-            }
-        });
-        gridPane.add(abortButton, 0, 9);
-        gridPane.add(addButton, 1, 9);
-
-        VBox layout = new VBox(10);
-        layout.setPadding(new Insets(20));
-        layout.getChildren().addAll(title, errorText, gridPane);
-
-        // Create a scene with the layout and set its size
-        scene = new Scene(layout, 500, 600);
     }
 
     /**
