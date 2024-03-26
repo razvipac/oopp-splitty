@@ -6,7 +6,7 @@
 | Time:        | 14:45 - 15:30            |
 | Location:    | Drebbelweg PC1 Cubicle 1 |
 | Chair        | Vasil Georgiev           |
-| Minute Taker | Razvan Praschiv          |
+| Minute Taker | Razvan Paraschiv         |
 | Attendees:   | All                      |
 
 ## Opening
