@@ -7,6 +7,9 @@ public class ParticipantDTO {
     private String iban;
     private String bic;
 
+    public ParticipantDTO() {
+    }
+
     public ParticipantDTO(String name, String email, String iban, String bic) {
         this.name = name;
         this.email = email;
