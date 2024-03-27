@@ -1,4 +1,7 @@
 package client;
+
+import java.util.Objects;
+
 /**
  * This class is supposed to work as a Language in its own, with the ability to have
  * some getters and setters
@@ -52,5 +55,18 @@ public class LanguageOption {
      */
     public Language getLanguage() {
         return this.language;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (null == o || this.getClass() != o.getClass()) return false;
+        final LanguageOption that = (LanguageOption) o;
+        return this.language == that.language;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.language);
     }
 }
