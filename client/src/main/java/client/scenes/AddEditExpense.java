@@ -265,7 +265,7 @@ public class AddEditExpense {
      * @param e The (validated) expense to add
      */
     private void addExpenseToServer(Expense e) {
-        boolean success = server.getParticipantUtils().addExpense(e, event.getCode());
+        boolean success = server.addExpense(e, event.getCode());
         if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Expense Added Successfully",
