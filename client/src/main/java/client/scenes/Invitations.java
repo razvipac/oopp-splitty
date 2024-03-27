@@ -31,9 +31,10 @@ public class Invitations implements DataBasedPopupController<Event> {
     private String eventCode;
 
     /**
-     * Constructor for the invitation that calls the method to create the scene
+     * Constructor for the AddEditExpense that calls the method to create the scene
      * @param mainCtrl scene of the mainCtrl class
-     * @param event the event to show
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
     public Invitations(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
         this.mainCtrl = mainCtrl;
@@ -47,6 +48,11 @@ public class Invitations implements DataBasedPopupController<Event> {
         initialize(event);
     }
 
+    /**
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
+     */
     public Scene initialize(Event event) {
         if(event == null) createSceneNoEvent();
         else {
@@ -131,16 +137,26 @@ public class Invitations implements DataBasedPopupController<Event> {
         window.showAndWait();
     }
 
+    /**
+     * Closes a modal alert box for viewing Open Debts.
+     */
     public void closeAlertBox() {
         isOpen = false;
         boxToPutEmails.clear();
         window.close();
     }
 
+    /**
+     * Back button action
+     */
     private void goBack() {
         closeAlertBox();
     }
 
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
     public boolean isOpen(){
         return isOpen;
     }

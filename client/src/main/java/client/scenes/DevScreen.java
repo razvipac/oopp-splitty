@@ -34,6 +34,11 @@ public class DevScreen implements StaticSceneController {
 
     private Scene scene;
 
+    /**
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     */
     public DevScreen(MainCtrl mainCtrl, ServerUtils serverUtils){
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
@@ -41,6 +46,10 @@ public class DevScreen implements StaticSceneController {
         initialize();
     }
 
+    /**
+     * Generates a scene
+     * @return the newly generated scene
+     */
     public Scene initialize() {
         Parent layout = generateLayout();
 

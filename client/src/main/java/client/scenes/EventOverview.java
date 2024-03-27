@@ -51,9 +51,10 @@ public class EventOverview implements DataBasedSceneController<Event> {
     private VBox expensesContainer;
 
     /**
-     * Creates an Event Overview.
-     * @param mainCtrl to call the mainCtrl scene
-     * @param event the event to show
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
     public EventOverview(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
         this.mainCtrl = mainCtrl;
@@ -62,6 +63,11 @@ public class EventOverview implements DataBasedSceneController<Event> {
         initialize(event);
     }
 
+    /**
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
+     */
     public Scene initialize(Event event) {
         this.event = event;
 
@@ -111,6 +117,9 @@ public class EventOverview implements DataBasedSceneController<Event> {
         });
     }
 
+    /**
+     * Back button action
+     */
     private void goBack() {
         mainCtrl.showStartScreen();
     }

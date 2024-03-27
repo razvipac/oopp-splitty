@@ -90,6 +90,11 @@ public class MainCtrl {
     private final Statistics statistics;
     private final DevScreen devScreen;
 
+
+    /**
+     * Constructor for the Main Controller of the application
+     * @param primaryStage primary stage of the application
+     */
     public MainCtrl(Stage primaryStage){
         this.primaryStage = primaryStage;
         this.serverUtils = ServerUtils.getServerUtils();
@@ -108,14 +113,25 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    /**
+     * Shows the Start scene
+     */
     public void showStartScreen(){
         primaryStage.setScene(startScreen.initialize());
     }
 
+    /**
+     * Shows the Event Overview scene
+     * @param event corresponding event instance
+     */
     public void showEventOverview(Event event){
         primaryStage.setScene(eventOverview.initialize(event));
     }
 
+    /**
+     * Shows the Statistics scene
+     * @param event corresponding event instance
+     */
     public void showStatistics(Event event) {
         if (statistics.isOpen()){
             statistics.closeAlertBox();
@@ -124,6 +140,10 @@ public class MainCtrl {
         statistics.displayAlertBox();
     }
 
+    /**
+     * Shows the Add/Edit Expense scene
+     * @param event corresponding event instance
+     */
     public void showAddExpense(Event event) {
         if (addEditExpense.isOpen()){
             addEditExpense.closeAlertBox();
@@ -132,6 +152,10 @@ public class MainCtrl {
         addEditExpense.displayAlertBox();
     }
 
+    /**
+     * Shows the open debts scene
+     * @param event corresponding event instance
+     */
     public void showOpenDebts(Event event) {
         if (openDebts.isOpen()){
             openDebts.closeAlertBox();
@@ -140,6 +164,10 @@ public class MainCtrl {
         openDebts.displayAlertBox();
     }
 
+    /**
+     * Shows the Invitation scene
+     * @param event corresponding event instance
+     */
     public void showInvitation(Event event) {
         if (invitations.isOpen()){
             invitations.closeAlertBox();
@@ -148,6 +176,10 @@ public class MainCtrl {
         invitations.displayAlertBox();
     }
 
+    /**
+     * Shows the Contact Details scene
+     * @param event corresponding event instance
+     */
     public void showContactDetails(Event event) {
         if (contactDetails.isOpen()){
             contactDetails.closeAlertBox();
@@ -156,10 +188,17 @@ public class MainCtrl {
         contactDetails.displayAlertBox();
     }
 
+    /**
+     * Shows the development scene
+     */
     public void showDevScreen(){
         primaryStage.setScene(devScreen.initialize());
     }
 
+    /**
+     * Getter for primaryStage
+     * @return reference to the primaryStage
+     */
     public Stage getPrimaryStage(){
         return primaryStage;
     }

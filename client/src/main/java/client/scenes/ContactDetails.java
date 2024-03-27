@@ -39,9 +39,10 @@ public class ContactDetails implements DataBasedPopupController<Event> {
     private Text errorText;
 
     /**
-     * Constructor for the contact details that calls the method to create the scene
+     * Constructor for the AddEditExpense that calls the method to create the scene
      * @param mainCtrl scene of the mainCtrl class
-     * @param event the event to add to
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
     public ContactDetails(MainCtrl mainCtrl, ServerUtils serverUtils, Event event){
         this.mainCtrl = mainCtrl;
@@ -56,6 +57,11 @@ public class ContactDetails implements DataBasedPopupController<Event> {
         initialize(event);
     }
 
+    /**
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
+     */
     public Scene initialize(Event event) {
         this.event = event;
 
@@ -335,6 +341,10 @@ public class ContactDetails implements DataBasedPopupController<Event> {
         window.close();
     }
 
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
     public boolean isOpen() {
         return isOpen;
     }

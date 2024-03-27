@@ -33,8 +33,10 @@ public class OpenDebts implements DataBasedPopupController<Event> {
     private ArrayList<Debt> debtList;
 
     /**
-     * Constructor for Open Debts page
-     * @param mainCtrl to the mainCtrl class
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
     public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
         this.mainCtrl = mainCtrl;
@@ -48,6 +50,11 @@ public class OpenDebts implements DataBasedPopupController<Event> {
         initialize(event);
     }
 
+    /**
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
+     */
     public Scene initialize(Event event) {
         this.event = event;
 
@@ -107,6 +114,9 @@ public class OpenDebts implements DataBasedPopupController<Event> {
 
     }
 
+    /**
+     * Back button action
+     */
     private void goBack() {
         closeAlertBox();
     }
@@ -185,6 +195,9 @@ public class OpenDebts implements DataBasedPopupController<Event> {
         window.showAndWait();
     }
 
+    /**
+     * Closes a modal alert box for viewing Open Debts.
+     */
     public void closeAlertBox() {
         isOpen = false;
         window.close();
@@ -198,6 +211,10 @@ public class OpenDebts implements DataBasedPopupController<Event> {
         return scene;
     }
 
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
     public boolean isOpen(){
         return isOpen;
     }

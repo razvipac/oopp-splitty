@@ -24,8 +24,6 @@ import java.net.URISyntaxException;
 
 public class Main extends Application {
 
-    MainCtrl mainCtrl;
-
     /**
      * MainCtrl method that starts the application
      * @param args command line arguments
@@ -36,10 +34,15 @@ public class Main extends Application {
         launch();
     }
 
+    /**
+     * Starts the application
+     * @param primaryStage JavaFX passed primary stage
+     * @throws IOException IO Exception
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
         Stage mainStage = new Stage();
-        mainCtrl = new MainCtrl(mainStage);
+        MainCtrl mainCtrl = new MainCtrl(mainStage);
     }
 }
 
