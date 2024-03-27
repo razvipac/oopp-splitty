@@ -97,7 +97,7 @@ public class Main extends Application {
         adminButton.setOnAction(e -> primaryStage.setScene(admin.getScene()));
 
         // Button for language selection
-        Button languageButton = new LanguageButton();
+        Button languageButton = new LanguageButton("client/src/main/resources/userSettings/userPreferences.json");
 
         // Hbox for the language button
         HBox languageBox = new HBox(languageButton);
