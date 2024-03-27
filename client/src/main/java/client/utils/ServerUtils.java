@@ -112,7 +112,7 @@ public class ServerUtils {
      * @param code The code of the event
      * @return All participants of the event as a List
      */
-    public List<Participant> getParticipants(String code) {
+    public List<ParticipantDTO> getParticipants(String code) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/" + code + "/participant")
                 .request(APPLICATION_JSON)

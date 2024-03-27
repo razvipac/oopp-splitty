@@ -2,6 +2,7 @@ package server.api;
 
 import commons.Participant;
 import commons.dto.ParticipantDTO;
+import commons.dto.ParticipantDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,19 +49,20 @@ public class ParticipantController {
      * or HttpStatus.NOT_FOUND if not found
      */
     @GetMapping
-    public ResponseEntity<List<ParticipantResponseBody>> getAllOrOne(
+    public ResponseEntity<List<ParticipantDTO>> getAllOrOne(
             @PathVariable(value = "eventCode") String eventCode,
             @RequestParam(value = "name", required = false) String name) {
         if (name == null) {
             List<Participant> participants = participantService.getAll(eventCode);
-            List<ParticipantResponseBody> participantResponseBodies = participants.stream()
-                                                    .map(ParticipantResponseBody::build).toList();
-            return new ResponseEntity<>(participantResponseBodies, HttpStatus.OK);
+            List<ParticipantDTO> participantDTOs = participants.stream()
+                    .map(ParticipantDTOMapper::toDTO)
+                    .toList();
+            return new ResponseEntity<>(participantDTOs, HttpStatus.OK);
         }
 
         try {
             return new ResponseEntity<>(List.of(
-                    ParticipantResponseBody.build(
+                    ParticipantDTOMapper.toDTO(
                             participantService.getOne(eventCode, name)
                     )), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
