@@ -1,3 +1,5 @@
+package client.scenes;
+
 ///*
 // * Copyright 2021 Delft University of Technology
 // *
@@ -68,3 +70,97 @@
 //        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
 //    }
 //}
+
+import client.utils.ServerUtils;
+import commons.Event;
+import javafx.stage.Stage;
+
+public class MainCtrl {
+
+    private final ServerUtils serverUtils;
+
+    private final Stage primaryStage;
+
+    private final OpenDebts openDebts;
+    private final Invitations invitations;
+    private final ContactDetails contactDetails;
+    private final EventOverview eventOverview;
+    private final StartScreen startScreen;
+    private final AddEditExpense addEditExpense;
+    private final Statistics statistics;
+    private final DevScreen devScreen;
+
+    public MainCtrl(Stage primaryStage){
+        this.primaryStage = primaryStage;
+        this.serverUtils = ServerUtils.getServerUtils();
+
+        startScreen = new StartScreen(this, serverUtils);
+        eventOverview = new EventOverview(this, serverUtils, null);
+        invitations = new Invitations(this, serverUtils, null);
+        contactDetails = new ContactDetails(this, serverUtils, null);
+        addEditExpense = new AddEditExpense(this, serverUtils, null);
+        openDebts = new OpenDebts(this, serverUtils, null);
+        statistics = new Statistics(this, serverUtils, null);
+        devScreen = new DevScreen(this, serverUtils);
+
+        // default scene
+        showDevScreen();
+        primaryStage.show();
+    }
+
+    public void showStartScreen(){
+        primaryStage.setScene(startScreen.initialize());
+    }
+
+    public void showEventOverview(Event event){
+        primaryStage.setScene(eventOverview.initialize(event));
+    }
+
+    public void showStatistics(Event event) {
+        if (statistics.isOpen()){
+            statistics.closeAlertBox();
+        }
+        statistics.initialize(event);
+        statistics.displayAlertBox();
+    }
+
+    public void showAddExpense(Event event) {
+        if (addEditExpense.isOpen()){
+            addEditExpense.closeAlertBox();
+        }
+        addEditExpense.initialize(event);
+        addEditExpense.displayAlertBox();
+    }
+
+    public void showOpenDebts(Event event) {
+        if (openDebts.isOpen()){
+            openDebts.closeAlertBox();
+        }
+        openDebts.initialize(event);
+        openDebts.displayAlertBox();
+    }
+
+    public void showInvitation(Event event) {
+        if (invitations.isOpen()){
+            invitations.closeAlertBox();
+        }
+        invitations.initialize(event);
+        invitations.displayAlertBox();
+    }
+
+    public void showContactDetails(Event event) {
+        if (contactDetails.isOpen()){
+            contactDetails.closeAlertBox();
+        }
+        contactDetails.initialize(event);
+        contactDetails.displayAlertBox();
+    }
+
+    public void showDevScreen(){
+        primaryStage.setScene(devScreen.initialize());
+    }
+
+    public Stage getPrimaryStage(){
+        return primaryStage;
+    }
+}
