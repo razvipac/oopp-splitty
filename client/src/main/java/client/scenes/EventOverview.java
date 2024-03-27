@@ -1,5 +1,7 @@
 package client.scenes;
 
+import commons.dto.ExpenseDTO;
+import commons.dto.ExpenseDTOMapper;
 import commons.dto.ParticipantDTO;
 import commons.dto.ParticipantDTOMapper;
 import javafx.geometry.Insets;
@@ -11,7 +13,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import client.utils.ServerUtils;
@@ -79,13 +80,14 @@ public class EventOverview {
 
         // TODO: get participants from server
         participants = server.getParticipants(event.getCode()).stream()
-                .map((ParticipantDTO dto) -> ParticipantDTOMapper.toEntity(dto, event))
+                .map((ParticipantDTO participantDTO) ->
+                        ParticipantDTOMapper.toEntity(participantDTO, event))
                 .toList();
 
         // TODO: get expenses from server
-//        expenses = server.getExpenses(event.getCode());
-        expenses = new ArrayList<>();
-//        expenses.add(new Expense(10, "Drinks", test));
+//        expenses = server.getExpenses(event.getCode()).stream()
+//                .map((ExpenseDTO expenseDTO) -> ExpenseDTOMapper.toEntity(expenseDTO))
+//                .toList();
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {
