@@ -1,12 +1,16 @@
 package server.api;
 
 import commons.Expense;
+import commons.dto.ExpenseDTO;
+import commons.dto.ExpenseDTOMapper;
+import commons.dto.ParticipantDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.api.pojo.request_body.ExpenseRequestBody;
+import server.api.pojo.request_body.ParticipantRequestBody;
 import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.WSAction;
 import server.api.pojo.response_body.WSWrapperResponseBody;
@@ -50,22 +54,22 @@ public class ExpenseController {
      *                         object if both id and participantName are provided.
      */
     @GetMapping("")
-    public ResponseEntity<List<ExpenseResponseBody>> getAllOrOne(
+    public ResponseEntity<List<ExpenseDTO>> getAllOrOne(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "participantName", required = false) String participantName,
             @PathVariable("eventCode") String eventCode
     ) {
         if (id == null && participantName == null) {
             List<Expense> expenses = expenseService.getAllInEvent(eventCode);
-            List<ExpenseResponseBody> responseBodies = expenses.stream()
-                                                               .map(ExpenseResponseBody::build)
-                                                               .toList();
-            return new ResponseEntity<>(responseBodies, HttpStatus.OK);
+            List<ExpenseDTO> expenseDTOs = expenses.stream()
+                    .map(ExpenseDTOMapper::toDTO)
+                    .toList();
+            return new ResponseEntity<>(expenseDTOs, HttpStatus.OK);
         }
 
         try {
             return new ResponseEntity<>(List.of(
-                    ExpenseResponseBody.build(expenseService.getOne(eventCode, participantName, id))
+                    ExpenseDTOMapper.toDTO(expenseService.getOne(eventCode, participantName, id))
             ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -87,9 +91,15 @@ public class ExpenseController {
     @PostMapping("")
     public ResponseEntity<ExpenseResponseBody> createOne(
             @PathVariable("eventCode") String eventCode,
-            @RequestBody ExpenseRequestBody body
+            @RequestBody ExpenseDTO expenseDTO
     ) {
         try {
+            ExpenseRequestBody body = new ExpenseRequestBody(
+                    expenseDTO.getPrice(),
+                    expenseDTO.getItem(),
+                    expenseDTO.getPaidByName()
+            );
+
             Expense expense = expenseService.createOne(eventCode, body);
             ExpenseResponseBody responseBody = ExpenseResponseBody.build(expense);
 

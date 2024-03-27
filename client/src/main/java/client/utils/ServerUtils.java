@@ -21,8 +21,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.util.List;
 
 import commons.*;
+import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
-import commons.request_body.ExpenseRequestBody;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -155,7 +155,7 @@ public class ServerUtils {
      * @param code The code of the event
      * @return All expenses of the event as a List
      */
-    public List<Expense> getExpenses(String code) {
+    public List<ExpenseDTO> getExpenses(String code) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/" + code + "/expense")
                 .request(APPLICATION_JSON)
@@ -172,7 +172,7 @@ public class ServerUtils {
     public boolean addExpense(Expense e, String code) {
         String endpoint = "api/v1/" + code + "/expense";
 
-        ExpenseRequestBody requestBody = new ExpenseRequestBody(
+        ExpenseDTO expenseDTO = new ExpenseDTO(
                 e.getPrice(),
                 e.getItem(),
                 e.getPaidBy().getName()
@@ -182,7 +182,7 @@ public class ServerUtils {
                 .target(SERVER).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(requestBody, APPLICATION_JSON));
+                .post(Entity.entity(expenseDTO, APPLICATION_JSON));
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user
