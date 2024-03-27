@@ -1,5 +1,7 @@
 package client.scenes;
 
+import commons.dto.ParticipantDTO;
+import commons.dto.ParticipantDTOMapper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -76,17 +78,14 @@ public class EventOverview {
         eventCode = event.getCode();
 
         // TODO: get participants from server
-//        participants = server.getParticipants(event.getCode());
-        participants = new ArrayList<>();
-        Participant test = new Participant("Test", event, "test", "test", "test");
-        Participant john = new Participant("John", event, "test", "test", "test");
-        participants.add(test);
-        participants.add(john);
+        participants = server.getParticipants(event.getCode()).stream()
+                .map((ParticipantDTO dto) -> ParticipantDTOMapper.toEntity(dto, event))
+                .toList();
 
         // TODO: get expenses from server
 //        expenses = server.getExpenses(event.getCode());
         expenses = new ArrayList<>();
-        expenses.add(new Expense(10, "Drinks", test));
+//        expenses.add(new Expense(10, "Drinks", test));
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {
