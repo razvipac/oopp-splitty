@@ -245,7 +245,7 @@ public class ContactDetails {
      * @param p The (validated) participant to add
      */
     private void addParticipantToServer(Participant p) {
-        boolean success = server.getParticipantUtils().addParticipant(p);
+        boolean success = server.addParticipant(p);
 
         if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
