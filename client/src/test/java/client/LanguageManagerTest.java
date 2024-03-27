@@ -1,4 +1,5 @@
 package client;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -8,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LanguageManagerTest {
     @Test
     void checkFileExist() {
-        String path = "src\\test\\resources\\test.json";
+        String path = "client\\src\\test\\resources\\test.json";
         File file = new File(path);
         assertTrue(file.exists());
     }
