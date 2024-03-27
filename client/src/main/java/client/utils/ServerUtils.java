@@ -21,6 +21,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.util.List;
 
 import commons.*;
+import commons.dto.ParticipantDTO;
 import commons.request_body.ExpenseRequestBody;
 import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.Response;
@@ -129,7 +130,7 @@ public class ServerUtils {
         String code = p.getEvent().getCode();
         String endpoint = "api/v1/" + code + "/participant";
 
-        ParticipantRequestBody requestBody = new ParticipantRequestBody(
+        ParticipantDTO participantDTO = new ParticipantDTO(
                 p.getName(),
                 p.getEmail(),
                 p.getIban(),
@@ -140,7 +141,7 @@ public class ServerUtils {
                 .target(SERVER).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(requestBody, APPLICATION_JSON));
+                .post(Entity.entity(participantDTO, APPLICATION_JSON));
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user

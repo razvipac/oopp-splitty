@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Participant;
+import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,8 +83,15 @@ public class ParticipantController {
     @PostMapping
     public ResponseEntity<ParticipantResponseBody> createOne(
             @PathVariable("eventCode") String eventCode,
-            @RequestBody ParticipantRequestBody body) {
+            @RequestBody ParticipantDTO participantDTO) {
         try {
+            ParticipantRequestBody body = new ParticipantRequestBody(
+                    participantDTO.getName(),
+                    participantDTO.getEmail(),
+                    participantDTO.getIban(),
+                    participantDTO.getBic()
+            );
+
             Participant participant = participantService.createOne(eventCode, body);
             ParticipantResponseBody responseBody = ParticipantResponseBody.build(participant);
 
