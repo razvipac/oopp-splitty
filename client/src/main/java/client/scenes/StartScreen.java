@@ -1,7 +1,6 @@
 package client.scenes;
 
-import client.Main;
-
+import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,33 +20,31 @@ import commons.Event;
 import java.util.List;
 import java.util.Optional;
 
-public class StartScreen {
+public class StartScreen implements StaticSceneController {
+
+    private final ServerUtils serverUtils;
+    private final MainCtrl mainCtrl;
 
     private Scene scene;
-    private Main main;
-    private EventOverview eventOverview;
-
-    private final ServerUtils server = ServerUtils.getServerUtils();
 
     private List<Event> events;
 
     /**
      * Constructor for the start screen that calls the method to create the GUI
-     * @param main scene of the main class
+     * @param mainCtrl scene of the mainCtrl class
      */
-    public StartScreen(Main main) {
-        this.main = main;
-        events = server.getEventUtils().getAllEvents();
+    public StartScreen(MainCtrl mainCtrl, ServerUtils serverUtils) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
 
-        createSceneStartScreen();
+        initialize();
     }
 
-    /**
-     * Getter for the scene
-     *
-     * @return the scene
-     */
-    public Scene getScene() {
+    public Scene initialize() {
+        events = serverUtils.getEventUtils().getAllEvents();
+
+        createSceneStartScreen();
+
         return scene;
     }
 
@@ -120,7 +117,7 @@ public class StartScreen {
                 skiTripBox, museumVisitBox, giftForJohnBox, newYearPartyBox, backButton);
         layout.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout);
+        scene = new Scene(layout, 500, 500);
         scene.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
         });
@@ -130,26 +127,23 @@ public class StartScreen {
     }
 
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        mainCtrl.showDevScreen();
     }
 
     private void joinEventFromTextField(TextField joinEvent) {
         String code = joinEvent.getText();
         Optional<Event> found = getEvent(code);
         if(found.isPresent()) {
-            Event event = found.get();
-            eventOverview = new EventOverview(main, event);
-            main.getPrimaryStage().setScene(eventOverview.getScene());
+            mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
     }
 
     private void createEventFromTextField(TextField createEvent) {
         String eventName = createEvent.getText();
-        Event event = server.getEventUtils().createEvent(eventName);
+        Event event = serverUtils.getEventUtils().createEvent(eventName);
         System.out.println(event.toString());
-        eventOverview = new EventOverview(main, event);
-        main.getPrimaryStage().setScene(eventOverview.getScene());
+        mainCtrl.showEventOverview(event);
     }
 
     /**
