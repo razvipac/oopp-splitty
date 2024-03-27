@@ -3,6 +3,8 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import commons.Expense;
+import commons.request_body.ExpenseRequestBody;
 import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
@@ -60,8 +62,48 @@ public class ParticipantUtils {
                 .post(Entity.entity(requestBody, APPLICATION_JSON));
 
         // Check the response status code
-        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) return true;
-        else return false;
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
+    }
+
+    /**
+     * Gets all the expenses of an event.
+     *
+     * @param code The code of the event
+     * @return All expenses of the event as a List
+     */
+    public List<Expense> getExpenses(String code) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/" + code + "/expense")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
+    }
+
+    /**
+     * Adds Expense to server
+     * @param e Expense to add
+     * @return True iff add was successful, false otherwise
+     */
+    public boolean addExpense(Expense e, String code) {
+        String endpoint = "api/v1/" + code + "/expense";
+
+        ExpenseRequestBody requestBody = new ExpenseRequestBody(
+                e.getPrice(),
+                e.getItem(),
+                e.getPaidBy().getName()
+        );
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(requestBody, APPLICATION_JSON));
+
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
 }

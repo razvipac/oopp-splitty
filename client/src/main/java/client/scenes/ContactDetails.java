@@ -130,8 +130,8 @@ public class ContactDetails {
 
         Button ok = new Button("Ok");
         ok.setOnAction(e -> {
-            if(inputIsValid())
-                addToServer(new Participant(boxName.getText(), event, boxEmail.getText(),
+            if(formIsValid())
+                addParticipantToServer(new Participant(boxName.getText(), event, boxEmail.getText(),
                         boxIban.getText(), boxBic.getText()));
         });
 
@@ -144,6 +144,24 @@ public class ContactDetails {
         layout.getChildren().addAll(title, errorText, gridPane, hBoxButtons);
 
         scene = new Scene(layout, 300, 260);
+    }
+
+    /**
+     * Adds the given TextField to gridPane at the given coordinates, along with a label.
+     * @param textField The (empty) TextField object
+     * @param labelText The String of the Label
+     * @param promptText The prompt text of the TextField
+     * @param prefWidth The preferred width of the TextField
+     * @param gridY The y coordinate of gridPane to add to.
+     */
+    public void addToGridPane(TextField textField, String labelText,
+                              String promptText, int prefWidth, int gridY) {
+        Label label = new Label(labelText);
+        textField.setPromptText(promptText);
+        textField.setPrefWidth(prefWidth);
+
+        gridPane.add(label, 0, gridY);
+        gridPane.add(textField, 1, gridY);
     }
 
     /**
@@ -177,25 +195,9 @@ public class ContactDetails {
     }
 
     /**
-     * Checks whether the given input is invalid (not empty and doesn't match regex), and displays
-     * an error message if it is.
-     * @param input Input String to check
-     * @param regex Specifies pattern that decides if it's invalid
-     * @param errorMessage The error message to set errorText to
-     * @return true iff input is invalid, false iff it's valid
-     */
-    private boolean inputIsInvalid(String input, String regex, String errorMessage) {
-        if(!(input.isEmpty()) && !(input.matches(regex))) {
-            errorText.setText(errorMessage);
-            return true;
-        }
-        else return false;
-    }
-
-    /**
      * Checks if the user-inputted Strings are valid.
      */
-    private boolean inputIsValid() {
+    private boolean formIsValid() {
         // Should in theory never be true
         if(event.getCode().isEmpty()) {
             errorText.setText("This event is invalid");
@@ -223,10 +225,26 @@ public class ContactDetails {
     }
 
     /**
+     * Checks whether the given input is invalid (not empty and doesn't match regex), and displays
+     * an error message if it is.
+     * @param input Input String to check
+     * @param regex Specifies pattern that decides if it's invalid
+     * @param errorMessage The error message to set errorText to
+     * @return true iff input is invalid, false iff it's valid
+     */
+    private boolean inputIsInvalid(String input, String regex, String errorMessage) {
+        if(!(input.isEmpty()) && !(input.matches(regex))) {
+            errorText.setText(errorMessage);
+            return true;
+        }
+        else return false;
+    }
+
+    /**
      * Adds the given Participant to the server, and displays an alert box with the outcome.
      * @param p The (validated) participant to add
      */
-    private void addToServer(Participant p) {
+    private void addParticipantToServer(Participant p) {
         boolean success = server.getParticipantUtils().addParticipant(p);
 
         if(success) {
@@ -261,24 +279,6 @@ public class ContactDetails {
         alert.setHeaderText(header);
         alert.setContentText(content);
         return alert;
-    }
-
-    /**
-     * Adds the given TextField to gridPane at the given coordinates, along with a label.
-     * @param textField The (empty) TextField object
-     * @param labelText The String of the Label
-     * @param promptText The prompt text of the TextField
-     * @param prefWidth The preferred width of the TextField
-     * @param gridY The y coordinate of gridPane to add to.
-     */
-    public void addToGridPane(TextField textField, String labelText,
-                              String promptText, int prefWidth, int gridY) {
-        Label label = new Label(labelText);
-        textField.setPromptText(promptText);
-        textField.setPrefWidth(prefWidth);
-
-        gridPane.add(label, 0, gridY);
-        gridPane.add(textField, 1, gridY);
     }
 
     /**

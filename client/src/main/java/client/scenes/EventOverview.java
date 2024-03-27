@@ -22,7 +22,7 @@ public class EventOverview {
 
     private Scene scene;
     private Scene previous;
-    private Main main;
+    private final Main main;
     private ContactDetails contactDetails;
     private Invitations invitations;
     private AddEditExpense addEditExpense;
@@ -72,21 +72,19 @@ public class EventOverview {
             return;
         }
 
-        contactDetails = new ContactDetails(main, event);
-        invitations = new Invitations(main, event);
-        addEditExpense = new AddEditExpense(main);
-        openDebts = new OpenDebts(main, event);
-
         eventName = event.getName();
         eventCode = event.getCode();
 
-        // Participants for testing purposes
+        // TODO: get participants from server
 //        participants = server.getParticipantUtils().getParticipants(event.getCode());
         participants = new ArrayList<>();
-        Participant test = new Participant("test", event, "test", "test", "test");
+        Participant test = new Participant("Test", event, "test", "test", "test");
+        Participant john = new Participant("John", event, "test", "test", "test");
         participants.add(test);
+        participants.add(john);
 
-        // Expenses for testing purposes
+        // TODO: get expenses from server
+//        expenses = server.getParticipantUtils().getExpenses(event.getCode());
         expenses = new ArrayList<>();
         expenses.add(new Expense(10, "Drinks", test));
 
@@ -94,6 +92,11 @@ public class EventOverview {
         if(!(participants.isEmpty())) {
             selectedParticipant = participants.getFirst();
         }
+
+        contactDetails = new ContactDetails(main, event);
+        invitations = new Invitations(main, event);
+        addEditExpense = new AddEditExpense(main, event, participants);
+        openDebts = new OpenDebts(main, event);
 
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;
@@ -141,6 +144,16 @@ public class EventOverview {
 
         Button expenseAddButton = new Button("Add Expense");
         expenseAddButton.setOnAction(e -> {
+            if(participants == null || participants.isEmpty()) {
+                Alert noParticipants = createAlert(Alert.AlertType.INFORMATION, "Alert",
+                        "Event has no participants",
+                        "Cannot add expenses because this event has no participants. " +
+                                "Please add at least one participant first.");
+                noParticipants.getButtonTypes().clear();
+                noParticipants.getButtonTypes().add(ButtonType.OK);
+                noParticipants.showAndWait();
+                return;
+            }
             addEditExpense.displayAlertBox();
         });
 
@@ -149,11 +162,9 @@ public class EventOverview {
 
         // expensesScroller, which includes all expense items in arraylist expenses
         ScrollPane expensesScroller = getExpensesScroller();
-        // TODO: button is non-functional
+
         Button settleDebtsButton = new Button("Settle Debts");
-        settleDebtsButton.setOnAction(e -> {
-            openDebts.displayAlertBox();
-        });
+        settleDebtsButton.setOnAction(e -> openDebts.displayAlertBox());
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> goBack());
@@ -176,15 +187,11 @@ public class EventOverview {
     private HBox getEventBox() {
         HBox eventBox = new HBox(5);
 
-        // TODO: Event name is hardcoded
         Text eventNameText = new Text(eventName);
         eventNameText.setFont(h1);
 
-        // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
-        sendInviteButton.setOnAction(e -> {
-            invitations.displayAlertBox();
-        });
+        sendInviteButton.setOnAction(e -> invitations.displayAlertBox());
 
         eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 
@@ -205,11 +212,8 @@ public class EventOverview {
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
 
-        // TODO: Button is non-functional
         Button participantAddButton = new Button("Add");
-        participantAddButton.setOnAction(e -> {
-            contactDetails.displayAlertBox();
-        });
+        participantAddButton.setOnAction(e -> contactDetails.displayAlertBox());
 
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);
@@ -371,6 +375,22 @@ public class EventOverview {
                 }
             }
         }
+    }
+
+    /**
+     * Creates an alert window
+     * @param type The type of alert (e.g. CONFIRMATION or ERROR)
+     * @param title The title of the window
+     * @param header The header of the window
+     * @param content The content of the window
+     * @return Alert object
+     */
+    private Alert createAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
     }
 
     /**
