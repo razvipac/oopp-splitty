@@ -23,7 +23,6 @@ import java.util.List;
 import commons.*;
 import commons.dto.ParticipantDTO;
 import commons.request_body.ExpenseRequestBody;
-import commons.request_body.ParticipantRequestBody;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
