@@ -7,5 +7,6 @@ import java.util.List;
 public record EventResponseBody(
         Event event,
         List<ParticipantResponseBody> participants,
-        List<ExpenseResponseBody> expenses
+        List<ExpenseResponseBody> expenses,
+        List<DebtResponseBody> debts
 ) { }
