@@ -76,7 +76,7 @@ public class EventOverview {
         eventCode = event.getCode();
 
         // TODO: get participants from server
-//        participants = server.getParticipantUtils().getParticipants(event.getCode());
+//        participants = server.getParticipants(event.getCode());
         participants = new ArrayList<>();
         Participant test = new Participant("Test", event, "test", "test", "test");
         Participant john = new Participant("John", event, "test", "test", "test");
@@ -84,7 +84,7 @@ public class EventOverview {
         participants.add(john);
 
         // TODO: get expenses from server
-//        expenses = server.getParticipantUtils().getExpenses(event.getCode());
+//        expenses = server.getExpenses(event.getCode());
         expenses = new ArrayList<>();
         expenses.add(new Expense(10, "Drinks", test));
 
