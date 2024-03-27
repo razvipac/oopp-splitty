@@ -15,7 +15,7 @@ class LanguageManagerTest {
     }
     @Test
     void saveDutch(){
-        String path = "src\\test\\resources\\test.json";
+        String path = "src/test/resources/test.json";
         LanguageManager languageManager = new LanguageManager(path);
         languageManager.saveLanguage(new LanguageOption(LanguageOption.Language.DUTCH));
         LanguageOption languageOption= languageManager.loadLanguage();
@@ -23,7 +23,7 @@ class LanguageManagerTest {
     }
     @Test
     void saveEnglish(){
-        String path = "src\\test\\resources\\test.json";
+        String path = "src/test/resources/test.json";
         LanguageManager languageManager = new LanguageManager(path);
         languageManager.saveLanguage(new LanguageOption(LanguageOption.Language.ENGLISH));
         LanguageOption languageOption= languageManager.loadLanguage();
@@ -32,7 +32,7 @@ class LanguageManagerTest {
 
     @Test
     void loadSaveLanguage() {
-        String path = "src\\test\\resources\\test.json";
+        String path = "src/test/resources/test.json";
         LanguageManager languageManager = new LanguageManager(path);
         languageManager.saveLanguage(new LanguageOption());
         LanguageOption languageOption= languageManager.loadLanguage();
@@ -54,7 +54,7 @@ class LanguageManagerTest {
 
     @Test
     void get() {
-        String path = "src\\test\\resources\\test.json";
+        String path = "src/test/resources/test.json";
         LanguageManager languageManager = new LanguageManager(path);
         LanguageOption languageOptionEnglish = new LanguageOption(LanguageOption.Language.ENGLISH);
         LanguageOption languageOptionDutch = new LanguageOption(LanguageOption.Language.DUTCH);
@@ -66,37 +66,37 @@ class LanguageManagerTest {
     }
     @Test
     void testEquals(){
-        String path1 = "src\\test\\resources\\test.json";
+        String path1 = "src/test/resources/test.json";
         LanguageManager languageManager1 = new LanguageManager(path1);
 
-        String path2 = "src\\test\\resources\\test.json";
+        String path2 = "src/test/resources/test.json";
         LanguageManager languageManager2 = new LanguageManager(path2);
         assertEquals(languageManager1,languageManager2);
     }
 
     @Test
     void testNotEquals(){
-        String path1 = "src\\test\\resources\\test2.json";
+        String path1 = "src/test/resources/test.json";
         LanguageManager languageManager1 = new LanguageManager(path1);
 
-        String path2 = "src\\test\\resources\\test.json";
+        String path2 = "src/test/resources/test2.json";
         LanguageManager languageManager2 = new LanguageManager(path2);
         assertNotEquals(languageManager1,languageManager2);
     }
 
     @Test
     void testHash(){
-        String path1 = "src\\test\\resources\\test.json";
+        String path1 = "src/test/resources/test.json";
         LanguageManager languageManager1 = new LanguageManager(path1);
 
-        String path2 = "src\\test\\resources\\test.json";
+        String path2 = "src/test/resources/test.json";
         LanguageManager languageManager2 = new LanguageManager(path2);
         assertEquals(languageManager1.hashCode(),languageManager2.hashCode());
     }
 
     @Test
     void defaultToEnglish(){
-        String path1 = "src\\test\\resources\\test69420.json";
+        String path1 = "src//test/resources/test69420.json";
         LanguageManager languageManager1 = new LanguageManager(path1);
         LanguageOption lo = new LanguageOption(LanguageOption.Language.ENGLISH);
         assertEquals(lo ,languageManager1.loadLanguage());
