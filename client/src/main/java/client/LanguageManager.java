@@ -31,6 +31,9 @@ public class LanguageManager {
                 if(rootNode.get("language").asText().equals("Dutch")){
                     return new LanguageOption(LanguageOption.Language.DUTCH);
                 }
+                if(rootNode.get("language").asText().equals("Romanian")){
+                    return new LanguageOption(LanguageOption.Language.DUTCH);
+                }
                 return new LanguageOption();
             }
         } catch (IOException e) {
@@ -90,6 +93,10 @@ public class LanguageManager {
                 inputStream =
                         new FileInputStream("client/src/main/resources/userSettings/Dutch.png");
             }
+            if(language.getLanguage() == LanguageOption.Language.ROMANIAN){
+                inputStream =
+                        new FileInputStream("client/src/main/resources/userSettings/Romanian.png");
+            }
             return new Image(inputStream);
         }
         catch (Exception e){
@@ -146,7 +153,7 @@ public class LanguageManager {
      */
     public static ImageView createFlagIcon(LanguageOption currentLanguage) {
         //getFlagImage currently returns null
-        Image flagImage = LanguageManager.getFlagImage(currentLanguage);
+        Image flagImage =getFlagImage(currentLanguage);
         ImageView imageView = new ImageView(flagImage);
         imageView.setFitWidth(20);
         imageView.setFitHeight(15);

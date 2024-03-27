@@ -11,7 +11,7 @@ public class LanguageOption {
      * Enumerates supported languages.
      */
     public enum Language {
-        ENGLISH, DUTCH
+        ENGLISH, DUTCH, ROMANIAN
     }
 
     private Language language;
@@ -44,6 +44,9 @@ public class LanguageOption {
         }
         if (this.language.equals(Language.DUTCH)) {
             return "Dutch";
+        }
+        if (this.language.equals(Language.ROMANIAN)) {
+            return "Romanian";
         }
         return "";
     }
