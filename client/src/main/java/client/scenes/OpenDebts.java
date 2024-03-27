@@ -1,7 +1,8 @@
 package client.scenes;
 
+import client.interfaces.DataBasedPopupController;
+import client.utils.ServerUtils;
 import commons.Event;
-import client.Main;
 import javafx.geometry.Insets;
 //import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,26 +20,37 @@ import commons.Participant;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class OpenDebts {
+public class OpenDebts implements DataBasedPopupController<Event> {
+
+    private final MainCtrl mainCtrl;
+    private final ServerUtils serverUtils;
 
     private Scene scene;
-    private ArrayList<Debt> debtList;
-    private Main main;
+    private final Stage window;
+    private boolean isOpen;
 
-    /**
-     * Getter for the scene
-     * @return the scene
-     */
-    public Scene getScene() {
-        return scene;
-    }
+    private Event event;
+    private ArrayList<Debt> debtList;
 
     /**
      * Constructor for Open Debts page
-     * @param main to the main class
+     * @param mainCtrl to the mainCtrl class
      */
-    public OpenDebts(Main main) {
-        this.main = main;
+    public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.setTitle("Add Participant");
+        window.initModality(Modality.APPLICATION_MODAL);
+        isOpen = false;
+
+        initialize(event);
+    }
+
+    public Scene initialize(Event event) {
+        this.event = event;
+
         // Data for testing purposes
         Participant john = new Participant("John",
                            new Event("Abby's birthday party", "code1",
@@ -62,6 +74,8 @@ public class OpenDebts {
         debtList.add(new Debt(anna, david, 5.60));
 
         createScene();
+
+        return scene;
     }
 
     /**
@@ -94,7 +108,7 @@ public class OpenDebts {
     }
 
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        closeAlertBox();
     }
 
     /**
@@ -166,11 +180,26 @@ public class OpenDebts {
      * Displays a modal alert box for viewing Open Debts.
      */
     public void displayAlertBox() {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Add Participant");
+        isOpen = true;
         window.setScene(scene);
         window.showAndWait();
+    }
+
+    public void closeAlertBox() {
+        isOpen = false;
+        window.close();
+    }
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
+
+    public boolean isOpen(){
+        return isOpen;
     }
 
 }
