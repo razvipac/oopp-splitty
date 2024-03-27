@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.interfaces.DataBasedSceneController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -13,32 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import client.utils.ServerUtils;
-import client.Main;
 import commons.Expense;
 import commons.Participant;
 import commons.Event;
 
-public class EventOverview {
+public class EventOverview implements DataBasedSceneController<Event> {
 
     private Scene scene;
-    private Scene previous;
-    private Main main;
-    private ContactDetails contactDetails;
-    private Invitations invitations;
-    private AddEditExpense addEditExpense;
-    private OpenDebts openDebts;
 
-    private final ServerUtils server = ServerUtils.getServerUtils();
+    private final ServerUtils serverUtils;
+    private MainCtrl mainCtrl;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
-    // Event attributes
     private Event event;
-    private String eventName;
-    private String eventCode;
-    // TODO: use actual Objects Participant and Expense instead of ArrayList<String>
     private List<Participant> participants;
     private List<Expense> expenses;
 
@@ -49,6 +40,7 @@ public class EventOverview {
     public enum View {
         ALL, FROM, INCLUDING
     }
+
     private View currentView;
 
     // Attributes of elements needed by several methods
@@ -60,25 +52,23 @@ public class EventOverview {
 
     /**
      * Creates an Event Overview.
-     * @param main to call the main scene
+     * @param mainCtrl to call the mainCtrl scene
      * @param event the event to show
      */
-    public EventOverview(Main main, Event event) {
-        this.main = main;
+    public EventOverview(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        initialize(event);
+    }
+
+    public Scene initialize(Event event) {
         this.event = event;
 
         if(event == null) {
             createSceneNoEvent();
-            return;
+            return scene;
         }
-
-        contactDetails = new ContactDetails(main, event);
-        invitations = new Invitations(main, event);
-        addEditExpense = new AddEditExpense(main);
-        openDebts = new OpenDebts(main);
-
-        eventName = event.getName();
-        eventCode = event.getCode();
 
         // Participants for testing purposes
 //        participants = server.getParticipantUtils().getParticipants(event.getCode());
@@ -98,6 +88,8 @@ public class EventOverview {
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;
         createScene();
+
+        return scene;
     }
 
     /**
@@ -120,7 +112,7 @@ public class EventOverview {
     }
 
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        mainCtrl.showStartScreen();
     }
 
     /**
@@ -140,9 +132,7 @@ public class EventOverview {
         expensesHeader.setFont(h2);
 
         Button expenseAddButton = new Button("Add Expense");
-        expenseAddButton.setOnAction(e -> {
-            addEditExpense.displayAlertBox();
-        });
+        expenseAddButton.setOnAction(e -> mainCtrl.showAddExpense(event));
 
         HBox radioSelectBox = getRadioSelectBox();
         ComboBox<String> participantDropdown = getParticipantDropdown();
@@ -151,9 +141,7 @@ public class EventOverview {
         ScrollPane expensesScroller = getExpensesScroller();
         // TODO: button is non-functional
         Button settleDebtsButton = new Button("Settle Debts");
-        settleDebtsButton.setOnAction(e -> {
-            openDebts.displayAlertBox();
-        });
+        settleDebtsButton.setOnAction(e -> mainCtrl.showOpenDebts(event));
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> goBack());
@@ -176,15 +164,12 @@ public class EventOverview {
     private HBox getEventBox() {
         HBox eventBox = new HBox(5);
 
-        // TODO: Event name is hardcoded
-        Text eventNameText = new Text(eventName);
+        Text eventNameText = new Text(event.getName());
         eventNameText.setFont(h1);
 
         // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
-        sendInviteButton.setOnAction(e -> {
-            invitations.displayAlertBox();
-        });
+        sendInviteButton.setOnAction(e -> mainCtrl.showInvitation(event));
 
         eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 
@@ -205,11 +190,8 @@ public class EventOverview {
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
 
-        // TODO: Button is non-functional
         Button participantAddButton = new Button("Add");
-        participantAddButton.setOnAction(e -> {
-            contactDetails.displayAlertBox();
-        });
+        participantAddButton.setOnAction(e -> mainCtrl.showContactDetails(event));
 
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);
@@ -371,14 +353,6 @@ public class EventOverview {
                 }
             }
         }
-    }
-
-    /**
-     * Getter for the scene.
-     * @return the scene
-     */
-    public Scene getScene() {
-        return scene;
     }
 
     /**
