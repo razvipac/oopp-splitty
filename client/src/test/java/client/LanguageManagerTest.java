@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LanguageManagerTest {
     @Test
     void checkFileExist() {
-        String path = "client\\src\\test\\resources\\test.json";
+        String path = "src/test/resources/test.json";
         File file = new File(path);
         assertTrue(file.exists());
     }
