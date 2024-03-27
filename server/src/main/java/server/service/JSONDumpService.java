@@ -1,11 +1,13 @@
 package server.service;
 
+import commons.Debt;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import server.api.pojo.response_body.DebtResponseBody;
 import server.api.pojo.response_body.EventResponseBody;
 import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
@@ -74,10 +76,11 @@ public class JSONDumpService {
 
         for (Event event : events) {
             EventResponseBody eventResponseBody =
-                    new EventResponseBody(event, new ArrayList<>(), new ArrayList<>());
+                    new EventResponseBody(event, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
             List<Participant> participants = participantService.getAll(event.getCode());
             List<Expense> expenses = expenseService.getAllInEvent(event.getCode());
+            List<Debt> debts = debtService.getAllUnsettledDebtsForEvent(event.getCode());
 
             for (Participant participant : participants) {
                 ParticipantResponseBody participantResponseBody = new ParticipantResponseBody(
@@ -98,8 +101,20 @@ public class JSONDumpService {
                 );
                 eventResponseBody.expenses().add(expenseResponseBody);
             }
+
+            for (Debt debt : debts) {
+                DebtResponseBody debtResponseBody = new DebtResponseBody(
+                        debt.getDebtor().getName(),
+                        debt.getCreditor().getName(),
+                        debt.getAmount(),
+                        debt.isReceived()
+
+                );
+                eventResponseBody.debts().add(debtResponseBody);
+            }
             response.add(eventResponseBody);
         }
+
         return response;
     }
 
