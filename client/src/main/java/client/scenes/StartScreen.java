@@ -38,7 +38,7 @@ public class StartScreen {
      */
     public StartScreen(Main main) {
         this.main = main;
-        events = server.getEventUtils().getAllEvents();
+        events = server.getAllEvents();
 
         createSceneStartScreen();
     }
@@ -147,8 +147,8 @@ public class StartScreen {
 
     private void createEventFromTextField(TextField createEvent) {
         String eventName = createEvent.getText();
-        Event event = server.getEventUtils().createEvent(eventName);
-        events = server.getEventUtils().getAllEvents();
+        Event event = server.createEvent(eventName);
+        events = server.getAllEvents();
         System.out.println(event.toString());
         eventOverview = new EventOverview(main, event);
         main.getPrimaryStage().setScene(eventOverview.getScene());
