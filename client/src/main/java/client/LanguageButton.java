@@ -45,6 +45,7 @@ public class LanguageButton extends Button {
         availableLanguages = new ArrayList<>();
         availableLanguages.add(new LanguageOption(LanguageOption.Language.ENGLISH));
         availableLanguages.add(new LanguageOption(LanguageOption.Language.DUTCH));
+        availableLanguages.add(new LanguageOption(LanguageOption.Language.ROMANIAN));
 
     }
 
