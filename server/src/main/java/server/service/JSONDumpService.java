@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import server.api.pojo.response_body.EventResponseBody;
 import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
+import server.database.DebtRepository;
 import server.database.EventRepository;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
@@ -22,9 +23,11 @@ public class JSONDumpService {
     private final EventService eventService;
     private final ParticipantService participantService;
     private final ExpenseService expenseService;
+    private final DebtService debtService;
     private final EventRepository eventRepository;
     private final ParticipantRepository participantRepository;
     private final ExpenseRepository expenseRepository;
+    private final DebtRepository debtRepository;
 
     /**
      * Constructs a JSONDumpService with the specified dependencies.
@@ -32,23 +35,29 @@ public class JSONDumpService {
      * @param eventService          The EventService instance.
      * @param participantService    The ParticipantService instance.
      * @param expenseService        The ExpenseService instance.
+     * @param debtService           The DebtService instance.
      * @param eventRepository       The EventRepository instance.
      * @param participantRepository The ParticipantRepository instance.
      * @param expenseRepository     The ExpenseRepository instance.
+     * @param debtRepository        The DebtRepository instance.
      */
     public JSONDumpService(
             @Autowired EventService eventService,
             @Autowired ParticipantService participantService,
             @Autowired ExpenseService expenseService,
+            @Autowired DebtService debtService,
             @Autowired EventRepository eventRepository,
             @Autowired ParticipantRepository participantRepository,
-            @Autowired ExpenseRepository expenseRepository) {
+            @Autowired ExpenseRepository expenseRepository,
+            @Autowired DebtRepository debtRepository) {
         this.eventService = eventService;
         this.participantService = participantService;
         this.expenseService = expenseService;
+        this.debtService = debtService;
         this.eventRepository = eventRepository;
         this.participantRepository = participantRepository;
         this.expenseRepository = expenseRepository;
+        this.debtRepository = debtRepository;
     }
 
     /**
