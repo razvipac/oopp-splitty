@@ -1,6 +1,7 @@
 package client.scenes;
 
-import client.Main;
+import client.interfaces.DataBasedPopupController;
+import client.utils.ServerUtils;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
@@ -20,26 +21,35 @@ import javafx.stage.Stage;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class AddEditExpense {
-    private Scene scene;
-    private Main main;
+public class AddEditExpense implements DataBasedPopupController<Event> {
 
+    private Scene scene;
+    private final Stage window;
+    private boolean isOpen;
+
+    private final MainCtrl mainCtrl;
+    private final ServerUtils serverUtils;
+
+    private Event event;
     private ArrayList<Expense> addEditExpenseList;
 
     /**
-     * Getter for the scene
-     * @return the scene
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
      */
-    public Scene getScene() {
-        return scene;
+    public AddEditExpense(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Add/Edit Expense");
+
+        initialize(event);
     }
 
-    /**
-     * Constructor for the AddEditExpense that calls the method to create the scene
-     * @param main scene of the main class
-     */
-    public AddEditExpense(Main main) {
-        this.main = main;
+    public Scene initialize(Event event) {
+        this.event = event;
         // Data for testing purposes
         Participant john = new Participant("John",
                 new Event("Abby's birthday party", "code1",
@@ -66,6 +76,8 @@ public class AddEditExpense {
 
 
         createSceneAddEditExpense();
+
+        return scene;
     }
 
     /**
@@ -155,7 +167,7 @@ public class AddEditExpense {
         layout.add(abortButton, 0, 9);
         layout.add(addButton, 1, 9);
 
-        // Create a "Back" button, set its action to switch to the main scene and add it to layout
+        // Create a "Back" button, set its action to switch to the mainCtrl scene and add it to layout
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> goBack());
         layout.add(backButton, 0, 10);
@@ -168,18 +180,32 @@ public class AddEditExpense {
     }
 
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        closeAlertBox();
     }
 
     /**
-     * Displays a modal alert box for adding a participant.
+     * Displays a modal alert box for viewing Open Debts.
      */
     public void displayAlertBox() {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Add/Edit Expense");
+        isOpen = true;
         window.setScene(scene);
         window.showAndWait();
     }
 
+    public void closeAlertBox() {
+        isOpen = false;
+        window.close();
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
 }
