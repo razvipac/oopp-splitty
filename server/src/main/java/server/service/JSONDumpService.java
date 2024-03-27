@@ -76,7 +76,8 @@ public class JSONDumpService {
 
         for (Event event : events) {
             EventResponseBody eventResponseBody =
-                    new EventResponseBody(event, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                    new EventResponseBody(event, new ArrayList<>(),
+                            new ArrayList<>(), new ArrayList<>());
 
             List<Participant> participants = participantService.getAll(event.getCode());
             List<Expense> expenses = expenseService.getAllInEvent(event.getCode());
@@ -108,7 +109,6 @@ public class JSONDumpService {
                         debt.getCreditor().getName(),
                         debt.getAmount(),
                         debt.isReceived()
-
                 );
                 eventResponseBody.debts().add(debtResponseBody);
             }
@@ -127,6 +127,7 @@ public class JSONDumpService {
     @Transactional
     public void restoreFromDump(List<EventResponseBody> jsonDump)
             throws ImproperDumpFormatException {
+        debtRepository.deleteAll();
         expenseRepository.deleteAll();
         participantRepository.deleteAll();
         eventRepository.deleteAll();
@@ -134,6 +135,17 @@ public class JSONDumpService {
             for (EventResponseBody eventResponseBody : jsonDump) {
                 Event event = eventResponseBody.event();
                 eventRepository.save(event);
+
+                for (DebtResponseBody debtResponseBody : eventResponseBody.debts()) {
+                    Debt debt = new Debt(
+                            participantRepository.findParticipantByEventCodeAndName
+                                    (debtResponseBody.debtor(), event.getCode()).get(),
+                            participantRepository.findParticipantByEventCodeAndName(
+                                    debtResponseBody.creditor(), event.getCode()).get(),
+                            debtResponseBody.amount()
+                    );
+                    debtRepository.save(debt);
+                }
 
                 for (ParticipantResponseBody participantResponseBody :
                         eventResponseBody.participants()) {
