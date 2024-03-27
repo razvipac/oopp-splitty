@@ -92,4 +92,12 @@ class LanguageManagerTest {
         LanguageManager languageManager2 = new LanguageManager(path2);
         assertEquals(languageManager1.hashCode(),languageManager2.hashCode());
     }
+
+    @Test
+    void defaultToEnglish(){
+        String path1 = "src\\test\\resources\\test69420.json";
+        LanguageManager languageManager1 = new LanguageManager(path1);
+        LanguageOption lo = new LanguageOption(LanguageOption.Language.ENGLISH);
+        assertEquals(lo ,languageManager1.loadLanguage());
+    }
 }
