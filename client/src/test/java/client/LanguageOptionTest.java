@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LanguageOptionTest {
-    
+
     @Test
     void testToStringDutch() {
         LanguageOption languageOption = new LanguageOption(LanguageOption.Language.DUTCH);
