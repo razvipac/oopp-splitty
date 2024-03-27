@@ -46,7 +46,7 @@ public class OpenDebts {
             createSceneNoEvent();
         else
         {
-            debtList = server.getDebtUtils().getAllOpenDebts(event.getCode());
+            debtList = server.getAllOpenDebts(event.getCode());
             createScene();
             /*
             // Data for testing purposes
