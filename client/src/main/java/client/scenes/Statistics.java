@@ -1,6 +1,7 @@
 package client.scenes;
 
-import client.Main;
+import client.utils.ServerUtils;
+import commons.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,27 +12,40 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class Statistics {
+    private final MainCtrl mainCtrl; // reference to MainCtrl class
+    private final ServerUtils serverUtils;
+
     private Scene scene;
+    private final Stage window;
+    private boolean isOpen;
 
-    private Main main;
-
-    /**
-     * Getter for the scene
-     * @return the scene
-     */
-    public Scene getScene() {
-        return scene;
-    }
-
+    private Event event;
     /**
      * Constructor for the statistics that calls the method to create the scene
-     * @param main scene of the main class
+     * @param mainCtrl scene of the mainCtrl class
      */
-    public Statistics(Main main) {
-        this.main = main;
+    public Statistics(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.setTitle("Send Invite");
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setOnCloseRequest(e -> closeAlertBox());
+
+        initialize(event);
+    }
+
+    public Scene initialize(Event event) {
+        this.event = event;
+
         createSceneStatistics();
+
+        return scene;
     }
 
     /**
@@ -78,6 +92,29 @@ public class Statistics {
     }
 
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        closeAlertBox();
+    }
+
+    public void displayAlertBox() {
+        isOpen = true;
+        window.setScene(scene);
+        window.showAndWait();
+    }
+
+    public void closeAlertBox() {
+        isOpen = false;
+        window.close();
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
     }
 }
