@@ -67,29 +67,29 @@ public class Main extends Application {
 
         // Button for StartScreen page
         Button startButton = new Button("Start Screen");
-        startButton.setOnAction(e -> primaryStage.setScene(sc.getScene()));
+        startButton.setOnAction(e -> showStartScreen());
 
         // Button for EventOverview page
         Button eoButton = new Button("Event Overview");
-        eoButton.setOnAction(e -> primaryStage.setScene(eo.getScene()));
+        eoButton.setOnAction(e -> showEventOverview());
 
         // Button for ContactDetails page
         Button cdButton = new Button("Contact Details");
-        cdButton.setOnAction(e -> primaryStage.setScene(cd.getScene()));
+        cdButton.setOnAction(e -> showContactDetails());
 
         // Button for Invitation page
         Button invitationButton = new Button("Invitation");
-        invitationButton.setOnAction(e -> primaryStage.setScene(inv.getScene()));
+        invitationButton.setOnAction(e -> showInvitation());
 
         // Button for OpenDebts page
         Button odButton = new Button("Open Debts");
-        odButton.setOnAction(e -> primaryStage.setScene(od.getScene()));
+        odButton.setOnAction(e -> showOpenDebts());
 
         Button addExpenseButton = new Button("Add Expense");
-        addExpenseButton.setOnAction(e -> primaryStage.setScene(aed.getScene()));
+        addExpenseButton.setOnAction(e -> showAddExpense());
 
         Button statisticsButton = new Button("Statistics");
-        statisticsButton.setOnAction(e -> primaryStage.setScene(statistics.getScene()));
+        statisticsButton.setOnAction(e -> showStatistics());
 
         // Button for language selection
         Button languageButton = new LanguageButton();
@@ -115,6 +115,34 @@ public class Main extends Application {
         primaryStage.setTitle("Main");
         primaryStage.setScene(mainScene); // changed this line
         primaryStage.show();
+    }
+
+    public void showStatistics() {
+        primaryStage.setScene(statistics.getScene());
+    }
+
+    public void showAddExpense() {
+        primaryStage.setScene(aed.getScene());
+    }
+
+    public void showOpenDebts() {
+        primaryStage.setScene(od.getScene());
+    }
+
+    public void showInvitation() {
+        primaryStage.setScene(inv.getScene());
+    }
+
+    public void showContactDetails() {
+        primaryStage.setScene(cd.getScene());
+    }
+
+    public void showEventOverview() {
+        primaryStage.setScene(eo.getScene());
+    }
+
+    public void showStartScreen() {
+        primaryStage.setScene(sc.getScene());
     }
 
     /**
