@@ -79,7 +79,7 @@ public class ParticipantController {
      * with WSAction CREATED
      *
      * @param eventCode The event code
-     * @param body      The ParticipantRequestBody instance
+     * @param participantDTO The ParticipantDTO instance
      * @return ResponseEntity with ParticipantResponseBody or HttpStatus.NOT_FOUND if not found
      */
     @PostMapping

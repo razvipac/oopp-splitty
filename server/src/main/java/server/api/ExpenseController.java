@@ -82,7 +82,7 @@ public class ExpenseController {
      * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction CREATED
      *
      * @param eventCode The event code.
-     * @param body      The ExpenseRequestBody containing data for creating the expense.
+     * @param expenseDTO The ExpenseDTO containing data for creating the expense.
      * @return A ResponseEntity containing the ExpenseResponseBody of the created expense
      *         if successful, or a NOT_FOUND response if the event or participant is not found.
      */
@@ -111,7 +111,6 @@ public class ExpenseController {
      * DELETE api/v1/{eventCode}/expense?id={id}&participantName={name}
      * deletes expense belonging to a Participant with name {name} and id {id} from
      * event with code {eventCode}
-     *
      * Sends out a WebSocket STOMP message to all listeners
      * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction DELETED
      *
