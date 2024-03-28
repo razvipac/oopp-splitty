@@ -20,11 +20,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import commons.*;
-import commons.dto.EventDTOMapper;
-import commons.dto.ExpenseDTO;
-import commons.dto.ParticipantDTO;
-import commons.dto.ParticipantDTOMapper;
+import commons.dto.*;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -66,7 +62,7 @@ public class ServerUtils {
      *
      * @return All events as a List
      */
-    public List<Event> getAllEvents() {
+    public List<EventDTO> getAllEvents() {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/")
                 .request(APPLICATION_JSON)
@@ -81,28 +77,28 @@ public class ServerUtils {
      * @param eventName the name of the event
      * @return the created Event
      */
-    public Event createEvent(String eventName) {
+    public EventDTO createEvent(String eventName) {
 
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/")
                 .queryParam("name", eventName)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(eventName, APPLICATION_JSON), Event.class);
+                .post(Entity.entity(eventName, APPLICATION_JSON), EventDTO.class);
     }
     /**
      * Creates an event with the given event name.
      * @param eventCode the name of the event
      * @return the created Event
      */
-    public Event deleteEvent(String eventCode) {
+    public EventDTO deleteEvent(String eventCode) {
 
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/")
                 .queryParam("eventCode", eventCode)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .delete(Event.class);
+                .delete(EventDTO.class);
     }
 
     // Participant methods
@@ -127,23 +123,15 @@ public class ServerUtils {
      * @param p Participant to add
      * @return True iff add was successful, false otherwise
      */
-    public boolean addParticipant(Participant p) {
+    public boolean addParticipant(ParticipantDTO p) {
         String code = p.getEvent().getCode();
         String endpoint = "api/v1/" + code + "/participant";
-
-        ParticipantDTO participantDTO = new ParticipantDTO(
-                p.getName(),
-                EventDTOMapper.toDTO(p.getEvent()),
-                p.getEmail(),
-                p.getIban(),
-                p.getBic()
-        );
 
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(participantDTO, APPLICATION_JSON));
+                .post(Entity.entity(p, APPLICATION_JSON));
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user
@@ -172,20 +160,14 @@ public class ServerUtils {
      * @param e Expense to add
      * @return True iff add was successful, false otherwise
      */
-    public boolean addExpense(Expense e, String code) {
+    public boolean addExpense(ExpenseDTO e, String code) {
         String endpoint = "api/v1/" + code + "/expense";
-
-        ExpenseDTO expenseDTO = new ExpenseDTO(
-                e.getPrice(),
-                e.getItem(),
-                ParticipantDTOMapper.toDTO(e.getPaidBy())
-        );
 
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(expenseDTO, APPLICATION_JSON));
+                .post(Entity.entity(e, APPLICATION_JSON));
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user
@@ -200,7 +182,7 @@ public class ServerUtils {
      * @param eventCode The code of the event for which debts are to be retrieved
      * @return A List containing all open debts for the specified event
      */
-    public List<Debt> getAllOpenDebts(String eventCode) {
+    public List<DebtDTO> getAllOpenDebts(String eventCode) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER)
                 .path("api/v1/" + eventCode + "/debts")
