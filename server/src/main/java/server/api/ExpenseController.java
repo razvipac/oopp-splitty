@@ -3,14 +3,12 @@ package server.api;
 import commons.Expense;
 import commons.dto.ExpenseDTO;
 import commons.dto.ExpenseDTOMapper;
-import commons.dto.ParticipantDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.api.pojo.request_body.ExpenseRequestBody;
-import server.api.pojo.request_body.ParticipantRequestBody;
 import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.WSAction;
 import server.api.pojo.response_body.WSWrapperResponseBody;
@@ -97,7 +95,7 @@ public class ExpenseController {
             ExpenseRequestBody body = new ExpenseRequestBody(
                     expenseDTO.getPrice(),
                     expenseDTO.getItem(),
-                    expenseDTO.getPaidByName()
+                    expenseDTO.getPaidBy().getName()
             );
 
             Expense expense = expenseService.createOne(eventCode, body);

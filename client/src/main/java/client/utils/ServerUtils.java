@@ -21,8 +21,10 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.util.List;
 
 import commons.*;
+import commons.dto.EventDTOMapper;
 import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
+import commons.dto.ParticipantDTOMapper;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -131,6 +133,7 @@ public class ServerUtils {
 
         ParticipantDTO participantDTO = new ParticipantDTO(
                 p.getName(),
+                EventDTOMapper.toDTO(p.getEvent()),
                 p.getEmail(),
                 p.getIban(),
                 p.getBic()
@@ -175,7 +178,7 @@ public class ServerUtils {
         ExpenseDTO expenseDTO = new ExpenseDTO(
                 e.getPrice(),
                 e.getItem(),
-                e.getPaidBy().getName()
+                ParticipantDTOMapper.toDTO(e.getPaidBy())
         );
 
         Response response = ClientBuilder.newClient(new ClientConfig())

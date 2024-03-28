@@ -1,6 +1,5 @@
 package commons.dto;
 
-import commons.Event;
 import commons.Participant;
 
 public class ParticipantDTOMapper {
@@ -8,16 +7,17 @@ public class ParticipantDTOMapper {
     public static ParticipantDTO toDTO(Participant participant) {
         return new ParticipantDTO(
                 participant.getName(),
+                EventDTOMapper.toDTO(participant.getEvent()),
                 participant.getEmail(),
                 participant.getIban(),
                 participant.getBic()
         );
     }
 
-    public static Participant toEntity(ParticipantDTO dto, Event event) {
+    public static Participant toEntity(ParticipantDTO dto) {
         return new Participant(
                 dto.getName(),
-                event,
+                EventDTOMapper.toEntity(dto.getEvent()),
                 dto.getEmail(),
                 dto.getIban(),
                 dto.getBic()

@@ -1,7 +1,6 @@
 package commons.dto;
 
 import commons.Expense;
-import commons.Participant;
 
 public class ExpenseDTOMapper {
 
@@ -9,15 +8,15 @@ public class ExpenseDTOMapper {
         return new ExpenseDTO(
                 expense.getPrice(),
                 expense.getItem(),
-                expense.getPaidBy().getName()
+                ParticipantDTOMapper.toDTO(expense.getPaidBy())
         );
     }
 
-    public static Expense toEntity(ExpenseDTO dto, Participant participant) {
+    public static Expense toEntity(ExpenseDTO dto) {
         return new Expense(
                 dto.getPrice(),
                 dto.getItem(),
-                participant
+                ParticipantDTOMapper.toEntity(dto.getPaidBy())
         );
     }
 

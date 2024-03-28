@@ -4,15 +4,15 @@ public class ExpenseDTO {
 
     private int price;
     private String item;
-    private String paidByName;
+    private ParticipantDTO paidBy;
 
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(int price, String item, String paidByName) {
+    public ExpenseDTO(int price, String item, ParticipantDTO paidBy) {
         this.price = price;
         this.item = item;
-        this.paidByName = paidByName;
+        this.paidBy = paidBy;
     }
 
     public int getPrice() {
@@ -31,11 +31,11 @@ public class ExpenseDTO {
         this.item = item;
     }
 
-    public String getPaidByName() {
-        return paidByName;
+    public ParticipantDTO getPaidBy() {
+        return paidBy;
     }
 
-    public void setPaidByName(String paidByName) {
-        this.paidByName = paidByName;
+    public void setPaidBy(ParticipantDTO paidBy) {
+        this.paidBy = paidBy;
     }
 }
