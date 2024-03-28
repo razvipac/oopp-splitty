@@ -56,7 +56,7 @@ Feedback: Excellent
 
 
 - Did the team present the current state of their application? Yes
-- Was the application *potentially shippable*, i.e., all presented changes were merged into mainCtrl? No
+- Was the application *potentially shippable*, i.e., all presented changes were merged into main? No
 - Was there progress compared to last week? Yes
 - Is the team on a good track to create a working application until project end? Yes
 

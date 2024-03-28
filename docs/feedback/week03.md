@@ -39,7 +39,7 @@ Feedback: The chair did ensure all topics were covered, but spent too much time 
 
 #### Potentially Shippable Product
 Did the team present the current state of their application? No
-Was the application potentially shippable, i.e., all presented changes were merged into mainCtrl? No
+Was the application potentially shippable, i.e., all presented changes were merged into main? No
 Was there progress compared to last week? Yes
 Is the team on a good track to create a working application until project end? I think so 
 
