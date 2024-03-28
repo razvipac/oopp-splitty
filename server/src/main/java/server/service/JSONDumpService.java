@@ -1,14 +1,17 @@
 package server.service;
 
+import commons.Debt;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import server.api.pojo.response_body.DebtResponseBody;
 import server.api.pojo.response_body.EventResponseBody;
 import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
+import server.database.DebtRepository;
 import server.database.EventRepository;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
@@ -22,9 +25,11 @@ public class JSONDumpService {
     private final EventService eventService;
     private final ParticipantService participantService;
     private final ExpenseService expenseService;
+    private final DebtService debtService;
     private final EventRepository eventRepository;
     private final ParticipantRepository participantRepository;
     private final ExpenseRepository expenseRepository;
+    private final DebtRepository debtRepository;
 
     /**
      * Constructs a JSONDumpService with the specified dependencies.
@@ -32,23 +37,29 @@ public class JSONDumpService {
      * @param eventService          The EventService instance.
      * @param participantService    The ParticipantService instance.
      * @param expenseService        The ExpenseService instance.
+     * @param debtService           The DebtService instance.
      * @param eventRepository       The EventRepository instance.
      * @param participantRepository The ParticipantRepository instance.
      * @param expenseRepository     The ExpenseRepository instance.
+     * @param debtRepository        The DebtRepository instance.
      */
     public JSONDumpService(
             @Autowired EventService eventService,
             @Autowired ParticipantService participantService,
             @Autowired ExpenseService expenseService,
+            @Autowired DebtService debtService,
             @Autowired EventRepository eventRepository,
             @Autowired ParticipantRepository participantRepository,
-            @Autowired ExpenseRepository expenseRepository) {
+            @Autowired ExpenseRepository expenseRepository,
+            @Autowired DebtRepository debtRepository) {
         this.eventService = eventService;
         this.participantService = participantService;
         this.expenseService = expenseService;
+        this.debtService = debtService;
         this.eventRepository = eventRepository;
         this.participantRepository = participantRepository;
         this.expenseRepository = expenseRepository;
+        this.debtRepository = debtRepository;
     }
 
     /**
@@ -65,10 +76,12 @@ public class JSONDumpService {
 
         for (Event event : events) {
             EventResponseBody eventResponseBody =
-                    new EventResponseBody(event, new ArrayList<>(), new ArrayList<>());
+                    new EventResponseBody(event, new ArrayList<>(),
+                            new ArrayList<>(), new ArrayList<>());
 
             List<Participant> participants = participantService.getAll(event.getCode());
             List<Expense> expenses = expenseService.getAllInEvent(event.getCode());
+            List<Debt> debts = debtService.getAllUnsettledDebtsForEvent(event.getCode());
 
             for (Participant participant : participants) {
                 ParticipantResponseBody participantResponseBody = new ParticipantResponseBody(
@@ -89,8 +102,19 @@ public class JSONDumpService {
                 );
                 eventResponseBody.expenses().add(expenseResponseBody);
             }
+
+            for (Debt debt : debts) {
+                DebtResponseBody debtResponseBody = new DebtResponseBody(
+                        debt.getDebtor().getName(),
+                        debt.getCreditor().getName(),
+                        debt.getAmount(),
+                        debt.isReceived()
+                );
+                eventResponseBody.debts().add(debtResponseBody);
+            }
             response.add(eventResponseBody);
         }
+
         return response;
     }
 
@@ -103,6 +127,7 @@ public class JSONDumpService {
     @Transactional
     public void restoreFromDump(List<EventResponseBody> jsonDump)
             throws ImproperDumpFormatException {
+        debtRepository.deleteAll();
         expenseRepository.deleteAll();
         participantRepository.deleteAll();
         eventRepository.deleteAll();
@@ -110,6 +135,17 @@ public class JSONDumpService {
             for (EventResponseBody eventResponseBody : jsonDump) {
                 Event event = eventResponseBody.event();
                 eventRepository.save(event);
+
+                for (DebtResponseBody debtResponseBody : eventResponseBody.debts()) {
+                    Debt debt = new Debt(
+                            participantRepository.findParticipantByEventCodeAndName
+                                    (debtResponseBody.debtor(), event.getCode()).get(),
+                            participantRepository.findParticipantByEventCodeAndName(
+                                    debtResponseBody.creditor(), event.getCode()).get(),
+                            debtResponseBody.amount()
+                    );
+                    debtRepository.save(debt);
+                }
 
                 for (ParticipantResponseBody participantResponseBody :
                         eventResponseBody.participants()) {

@@ -122,7 +122,7 @@ public class StartScreen implements StaticSceneController {
                 skiTripBox, museumVisitBox, giftForJohnBox, newYearPartyBox, backButton);
         layout.setAlignment(Pos.CENTER);
 
-        scene = new Scene(layout, 500, 500);
+        scene = new Scene(layout);
         scene.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
         });
@@ -147,6 +147,7 @@ public class StartScreen implements StaticSceneController {
     private void createEventFromTextField(TextField createEvent) {
         String eventName = createEvent.getText();
         Event event = serverUtils.getEventUtils().createEvent(eventName);
+        events = serverUtils.getEventUtils().getAllEvents();
         System.out.println(event.toString());
         mainCtrl.showEventOverview(event);
     }

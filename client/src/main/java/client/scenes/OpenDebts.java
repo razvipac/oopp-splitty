@@ -4,7 +4,7 @@ import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
 import commons.Event;
 import javafx.geometry.Insets;
-//import javafx.geometry.Pos;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -12,8 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 // import javafx.stage.Stage;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 import commons.Debt;
 import commons.Participant;
@@ -30,7 +29,7 @@ public class OpenDebts implements DataBasedPopupController<Event> {
     private boolean isOpen;
 
     private Event event;
-    private ArrayList<Debt> debtList;
+    private List<Debt> debtList;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
@@ -58,31 +57,29 @@ public class OpenDebts implements DataBasedPopupController<Event> {
     public Scene initialize(Event event) {
         this.event = event;
 
-        // Data for testing purposes
-        Participant john = new Participant("John",
-                           new Event("Abby's birthday party", "code1",
-                                     LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                               "John@mail.com", "1234", "1234");
-        Participant david = new Participant("David",
-                            new Event("Davidson's birthday party", "code2",
-                                      LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                "David@mail.com", "2341", "2341");
-        Participant chris = new Participant("Chris",
-                            new Event("Stoffer's birthday party", "code3",
-                                      LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                "Chris@mail.com", "3412", "3412");
-        Participant anna = new Participant("Anna",
-                           new Event("Belle's birthday party", "code4",
-                                     LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                               "Anna@mail.com", "4123", "4123");
-        debtList = new ArrayList<>();
-        debtList.add(new Debt(john, david, 123));
-        debtList.add(new Debt(chris, david, 34));
-        debtList.add(new Debt(anna, david, 5.60));
-
-        createScene();
+        if (event == null) createSceneNoEvent();
+        else {
+            debtList = serverUtils.getDebtUtils().getAllOpenDebts(event.getCode());
+            createScene();
+        }
 
         return scene;
+    }
+
+    private void createSceneNoEvent() {
+        VBox layout = new VBox(5);
+        Text noEventText = new Text("You have to join an event before checking the debts.");
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> goBack());
+
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(noEventText, backButton);
+        layout.setPadding(new Insets(20));
+
+        scene = new Scene(layout, 350, 300);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
     }
 
     /**
@@ -95,7 +92,7 @@ public class OpenDebts implements DataBasedPopupController<Event> {
 
         // Header
         Text header = new Text("Open Debts");
-        header.setFont(Font.font("Arial", FontWeight.BOLD , 20));
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         layout.getChildren().addAll(header);
 
         Button backButton = new Button("Back");
@@ -103,7 +100,7 @@ public class OpenDebts implements DataBasedPopupController<Event> {
         layout.getChildren().add(backButton);
 
         // Adding each debt
-        for(Debt d : debtList) {
+        for (Debt d : debtList) {
             addDebtToLayout(d, layout);
         }
         // Scene
@@ -156,11 +153,7 @@ public class OpenDebts implements DataBasedPopupController<Event> {
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);
-        Text bankInfo = new Text("""
-                Bank information available, transfer money to:
-                Account Holder: John Doe
-                IBAN: NL12 3456 7890 1234 56
-                BIC: ABCDEFGH""");
+        Text bankInfo = new Text(getBankInfoText(d));
         debtInfo.setPadding(new Insets(0, 0, 10, 0));
         debtInfo.getChildren().addAll(bankInfo);
         debtInfo.setVisible(false);
@@ -184,6 +177,25 @@ public class OpenDebts implements DataBasedPopupController<Event> {
         debtLine.getChildren().addAll(moreInfo, debtStringLabel, receivedButton);
         debtItem.getChildren().addAll(debtLine, debtInfo);
         layout.getChildren().add(debtItem);
+    }
+
+    private static String getBankInfoText(Debt d)
+    {
+        Participant debtor = d.getDebtor();
+        Participant creditor = d.getCreditor();
+        double amount = d.getAmount();
+
+        String creditorBankInfo =
+                "Bank Information for creditor (" + creditor.getName() + "):\n" +
+                "Account Holder: " + creditor.getName() + "\n" +
+                "IBAN: " + creditor.getIban() + "\n" +
+                "BIC: " + creditor.getBic();
+
+        return "Debt Details:\n" +
+                "Debtor: " + debtor.getName() + "\n" +
+                "Creditor: " + creditor.getName() + "\n" +
+                "Amount: " + amount + " Euro\n\n" +
+                creditorBankInfo;
     }
 
     /**

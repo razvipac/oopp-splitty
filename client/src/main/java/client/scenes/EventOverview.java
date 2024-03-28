@@ -17,6 +17,7 @@ import client.utils.ServerUtils;
 import commons.Expense;
 import commons.Participant;
 import commons.Event;
+import javafx.util.Pair;
 
 public class EventOverview implements DataBasedSceneController<Event> {
 
@@ -76,13 +77,16 @@ public class EventOverview implements DataBasedSceneController<Event> {
             return scene;
         }
 
-        // Participants for testing purposes
+        // TODO: get participants from server
 //        participants = server.getParticipantUtils().getParticipants(event.getCode());
         participants = new ArrayList<>();
-        Participant test = new Participant("test", event, "test", "test", "test");
+        Participant test = new Participant("Test", event, "test", "test", "test");
+        Participant john = new Participant("John", event, "test", "test", "test");
         participants.add(test);
+        participants.add(john);
 
-        // Expenses for testing purposes
+        // TODO: get expenses from server
+//        expenses = server.getParticipantUtils().getExpenses(event.getCode());
         expenses = new ArrayList<>();
         expenses.add(new Expense(10, "Drinks", test));
 
@@ -141,14 +145,26 @@ public class EventOverview implements DataBasedSceneController<Event> {
         expensesHeader.setFont(h2);
 
         Button expenseAddButton = new Button("Add Expense");
-        expenseAddButton.setOnAction(e -> mainCtrl.showAddExpense(event));
+        expenseAddButton.setOnAction(e -> {
+            if(participants == null || participants.isEmpty()) {
+                Alert noParticipants = createAlert(Alert.AlertType.INFORMATION, "Alert",
+                        "Event has no participants",
+                        "Cannot add expenses because this event has no participants. " +
+                                "Please add at least one participant first.");
+                noParticipants.getButtonTypes().clear();
+                noParticipants.getButtonTypes().add(ButtonType.OK);
+                noParticipants.showAndWait();
+                return;
+            }
+            mainCtrl.showAddExpense(new Pair<>(event, participants));
+        });
 
         HBox radioSelectBox = getRadioSelectBox();
         ComboBox<String> participantDropdown = getParticipantDropdown();
 
         // expensesScroller, which includes all expense items in arraylist expenses
         ScrollPane expensesScroller = getExpensesScroller();
-        // TODO: button is non-functional
+
         Button settleDebtsButton = new Button("Settle Debts");
         settleDebtsButton.setOnAction(e -> mainCtrl.showOpenDebts(event));
 
@@ -176,7 +192,6 @@ public class EventOverview implements DataBasedSceneController<Event> {
         Text eventNameText = new Text(event.getName());
         eventNameText.setFont(h1);
 
-        // TODO: Button is non-functional
         Button sendInviteButton = new Button("Send Invite");
         sendInviteButton.setOnAction(e -> mainCtrl.showInvitation(event));
 
@@ -362,6 +377,30 @@ public class EventOverview implements DataBasedSceneController<Event> {
                 }
             }
         }
+    }
+
+    /**
+     * Creates an alert window
+     * @param type The type of alert (e.g. CONFIRMATION or ERROR)
+     * @param title The title of the window
+     * @param header The header of the window
+     * @param content The content of the window
+     * @return Alert object
+     */
+    private Alert createAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
+    }
+
+    /**
+     * Getter for the scene.
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
     }
 
     /**

@@ -85,8 +85,11 @@ public class DevScreen implements StaticSceneController {
         Button statisticsButton = new Button("Statistics");
         statisticsButton.setOnAction(e -> mainCtrl.showStatistics(null));
 
+        Button adminButton = new Button("Admin");
+        adminButton.setOnAction(e -> mainCtrl.showAdminScreen());
+
         // Button for language selection
-        Button languageButton = new LanguageButton();
+        Button languageButton = new LanguageButton("userSettings/userPreferences.json");
 
         // Hbox for the language button
         HBox languageBox = new HBox(languageButton);
@@ -101,7 +104,7 @@ public class DevScreen implements StaticSceneController {
 
         // adding elements to layout
         layout.getChildren().addAll(languageBox, startButton, eoButton, cdButton,
-                invitationButton, odButton, addExpenseButton, statisticsButton);
+                invitationButton, odButton, addExpenseButton, statisticsButton, adminButton);
 
         return layout;
     }

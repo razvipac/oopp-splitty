@@ -2,9 +2,10 @@ package client;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.VBox;
+
 import java.util.ArrayList;
 import java.util.List;
 //todo class need complete refactoring
@@ -20,23 +21,23 @@ public class LanguageButton extends Button {
     }
     /**
      * Constructs a LanguageButton.
+     * @param path path to the user configuration file
      */
-    public LanguageButton() {
-        initialize();
+    public LanguageButton(String path) {
+        initialize(path);
     }
 
     /**
      * Initializes the language button.
      */
-    private void initialize() {
-        languageManager = new LanguageManager("" +
-                "client/src/main/resources/userSettings/userPreferences.json");
+    private void initialize(String path) {
+        languageManager = new LanguageManager(path);
         setGraphic(createFlagIcon()); // Set the initial flag icon
         setOnMouseClicked(event -> handleMouseClicked(event));
         loadAvailableLanguages();
         loadCurrentLanguage(); // Load the persisted language choice
-        this.setText(languageManager.get("Test"));
     }
+
 
     /**
      * Loads available languages.
@@ -45,6 +46,7 @@ public class LanguageButton extends Button {
         availableLanguages = new ArrayList<>();
         availableLanguages.add(new LanguageOption(LanguageOption.Language.ENGLISH));
         availableLanguages.add(new LanguageOption(LanguageOption.Language.DUTCH));
+        availableLanguages.add(new LanguageOption(LanguageOption.Language.ROMANIAN));
 
     }
 
@@ -64,12 +66,7 @@ public class LanguageButton extends Button {
      * @return The flag icon image view.
      */
     private ImageView createFlagIcon() {
-        //getFlagImage currently returns null
-        Image flagImage = LanguageManager.getFlagImage(currentLanguage);
-        ImageView imageView = new ImageView(flagImage);
-        imageView.setFitWidth(20);
-        imageView.setFitHeight(15);
-        return imageView;
+        return LanguageManager.createFlagIcon(currentLanguage);
     }
 
     /**
@@ -86,26 +83,29 @@ public class LanguageButton extends Button {
      */
     private void handleMouseClicked(javafx.scene.input.MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            showLanguageMenu();
+            showLanguageMenu(event);
         }
     }
 
     /**
      * Shows the language menu.
      */
-    private void showLanguageMenu() {
+    private void showLanguageMenu(javafx.scene.input.MouseEvent event) {
         ContextMenu contextMenu = new ContextMenu();
 
         // Add menu items for each available language
         for (LanguageOption languageOption : availableLanguages) {
+
             MenuItem menuItem =
                     new MenuItem(languageManager.get(languageOption,languageOption.toString()));
+
+            menuItem.setGraphic(new VBox(LanguageManager.createFlagIcon(languageOption)));
             menuItem.setOnAction(actionEvent -> selectLanguage(languageOption));
             contextMenu.getItems().add(menuItem);
         }
 
         // Show the context menu below the button
-        contextMenu.show(this, 0, getHeight());
+        contextMenu.show(this, event.getScreenX(), event.getScreenY());
 
         // Set a listener to hide the menu when the user clicks outside of it
         contextMenu.setOnHidden(hiddenEvent -> setGraphic(createFlagIcon()));
@@ -120,6 +120,6 @@ public class LanguageButton extends Button {
         currentLanguage = languageOption;
         languageManager.saveLanguage(currentLanguage);
         updateFlagIcon();
-        this.setText(languageManager.get("Test"));
+        //this.setText(languageManager.get("Test"));
     }
 }

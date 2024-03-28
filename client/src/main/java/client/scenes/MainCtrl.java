@@ -73,7 +73,11 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Event;
+import commons.Participant;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+
+import java.util.List;
 
 public class MainCtrl {
 
@@ -89,6 +93,7 @@ public class MainCtrl {
     private final AddEditExpense addEditExpense;
     private final Statistics statistics;
     private final DevScreen devScreen;
+    private final Admin adminScreen;
 
 
     /**
@@ -107,6 +112,7 @@ public class MainCtrl {
         openDebts = new OpenDebts(this, serverUtils, null);
         statistics = new Statistics(this, serverUtils, null);
         devScreen = new DevScreen(this, serverUtils);
+        adminScreen = new Admin(this, serverUtils);
 
         // default scene
         showDevScreen();
@@ -139,16 +145,15 @@ public class MainCtrl {
         statistics.initialize(event);
         statistics.displayAlertBox();
     }
-
     /**
      * Shows the Add/Edit Expense scene
-     * @param event corresponding event instance
+     * @param data pair of event and participant list to populate the UI with
      */
-    public void showAddExpense(Event event) {
+    public void showAddExpense(Pair<Event, List<Participant>> data) {
         if (addEditExpense.isOpen()){
             addEditExpense.closeAlertBox();
         }
-        addEditExpense.initialize(event);
+        addEditExpense.initialize(data);
         addEditExpense.displayAlertBox();
     }
 
@@ -193,6 +198,13 @@ public class MainCtrl {
      */
     public void showDevScreen(){
         primaryStage.setScene(devScreen.initialize());
+    }
+
+    /**
+     * Shows the Start scene
+     */
+    public void showAdminScreen(){
+        primaryStage.setScene(adminScreen.initialize());
     }
 
     /**
