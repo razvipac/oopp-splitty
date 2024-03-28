@@ -32,7 +32,7 @@ public class LanguageManager {
                     return new LanguageOption(LanguageOption.Language.DUTCH);
                 }
                 if(rootNode.get("language").asText().equals("Romanian")){
-                    return new LanguageOption(LanguageOption.Language.DUTCH);
+                    return new LanguageOption(LanguageOption.Language.ROMANIAN);
                 }
                 return new LanguageOption();
             }
