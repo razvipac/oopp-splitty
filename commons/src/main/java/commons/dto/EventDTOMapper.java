@@ -14,11 +14,9 @@ public class EventDTOMapper {
     }
 
     public static Event toEntity(EventDTO dto) {
-        return new Event(
-                dto.getName(),
-                dto.getCode(),
-                dto.getCreationDate()
-        );
+        Event event =  new Event(dto.getName(), dto.getCode(), dto.getCreationDate());
+        event.setLastActivity(dto.getLastActivity());
+        return event;
     }
 
 }
