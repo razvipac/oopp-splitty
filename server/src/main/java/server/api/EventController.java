@@ -1,6 +1,8 @@
 package server.api;
 
 import commons.Event;
+import commons.dto.EventDTO;
+import commons.dto.EventDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +40,12 @@ public class EventController {
      * Returns HttpStatus.OK if successful.
      */
     @GetMapping
-    public ResponseEntity<List<Event>> getAll() {
-        return new ResponseEntity<>(eventService.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<EventDTO>> getAll() {
+        List<Event> events = eventService.getAll();
+        List<EventDTO> eventDTOs = events.stream()
+                .map(EventDTOMapper::toDTO)
+                .toList();
+        return new ResponseEntity<>(eventDTOs, HttpStatus.OK);
     }
 
 
@@ -54,7 +60,7 @@ public class EventController {
      * Returns HttpStatus.CREATED if successful.
      */
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestParam("name") String name) {
+    public ResponseEntity<EventDTO> createEvent(@RequestParam("name") String name) {
         Event event = eventService.createOne(name);
 
         simpMessagingTemplate.convertAndSend("/api/websocket/v1/channel/event",
@@ -63,7 +69,7 @@ public class EventController {
                         event
                 ));
 
-        return new ResponseEntity<>(event, HttpStatus.CREATED);
+        return new ResponseEntity<>(EventDTOMapper.toDTO(event), HttpStatus.CREATED);
     }
 
 
@@ -78,13 +84,13 @@ public class EventController {
      */
 
     @DeleteMapping("")
-    public ResponseEntity<Event> deleteOne(
+    public ResponseEntity<EventDTO> deleteOne(
             @RequestParam("eventCode") String eventCode
     ) {
         try{
             Event event = eventService.deleteOne(eventCode);
 
-            return new ResponseEntity<>(event, HttpStatus.OK);
+            return new ResponseEntity<>(EventDTOMapper.toDTO(event), HttpStatus.OK);
 
         } catch (NotFoundInDatabaseException e){
             return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -103,14 +109,14 @@ public class EventController {
      */
 
     @PutMapping("/{eventCode}")
-    public ResponseEntity<Event> updateOneByName(
+    public ResponseEntity<EventDTO> updateOneByName(
             @RequestParam("name") String name,
             @PathVariable("eventCode") String eventCode
     ) {
         try {
             Event event = eventService.updateOne(eventCode, name);
 
-            return new ResponseEntity<>(event, HttpStatus.OK);
+            return new ResponseEntity<>(EventDTOMapper.toDTO(event), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
