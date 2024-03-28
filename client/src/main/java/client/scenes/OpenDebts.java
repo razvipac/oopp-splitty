@@ -12,13 +12,10 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
-
-import java.util.List;
-
-import commons.Debt;
-import commons.Participant;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class OpenDebts {
 
