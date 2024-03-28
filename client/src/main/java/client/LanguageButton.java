@@ -21,6 +21,7 @@ public class LanguageButton extends Button {
     }
     /**
      * Constructs a LanguageButton.
+     * @param path path to the user configuration file
      */
     public LanguageButton(String path) {
         initialize(path);

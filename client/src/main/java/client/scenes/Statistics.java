@@ -1,6 +1,7 @@
 package client.scenes;
 
-import client.Main;
+import client.utils.ServerUtils;
+import commons.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,27 +12,48 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class Statistics {
-    private Scene scene;
+    private final MainCtrl mainCtrl; // reference to MainCtrl class
+    private final ServerUtils serverUtils;
 
-    private Main main;
+    private Scene scene;
+    private final Stage window;
+    private boolean isOpen;
+
+    private Event event;
 
     /**
-     * Getter for the scene
-     * @return the scene
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
-    public Scene getScene() {
-        return scene;
+    public Statistics(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.setTitle("Send Invite");
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setOnCloseRequest(e -> closeAlertBox());
+
+        initialize(event);
     }
 
     /**
-     * Constructor for the statistics that calls the method to create the scene
-     * @param main scene of the main class
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
      */
-    public Statistics(Main main) {
-        this.main = main;
+    public Scene initialize(Event event) {
+        this.event = event;
+
         createSceneStatistics();
+
+        return scene;
     }
 
     /**
@@ -77,7 +99,43 @@ public class Statistics {
         });
     }
 
+    /**
+     * Back button action
+     */
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        closeAlertBox();
+    }
+
+    /**
+     * Displays a modal alert box for viewing Open Debts.
+     */
+    public void displayAlertBox() {
+        isOpen = true;
+        window.setScene(scene);
+        window.showAndWait();
+    }
+
+    /**
+     * Closes a modal alert box for viewing Open Debts.
+     */
+    public void closeAlertBox() {
+        isOpen = false;
+        window.close();
+    }
+
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
     }
 }

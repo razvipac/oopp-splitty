@@ -60,6 +60,11 @@ public class LanguageOption {
         return this.language;
     }
 
+    /**
+     * Standard equals method
+     * @param o the object to compare with
+     * @return boolean value of the comparison
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -68,6 +73,10 @@ public class LanguageOption {
         return this.language == that.language;
     }
 
+    /**
+     * Generates hashCode for LanguageOption
+     * @return generated hashCode
+     */
     @Override
     public int hashCode() {
         return Objects.hash(this.language);

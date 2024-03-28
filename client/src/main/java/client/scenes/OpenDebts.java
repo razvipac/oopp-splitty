@@ -1,10 +1,9 @@
 package client.scenes;
 
+import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
 import commons.Event;
-import client.Main;
 import javafx.geometry.Insets;
-//import javafx.geometry.Pos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,58 +19,51 @@ import commons.Participant;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class OpenDebts {
+public class OpenDebts implements DataBasedPopupController<Event> {
+
+    private final MainCtrl mainCtrl;
+    private final ServerUtils serverUtils;
 
     private Scene scene;
+    private final Stage window;
+    private boolean isOpen;
+
+    private Event event;
     private List<Debt> debtList;
-    private Main main;
-    private final ServerUtils server = ServerUtils.getServerUtils();
 
     /**
-     * Getter for the scene
-     * @return the scene
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
-    public Scene getScene() {
-        return scene;
+    public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.setTitle("Add Participant");
+        window.initModality(Modality.APPLICATION_MODAL);
+        isOpen = false;
+
+        initialize(event);
     }
 
     /**
-     * Constructor for Open Debts page
-     * @param main to the main class
-     * @param event the event we are considering
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
      */
-    public OpenDebts(Main main, Event event) {
-        this.main = main;
-        if(event == null)
-            createSceneNoEvent();
-        else
-        {
-            debtList = server.getDebtUtils().getAllOpenDebts(event.getCode());
+    public Scene initialize(Event event) {
+        this.event = event;
+
+        if (event == null) createSceneNoEvent();
+        else {
+            debtList = serverUtils.getDebtUtils().getAllOpenDebts(event.getCode());
             createScene();
-            /*
-            // Data for testing purposes
-            Participant john = new Participant("John",
-                               new Event("Abby's birthday party", "code1",
-                                         LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                   "John@mail.com", "1234", "1234");
-            Participant david = new Participant("David",
-                                new Event("Davidson's birthday party", "code2",
-                                          LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                    "David@mail.com", "2341", "2341");
-            Participant chris = new Participant("Chris",
-                                new Event("Stoffer's birthday party", "code3",
-                                          LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                    "Chris@mail.com", "3412", "3412");
-            Participant anna = new Participant("Anna",
-                               new Event("Belle's birthday party", "code4",
-                                         LocalDateTime.of(1900, 1, 1, 0, 0, 0)),
-                                   "Anna@mail.com", "4123", "4123");
-            debtList = new ArrayList<>();
-            debtList.add(new Debt(john, david, 123));
-            debtList.add(new Debt(chris, david, 34));
-            debtList.add(new Debt(anna, david, 5.60));
-            */
         }
+
+        return scene;
     }
 
     private void createSceneNoEvent() {
@@ -100,7 +92,7 @@ public class OpenDebts {
 
         // Header
         Text header = new Text("Open Debts");
-        header.setFont(Font.font("Arial", FontWeight.BOLD , 20));
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         layout.getChildren().addAll(header);
 
         Button backButton = new Button("Back");
@@ -108,7 +100,7 @@ public class OpenDebts {
         layout.getChildren().add(backButton);
 
         // Adding each debt
-        for(Debt d : debtList) {
+        for (Debt d : debtList) {
             addDebtToLayout(d, layout);
         }
         // Scene
@@ -119,8 +111,11 @@ public class OpenDebts {
 
     }
 
+    /**
+     * Back button action
+     */
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        closeAlertBox();
     }
 
     /**
@@ -207,11 +202,33 @@ public class OpenDebts {
      * Displays a modal alert box for viewing Open Debts.
      */
     public void displayAlertBox() {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Add Participant");
+        isOpen = true;
         window.setScene(scene);
         window.showAndWait();
+    }
+
+    /**
+     * Closes a modal alert box for viewing Open Debts.
+     */
+    public void closeAlertBox() {
+        isOpen = false;
+        window.close();
+    }
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
+
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
+    public boolean isOpen(){
+        return isOpen;
     }
 
 }

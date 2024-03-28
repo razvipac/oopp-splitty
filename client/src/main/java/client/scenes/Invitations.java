@@ -1,6 +1,7 @@
 package client.scenes;
 
-import client.Main;
+import client.interfaces.DataBasedPopupController;
+import client.utils.ServerUtils;
 import commons.Event;
 
 import javafx.geometry.Insets;
@@ -17,34 +18,49 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class Invitations {
+public class Invitations implements DataBasedPopupController<Event> {
+    private final MainCtrl mainCtrl; // reference to MainCtrl class
+    private final ServerUtils serverUtils;
+
     private Scene scene;
+    private final Stage window;
+    private boolean isOpen;
+
     private TextArea boxToPutEmails;
-    private Main main; // reference to Main class
     private String eventName;
     private String eventCode;
 
     /**
-     * Getter for the scene
-     * @return the scene
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
-    public Scene getScene() {
-        return scene;
+    public Invitations(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.setTitle("Send Invite");
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setOnCloseRequest(e -> closeAlertBox());
+
+        initialize(event);
     }
 
     /**
-     * Constructor for the invitation that calls the method to create the scene
-     * @param main scene of the main class
-     * @param event the event to show
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
      */
-    public Invitations(Main main, Event event) {
-        this.main = main;
+    public Scene initialize(Event event) {
         if(event == null) createSceneNoEvent();
         else {
             eventName = event.getName();
             eventCode = event.getCode();
             createSceneInvitation();
         }
+        return scene;
     }
 
     /**
@@ -64,10 +80,6 @@ public class Invitations {
         scene.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
         });
-    }
-
-    private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
     }
 
     /**
@@ -114,19 +126,38 @@ public class Invitations {
         scene.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
         });
-
-        layout.prefWidthProperty().bind(scene.widthProperty());
-        layout.prefHeightProperty().bind(scene.heightProperty());
     }
 
     /**
      * Displays a modal alert box for the Invitations page.
      */
     public void displayAlertBox() {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Send Invite");
+        isOpen = true;
         window.setScene(scene);
         window.showAndWait();
+    }
+
+    /**
+     * Closes a modal alert box for viewing Open Debts.
+     */
+    public void closeAlertBox() {
+        isOpen = false;
+        boxToPutEmails.clear();
+        window.close();
+    }
+
+    /**
+     * Back button action
+     */
+    private void goBack() {
+        closeAlertBox();
+    }
+
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
+    public boolean isOpen(){
+        return isOpen;
     }
 }
