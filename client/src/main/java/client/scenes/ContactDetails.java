@@ -131,8 +131,8 @@ public class ContactDetails {
         Button ok = new Button("Ok");
         ok.setOnAction(e -> {
             if(formIsValid())
-                addParticipantToServer(new ParticipantDTO(boxName.getText(), event, boxEmail.getText(),
-                        boxIban.getText(), boxBic.getText()));
+                addParticipantToServer(new ParticipantDTO(boxName.getText(), event,
+                        boxEmail.getText(), boxIban.getText(), boxBic.getText()));
         });
 
         HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
