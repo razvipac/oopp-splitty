@@ -1,7 +1,8 @@
 package client.scenes;
 
-import commons.dto.ExpenseDTOMapper;
-import commons.dto.ParticipantDTOMapper;
+import client.utils.ServerUtils;
+import client.Main;
+import commons.dto.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -12,12 +13,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
 import java.util.List;
-
-import client.utils.ServerUtils;
-import client.Main;
-import commons.Expense;
-import commons.Participant;
-import commons.Event;
 
 public class EventOverview {
 
@@ -36,15 +31,15 @@ public class EventOverview {
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
     // Event attributes
-    private Event event;
+    private EventDTO event;
     private String eventName;
     private String eventCode;
     // TODO: use actual Objects Participant and Expense instead of ArrayList<String>
-    private List<Participant> participants;
-    private List<Expense> expenses;
+    private List<ParticipantDTO> participants;
+    private List<ExpenseDTO> expenses;
 
     // Currently selected participant (whose expenses to view)
-    private Participant selectedParticipant;
+    private ParticipantDTO selectedParticipant;
     
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
@@ -64,7 +59,7 @@ public class EventOverview {
      * @param main to call the main scene
      * @param event the event to show
      */
-    public EventOverview(Main main, Event event) {
+    public EventOverview(Main main, EventDTO event) {
         this.main = main;
         this.event = event;
 
@@ -77,14 +72,10 @@ public class EventOverview {
         eventCode = event.getCode();
 
         // TODO: get participants from server
-        participants = server.getParticipants(event.getCode()).stream()
-                .map(ParticipantDTOMapper::toEntity)
-                .toList();
+        participants = server.getParticipants(event.getCode());
 
         // TODO: get expenses from server
-        expenses = server.getExpenses(event.getCode()).stream()
-                .map(ExpenseDTOMapper::toEntity)
-                .toList();
+        expenses = server.getExpenses(event.getCode());
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {
@@ -229,7 +220,7 @@ public class EventOverview {
 
         StringBuilder sb = new StringBuilder();
 
-        for(Participant person : participants) {
+        for(ParticipantDTO person : participants) {
             sb.append(person.getName()).append(", ");
         }
 
@@ -279,7 +270,7 @@ public class EventOverview {
         participantDropdown.getItems().addAll(
                 participants
                         .stream()
-                        .map(Participant::getName)
+                        .map(ParticipantDTO::getName)
                         .toList()
         );
         participantDropdown.getSelectionModel().selectFirst();
@@ -328,7 +319,7 @@ public class EventOverview {
         // The VBox that actually contains all ExpenseItem objects
         expensesContainer = new VBox(5);
         // for every expense, add ExpenseItem to expensesContainer
-        for(Expense expense : expenses) {
+        for(ExpenseDTO expense : expenses) {
             ExpenseItem item = new ExpenseItem(expense);
             expensesContainer.getChildren().add(item);
         }
@@ -404,10 +395,9 @@ public class EventOverview {
      */
     public static class ExpenseItem extends GridPane {
 
-        private Expense expense;
         private int price;
         private String item;
-        private Participant paidBy;
+        private ParticipantDTO paidBy;
         private String paidByName;
 
         /**
@@ -415,8 +405,7 @@ public class EventOverview {
          * and an 'Edit' button.
          * @param expense the expense to create an item for
          */
-        public ExpenseItem(Expense expense) {
-            this.expense = expense;
+        public ExpenseItem(ExpenseDTO expense) {
             price = expense.getPrice();
             item = expense.getItem();
             paidBy = expense.getPaidBy();

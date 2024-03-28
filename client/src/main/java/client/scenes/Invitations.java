@@ -1,8 +1,7 @@
 package client.scenes;
 
 import client.Main;
-import commons.Event;
-
+import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,7 +36,7 @@ public class Invitations {
      * @param main scene of the main class
      * @param event the event to show
      */
-    public Invitations(Main main, Event event) {
+    public Invitations(Main main, EventDTO event) {
         this.main = main;
         if(event == null) createSceneNoEvent();
         else {

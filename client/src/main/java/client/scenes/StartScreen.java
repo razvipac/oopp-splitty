@@ -1,8 +1,8 @@
 package client.scenes;
 
 import client.Main;
-
 import client.utils.ServerUtils;
+import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,8 +16,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import commons.Event;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +28,7 @@ public class StartScreen {
 
     private final ServerUtils server = ServerUtils.getServerUtils();
 
-    private List<Event> events;
+    private List<EventDTO> events;
 
     /**
      * Constructor for the start screen that calls the method to create the GUI
@@ -136,9 +134,9 @@ public class StartScreen {
 
     private void joinEventFromTextField(TextField joinEvent) {
         String code = joinEvent.getText();
-        Optional<Event> found = getEvent(code);
+        Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
-            Event event = found.get();
+            EventDTO event = found.get();
             eventOverview = new EventOverview(main, event);
             main.getPrimaryStage().setScene(eventOverview.getScene());
         }
@@ -147,7 +145,7 @@ public class StartScreen {
 
     private void createEventFromTextField(TextField createEvent) {
         String eventName = createEvent.getText();
-        Event event = server.createEvent(eventName);
+        EventDTO event = server.createEvent(eventName);
         events = server.getAllEvents();
         System.out.println(event.toString());
         eventOverview = new EventOverview(main, event);
@@ -225,7 +223,7 @@ public class StartScreen {
      * @param code Code of the event
      * @return The event
      */
-    public Optional<Event> getEvent(String code) {
+    public Optional<EventDTO> getEvent(String code) {
         return events.stream()
                 .filter(event -> event.getCode().equals(code))
                 .findFirst();

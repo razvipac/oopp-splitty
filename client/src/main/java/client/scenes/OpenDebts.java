@@ -1,17 +1,17 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import commons.Event;
 import client.Main;
+import commons.dto.DebtDTO;
+import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import javafx.geometry.Insets;
-//import javafx.geometry.Pos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
-// import javafx.stage.Stage;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 public class OpenDebts {
 
     private Scene scene;
-    private List<Debt> debtList;
+    private List<DebtDTO> debtList;
     private Main main;
     private final ServerUtils server = ServerUtils.getServerUtils();
 
@@ -40,7 +40,7 @@ public class OpenDebts {
      * @param main to the main class
      * @param event the event we are considering
      */
-    public OpenDebts(Main main, Event event) {
+    public OpenDebts(Main main, EventDTO event) {
         this.main = main;
         if(event == null)
             createSceneNoEvent();
@@ -108,7 +108,7 @@ public class OpenDebts {
         layout.getChildren().add(backButton);
 
         // Adding each debt
-        for(Debt d : debtList) {
+        for(DebtDTO d : debtList) {
             addDebtToLayout(d, layout);
         }
         // Scene
@@ -128,7 +128,7 @@ public class OpenDebts {
      * @param d Debt to be added
      * @param layout Layout to add it to
      */
-    private static void addDebtToLayout(Debt d, VBox layout) {
+    private static void addDebtToLayout(DebtDTO d, VBox layout) {
         // debtLine: line containing debtString and 'Mark Received' button
         HBox debtLine = new HBox(5);
         // debtItem: the entire debt item, containing the debtLine and debtInfo
@@ -184,10 +184,10 @@ public class OpenDebts {
         layout.getChildren().add(debtItem);
     }
 
-    private static String getBankInfoText(Debt d)
+    private static String getBankInfoText(DebtDTO d)
     {
-        Participant debtor = d.getDebtor();
-        Participant creditor = d.getCreditor();
+        ParticipantDTO debtor = d.getDebtor();
+        ParticipantDTO creditor = d.getCreditor();
         double amount = d.getAmount();
 
         String creditorBankInfo =

@@ -2,8 +2,8 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
-import commons.Event;
-import commons.Participant;
+import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,7 +25,7 @@ public class ContactDetails {
     private Stage window;
     private Scene scene;
     private final Main main;
-    private final Event event;
+    private final EventDTO event;
 
     private final ServerUtils server = ServerUtils.getServerUtils();
 
@@ -41,7 +41,7 @@ public class ContactDetails {
      * @param main scene of the main class
      * @param event the event to add to
      */
-    public ContactDetails(Main main, Event event){
+    public ContactDetails(Main main, EventDTO event){
         this.main = main;
         this.event = event;
 
@@ -131,7 +131,7 @@ public class ContactDetails {
         Button ok = new Button("Ok");
         ok.setOnAction(e -> {
             if(formIsValid())
-                addParticipantToServer(new Participant(boxName.getText(), event, boxEmail.getText(),
+                addParticipantToServer(new ParticipantDTO(boxName.getText(), event, boxEmail.getText(),
                         boxIban.getText(), boxBic.getText()));
         });
 
@@ -244,7 +244,7 @@ public class ContactDetails {
      * Adds the given Participant to the server, and displays an alert box with the outcome.
      * @param p The (validated) participant to add
      */
-    private void addParticipantToServer(Participant p) {
+    private void addParticipantToServer(ParticipantDTO p) {
         boolean success = server.addParticipant(p);
 
         if(success) {

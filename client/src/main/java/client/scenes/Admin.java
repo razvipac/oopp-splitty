@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
-import commons.Event;
+import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,7 +42,7 @@ public class Admin {
         gridPane.setPadding(new Insets(10));
 
 
-        List<Event> events = server.getAllEvents();
+        List<EventDTO> events = server.getAllEvents();
 
         // Adding the grid and back button to the layout
         VBox layout = new VBox();
@@ -82,12 +82,12 @@ public class Admin {
     }
 
     void showEvent(int compare) {
-        List<Event> list = server.getAllEvents();
-        if(compare==1) list.sort(Comparator.comparing(Event::getName));
-        else if(compare==2) list.sort(Comparator.comparing(Event::getCreationDate));
-        else if(compare==3) list.sort(Comparator.comparing(Event::getCreationDate));
+        List<EventDTO> list = server.getAllEvents();
+        if(compare==1) list.sort(Comparator.comparing(EventDTO::getName));
+        else if(compare==2) list.sort(Comparator.comparing(EventDTO::getCreationDate));
+        else if(compare==3) list.sort(Comparator.comparing(EventDTO::getCreationDate));
 
-        for (Event event : list) {
+        for (EventDTO event : list) {
             HBox eventEntry = new HBox();
             eventEntry.setSpacing(15);
 
@@ -101,7 +101,7 @@ public class Admin {
         }
     }
 
-    private Button getJSON(Event event) {
+    private Button getJSON(EventDTO event) {
         Button get = new Button("Download");
         get.setOnAction(e -> {
 
@@ -109,7 +109,7 @@ public class Admin {
         return get;
     }
 
-    private Button deleteEvent(Event event) {
+    private Button deleteEvent(EventDTO event) {
         Button delete = new Button("Delete");
         delete.setOnAction(e -> {
             //eventsField.getChildren().clear();
@@ -120,7 +120,7 @@ public class Admin {
         return delete;
     }
 
-    private Button openOverview(Event event) {
+    private Button openOverview(EventDTO event) {
         Button openPage = new Button(event.getName());
         openPage.setOnAction(e -> {
             eventOverview = new EventOverview(main, event);

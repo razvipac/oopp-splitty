@@ -2,10 +2,9 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
-import commons.Event;
-import commons.Expense;
-import commons.Participant;
-
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -30,16 +29,16 @@ public class AddEditExpense {
     private Stage window;
     private Scene scene;
     private final Main main;
-    private final Event event;
+    private final EventDTO event;
 
     private final ServerUtils server = ServerUtils.getServerUtils();
 
-    private List<Participant> participants;
+    private List<ParticipantDTO> participants;
 
     private final ComboBox<String> whoPaidDropdown = new ComboBox<>();
     private final TextField whatForField = new TextField();
     private final TextField howMuchField = new TextField();
-    private Map<String, Participant> participantMap = new HashMap<>();
+    private Map<String, ParticipantDTO> participantMap = new HashMap<>();
     private Text errorText;
     private VBox checkboxContainer;
 
@@ -57,10 +56,9 @@ public class AddEditExpense {
      * @param event the event to add to
      * @param participants list of participants
      */
-    public AddEditExpense(Main main, Event event, List<Participant> participants) {
+    public AddEditExpense(Main main, EventDTO event, List<ParticipantDTO> participants) {
         this.main = main;
         this.event = event;
-        // TODO: handle empty participants list
         this.participants = participants;
 
         if(event == null) createSceneNoEvent();
@@ -112,10 +110,10 @@ public class AddEditExpense {
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
             if(formIsValid()) {
-                Integer price = Integer.valueOf(howMuchField.getText());
+                int price = Integer.parseInt(howMuchField.getText());
                 String item = whatForField.getText();
-                Participant payer = participantMap.get(whoPaidDropdown.getValue());
-                Expense expense = new Expense(price, item, payer);
+                ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
+                ExpenseDTO expense = new ExpenseDTO(price, item, payer);
                 System.out.println(expense); // for testing
                 addExpenseToServer(expense);
             }
@@ -138,7 +136,7 @@ public class AddEditExpense {
         // Create a label and a dropdown for "Who paid?" field
         Label whoPaidLabel = new Label("Who paid?");
         // Populate the dropdown with names from the expense list
-        for (Participant p : participants) {
+        for (ParticipantDTO p : participants) {
             String name = p.getName();
             whoPaidDropdown.getItems().add(name);
             participantMap.put(name, p);
@@ -197,7 +195,7 @@ public class AddEditExpense {
         checkboxContainer = new VBox();
         checkboxContainer.setAlignment(Pos.CENTER);
         // Create a checkbox for each participant and add it to the container
-        for (Participant p : participants) {
+        for (ParticipantDTO p : participants) {
             String name = p.getName();
             CheckBox participantCheckbox = new CheckBox(name);
             participantCheckbox.setDisable(true);
@@ -264,7 +262,7 @@ public class AddEditExpense {
      * Adds the given Expense to the server, and displays an alert box with the outcome.
      * @param e The (validated) expense to add
      */
-    private void addExpenseToServer(Expense e) {
+    private void addExpenseToServer(ExpenseDTO e) {
         boolean success = server.addExpense(e, event.getCode());
         if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
