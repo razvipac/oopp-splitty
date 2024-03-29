@@ -1,5 +1,7 @@
 package commons.dto;
 
+import java.util.Objects;
+
 /**
  * Data Transfer Object (DTO) representing a participant.
  */
@@ -124,5 +126,26 @@ public class ParticipantDTO {
         this.bic = bic;
     }
 
+    /**
+     * Checks whether this ParticipantDTO is equal to the given object
+     * @param o Object to compare to
+     * @return True iff equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParticipantDTO that = (ParticipantDTO) o;
+        return Objects.equals(name, that.name) && Objects.equals(email, that.email)
+                && Objects.equals(iban, that.iban) && Objects.equals(bic, that.bic);
+    }
 
+    /**
+     * Returns hash code value
+     * @return Hash code value
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, email, iban, bic);
+    }
 }
