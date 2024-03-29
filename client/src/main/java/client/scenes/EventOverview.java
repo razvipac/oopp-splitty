@@ -31,10 +31,9 @@ public class EventOverview {
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
     // Event attributes
-    private EventDTO event;
+    private final EventDTO event;
     private String eventName;
-    private String eventCode;
-    // TODO: use actual Objects Participant and Expense instead of ArrayList<String>
+
     private List<ParticipantDTO> participants;
     private List<ExpenseDTO> expenses;
 
@@ -69,7 +68,6 @@ public class EventOverview {
         }
 
         eventName = event.getName();
-        eventCode = event.getCode();
 
         // TODO: get participants from server
         participants = server.getParticipants(event.getCode());
