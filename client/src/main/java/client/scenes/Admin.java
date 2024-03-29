@@ -2,7 +2,13 @@ package client.scenes;
 
 import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import commons.Event;
+import commons.Participant;
+import commons.response_body.EventResponseBody;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,6 +16,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ComboBox;
+import javafx.stage.FileChooser;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +68,8 @@ public class Admin implements StaticSceneController {
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
 
+
+        List<Event> events = serverUtils.getEventUtils().getAllEvents();
         // Adding the grid and back button to the layout
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
@@ -84,6 +100,7 @@ public class Admin implements StaticSceneController {
 
         layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton);
 
+
         // Show events
         showEvent(1);
 
@@ -104,8 +121,10 @@ public class Admin implements StaticSceneController {
             eventEntry.getChildren().add(openPage);
             Button deleteEvent = deleteEvent(event);
             eventEntry.getChildren().add(deleteEvent);
-            Button getJSON = getJSON(event);
-            eventEntry.getChildren().add(getJSON);
+            List<EventResponseBody> dump = serverUtils.getJsonDumpUtils().getJSON();
+            EventResponseBody op = dump.getFirst();
+            Button download = downloadEvent(op);
+            eventEntry.getChildren().add(download);
             eventsField.getChildren().add(eventEntry);
         }
     }
@@ -113,7 +132,41 @@ public class Admin implements StaticSceneController {
     private Button getJSON(Event event) {
         Button get = new Button("Download");
         get.setOnAction(e -> {
+            //server.getJsonDumpUtils().getJSON();
+            StringSelection stringSelection = new StringSelection ("111");
+            Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
+            clpbrd.setContents (stringSelection, null);
+        });
+        return get;
+    }
+    public Button downloadEvent(EventResponseBody event) {
+        // Get the selected events
+        Button get = new Button("Download");
+        get.setOnAction(p -> {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
 
+            // Create a file chooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose Download Location");
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+
+            // Show the save dialog screen
+            File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
+
+            if (selectedFile != null) {
+                // Make a separate file for each event
+                String filename = selectedFile.getAbsolutePath();
+                try {
+                    // Write the JSON to the file using the objectMapper instance
+                    objectMapper.writeValue(selectedFile, event);
+                    System.out.println("(SUCCESS) Event downloaded");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    //System.err.println("(ERROR) Failed to download event: " + event.getCode());
+                }
+            }
         });
         return get;
     }
@@ -128,6 +181,25 @@ public class Admin implements StaticSceneController {
         });
         return delete;
     }
+
+//    public Event importEventFromJSON(String jsonPath) {
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            File jsonFile = new File(jsonPath);
+//
+//            Event event = objectMapper.readValue(jsonFile, Event.class);
+//            eventService.createEvent(event);
+//            return event;
+//        } catch(JsonParseException | JsonMappingException e) {
+//            System.err.println("Error while parsing JSON: " + e.getMessage());
+//            System.err.println("Please ensure that the JSON content is correctly formatted.");
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            System.err.println("File not found");
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     private Button openOverview(Event event) {
         Button openPage = new Button(event.getName());
