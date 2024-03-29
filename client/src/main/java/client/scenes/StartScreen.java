@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.Main;
+import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
 import commons.dto.EventDTO;
 import javafx.geometry.Insets;
@@ -19,34 +19,36 @@ import javafx.scene.text.Text;
 import java.util.List;
 import java.util.Optional;
 
-public class StartScreen {
+public class StartScreen implements StaticSceneController {
+
+    private final ServerUtils serverUtils;
+    private final MainCtrl mainCtrl;
 
     private Scene scene;
-    private Main main;
-    private Admin admin = new Admin(main);;
-    private EventOverview eventOverview;
-
-    private final ServerUtils server = ServerUtils.getServerUtils();
 
     private List<EventDTO> events;
 
     /**
-     * Constructor for the start screen that calls the method to create the GUI
-     * @param main scene of the main class
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
      */
-    public StartScreen(Main main) {
-        this.main = main;
-        events = server.getAllEvents();
+    public StartScreen(MainCtrl mainCtrl, ServerUtils serverUtils) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
 
-        createSceneStartScreen();
+        initialize();
     }
 
     /**
-     * Getter for the scene
-     *
-     * @return the scene
+     * Generate an ui from the given object instance
+     * @return the newly generated scene
      */
-    public Scene getScene() {
+    public Scene initialize() {
+        events = serverUtils.getEventUtils().getAllEvents();
+
+        createSceneStartScreen();
+
         return scene;
     }
 
@@ -129,16 +131,14 @@ public class StartScreen {
     }
 
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        mainCtrl.showDevScreen();
     }
 
     private void joinEventFromTextField(TextField joinEvent) {
         String code = joinEvent.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
-            EventDTO event = found.get();
-            eventOverview = new EventOverview(main, event);
-            main.getPrimaryStage().setScene(eventOverview.getScene());
+            mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
     }
@@ -148,8 +148,7 @@ public class StartScreen {
         EventDTO event = server.createEvent(eventName);
         events = server.getAllEvents();
         System.out.println(event.toString());
-        eventOverview = new EventOverview(main, event);
-        main.getPrimaryStage().setScene(eventOverview.getScene());
+        mainCtrl.showEventOverview(event);
     }
 
     /**

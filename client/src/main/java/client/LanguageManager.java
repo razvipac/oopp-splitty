@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.*;
+import java.util.Objects;
 
 public class LanguageManager {
     private String preferencesFilePath;
@@ -23,13 +24,14 @@ public class LanguageManager {
      */
     public LanguageOption loadLanguage() {
         try {
-            File file = new File(preferencesFilePath);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(file);
+            JsonNode rootNode = getJsonNode();
 
             // Modify the value of the "language" parameter
             if (rootNode.has("language")) {
                 if(rootNode.get("language").asText().equals("Dutch")){
+                    return new LanguageOption(LanguageOption.Language.DUTCH);
+                }
+                if(rootNode.get("language").asText().equals("Romanian")){
                     return new LanguageOption(LanguageOption.Language.DUTCH);
                 }
                 return new LanguageOption();
@@ -40,6 +42,18 @@ public class LanguageManager {
             // Default preferences if the file doesn't exist or there's an issue reading it
         }
         return null;
+    }
+
+    /**
+     *
+     * @return the proper json node of the file
+     * @throws IOException in case the file is not found
+     */
+    private JsonNode getJsonNode() throws IOException {
+        File file = new File(preferencesFilePath);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(file);
+        return rootNode;
     }
 
     /**
@@ -79,6 +93,10 @@ public class LanguageManager {
                 inputStream =
                         new FileInputStream("client/src/main/resources/userSettings/Dutch.png");
             }
+            if(language.getLanguage() == LanguageOption.Language.ROMANIAN){
+                inputStream =
+                        new FileInputStream("client/src/main/resources/userSettings/Romanian.png");
+            }
             return new Image(inputStream);
         }
         catch (Exception e){
@@ -95,10 +113,7 @@ public class LanguageManager {
 
     public String get(LanguageOption language, String key) {
         try {
-            File file = new File(preferencesFilePath);
-            // Read JSON from file
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(file);
+            JsonNode rootNode = getJsonNode();
 
             //String languageString = rootNode.get("language").asText();
             String languageString = language.toString();
@@ -138,10 +153,33 @@ public class LanguageManager {
      */
     public static ImageView createFlagIcon(LanguageOption currentLanguage) {
         //getFlagImage currently returns null
-        Image flagImage = LanguageManager.getFlagImage(currentLanguage);
+        Image flagImage =getFlagImage(currentLanguage);
         ImageView imageView = new ImageView(flagImage);
         imageView.setFitWidth(20);
         imageView.setFitHeight(15);
         return imageView;
+    }
+    /**
+     *
+     * @param o take an object  o
+     * @return true iff o is a non null Language Manager
+     * And the strings file paths are equals as of
+     * String .equals() method
+     */
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (null == o || this.getClass() != o.getClass()) return false;
+        final LanguageManager that = (LanguageManager) o;
+        return Objects.equals(this.preferencesFilePath, that.preferencesFilePath);
+    }
+
+    /**
+     *
+     * @return a proper hashcode of the languageManager
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.preferencesFilePath);
     }
 }

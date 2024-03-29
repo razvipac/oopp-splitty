@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.Main;
+import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
 import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
@@ -19,21 +19,24 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddEditExpense {
+public class AddEditExpense implements DataBasedPopupController<Pair<Event, List<Participant>>> {
 
-    private Stage window;
     private Scene scene;
-    private final Main main;
     private final EventDTO event;
-
-    private final ServerUtils server = ServerUtils.getServerUtils();
-
+    private final Stage window;
+    private boolean isOpen;
+    private final MainCtrl mainCtrl;
+    private final ServerUtils serverUtils;
     private List<ParticipantDTO> participants;
+    private ArrayList<Expense> addEditExpenseList;
+
 
     private final ComboBox<String> whoPaidDropdown = new ComboBox<>();
     private final TextField whatForField = new TextField();
@@ -43,26 +46,35 @@ public class AddEditExpense {
     private VBox checkboxContainer;
 
     /**
-     * Getter for the scene
-     * @return the scene
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
-    public Scene getScene() {
-        return scene;
+    public AddEditExpense(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Add/Edit Expense");
+
+        initialize(new Pair<>(event, null));
     }
 
     /**
-     * Constructor for the AddEditExpense that calls the method to create the scene
-     * @param main scene of the main class
-     * @param event the event to add to
-     * @param participants list of participants
+     * Generate an ui from the given object instance
+     * @param data pair of event and participant list to populate the UI with
+     * @return the newly generated scene
      */
-    public AddEditExpense(Main main, EventDTO event, List<ParticipantDTO> participants) {
-        this.main = main;
-        this.event = event;
-        this.participants = participants;
+    public Scene initialize(Pair<Event, List<ParticipantDTO>> data) {
+        this.event = data.getKey();
+        this.participants = data.getValue();
 
         if(event == null) createSceneNoEvent();
         else createSceneAddEditExpense();
+
+        return scene;
     }
 
     /**
@@ -72,7 +84,7 @@ public class AddEditExpense {
         VBox layout = new VBox(5);
         Text noEventText = new Text("No event found");
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         layout.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(noEventText, backButton);
@@ -128,7 +140,7 @@ public class AddEditExpense {
         // Create a scene with the layout and set its size
         scene = new Scene(layout, 500, 600);
         scene.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ESCAPE) closeAlertBox();
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
         });
     }
 
@@ -271,8 +283,7 @@ public class AddEditExpense {
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
-        }
-        else {
+        } else {
             Alert alert = createAlert(Alert.AlertType.ERROR,
                     "Error", "Adding Expense Failed",
                     "The expense has not been added due to an error. Please try again");
@@ -281,6 +292,7 @@ public class AddEditExpense {
 
         closeAlertBox();
     }
+
 
     /**
      * Creates an alert window
@@ -299,23 +311,42 @@ public class AddEditExpense {
     }
 
     /**
+     * Back button action
+     */
+    private void goBack() {
+        closeAlertBox();
+    }
+
+    /**
      * Displays a modal alert box for adding a participant.
      */
     public void displayAlertBox() {
-        window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Add Expense");
+        isOpen = true;
         window.setScene(scene);
-        window.setOnCloseRequest(e -> closeAlertBox());
         window.showAndWait();
     }
 
     /**
-     * Closes the modal alert box and clears up the input fields.
+     * Closes a modal alert box.
      */
     public void closeAlertBox() {
-        // TODO: reset fields when closed and reopened
+        isOpen = false;
         window.close();
     }
 
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    /**
+     * Getter for the scene
+     * @return the scene
+     */
+    public Scene getScene() {
+        return scene;
+    }
 }

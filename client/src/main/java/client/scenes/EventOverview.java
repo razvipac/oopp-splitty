@@ -1,8 +1,8 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import client.Main;
 import commons.dto.*;
+import client.interfaces.DataBasedSceneController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -13,18 +13,14 @@ import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
 import java.util.List;
+import javafx.util.Pair;
 
-public class EventOverview {
+public class EventOverview implements DataBasedSceneController<EventDTO> {
 
     private Scene scene;
-    private Scene previous;
-    private final Main main;
-    private ContactDetails contactDetails;
-    private Invitations invitations;
-    private AddEditExpense addEditExpense;
-    private OpenDebts openDebts;
 
-    private final ServerUtils server = ServerUtils.getServerUtils();
+    private final ServerUtils serverUtils;
+    private MainCtrl mainCtrl;
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -32,8 +28,6 @@ public class EventOverview {
 
     // Event attributes
     private final EventDTO event;
-    private String eventName;
-
     private List<ParticipantDTO> participants;
     private List<ExpenseDTO> expenses;
 
@@ -44,6 +38,7 @@ public class EventOverview {
     public enum View {
         ALL, FROM, INCLUDING
     }
+
     private View currentView;
 
     // Attributes of elements needed by several methods
@@ -54,25 +49,33 @@ public class EventOverview {
     private VBox expensesContainer;
 
     /**
-     * Creates an Event Overview.
-     * @param main to call the main scene
-     * @param event the event to show
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
-    public EventOverview(Main main, EventDTO event) {
-        this.main = main;
+    public EventOverview(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        initialize(event);
+    }
+
+    /**
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
+     */
+    public Scene initialize(EventDTO event) {
         this.event = event;
 
         if(event == null) {
             createSceneNoEvent();
-            return;
+            return scene;
         }
 
-        eventName = event.getName();
-
-        // TODO: get participants from server
         participants = server.getParticipants(event.getCode());
 
-        // TODO: get expenses from server
         expenses = server.getExpenses(event.getCode());
 
         // If participants isn't empty, select the first participant by default
@@ -80,14 +83,11 @@ public class EventOverview {
             selectedParticipant = participants.getFirst();
         }
 
-        contactDetails = new ContactDetails(main, event);
-        invitations = new Invitations(main, event);
-        addEditExpense = new AddEditExpense(main, event, participants);
-        openDebts = new OpenDebts(main, event);
-
         // Set current view of expenses to 'all' by default
         currentView = View.ALL;
         createScene();
+
+        return scene;
     }
 
     /**
@@ -109,8 +109,11 @@ public class EventOverview {
         });
     }
 
+    /**
+     * Back button action
+     */
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        mainCtrl.showStartScreen();
     }
 
     /**
@@ -141,7 +144,7 @@ public class EventOverview {
                 noParticipants.showAndWait();
                 return;
             }
-            addEditExpense.displayAlertBox();
+            mainCtrl.showAddExpense(new Pair<>(event, participants));
         });
 
         HBox radioSelectBox = getRadioSelectBox();
@@ -151,7 +154,7 @@ public class EventOverview {
         ScrollPane expensesScroller = getExpensesScroller();
 
         Button settleDebtsButton = new Button("Settle Debts");
-        settleDebtsButton.setOnAction(e -> openDebts.displayAlertBox());
+        settleDebtsButton.setOnAction(e -> mainCtrl.showOpenDebts(event));
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> goBack());
@@ -174,11 +177,11 @@ public class EventOverview {
     private HBox getEventBox() {
         HBox eventBox = new HBox(5);
 
-        Text eventNameText = new Text(eventName);
+        Text eventNameText = new Text(event.getName());
         eventNameText.setFont(h1);
 
         Button sendInviteButton = new Button("Send Invite");
-        sendInviteButton.setOnAction(e -> invitations.displayAlertBox());
+        sendInviteButton.setOnAction(e -> mainCtrl.showInvitation(event));
 
         eventBox.getChildren().addAll(eventNameText, sendInviteButton);
 
@@ -200,7 +203,7 @@ public class EventOverview {
         Button participantEditButton = new Button("Edit");
 
         Button participantAddButton = new Button("Add");
-        participantAddButton.setOnAction(e -> contactDetails.displayAlertBox());
+        participantAddButton.setOnAction(e -> mainCtrl.showContactDetails(event));
 
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);

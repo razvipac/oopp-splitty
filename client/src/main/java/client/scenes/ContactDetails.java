@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.Main;
+import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
 import commons.dto.EventDTO;
 import commons.dto.ParticipantDTO;
@@ -19,34 +19,59 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+public class ContactDetails implements DataBasedPopupController<EventDTO> {
 
-public class ContactDetails {
+    private final ServerUtils serverUtils;
+    private final MainCtrl mainCtrl;
 
-    private Stage window;
+    private final Stage window;
+    private boolean isOpen;
     private Scene scene;
-    private final Main main;
     private final EventDTO event;
 
-    private final ServerUtils server = ServerUtils.getServerUtils();
-
-    private final GridPane gridPane = new GridPane();
-    private final TextField boxName = new TextField();
-    private final TextField boxEmail = new TextField();
-    private final TextField boxIban = new TextField();
-    private final TextField boxBic = new TextField();
+    private GridPane gridPane;
+    private TextField boxName;
+    private TextField boxEmail;
+    private TextField boxIban;
+    private TextField boxBic;
     private Text errorText;
 
     /**
-     * Constructor for the contact details that calls the method to create the scene
-     * @param main scene of the main class
-     * @param event the event to add to
+     * Constructor for the AddEditExpense that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     * @param event event entity corresponding to this window
      */
-    public ContactDetails(Main main, EventDTO event){
-        this.main = main;
+    public ContactDetails(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event){
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+
+        window = new Stage();
+        window.setTitle("Add Participant");
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.initOwner(mainCtrl.getPrimaryStage());
+        window.setOnCloseRequest(e -> closeAlertBox());
+
+        initialize(event);
+    }
+
+    /**
+     * Generate an ui from the given object instance
+     * @param event Event instance to populate the UI with
+     * @return the newly generated scene
+     */
+    public Scene initialize(EventDTO event) {
         this.event = event;
+
+        gridPane = new GridPane();
+        boxName = new TextField();
+        boxEmail = new TextField();
+        boxIban = new TextField();
+        boxBic = new TextField();
 
         if(event == null) createSceneNoEvent();
         else createSceneContactDetails();
+        return scene;
     }
 
     /**
@@ -69,7 +94,7 @@ public class ContactDetails {
     }
 
     private void goBack() {
-        main.getPrimaryStage().setScene(main.getMainScene());
+        closeAlertBox();
     }
 
     /**
@@ -144,6 +169,9 @@ public class ContactDetails {
         layout.getChildren().addAll(title, errorText, gridPane, hBoxButtons);
 
         scene = new Scene(layout, 300, 260);
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        });
     }
 
     /**
@@ -197,7 +225,7 @@ public class ContactDetails {
     /**
      * Checks if the user-inputted Strings are valid.
      */
-    private boolean formIsValid() {
+    private boolean inputIsValid() {
         // Should in theory never be true
         if(event.getCode().isEmpty()) {
             errorText.setText("This event is invalid");
@@ -246,7 +274,6 @@ public class ContactDetails {
      */
     private void addParticipantToServer(ParticipantDTO p) {
         boolean success = server.addParticipant(p);
-
         if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Added Successfully",
@@ -293,11 +320,8 @@ public class ContactDetails {
      * Displays a modal alert box for adding a participant.
      */
     public void displayAlertBox() {
-        window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Add Participant");
+        isOpen = true;
         window.setScene(scene);
-        window.setOnCloseRequest(e -> closeAlertBox());
         window.showAndWait();
     }
 
@@ -305,11 +329,20 @@ public class ContactDetails {
      * Closes the modal alert box and clears up the input fields.
      */
     public void closeAlertBox() {
+        isOpen = false;
         boxName.clear();
         boxEmail.clear();
         boxIban.clear();
         boxBic.clear();
         errorText.setText("");
         window.close();
+    }
+
+    /**
+     * Getter for isOpen, true - window is open - false otherwise
+     * @return value for isOpen
+     */
+    public boolean isOpen() {
+        return isOpen;
     }
 }

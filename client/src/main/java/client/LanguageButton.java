@@ -21,22 +21,23 @@ public class LanguageButton extends Button {
     }
     /**
      * Constructs a LanguageButton.
+     * @param path path to the user configuration file
      */
-    public LanguageButton() {
-        initialize();
+    public LanguageButton(String path) {
+        initialize(path);
     }
 
     /**
      * Initializes the language button.
      */
-    private void initialize() {
-        languageManager = new LanguageManager("" +
-                "client/src/main/resources/userSettings/userPreferences.json");
+    private void initialize(String path) {
+        languageManager = new LanguageManager(path);
         setGraphic(createFlagIcon()); // Set the initial flag icon
         setOnMouseClicked(event -> handleMouseClicked(event));
         loadAvailableLanguages();
         loadCurrentLanguage(); // Load the persisted language choice
     }
+
 
     /**
      * Loads available languages.
@@ -45,6 +46,7 @@ public class LanguageButton extends Button {
         availableLanguages = new ArrayList<>();
         availableLanguages.add(new LanguageOption(LanguageOption.Language.ENGLISH));
         availableLanguages.add(new LanguageOption(LanguageOption.Language.DUTCH));
+        availableLanguages.add(new LanguageOption(LanguageOption.Language.ROMANIAN));
 
     }
 

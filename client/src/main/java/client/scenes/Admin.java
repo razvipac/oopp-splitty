@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.Main;
+import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
 import commons.dto.EventDTO;
 import javafx.geometry.Insets;
@@ -14,20 +14,33 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class Admin {
-    private Main main;
+public class Admin implements StaticSceneController {
+    private final MainCtrl mainCtrl;
     private Scene scene;
-    private EventOverview eventOverview;
-    private ServerUtils server = ServerUtils.getServerUtils();
+    private ServerUtils serverUtils;
     private VBox eventsField;
+    private List<Event> events;
 
     /**
      * Constructor for the Admin page that creates the GUI
-     * @param main
+     * @param mainCtrl main controller for the application
+     * @param serverUtils server utilities for the application
      */
-    public Admin(Main main) {
-        this.main = main;
+    public Admin(MainCtrl mainCtrl, ServerUtils serverUtils) {
+        this.mainCtrl = mainCtrl;
+        this.serverUtils = serverUtils;
+    }
+
+    /**
+     * Generates the Scene
+     * @return the generated scene
+     */
+    public Scene initialize(){
+        events = serverUtils.getEventUtils().getAllEvents();
+
         createSceneAdmin();
+
+        return scene;
     }
 
     /**
@@ -35,7 +48,7 @@ public class Admin {
      */
     public void createSceneAdmin() {
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> main.getPrimaryStage().setScene(main.getMainScene()));
+        backButton.setOnAction(e -> goBack());
 
         // Creating GridPane for displaying data
         GridPane gridPane = new GridPane();
@@ -48,8 +61,6 @@ public class Admin {
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
         //layout.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
-        scene = new Scene(layout, 400, 500); // changed this line
-
 
         // VBox to hold event entries
         eventsField = new VBox();
@@ -76,9 +87,10 @@ public class Admin {
 
         layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton);
 
-
         // Show events
         showEvent(1);
+
+        scene = new Scene(layout, 400, 500); // changed this line
     }
 
     void showEvent(int compare) {
@@ -123,8 +135,7 @@ public class Admin {
     private Button openOverview(EventDTO event) {
         Button openPage = new Button(event.getName());
         openPage.setOnAction(e -> {
-            eventOverview = new EventOverview(main, event);
-            main.getPrimaryStage().setScene(eventOverview.getScene());
+            mainCtrl.showEventOverview(event);
         });
 
         return openPage;
@@ -136,5 +147,9 @@ public class Admin {
      */
     public Scene getScene() {
         return scene;
+    }
+
+    private void goBack(){
+        mainCtrl.showDevScreen();
     }
 }
