@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import client.scenes.Admin;
 import commons.*;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -39,6 +40,7 @@ public class ServerUtils {
     private EventUtils eventUtils;
     private ParticipantUtils participantUtils;
     private DebtUtils debtUtils;
+    private JsonUtils jsonUtils;
 
     // Server address
     private static final String SERVER = "http://localhost:8080/";
@@ -51,6 +53,7 @@ public class ServerUtils {
         eventUtils = new EventUtils(SERVER);
         participantUtils = new ParticipantUtils(SERVER);
         debtUtils = new DebtUtils(SERVER);
+        jsonUtils = new JsonUtils(SERVER);
     }
 
     /**
@@ -91,5 +94,9 @@ public class ServerUtils {
      */
     public DebtUtils getDebtUtils() {
         return debtUtils;
+    }
+
+    public JsonUtils getJsonDumpUtils() {
+        return jsonUtils;
     }
 }
