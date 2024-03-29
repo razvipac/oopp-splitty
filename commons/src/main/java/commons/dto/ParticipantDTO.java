@@ -89,7 +89,7 @@ public class ParticipantDTO {
     }
 
     /**
-     * Retrieves the IBAN (International Bank Account Number) of the participant.
+     * Retrieves the IBAN of the participant.
      *
      * @return The IBAN of the participant.
      */
@@ -98,7 +98,7 @@ public class ParticipantDTO {
     }
 
     /**
-     * Sets the IBAN (International Bank Account Number) of the participant.
+     * Sets the IBAN of the participant.
      *
      * @param iban The IBAN of the participant.
      */
@@ -107,7 +107,7 @@ public class ParticipantDTO {
     }
 
     /**
-     * Retrieves the BIC (Bank Identifier Code) of the participant.
+     * Retrieves the BIC of the participant.
      *
      * @return The BIC of the participant.
      */
@@ -116,11 +116,13 @@ public class ParticipantDTO {
     }
 
     /**
-     * Sets the BIC (Bank Identifier Code) of the participant.
+     * Sets the BIC of the participant.
      *
      * @param bic The BIC of the participant.
      */
     public void setBic(String bic) {
         this.bic = bic;
     }
+
+
 }
