@@ -1,6 +1,5 @@
 package client.utils;
 
-import commons.Event;
 import commons.response_body.EventResponseBody;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.GenericType;

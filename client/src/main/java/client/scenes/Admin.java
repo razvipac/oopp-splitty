@@ -2,12 +2,9 @@ package client.scenes;
 
 import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import commons.Event;
-import commons.Participant;
 import commons.response_body.EventResponseBody;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -17,8 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ComboBox;
 import javafx.stage.FileChooser;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -139,6 +134,12 @@ public class Admin implements StaticSceneController {
         });
         return get;
     }
+
+    /**
+     *
+     * @param event puts the JSON of an event in a file that is downloaded
+     * @return the button
+     */
     public Button downloadEvent(EventResponseBody event) {
         // Get the selected events
         Button get = new Button("Download");
@@ -150,7 +151,8 @@ public class Admin implements StaticSceneController {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Choose Download Location");
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+            fileChooser.getExtensionFilters()
+                    .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
 
             // Show the save dialog screen
             File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
