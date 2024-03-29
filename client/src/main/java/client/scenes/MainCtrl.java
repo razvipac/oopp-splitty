@@ -72,8 +72,8 @@ package client.scenes;
 //}
 
 import client.utils.ServerUtils;
-import commons.Event;
-import commons.Participant;
+import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -130,7 +130,7 @@ public class MainCtrl {
      * Shows the Event Overview scene
      * @param event corresponding event instance
      */
-    public void showEventOverview(Event event){
+    public void showEventOverview(EventDTO event){
         primaryStage.setScene(eventOverview.initialize(event));
     }
 
@@ -138,7 +138,7 @@ public class MainCtrl {
      * Shows the Statistics scene
      * @param event corresponding event instance
      */
-    public void showStatistics(Event event) {
+    public void showStatistics(EventDTO event) {
         if (statistics.isOpen()){
             statistics.closeAlertBox();
         }
@@ -149,7 +149,7 @@ public class MainCtrl {
      * Shows the Add/Edit Expense scene
      * @param data pair of event and participant list to populate the UI with
      */
-    public void showAddExpense(Pair<Event, List<Participant>> data) {
+    public void showAddExpense(Pair<EventDTO, List<ParticipantDTO>> data) {
         if (addEditExpense.isOpen()){
             addEditExpense.closeAlertBox();
         }
@@ -161,7 +161,7 @@ public class MainCtrl {
      * Shows the open debts scene
      * @param event corresponding event instance
      */
-    public void showOpenDebts(Event event) {
+    public void showOpenDebts(EventDTO event) {
         if (openDebts.isOpen()){
             openDebts.closeAlertBox();
         }
@@ -173,7 +173,7 @@ public class MainCtrl {
      * Shows the Invitation scene
      * @param event corresponding event instance
      */
-    public void showInvitation(Event event) {
+    public void showInvitation(EventDTO event) {
         if (invitations.isOpen()){
             invitations.closeAlertBox();
         }
@@ -185,7 +185,7 @@ public class MainCtrl {
      * Shows the Contact Details scene
      * @param event corresponding event instance
      */
-    public void showContactDetails(Event event) {
+    public void showContactDetails(EventDTO event) {
         if (contactDetails.isOpen()){
             contactDetails.closeAlertBox();
         }

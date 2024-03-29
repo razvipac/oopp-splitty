@@ -26,17 +26,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddEditExpense implements DataBasedPopupController<Pair<Event, List<Participant>>> {
+public class AddEditExpense implements
+        DataBasedPopupController<Pair<EventDTO, List<ParticipantDTO>>> {
 
     private Scene scene;
-    private final EventDTO event;
+    private EventDTO event;
     private final Stage window;
     private boolean isOpen;
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
-    private List<ParticipantDTO> participants;
-    private ArrayList<Expense> addEditExpenseList;
 
+    private List<ParticipantDTO> participants;
+    private ArrayList<ExpenseDTO> addEditExpenseList;
 
     private final ComboBox<String> whoPaidDropdown = new ComboBox<>();
     private final TextField whatForField = new TextField();
@@ -67,7 +68,7 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
      * @param data pair of event and participant list to populate the UI with
      * @return the newly generated scene
      */
-    public Scene initialize(Pair<Event, List<ParticipantDTO>> data) {
+    public Scene initialize(Pair<EventDTO, List<ParticipantDTO>> data) {
         this.event = data.getKey();
         this.participants = data.getValue();
 
@@ -275,7 +276,7 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
      * @param e The (validated) expense to add
      */
     private void addExpenseToServer(ExpenseDTO e) {
-        boolean success = server.addExpense(e, event.getCode());
+        boolean success = serverUtils.addExpense(e, event.getCode());
         if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Expense Added Successfully",

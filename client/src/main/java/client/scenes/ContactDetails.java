@@ -23,11 +23,10 @@ public class ContactDetails implements DataBasedPopupController<EventDTO> {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
-
     private final Stage window;
     private boolean isOpen;
     private Scene scene;
-    private final EventDTO event;
+    private EventDTO event;
 
     private GridPane gridPane;
     private TextField boxName;
@@ -225,7 +224,7 @@ public class ContactDetails implements DataBasedPopupController<EventDTO> {
     /**
      * Checks if the user-inputted Strings are valid.
      */
-    private boolean inputIsValid() {
+    private boolean formIsValid() {
         // Should in theory never be true
         if(event.getCode().isEmpty()) {
             errorText.setText("This event is invalid");
@@ -273,7 +272,7 @@ public class ContactDetails implements DataBasedPopupController<EventDTO> {
      * @param p The (validated) participant to add
      */
     private void addParticipantToServer(ParticipantDTO p) {
-        boolean success = server.addParticipant(p);
+        boolean success = serverUtils.addParticipant(p);
         if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Added Successfully",

@@ -27,7 +27,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
     // Event attributes
-    private final EventDTO event;
+    private EventDTO event;
     private List<ParticipantDTO> participants;
     private List<ExpenseDTO> expenses;
 
@@ -74,9 +74,9 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
             return scene;
         }
 
-        participants = server.getParticipants(event.getCode());
+        participants = serverUtils.getParticipants(event.getCode());
 
-        expenses = server.getExpenses(event.getCode());
+        expenses = serverUtils.getExpenses(event.getCode());
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {

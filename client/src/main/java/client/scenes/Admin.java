@@ -19,7 +19,7 @@ public class Admin implements StaticSceneController {
     private Scene scene;
     private ServerUtils serverUtils;
     private VBox eventsField;
-    private List<Event> events;
+    private List<EventDTO> events;
 
     /**
      * Constructor for the Admin page that creates the GUI
@@ -36,7 +36,7 @@ public class Admin implements StaticSceneController {
      * @return the generated scene
      */
     public Scene initialize(){
-        events = serverUtils.getEventUtils().getAllEvents();
+        events = serverUtils.getAllEvents();
 
         createSceneAdmin();
 
@@ -55,7 +55,7 @@ public class Admin implements StaticSceneController {
         gridPane.setPadding(new Insets(10));
 
 
-        List<EventDTO> events = server.getAllEvents();
+        List<EventDTO> events = serverUtils.getAllEvents();
 
         // Adding the grid and back button to the layout
         VBox layout = new VBox();
@@ -94,7 +94,7 @@ public class Admin implements StaticSceneController {
     }
 
     void showEvent(int compare) {
-        List<EventDTO> list = server.getAllEvents();
+        List<EventDTO> list = serverUtils.getAllEvents();
         if(compare==1) list.sort(Comparator.comparing(EventDTO::getName));
         else if(compare==2) list.sort(Comparator.comparing(EventDTO::getCreationDate));
         else if(compare==3) list.sort(Comparator.comparing(EventDTO::getCreationDate));
@@ -125,7 +125,7 @@ public class Admin implements StaticSceneController {
         Button delete = new Button("Delete");
         delete.setOnAction(e -> {
             //eventsField.getChildren().clear();
-            server.deleteEvent(event.getCode());
+            serverUtils.deleteEvent(event.getCode());
             eventsField.getChildren().clear();
             showEvent(2);
         });
@@ -134,9 +134,7 @@ public class Admin implements StaticSceneController {
 
     private Button openOverview(EventDTO event) {
         Button openPage = new Button(event.getName());
-        openPage.setOnAction(e -> {
-            mainCtrl.showEventOverview(event);
-        });
+        openPage.setOnAction(e -> mainCtrl.showEventOverview(event));
 
         return openPage;
     }

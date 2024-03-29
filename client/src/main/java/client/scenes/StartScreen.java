@@ -45,7 +45,7 @@ public class StartScreen implements StaticSceneController {
      * @return the newly generated scene
      */
     public Scene initialize() {
-        events = serverUtils.getEventUtils().getAllEvents();
+        events = serverUtils.getAllEvents();
 
         createSceneStartScreen();
 
@@ -145,8 +145,8 @@ public class StartScreen implements StaticSceneController {
 
     private void createEventFromTextField(TextField createEvent) {
         String eventName = createEvent.getText();
-        EventDTO event = server.createEvent(eventName);
-        events = server.getAllEvents();
+        EventDTO event = serverUtils.createEvent(eventName);
+        events = serverUtils.getAllEvents();
         System.out.println(event.toString());
         mainCtrl.showEventOverview(event);
     }

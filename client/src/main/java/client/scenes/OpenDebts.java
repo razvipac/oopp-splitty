@@ -35,7 +35,7 @@ public class OpenDebts implements DataBasedPopupController<EventDTO> {
      * @param serverUtils global serverUtils singleton
      * @param event event entity corresponding to this window
      */
-    public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+    public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
@@ -57,7 +57,7 @@ public class OpenDebts implements DataBasedPopupController<EventDTO> {
 
         if (event == null) createSceneNoEvent();
         else {
-            debtList = serverUtils.getDebtUtils().getAllOpenDebts(event.getCode());
+            debtList = serverUtils.getAllOpenDebts(event.getCode());
             createScene();
         }
 
