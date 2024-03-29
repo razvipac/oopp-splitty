@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 package client.utils;
 
 import commons.response_body.EventResponseBody;
@@ -12,6 +13,10 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class JsonUtils {
     private final String SERVER;
 
+    /**
+     *
+     * @param SERVER
+     */
     public JsonUtils(String SERVER) {
         this.SERVER = SERVER;
     }
