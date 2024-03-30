@@ -123,6 +123,13 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         VBox layout = new VBox(5);
         layout.setPadding(new Insets(10));
 
+        // Display last activity in top right corner
+        Text lastActivityText = new Text(event.lastActivityToString());
+        lastActivityText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        HBox lastActivityBox = new HBox(lastActivityText);
+        lastActivityBox.setAlignment(Pos.TOP_RIGHT);
+        layout.getChildren().add(lastActivityBox);
+
         // eventBox, includes Event Name and Send Invite button
         HBox eventBox = getEventBox();
 
