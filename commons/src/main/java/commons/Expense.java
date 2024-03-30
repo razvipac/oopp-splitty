@@ -3,6 +3,7 @@ package commons;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -18,6 +19,15 @@ public class Expense {
     private Integer price;
     private String item;
     private LocalDate date;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "expense_participant",
+            joinColumns = @JoinColumn(name = "expense_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
+    private List<Participant> participants;
+
 
     /**
      * Default constructor.
