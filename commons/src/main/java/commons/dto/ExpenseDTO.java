@@ -24,6 +24,7 @@ public class ExpenseDTO {
      * @param price   The price of the expense.
      * @param item    The item or description of the expense.
      * @param paidBy  The participant who paid for the expense.
+     * @param date    The date of the expense.
      */
     public ExpenseDTO(int price, String item, ParticipantDTO paidBy, LocalDate date) {
         this.price = price;
