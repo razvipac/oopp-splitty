@@ -109,8 +109,16 @@ public class EventDTO {
     /**
      * Updates the last activity timestamp to the current time.
      */
-    public void updateLastActivity() {
-        this.lastActivity = LocalDateTime.now();
+    private void updateLastActivity() {
+        this.setLastActivity(LocalDateTime.now());
+    }
+
+    /**
+     * Updates and prints the custom toString method for the last activity
+     */
+    public void updateAndPrintLastActivity() {
+        this.updateLastActivity();
+        this.lastActivityToString();
     }
 
     /**

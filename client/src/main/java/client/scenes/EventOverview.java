@@ -12,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import javafx.util.Pair;
 
@@ -21,6 +22,8 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
 
     private final ServerUtils serverUtils;
     private MainCtrl mainCtrl;
+    private HBox lastActivityBox; // Declare lastActivityBox as a class member
+
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -33,7 +36,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
-    
+
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
         ALL, FROM, INCLUDING
@@ -59,6 +62,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         this.serverUtils = serverUtils;
 
         initialize(event);
+        lastActivityBox = createLastActivityBox(event); // Initialize lastActivityBox
     }
 
     /**
@@ -123,18 +127,17 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         VBox layout = new VBox(5);
         layout.setPadding(new Insets(10));
 
-        // Display last activity in top right corner
-        Text lastActivityText = new Text(event.lastActivityToString());
-        lastActivityText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        HBox lastActivityBox = new HBox(lastActivityText);
-        lastActivityBox.setAlignment(Pos.TOP_RIGHT);
-        layout.getChildren().add(lastActivityBox);
+        // Initialize last activity box only if event is not null
+        if (event != null) {
+            lastActivityBox = createLastActivityBox(event);
+            layout.getChildren().add(lastActivityBox);
+        }
 
         // eventBox, includes Event Name and Send Invite button
         HBox eventBox = getEventBox();
 
         // participantsBox, includes header and buttons to edit/add participant
-        HBox participantsBox = getParticipantsBox();
+        HBox participantsBox = getParticipantsBox(layout);
         Text participantNames = new Text(participantsToString());
         Text expensesHeader = new Text("Expenses");
         expensesHeader.setFont(h2);
@@ -151,8 +154,12 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
                 noParticipants.showAndWait();
                 return;
             }
+            event.updateAndPrintLastActivity();
+            // Re-display last activity box
+            layout.getChildren().remove(lastActivityBox);
+            lastActivityBox = createLastActivityBox(event);
+            layout.getChildren().add(0, lastActivityBox);
             mainCtrl.showAddExpense(new Pair<>(event, participants));
-            event.updateLastActivity();
         });
 
         HBox radioSelectBox = getRadioSelectBox();
@@ -163,8 +170,12 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
 
         Button settleDebtsButton = new Button("Settle Debts");
         settleDebtsButton.setOnAction(e -> {
+            event.updateAndPrintLastActivity();
+            // Re-display last activity box
+            layout.getChildren().remove(lastActivityBox);
+            lastActivityBox = createLastActivityBox(event);
+            layout.getChildren().add(0, lastActivityBox);
             mainCtrl.showOpenDebts(event);
-            event.updateLastActivity();
         });
 
         Button backButton = new Button("Back");
@@ -204,7 +215,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
      * and buttons to Edit and Add participants.
      * @return HBox participantsBox
      */
-    private HBox getParticipantsBox() {
+    private HBox getParticipantsBox(VBox layout) {
         HBox participantsBox = new HBox(5);
 
         Text participantsHeader = new Text("Participants");
@@ -213,13 +224,21 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
         participantEditButton.setOnAction(e -> {
-            event.updateLastActivity();
+            event.updateAndPrintLastActivity();
+            // Re-display last activity box
+            layout.getChildren().remove(lastActivityBox);
+            lastActivityBox = createLastActivityBox(event);
+            layout.getChildren().add(0, lastActivityBox);
         });
 
         Button participantAddButton = new Button("Add");
         participantAddButton.setOnAction(e -> {
+            event.updateAndPrintLastActivity();
+            // Re-display last activity box
+            layout.getChildren().remove(lastActivityBox);
+            lastActivityBox = createLastActivityBox(event);
+            layout.getChildren().add(0, lastActivityBox);
             mainCtrl.showContactDetails(event);
-            event.updateLastActivity();
         });
 
         participantsBox.getChildren().addAll(participantsHeader,
@@ -406,6 +425,22 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
      */
     public Scene getScene() {
         return scene;
+    }
+
+    private HBox createLastActivityBox(EventDTO event) {
+        HBox lastActivityBox = new HBox();
+        if (event != null) {
+            Text lastActivityText = new Text(event.lastActivityToString());
+            lastActivityText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+            lastActivityBox.getChildren().add(lastActivityText);
+        } else {
+            Text defaultText = new Text("No activity recorded yet");
+            defaultText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+            lastActivityBox.getChildren().add(defaultText);
+        }
+        lastActivityBox.setAlignment(Pos.TOP_RIGHT); // Align to the top-right corner
+        HBox.setHgrow(lastActivityBox, Priority.ALWAYS); // Allow the box to expand horizontally
+        return lastActivityBox;
     }
 
     /**
