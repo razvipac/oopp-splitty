@@ -141,6 +141,14 @@ public class Expense {
     }
 
     /**
+     * Sets the participants of the expense.
+     * @return The participants of the expense.
+     */
+    public List<Participant> getParticipants() {
+        return this.participants;
+    }
+
+    /**
      * Returns a string representation of the expense.
      *
      * @return A string representation of the expense.

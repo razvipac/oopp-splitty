@@ -190,7 +190,7 @@ public class Event {
     }
 
     /**
-     *
+     * Settles the debts within an event.
      * @param allParticipants Represents all the participants from the server
      * @param event The event to be taken into consideration
      * @param expenses The list of expenses within an event
@@ -199,19 +199,14 @@ public class Event {
     public static List<Debt> settleDebts(List<Participant> allParticipants,
                                   Event event, List<Expense> expenses) {
         Map<Participant, Double> debtMap = new HashMap<>();
-
         for (Expense expense : expenses) {
-            Participant paidBy = expense.getPaidBy();
+            List<Participant> participants = expense.getParticipants();
             double totalExpense = expense.getPrice();
-
-            List<Participant> participants = basicGetParticipants(allParticipants, event);
             double individualShare = totalExpense / participants.size();
 
             for (Participant participant : participants) {
-                if (!participant.equals(paidBy)) {
-                    double currentDebt = debtMap.getOrDefault(participant, 0.0);
-                    debtMap.put(participant, currentDebt + individualShare);
-                }
+                double currentDebt = debtMap.getOrDefault(participant, 0.0);
+                debtMap.put(participant, currentDebt + individualShare);
             }
         }
 
