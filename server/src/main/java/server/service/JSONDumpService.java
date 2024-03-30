@@ -98,7 +98,8 @@ public class JSONDumpService {
                         expense.getId(),
                         expense.getPaidBy().getName(),
                         expense.getPrice(),
-                        expense.getItem()
+                        expense.getItem(),
+                        expense.getDate()
                 );
                 eventResponseBody.expenses().add(expenseResponseBody);
             }
@@ -165,7 +166,8 @@ public class JSONDumpService {
                             expenseResponseBody.item(),
                             participantRepository.
                                     findParticipantByEventCodeAndName
-                                            (expenseResponseBody.paidBy(), event.getCode()).get()
+                                            (expenseResponseBody.paidBy(), event.getCode()).get(),
+                            expenseResponseBody.date()
                     );
                     expenseRepository.save(expense);
                 }

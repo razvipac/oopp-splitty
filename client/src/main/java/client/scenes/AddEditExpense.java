@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,7 @@ public class AddEditExpense implements
     private ArrayList<ExpenseDTO> addEditExpenseList;
 
     private final ComboBox<String> whoPaidDropdown = new ComboBox<>();
+    private final DatePicker whenPicker = new DatePicker();
     private final TextField whatForField = new TextField();
     private final TextField howMuchField = new TextField();
     private Map<String, ParticipantDTO> participantMap = new HashMap<>();
@@ -126,7 +128,8 @@ public class AddEditExpense implements
                 int price = Integer.parseInt(howMuchField.getText());
                 String item = whatForField.getText();
                 ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
-                ExpenseDTO expense = new ExpenseDTO(price, item, payer);
+                LocalDate date = whenPicker.getValue();
+                ExpenseDTO expense = new ExpenseDTO(price, item, payer, date);
                 System.out.println(expense); // for testing
                 addExpenseToServer(expense);
             }
@@ -186,7 +189,6 @@ public class AddEditExpense implements
     private void addWhenPicker(GridPane gridPane) {
         // Create a label and a date picker for "When?" field and add them to the layout
         Label whenLabel = new Label("When?");
-        DatePicker whenPicker = new DatePicker();
         gridPane.add(whenLabel, 0, 4);
         gridPane.add(whenPicker, 1, 4);
     }
