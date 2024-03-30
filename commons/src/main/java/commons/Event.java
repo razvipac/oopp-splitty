@@ -241,10 +241,7 @@ public class Event {
      * @return Returns the list of people who participated in this event
      */
     private static List<Participant> advancedGetParticipants(Expense expense) {
-        List<Participant> participants = new ArrayList<>();
-        participants.add(expense.getPaidBy());
-        // Logic to be added for participants
-        return participants;
+        return new ArrayList<>(expense.getParticipants());
     }
 
     /**
