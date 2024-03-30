@@ -3,6 +3,7 @@ package commons;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -102,6 +103,22 @@ public class Event {
      */
     public void setLastActivity(LocalDateTime lastActivity) {
         this.lastActivity = lastActivity;
+    }
+
+    /**
+     * Custom toString() method to format last activity for display.
+     * @return Formatted string representing last activity.
+     */
+    public String lastActivityToString() {
+        if (lastActivity == null) {
+            return "Last activity: No activity recorded";
+        } else {
+            // Format date
+            String formattedDate = lastActivity.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            // Format time
+            String formattedTime = lastActivity.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+            return "Last activity: " + formattedDate + "\n" + formattedTime;
+        }
     }
 
     /**
