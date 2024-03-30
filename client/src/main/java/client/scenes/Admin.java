@@ -4,8 +4,7 @@ import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import commons.Event;
-import commons.response_body.EventResponseBody;
+import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,7 +27,7 @@ public class Admin implements StaticSceneController {
     private Scene scene;
     private ServerUtils serverUtils;
     private VBox eventsField;
-    private List<Event> events;
+    private List<EventDTO> events;
 
     /**
      * Constructor for the Admin page that creates the GUI
@@ -45,7 +44,7 @@ public class Admin implements StaticSceneController {
      * @return the generated scene
      */
     public Scene initialize(){
-        events = serverUtils.getEventUtils().getAllEvents();
+        events = serverUtils.getAllEvents();
 
         createSceneAdmin();
 
@@ -63,8 +62,6 @@ public class Admin implements StaticSceneController {
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
 
-
-        List<Event> events = serverUtils.getEventUtils().getAllEvents();
         // Adding the grid and back button to the layout
         VBox layout = new VBox();
         layout.setPadding(new Insets(10));
@@ -95,7 +92,6 @@ public class Admin implements StaticSceneController {
 
         layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton);
 
-
         // Show events
         showEvent(1);
 
@@ -103,12 +99,12 @@ public class Admin implements StaticSceneController {
     }
 
     void showEvent(int compare) {
-        List<Event> list = serverUtils.getEventUtils().getAllEvents();
-        if(compare==1) list.sort(Comparator.comparing(Event::getName));
-        else if(compare==2) list.sort(Comparator.comparing(Event::getCreationDate));
-        else if(compare==3) list.sort(Comparator.comparing(Event::getCreationDate));
+        List<EventDTO> list = serverUtils.getAllEvents();
+        if(compare==1) list.sort(Comparator.comparing(EventDTO::getName));
+        else if(compare==2) list.sort(Comparator.comparing(EventDTO::getCreationDate));
+        else if(compare==3) list.sort(Comparator.comparing(EventDTO::getCreationDate));
 
-        for (Event event : list) {
+        for (EventDTO event : list) {
             HBox eventEntry = new HBox();
             eventEntry.setSpacing(15);
 
@@ -116,15 +112,15 @@ public class Admin implements StaticSceneController {
             eventEntry.getChildren().add(openPage);
             Button deleteEvent = deleteEvent(event);
             eventEntry.getChildren().add(deleteEvent);
-            List<EventResponseBody> dump = serverUtils.getJsonDumpUtils().getJSON();
-            EventResponseBody op = dump.getFirst();
+            List<EventDTO> dump = serverUtils.getAllEvents();
+            EventDTO op = dump.getFirst();
             Button download = downloadEvent(op);
             eventEntry.getChildren().add(download);
             eventsField.getChildren().add(eventEntry);
         }
     }
 
-    private Button getJSON(Event event) {
+    private Button getJSON(EventDTO event) {
         Button get = new Button("Download");
         get.setOnAction(e -> {
             //server.getJsonDumpUtils().getJSON();
@@ -140,7 +136,7 @@ public class Admin implements StaticSceneController {
      * @param event puts the JSON of an event in a file that is downloaded
      * @return the button
      */
-    public Button downloadEvent(EventResponseBody event) {
+    public Button downloadEvent(EventDTO event) {
         // Get the selected events
         Button get = new Button("Download");
         get.setOnAction(p -> {
@@ -173,41 +169,20 @@ public class Admin implements StaticSceneController {
         return get;
     }
 
-    private Button deleteEvent(Event event) {
+    private Button deleteEvent(EventDTO event) {
         Button delete = new Button("Delete");
         delete.setOnAction(e -> {
             //eventsField.getChildren().clear();
-            serverUtils.getEventUtils().deleteEvent(event.getCode());
+            serverUtils.deleteEvent(event.getCode());
             eventsField.getChildren().clear();
             showEvent(2);
         });
         return delete;
     }
 
-//    public Event importEventFromJSON(String jsonPath) {
-//        try {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            File jsonFile = new File(jsonPath);
-//
-//            Event event = objectMapper.readValue(jsonFile, Event.class);
-//            eventService.createEvent(event);
-//            return event;
-//        } catch(JsonParseException | JsonMappingException e) {
-//            System.err.println("Error while parsing JSON: " + e.getMessage());
-//            System.err.println("Please ensure that the JSON content is correctly formatted.");
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.err.println("File not found");
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
-    private Button openOverview(Event event) {
+    private Button openOverview(EventDTO event) {
         Button openPage = new Button(event.getName());
-        openPage.setOnAction(e -> {
-            mainCtrl.showEventOverview(event);
-        });
+        openPage.setOnAction(e -> mainCtrl.showEventOverview(event));
 
         return openPage;
     }

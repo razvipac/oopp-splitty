@@ -2,7 +2,9 @@ package client.scenes;
 
 import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
-import commons.Event;
+import commons.dto.DebtDTO;
+import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,16 +12,12 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
-// import javafx.stage.Stage;
-
-import java.util.List;
-
-import commons.Debt;
-import commons.Participant;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class OpenDebts implements DataBasedPopupController<Event> {
+import java.util.List;
+
+public class OpenDebts implements DataBasedPopupController<EventDTO> {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
@@ -28,8 +26,8 @@ public class OpenDebts implements DataBasedPopupController<Event> {
     private final Stage window;
     private boolean isOpen;
 
-    private Event event;
-    private List<Debt> debtList;
+    private EventDTO event;
+    private List<DebtDTO> debtList;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
@@ -37,7 +35,7 @@ public class OpenDebts implements DataBasedPopupController<Event> {
      * @param serverUtils global serverUtils singleton
      * @param event event entity corresponding to this window
      */
-    public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+    public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
@@ -54,12 +52,12 @@ public class OpenDebts implements DataBasedPopupController<Event> {
      * @param event Event instance to populate the UI with
      * @return the newly generated scene
      */
-    public Scene initialize(Event event) {
+    public Scene initialize(EventDTO event) {
         this.event = event;
 
         if (event == null) createSceneNoEvent();
         else {
-            debtList = serverUtils.getDebtUtils().getAllOpenDebts(event.getCode());
+            debtList = serverUtils.getAllOpenDebts(event.getCode());
             createScene();
         }
 
@@ -100,7 +98,7 @@ public class OpenDebts implements DataBasedPopupController<Event> {
         layout.getChildren().add(backButton);
 
         // Adding each debt
-        for (Debt d : debtList) {
+        for(DebtDTO d : debtList) {
             addDebtToLayout(d, layout);
         }
         // Scene
@@ -123,7 +121,7 @@ public class OpenDebts implements DataBasedPopupController<Event> {
      * @param d Debt to be added
      * @param layout Layout to add it to
      */
-    private static void addDebtToLayout(Debt d, VBox layout) {
+    private static void addDebtToLayout(DebtDTO d, VBox layout) {
         // debtLine: line containing debtString and 'Mark Received' button
         HBox debtLine = new HBox(5);
         // debtItem: the entire debt item, containing the debtLine and debtInfo
@@ -179,10 +177,10 @@ public class OpenDebts implements DataBasedPopupController<Event> {
         layout.getChildren().add(debtItem);
     }
 
-    private static String getBankInfoText(Debt d)
+    private static String getBankInfoText(DebtDTO d)
     {
-        Participant debtor = d.getDebtor();
-        Participant creditor = d.getCreditor();
+        ParticipantDTO debtor = d.getDebtor();
+        ParticipantDTO creditor = d.getCreditor();
         double amount = d.getAmount();
 
         String creditorBankInfo =

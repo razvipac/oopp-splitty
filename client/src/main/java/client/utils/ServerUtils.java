@@ -18,18 +18,12 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
-import client.scenes.Admin;
-import commons.*;
+import commons.dto.*;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
-import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -37,10 +31,6 @@ import jakarta.ws.rs.core.GenericType;
 public class ServerUtils {
 
     private static ServerUtils serverUtils;
-    private EventUtils eventUtils;
-    private ParticipantUtils participantUtils;
-    private DebtUtils debtUtils;
-    private JsonUtils jsonUtils;
 
     // Server address
     private static final String SERVER = "http://localhost:8080/";
@@ -50,10 +40,6 @@ public class ServerUtils {
      * pattern (ensures only one instance exists throughout the application).
      */
     private ServerUtils() {
-        eventUtils = new EventUtils(SERVER);
-        participantUtils = new ParticipantUtils(SERVER);
-        debtUtils = new DebtUtils(SERVER);
-        jsonUtils = new JsonUtils(SERVER);
     }
 
     /**
@@ -69,34 +55,139 @@ public class ServerUtils {
         return serverUtils;
     }
 
+    // Event methods
+
     /**
-     * Gets the EventUtils instance.
+     * Gets all events.
      *
-     * @return The EventUtils instance
+     * @return All events as a List
      */
-    public EventUtils getEventUtils() {
-        return eventUtils;
+    public List<EventDTO> getAllEvents() {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
     /**
-     * Gets the ParticipantUtils instance.
+     * Creates an event with the given event name.
      *
-     * @return The ParticipantUtils instance
+     * @param eventName the name of the event
+     * @return the created Event
      */
-    public ParticipantUtils getParticipantUtils() {
-        return participantUtils;
+    public EventDTO createEvent(String eventName) {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/")
+                .queryParam("name", eventName)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(eventName, APPLICATION_JSON), EventDTO.class);
+    }
+    /**
+     * Creates an event with the given event name.
+     * @param eventCode the name of the event
+     * @return the created Event
+     */
+    public EventDTO deleteEvent(String eventCode) {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/")
+                .queryParam("eventCode", eventCode)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete(EventDTO.class);
+    }
+
+    // Participant methods
+
+    /**
+     * Gets all the participants of an event.
+     *
+     * @param code The code of the event
+     * @return All participants of the event as a List
+     */
+    public List<ParticipantDTO> getParticipants(String code) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/" + code + "/participant")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
     }
 
     /**
-     * Gets the DebtUtils instance.
-     *
-     * @return The DebtUtils instance
+     * Adds Participant to server
+     * @param p Participant to add
+     * @return True iff add was successful, false otherwise
      */
-    public DebtUtils getDebtUtils() {
-        return debtUtils;
+    public boolean addParticipant(ParticipantDTO p) {
+        String code = p.getEvent().getCode();
+        String endpoint = "api/v1/" + code + "/participant";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(p, APPLICATION_JSON));
+
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
-    public JsonUtils getJsonDumpUtils() {
-        return jsonUtils;
+    // Expense methods
+
+    /**
+     * Gets all the expenses of an event.
+     *
+     * @param code The code of the event
+     * @return All expenses of the event as a List
+     */
+    public List<ExpenseDTO> getExpenses(String code) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/" + code + "/expense")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
+    }
+
+    /**
+     * Adds Expense to server
+     * @param e Expense to add
+     * @return True iff add was successful, false otherwise
+     */
+    public boolean addExpense(ExpenseDTO e, String code) {
+        String endpoint = "api/v1/" + code + "/expense";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(e, APPLICATION_JSON));
+
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
+    }
+
+    // Debt methods
+
+    /**
+     * Get all open debts for a specific event.
+     *
+     * @param eventCode The code of the event for which debts are to be retrieved
+     * @return A List containing all open debts for the specified event
+     */
+    public List<DebtDTO> getAllOpenDebts(String eventCode) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER)
+                .path("api/v1/" + eventCode + "/debts")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {});
     }
 }

@@ -89,7 +89,7 @@ class EventTest {
     void setLastActivity() {
         LocalDateTime lastActivity = LocalDateTime.now();
         event1.setLastActivity(lastActivity);
-        assertEquals(lastActivity.toString(), event1.getLastActivity());
+        assertEquals(lastActivity, event1.getLastActivity());
     }
 
 
@@ -118,7 +118,8 @@ class EventTest {
 
     @Test
     void testToString() {
-        String expected = "Event Event A:\t- code = CODE1\t- creationDate = " + event1.getCreationDate() + "\t- lastActivity = " + event1.getLastActivity();
+        String expected = "Event Event A:\t- code = CODE1\t- creationDate = "
+                + event1.getCreationDate() + "\t- lastActivity = " + event1.getLastActivity();
         assertEquals(expected, event1.toString());
     }
 

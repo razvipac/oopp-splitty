@@ -1,9 +1,8 @@
 package client.scenes;
 
+import commons.dto.EventDTO;
 import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
-import commons.Event;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,7 +17,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class Invitations implements DataBasedPopupController<Event> {
+public class Invitations implements DataBasedPopupController<EventDTO> {
     private final MainCtrl mainCtrl; // reference to MainCtrl class
     private final ServerUtils serverUtils;
 
@@ -36,7 +35,7 @@ public class Invitations implements DataBasedPopupController<Event> {
      * @param serverUtils global serverUtils singleton
      * @param event event entity corresponding to this window
      */
-    public Invitations(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+    public Invitations(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
@@ -53,7 +52,7 @@ public class Invitations implements DataBasedPopupController<Event> {
      * @param event Event instance to populate the UI with
      * @return the newly generated scene
      */
-    public Scene initialize(Event event) {
+    public Scene initialize(EventDTO event) {
         if(event == null) createSceneNoEvent();
         else {
             eventName = event.getName();
