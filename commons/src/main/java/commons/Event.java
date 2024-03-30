@@ -122,6 +122,13 @@ public class Event {
     }
 
     /**
+     * Updates the last activity timestamp to the current time.
+     */
+    public void updateLastActivity() {
+        this.lastActivity = LocalDateTime.now();
+    }
+
+    /**
      * A proper equals method for the class Event
      *
      * @param o another object with which we compare
