@@ -152,6 +152,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
                 return;
             }
             mainCtrl.showAddExpense(new Pair<>(event, participants));
+            event.updateLastActivity();
         });
 
         HBox radioSelectBox = getRadioSelectBox();
@@ -161,7 +162,10 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         ScrollPane expensesScroller = getExpensesScroller();
 
         Button settleDebtsButton = new Button("Settle Debts");
-        settleDebtsButton.setOnAction(e -> mainCtrl.showOpenDebts(event));
+        settleDebtsButton.setOnAction(e -> {
+            mainCtrl.showOpenDebts(event);
+            event.updateLastActivity();
+        });
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> goBack());
@@ -208,9 +212,15 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
 
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
+        participantEditButton.setOnAction(e -> {
+            event.updateLastActivity();
+        });
 
         Button participantAddButton = new Button("Add");
-        participantAddButton.setOnAction(e -> mainCtrl.showContactDetails(event));
+        participantAddButton.setOnAction(e -> {
+            mainCtrl.showContactDetails(event);
+            event.updateLastActivity();
+        });
 
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);

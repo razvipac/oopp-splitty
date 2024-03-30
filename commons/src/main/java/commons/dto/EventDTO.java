@@ -107,17 +107,17 @@ public class EventDTO {
     }
 
     /**
+     * Updates the last activity timestamp to the current time.
+     */
+    public void updateLastActivity() {
+        this.lastActivity = LocalDateTime.now();
+    }
+
+    /**
      * Sets the date and time of the last activity associated with the event.
      * @param lastActivity The date and time of the last activity associated with the event.
      */
     public void setLastActivity(LocalDateTime lastActivity) {
         this.lastActivity = lastActivity;
-    }
-
-    /**
-     * Updates the last activity timestamp to the current time.
-     */
-    public void updateLastActivity() {
-        this.lastActivity = LocalDateTime.now();
     }
 }
