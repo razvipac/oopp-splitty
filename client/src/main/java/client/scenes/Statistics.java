@@ -1,7 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import commons.Event;
+import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,7 +23,7 @@ public class Statistics {
     private final Stage window;
     private boolean isOpen;
 
-    private Event event;
+    private EventDTO event;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
@@ -31,7 +31,7 @@ public class Statistics {
      * @param serverUtils global serverUtils singleton
      * @param event event entity corresponding to this window
      */
-    public Statistics(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+    public Statistics(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
@@ -48,7 +48,7 @@ public class Statistics {
      * @param event Event instance to populate the UI with
      * @return the newly generated scene
      */
-    public Scene initialize(Event event) {
+    public Scene initialize(EventDTO event) {
         this.event = event;
 
         createSceneStatistics();

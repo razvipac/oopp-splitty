@@ -2,10 +2,9 @@ package client.scenes;
 
 import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
-import commons.Event;
-import commons.Expense;
-import commons.Participant;
-
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -27,23 +26,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddEditExpense implements DataBasedPopupController<Pair<Event, List<Participant>>> {
+public class AddEditExpense implements
+        DataBasedPopupController<Pair<EventDTO, List<ParticipantDTO>>> {
 
     private Scene scene;
+    private EventDTO event;
     private final Stage window;
     private boolean isOpen;
-
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
 
-    private Event event;
-    private ArrayList<Expense> addEditExpenseList;
-    private List<Participant> participants;
+    private List<ParticipantDTO> participants;
+    private ArrayList<ExpenseDTO> addEditExpenseList;
 
     private final ComboBox<String> whoPaidDropdown = new ComboBox<>();
     private final TextField whatForField = new TextField();
     private final TextField howMuchField = new TextField();
-    private Map<String, Participant> participantMap = new HashMap<>();
+    private Map<String, ParticipantDTO> participantMap = new HashMap<>();
     private Text errorText;
     private VBox checkboxContainer;
 
@@ -53,7 +52,7 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
      * @param serverUtils global serverUtils singleton
      * @param event event entity corresponding to this window
      */
-    public AddEditExpense(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+    public AddEditExpense(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
@@ -69,7 +68,7 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
      * @param data pair of event and participant list to populate the UI with
      * @return the newly generated scene
      */
-    public Scene initialize(Pair<Event, List<Participant>> data) {
+    public Scene initialize(Pair<EventDTO, List<ParticipantDTO>> data) {
         this.event = data.getKey();
         this.participants = data.getValue();
 
@@ -124,10 +123,10 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
             if(formIsValid()) {
-                Integer price = Integer.valueOf(howMuchField.getText());
+                int price = Integer.parseInt(howMuchField.getText());
                 String item = whatForField.getText();
-                Participant payer = participantMap.get(whoPaidDropdown.getValue());
-                Expense expense = new Expense(price, item, payer);
+                ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
+                ExpenseDTO expense = new ExpenseDTO(price, item, payer);
                 System.out.println(expense); // for testing
                 addExpenseToServer(expense);
             }
@@ -150,7 +149,7 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
         // Create a label and a dropdown for "Who paid?" field
         Label whoPaidLabel = new Label("Who paid?");
         // Populate the dropdown with names from the expense list
-        for (Participant p : participants) {
+        for (ParticipantDTO p : participants) {
             String name = p.getName();
             whoPaidDropdown.getItems().add(name);
             participantMap.put(name, p);
@@ -209,7 +208,7 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
         checkboxContainer = new VBox();
         checkboxContainer.setAlignment(Pos.CENTER);
         // Create a checkbox for each participant and add it to the container
-        for (Participant p : participants) {
+        for (ParticipantDTO p : participants) {
             String name = p.getName();
             CheckBox participantCheckbox = new CheckBox(name);
             participantCheckbox.setDisable(true);
@@ -276,9 +275,9 @@ public class AddEditExpense implements DataBasedPopupController<Pair<Event, List
      * Adds the given Expense to the server, and displays an alert box with the outcome.
      * @param e The (validated) expense to add
      */
-    private void addExpenseToServer(Expense e) {
-        boolean success = serverUtils.getParticipantUtils().addExpense(e, event.getCode());
-        if (success) {
+    private void addExpenseToServer(ExpenseDTO e) {
+        boolean success = serverUtils.addExpense(e, event.getCode());
+        if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Expense Added Successfully",
                     "Expense has been added to the event");

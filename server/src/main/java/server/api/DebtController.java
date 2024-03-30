@@ -1,6 +1,8 @@
 package server.api;
 
 import commons.Debt;
+import commons.dto.DebtDTO;
+import commons.dto.DebtDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,16 +42,19 @@ public class DebtController {
      * @return A DeferredResult containing the list of unsettled debts
      */
     @GetMapping
-    public DeferredResult<ResponseEntity<List<Debt>>> getAllUnsettledDebts
+    public DeferredResult<ResponseEntity<List<DebtDTO>>> getAllUnsettledDebts
     (@PathVariable String eventCode) {
-        DeferredResult<ResponseEntity<List<Debt>>> output = new DeferredResult<>(300000L);
+        DeferredResult<ResponseEntity<List<DebtDTO>>> output = new DeferredResult<>(300000L);
         output.onTimeout(() -> output.setErrorResult(
                 ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
                         .body("Request timed out. Please try again.")));
 
         ForkJoinPool.commonPool().submit(() -> {
             List<Debt> unsettledDebts = debtService.getAllUnsettledDebtsForEvent(eventCode);
-            output.setResult(new ResponseEntity<>(unsettledDebts, HttpStatus.OK));
+            List<DebtDTO> unsettledDebtDTOs = unsettledDebts.stream()
+                    .map(DebtDTOMapper::toDTO)
+                    .toList();
+            output.setResult(new ResponseEntity<>(unsettledDebtDTOs, HttpStatus.OK));
         });
 
         return output;

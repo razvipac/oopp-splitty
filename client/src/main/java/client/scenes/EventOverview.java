@@ -1,5 +1,7 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
+import commons.dto.*;
 import client.interfaces.DataBasedSceneController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,16 +12,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import client.utils.ServerUtils;
-import commons.Expense;
-import commons.Participant;
-import commons.Event;
 import javafx.util.Pair;
 
-public class EventOverview implements DataBasedSceneController<Event> {
+public class EventOverview implements DataBasedSceneController<EventDTO> {
 
     private Scene scene;
 
@@ -30,12 +26,13 @@ public class EventOverview implements DataBasedSceneController<Event> {
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
     private final Font h2 = Font.font("Arial", FontWeight.BOLD , 14);
 
-    private Event event;
-    private List<Participant> participants;
-    private List<Expense> expenses;
+    // Event attributes
+    private EventDTO event;
+    private List<ParticipantDTO> participants;
+    private List<ExpenseDTO> expenses;
 
     // Currently selected participant (whose expenses to view)
-    private Participant selectedParticipant;
+    private ParticipantDTO selectedParticipant;
     
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
@@ -57,7 +54,7 @@ public class EventOverview implements DataBasedSceneController<Event> {
      * @param serverUtils global serverUtils singleton
      * @param event event entity corresponding to this window
      */
-    public EventOverview(MainCtrl mainCtrl, ServerUtils serverUtils, Event event) {
+    public EventOverview(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
@@ -69,7 +66,7 @@ public class EventOverview implements DataBasedSceneController<Event> {
      * @param event Event instance to populate the UI with
      * @return the newly generated scene
      */
-    public Scene initialize(Event event) {
+    public Scene initialize(EventDTO event) {
         this.event = event;
 
         if(event == null) {
@@ -77,18 +74,9 @@ public class EventOverview implements DataBasedSceneController<Event> {
             return scene;
         }
 
-        // TODO: get participants from server
-//        participants = server.getParticipantUtils().getParticipants(event.getCode());
-        participants = new ArrayList<>();
-        Participant test = new Participant("Test", event, "test", "test", "test");
-        Participant john = new Participant("John", event, "test", "test", "test");
-        participants.add(test);
-        participants.add(john);
+        participants = serverUtils.getParticipants(event.getCode());
 
-        // TODO: get expenses from server
-//        expenses = server.getParticipantUtils().getExpenses(event.getCode());
-        expenses = new ArrayList<>();
-        expenses.add(new Expense(10, "Drinks", test));
+        expenses = serverUtils.getExpenses(event.getCode());
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {
@@ -233,7 +221,7 @@ public class EventOverview implements DataBasedSceneController<Event> {
 
         StringBuilder sb = new StringBuilder();
 
-        for(Participant person : participants) {
+        for(ParticipantDTO person : participants) {
             sb.append(person.getName()).append(", ");
         }
 
@@ -283,7 +271,7 @@ public class EventOverview implements DataBasedSceneController<Event> {
         participantDropdown.getItems().addAll(
                 participants
                         .stream()
-                        .map(Participant::getName)
+                        .map(ParticipantDTO::getName)
                         .toList()
         );
         participantDropdown.getSelectionModel().selectFirst();
@@ -332,7 +320,7 @@ public class EventOverview implements DataBasedSceneController<Event> {
         // The VBox that actually contains all ExpenseItem objects
         expensesContainer = new VBox(5);
         // for every expense, add ExpenseItem to expensesContainer
-        for(Expense expense : expenses) {
+        for(ExpenseDTO expense : expenses) {
             ExpenseItem item = new ExpenseItem(expense);
             expensesContainer.getChildren().add(item);
         }
@@ -408,10 +396,9 @@ public class EventOverview implements DataBasedSceneController<Event> {
      */
     public static class ExpenseItem extends GridPane {
 
-        private Expense expense;
         private int price;
         private String item;
-        private Participant paidBy;
+        private ParticipantDTO paidBy;
         private String paidByName;
 
         /**
@@ -419,8 +406,7 @@ public class EventOverview implements DataBasedSceneController<Event> {
          * and an 'Edit' button.
          * @param expense the expense to create an item for
          */
-        public ExpenseItem(Expense expense) {
-            this.expense = expense;
+        public ExpenseItem(ExpenseDTO expense) {
             price = expense.getPrice();
             item = expense.getItem();
             paidBy = expense.getPaidBy();

@@ -1,6 +1,8 @@
 package server.api;
 
 import commons.Expense;
+import commons.dto.ExpenseDTO;
+import commons.dto.ExpenseDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,22 +52,22 @@ public class ExpenseController {
      *                         object if both id and participantName are provided.
      */
     @GetMapping("")
-    public ResponseEntity<List<ExpenseResponseBody>> getAllOrOne(
+    public ResponseEntity<List<ExpenseDTO>> getAllOrOne(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "participantName", required = false) String participantName,
             @PathVariable("eventCode") String eventCode
     ) {
         if (id == null && participantName == null) {
             List<Expense> expenses = expenseService.getAllInEvent(eventCode);
-            List<ExpenseResponseBody> responseBodies = expenses.stream()
-                                                               .map(ExpenseResponseBody::build)
-                                                               .toList();
-            return new ResponseEntity<>(responseBodies, HttpStatus.OK);
+            List<ExpenseDTO> expenseDTOs = expenses.stream()
+                    .map(ExpenseDTOMapper::toDTO)
+                    .toList();
+            return new ResponseEntity<>(expenseDTOs, HttpStatus.OK);
         }
 
         try {
             return new ResponseEntity<>(List.of(
-                    ExpenseResponseBody.build(expenseService.getOne(eventCode, participantName, id))
+                    ExpenseDTOMapper.toDTO(expenseService.getOne(eventCode, participantName, id))
             ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -80,16 +82,22 @@ public class ExpenseController {
      * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction CREATED
      *
      * @param eventCode The event code.
-     * @param body      The ExpenseRequestBody containing data for creating the expense.
+     * @param expenseDTO The ExpenseDTO containing data for creating the expense.
      * @return A ResponseEntity containing the ExpenseResponseBody of the created expense
      *         if successful, or a NOT_FOUND response if the event or participant is not found.
      */
     @PostMapping("")
     public ResponseEntity<ExpenseResponseBody> createOne(
             @PathVariable("eventCode") String eventCode,
-            @RequestBody ExpenseRequestBody body
+            @RequestBody ExpenseDTO expenseDTO
     ) {
         try {
+            ExpenseRequestBody body = new ExpenseRequestBody(
+                    expenseDTO.getPrice(),
+                    expenseDTO.getItem(),
+                    expenseDTO.getPaidBy().getName()
+            );
+
             Expense expense = expenseService.createOne(eventCode, body);
             ExpenseResponseBody responseBody = ExpenseResponseBody.build(expense);
 
@@ -103,7 +111,6 @@ public class ExpenseController {
      * DELETE api/v1/{eventCode}/expense?id={id}&participantName={name}
      * deletes expense belonging to a Participant with name {name} and id {id} from
      * event with code {eventCode}
-     *
      * Sends out a WebSocket STOMP message to all listeners
      * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction DELETED
      *

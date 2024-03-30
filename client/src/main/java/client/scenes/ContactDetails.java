@@ -2,8 +2,8 @@ package client.scenes;
 
 import client.interfaces.DataBasedPopupController;
 import client.utils.ServerUtils;
-import commons.Event;
-import commons.Participant;
+import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,17 +19,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-
-public class ContactDetails implements DataBasedPopupController<Event> {
+public class ContactDetails implements DataBasedPopupController<EventDTO> {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
-
     private final Stage window;
     private boolean isOpen;
     private Scene scene;
-
-    private Event event;
+    private EventDTO event;
 
     private GridPane gridPane;
     private TextField boxName;
@@ -44,7 +41,7 @@ public class ContactDetails implements DataBasedPopupController<Event> {
      * @param serverUtils global serverUtils singleton
      * @param event event entity corresponding to this window
      */
-    public ContactDetails(MainCtrl mainCtrl, ServerUtils serverUtils, Event event){
+    public ContactDetails(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event){
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
@@ -62,7 +59,7 @@ public class ContactDetails implements DataBasedPopupController<Event> {
      * @param event Event instance to populate the UI with
      * @return the newly generated scene
      */
-    public Scene initialize(Event event) {
+    public Scene initialize(EventDTO event) {
         this.event = event;
 
         gridPane = new GridPane();
@@ -157,9 +154,9 @@ public class ContactDetails implements DataBasedPopupController<Event> {
 
         Button ok = new Button("Ok");
         ok.setOnAction(e -> {
-            if(inputIsValid())
-                addToServer(new Participant(boxName.getText(), event, boxEmail.getText(),
-                        boxIban.getText(), boxBic.getText()));
+            if(formIsValid())
+                addParticipantToServer(new ParticipantDTO(boxName.getText(), event,
+                        boxEmail.getText(), boxIban.getText(), boxBic.getText()));
         });
 
         HBox hBoxButtons = new HBox(10); // 10 is the spacing between elements
@@ -227,7 +224,7 @@ public class ContactDetails implements DataBasedPopupController<Event> {
     /**
      * Checks if the user-inputted Strings are valid.
      */
-    private boolean inputIsValid() {
+    private boolean formIsValid() {
         // Should in theory never be true
         if(event.getCode().isEmpty()) {
             errorText.setText("This event is invalid");
@@ -274,9 +271,8 @@ public class ContactDetails implements DataBasedPopupController<Event> {
      * Adds the given Participant to the server, and displays an alert box with the outcome.
      * @param p The (validated) participant to add
      */
-    private void addToServer(Participant p) {
-        boolean success = serverUtils.getParticipantUtils().addParticipant(p);
-
+    private void addParticipantToServer(ParticipantDTO p) {
+        boolean success = serverUtils.addParticipant(p);
         if(success) {
             Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Added Successfully",

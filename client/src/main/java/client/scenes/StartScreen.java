@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
+import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,8 +16,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import commons.Event;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class StartScreen implements StaticSceneController {
 
     private Scene scene;
 
-    private List<Event> events;
+    private List<EventDTO> events;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
@@ -46,7 +45,7 @@ public class StartScreen implements StaticSceneController {
      * @return the newly generated scene
      */
     public Scene initialize() {
-        events = serverUtils.getEventUtils().getAllEvents();
+        events = serverUtils.getAllEvents();
 
         createSceneStartScreen();
 
@@ -137,7 +136,7 @@ public class StartScreen implements StaticSceneController {
 
     private void joinEventFromTextField(TextField joinEvent) {
         String code = joinEvent.getText();
-        Optional<Event> found = getEvent(code);
+        Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
             mainCtrl.showEventOverview(found.get());
         }
@@ -146,8 +145,8 @@ public class StartScreen implements StaticSceneController {
 
     private void createEventFromTextField(TextField createEvent) {
         String eventName = createEvent.getText();
-        Event event = serverUtils.getEventUtils().createEvent(eventName);
-        events = serverUtils.getEventUtils().getAllEvents();
+        EventDTO event = serverUtils.createEvent(eventName);
+        events = serverUtils.getAllEvents();
         System.out.println(event.toString());
         mainCtrl.showEventOverview(event);
     }
@@ -223,7 +222,7 @@ public class StartScreen implements StaticSceneController {
      * @param code Code of the event
      * @return The event
      */
-    public Optional<Event> getEvent(String code) {
+    public Optional<EventDTO> getEvent(String code) {
         return events.stream()
                 .filter(event -> event.getCode().equals(code))
                 .findFirst();

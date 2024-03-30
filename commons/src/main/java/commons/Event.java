@@ -64,8 +64,8 @@ public class Event {
     /**
      * @return the last activity of an instance of type Event
      */
-    public String getLastActivity() {
-        return lastActivity.toString();
+    public LocalDateTime getLastActivity() {
+        return lastActivity;
     }
 
     /**

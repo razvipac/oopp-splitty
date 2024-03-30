@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
-import commons.Event;
+import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,7 +19,7 @@ public class Admin implements StaticSceneController {
     private Scene scene;
     private ServerUtils serverUtils;
     private VBox eventsField;
-    private List<Event> events;
+    private List<EventDTO> events;
 
     /**
      * Constructor for the Admin page that creates the GUI
@@ -36,7 +36,7 @@ public class Admin implements StaticSceneController {
      * @return the generated scene
      */
     public Scene initialize(){
-        events = serverUtils.getEventUtils().getAllEvents();
+        events = serverUtils.getAllEvents();
 
         createSceneAdmin();
 
@@ -53,6 +53,9 @@ public class Admin implements StaticSceneController {
         // Creating GridPane for displaying data
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
+
+
+        List<EventDTO> events = serverUtils.getAllEvents();
 
         // Adding the grid and back button to the layout
         VBox layout = new VBox();
@@ -91,12 +94,12 @@ public class Admin implements StaticSceneController {
     }
 
     void showEvent(int compare) {
-        List<Event> list = serverUtils.getEventUtils().getAllEvents();
-        if(compare==1) list.sort(Comparator.comparing(Event::getName));
-        else if(compare==2) list.sort(Comparator.comparing(Event::getCreationDate));
-        else if(compare==3) list.sort(Comparator.comparing(Event::getCreationDate));
+        List<EventDTO> list = serverUtils.getAllEvents();
+        if(compare==1) list.sort(Comparator.comparing(EventDTO::getName));
+        else if(compare==2) list.sort(Comparator.comparing(EventDTO::getCreationDate));
+        else if(compare==3) list.sort(Comparator.comparing(EventDTO::getCreationDate));
 
-        for (Event event : list) {
+        for (EventDTO event : list) {
             HBox eventEntry = new HBox();
             eventEntry.setSpacing(15);
 
@@ -110,7 +113,7 @@ public class Admin implements StaticSceneController {
         }
     }
 
-    private Button getJSON(Event event) {
+    private Button getJSON(EventDTO event) {
         Button get = new Button("Download");
         get.setOnAction(e -> {
 
@@ -118,22 +121,20 @@ public class Admin implements StaticSceneController {
         return get;
     }
 
-    private Button deleteEvent(Event event) {
+    private Button deleteEvent(EventDTO event) {
         Button delete = new Button("Delete");
         delete.setOnAction(e -> {
             //eventsField.getChildren().clear();
-            serverUtils.getEventUtils().deleteEvent(event.getCode());
+            serverUtils.deleteEvent(event.getCode());
             eventsField.getChildren().clear();
             showEvent(2);
         });
         return delete;
     }
 
-    private Button openOverview(Event event) {
+    private Button openOverview(EventDTO event) {
         Button openPage = new Button(event.getName());
-        openPage.setOnAction(e -> {
-            mainCtrl.showEventOverview(event);
-        });
+        openPage.setOnAction(e -> mainCtrl.showEventOverview(event));
 
         return openPage;
     }
