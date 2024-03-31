@@ -251,7 +251,7 @@ public class Event {
                                                                      List<Expense> expenses) {
         Map<Participant, Double> individualShareByParticipant = new HashMap<>();
         for (Expense expense : expenses) {
-            double individualShare = (double) expense.getPrice() / (participants.size() - 1);
+            double individualShare = (double) expense.getPrice() / participants.size();
             for (Participant participant : participants) {
                 if (!participant.equals(expense.getPaidBy())) {
                     individualShareByParticipant.put(participant,
@@ -336,6 +336,5 @@ public class Event {
 
         return debtors;
     }
-
 
 }
