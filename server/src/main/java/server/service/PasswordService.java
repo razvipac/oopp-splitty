@@ -2,8 +2,6 @@ package server.service;
 
 import org.springframework.stereotype.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.security.SecureRandom;
 
 @Service
@@ -13,6 +11,7 @@ public class PasswordService {
 
     @SuppressWarnings("checkstyle:MemberName")
     private final SecureRandom RANDOM = new SecureRandom();
+
     @SuppressWarnings("checkstyle:MemberName")
     private final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
             "abcdefghijklmnopqrstuvwxyz!@#$";
