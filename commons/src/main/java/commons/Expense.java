@@ -20,11 +20,18 @@ public class Expense {
     private String item;
     private LocalDate date;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "expense_participant",
-            joinColumns = @JoinColumn(name = "expense_id"),
-            inverseJoinColumns = @JoinColumn(name = "participant_id")
+            joinColumns = {
+                    @JoinColumn(name = "expense_id", referencedColumnName = "id"),
+                    @JoinColumn(name = "paidBy_name", referencedColumnName = "paidBy_name"),
+                    @JoinColumn(name = "paidBy_event_code", referencedColumnName = "paidBy_event_code")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "participant_name", referencedColumnName = "name"),
+                    @JoinColumn(name = "participant_event_code", referencedColumnName = "event_code")
+            }
     )
     private List<Participant> participants;
 
