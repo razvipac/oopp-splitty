@@ -2,52 +2,66 @@ package server.service;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.security.SecureRandom;
 
 @Service
 public class PasswordService {
 
-    private char[] password;
+    private final PasswordEncoder passwordEncoder;
+    private final String password;
+
     @SuppressWarnings("checkstyle:MemberName")
     private final SecureRandom RANDOM = new SecureRandom();
-
     @SuppressWarnings("checkstyle:MemberName")
     private final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
             "abcdefghijklmnopqrstuvwxyz!@#$";
 
     /**
-     * Creates PasswordService instance
+     * Constructs a PasswordService instance
+     *
+     * @param passwordEncoder Password encoder
      */
-    public PasswordService() {
+    @Autowired
+    public PasswordService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         password = generatePassword(20);
     }
 
     /**
      * Generates a random, strong password to be used by the admin
+     *
      * @param length The length of the password
-     * @return Randomly generated password as char[]
+     * @return Randomly generated password as String
      */
-    public char[] generatePassword(int length) {
-        if(length > 0) {
-            char[] password = new char[length];
-            for (int i = 0; i < length; i++) {
-                password[i] = ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length()));
-            }
-            return password;
+    public String generatePassword(int length) {
+        if(length < 5) length = 5;
+
+        StringBuilder password = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            password.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
         }
-        else throw new IllegalArgumentException("Length of password must be bigger than 0");
+        return password.toString();
     }
 
     /**
-     * Retrieves the stored password (as a clone, so that the original can't be modified)
-     * @return The stored password
+     * Retrieves the server password
+     *
+     * @return The server password
      */
-    public char[] getPassword() {
-        if(password == null) return null;
-
-        char[] clone = new char[password.length];
-        System.arraycopy(password, 0, clone, 0, password.length);
+    public String getPassword() {
         return password;
     }
 
+    /**
+     * Hashes the provided password using BCryptPasswordEncoder
+     *
+     * @param password The password to hash
+     * @return The hashed password
+     */
+    public String hashPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
 }

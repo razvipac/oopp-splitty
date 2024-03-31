@@ -30,7 +30,7 @@ public class PasswordController {
      *         Returns HttpStatus.OK if successful.
      */
     @GetMapping("")
-    public ResponseEntity<char[]> getPassword(){
+    public ResponseEntity<String> getPassword(){
         return new ResponseEntity<>(passwordService.getPassword(), HttpStatus.OK);
     }
 }
