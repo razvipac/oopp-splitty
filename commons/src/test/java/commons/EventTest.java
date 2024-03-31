@@ -3,9 +3,7 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -157,6 +155,76 @@ class EventTest {
         assertEquals(event1, orderedEvents.get(1));
     }
 
+    @Test
+    void testHashCode() {
+        Event event2 = new Event("Event A", "CODE1", event1.getCreationDate());
+        assertEquals(event1.hashCode(), event2.hashCode());
+    }
+
+    @Test
+    public void testGetDebtorsWithinExpense() {
+        Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
+        Expense expense = new Expense(100, "Test Expense", participant1);
+        List<Participant> allParticipants = List.of(participant1, participant2, participant3);
+
+        Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
+
+        assertTrue(debtors.contains(participant2));
+        assertTrue(debtors.contains(participant3));
+        assertFalse(debtors.contains(participant1));
+    }
+
+    @Test
+    public void testCalculateTotalExpenses() {
+        List<Expense> expenses = new ArrayList<>();
+        Participant participant1 = new Participant("Alice", null, "email1", "iban1", "bic1");
+        Participant participant2 = new Participant("Bob", null, "email2", "iban2", "bic2");
+
+        expenses.add(new Expense(100, "Test Expense 1", participant1));
+        expenses.add(new Expense(200, "Test Expense 2", participant2));
+        expenses.add(new Expense(150, "Test Expense 3", participant1));
+
+        // Calculate total expenses by participant
+        Map<Participant, Double> totalExpenses = Event.calculateTotalExpenses(expenses);
+
+        // Verify total expenses
+        assertEquals(250.0, totalExpenses.get(participant1));
+        assertEquals(200.0, totalExpenses.get(participant2));
+    }
+
+    @Test
+    public void testCalculateIndividualShare() {
+        Participant participant1 = new Participant("Alice", null, "email1", "iban1", "bic1");
+        Participant participant2 = new Participant("Bob", null, "email2", "iban2", "bic2");
+        List<Participant> participants = List.of(participant1, participant2);
+
+        List<Expense> expenses = new ArrayList<>();
+        expenses.add(new Expense(100, "Test Expense 1", participant1));
+        expenses.add(new Expense(200, "Test Expense 2", participant2));
+
+        // Calculate individual share of expenses
+        Map<Participant, Double> individualShare = Event.calculateIndividualShare(participants, expenses);
+
+        // Verify individual share of expenses
+        assertEquals(100.0, individualShare.get(participant1));
+        assertEquals(50.0, individualShare.get(participant2));
+    }
+
+    @Test
+    public void testCalculateDebtAmount() {
+        Participant debtor = new Participant("Alice", null, "email1", "iban1", "bic1");
+        Participant creditor = new Participant("Bob", null, "email2", "iban2", "bic2");
+
+        // Create total expenses and individual share maps
+        Map<Participant, Double> totalExpenses = Map.of(creditor, 300.0, debtor, 200.0);
+        Map<Participant, Double> individualShare = Map.of(creditor, 150.0, debtor, 100.0);
+
+        // Calculate debt amount
+        double debtAmount = Event.calculateDebtAmount(debtor, creditor, totalExpenses, individualShare);
+
+        // Verify debt amount
+        assertEquals(150.0, debtAmount);
+    }
 
     // These tests fail
 //    @Test
