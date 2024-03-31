@@ -48,9 +48,22 @@ public class JSONDumpController {
      *         Returns "Unknown Error!" if an unknown error occurs
      *         (HttpStatus.INTERNAL_SERVER_ERROR).
      */
+//    @PostMapping("")
+//    public ResponseEntity<String> restoreFromJSONDump(
+//            @RequestBody List<EventResponseBody> body
+//    ){
+//        try {
+//            jsonDumpService.restoreFromDump(body);
+//            return new ResponseEntity<>("Restored Successfully", HttpStatus.OK);
+//        } catch (ImproperDumpFormatException e){
+//            return new ResponseEntity<>("Improper JSON dump format!", HttpStatus.NOT_MODIFIED);
+//        } catch (Exception e){
+//            return new ResponseEntity<>("Unknown Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
     @PostMapping("")
     public ResponseEntity<String> restoreFromJSONDump(
-            @RequestBody List<EventResponseBody> body
+            @RequestBody EventResponseBody body
     ){
         try {
             jsonDumpService.restoreFromDump(body);
