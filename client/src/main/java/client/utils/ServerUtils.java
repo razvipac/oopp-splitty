@@ -190,4 +190,16 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {});
     }
+
+    // Password methods
+
+    public char[] getPassword() {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER)
+                .path("api/v1/admin")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {});
+    }
+
 }
