@@ -3,7 +3,6 @@ package commons;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,37 +102,6 @@ public class Event {
      */
     public void setLastActivity(LocalDateTime lastActivity) {
         this.lastActivity = lastActivity;
-    }
-
-    /**
-     * Custom toString() method to format last activity for display.
-     * @return Formatted string representing last activity.
-     */
-    public String lastActivityToString() {
-        if (lastActivity == null) {
-            return "Last activity: No activity recorded";
-        } else {
-            // Format date
-            String formattedDate = lastActivity.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-            // Format time
-            String formattedTime = lastActivity.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-            return "Last activity: " + formattedDate + "\n" + formattedTime;
-        }
-    }
-
-    /**
-     * Updates the last activity timestamp to the current time.
-     */
-    private void updateLastActivity() {
-        this.setLastActivity(LocalDateTime.now());
-    }
-
-    /**
-     * Updates and prints the custom toString method for the last activity
-     */
-    public void updateAndPrintLastActivity() {
-        this.updateLastActivity();
-        this.lastActivityToString();
     }
 
     /**
@@ -320,17 +288,21 @@ public class Event {
      * @param expenses The list of expenses within an event
      * @return Returns a list of debts to be settled
      */
-    public static List<Debt> settleDebts(List<Participant> allParticipants,
-                                         Event event, List<Expense> expenses) {
+    /*
+    public static List<Debt> settleDebts(List<Participant> participants, List<Expense> expenses) {
         Map<Participant, Double> debtMap = new HashMap<>();
+
         for (Expense expense : expenses) {
-            List<Participant> participants = expense.getParticipants();
+            Participant paidBy = expense.getPaidBy();
             double totalExpense = expense.getPrice();
+
             double individualShare = totalExpense / participants.size();
 
             for (Participant participant : participants) {
-                double currentDebt = debtMap.getOrDefault(participant, 0.0);
-                debtMap.put(participant, currentDebt + individualShare);
+                if (!participant.equals(paidBy)) {
+                    double currentDebt = debtMap.getOrDefault(participant, 0.0);
+                    debtMap.put(participant, currentDebt + individualShare);
+                }
             }
         }
 
@@ -342,31 +314,8 @@ public class Event {
         }
 
         return debts;
-    }
+    }*/
 
-    /**
-     * Settles the debts within an event.
-     * @param allParticipants Represents all the participants from the entire server
-     * @param event The event to be taken into consideration
-     * @return Returns the list of participants who are present within one specific event
-     */
-    private static List<Participant> basicGetParticipants(List<Participant> allParticipants,
-                                                          Event event) {
-        List<Participant> participants = new ArrayList<>();
-        for(Participant participant : allParticipants)
-            if(participant.getEvent().equals(event))
-                participants.add(participant);
-        return participants;
-    }
-
-    /**
-     * Retrieves the participants within a specific expense.
-     * @param expense The expense to be taken into consideration
-     * @return Returns the list of people who participated in this event
-     */
-    private static List<Participant> advancedGetParticipants(Expense expense) {
-        return new ArrayList<>(expense.getParticipants());
-    }
 
     /**
      * Retrieves the debtors within a specific expense.

@@ -21,8 +21,6 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
 
     private final ServerUtils serverUtils;
     private MainCtrl mainCtrl;
-    private HBox lastActivityBox; // Declare lastActivityBox as a class member
-
 
     // Java FX Fonts
     private final Font h1 = Font.font("Arial", FontWeight.BOLD , 20);
@@ -35,7 +33,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
-
+    
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
         ALL, FROM, INCLUDING
@@ -61,7 +59,6 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         this.serverUtils = serverUtils;
 
         initialize(event);
-        lastActivityBox = createLastActivityBox(event); // Initialize lastActivityBox
     }
 
     /**
@@ -126,17 +123,11 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         VBox layout = new VBox(5);
         layout.setPadding(new Insets(10));
 
-        // Initialize last activity box only if event is not null
-        if (event != null) {
-            lastActivityBox = createLastActivityBox(event);
-            layout.getChildren().add(lastActivityBox);
-        }
-
         // eventBox, includes Event Name and Send Invite button
         HBox eventBox = getEventBox();
 
         // participantsBox, includes header and buttons to edit/add participant
-        HBox participantsBox = getParticipantsBox(layout);
+        HBox participantsBox = getParticipantsBox();
         Text participantNames = new Text(participantsToString());
         Text expensesHeader = new Text("Expenses");
         expensesHeader.setFont(h2);
@@ -153,11 +144,6 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
                 noParticipants.showAndWait();
                 return;
             }
-            event.updateAndPrintLastActivity();
-            // Re-display last activity box
-            layout.getChildren().remove(lastActivityBox);
-            lastActivityBox = createLastActivityBox(event);
-            layout.getChildren().add(0, lastActivityBox);
             mainCtrl.showAddExpense(new Pair<>(event, participants));
         });
 
@@ -168,14 +154,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
         ScrollPane expensesScroller = getExpensesScroller();
 
         Button settleDebtsButton = new Button("Settle Debts");
-        settleDebtsButton.setOnAction(e -> {
-            event.updateAndPrintLastActivity();
-            // Re-display last activity box
-            layout.getChildren().remove(lastActivityBox);
-            lastActivityBox = createLastActivityBox(event);
-            layout.getChildren().add(0, lastActivityBox);
-            mainCtrl.showOpenDebts(event);
-        });
+        settleDebtsButton.setOnAction(e -> mainCtrl.showOpenDebts(event));
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> goBack());
@@ -214,7 +193,7 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
      * and buttons to Edit and Add participants.
      * @return HBox participantsBox
      */
-    private HBox getParticipantsBox(VBox layout) {
+    private HBox getParticipantsBox() {
         HBox participantsBox = new HBox(5);
 
         Text participantsHeader = new Text("Participants");
@@ -222,23 +201,9 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
 
         // TODO: Button is non-functional
         Button participantEditButton = new Button("Edit");
-        participantEditButton.setOnAction(e -> {
-            event.updateAndPrintLastActivity();
-            // Re-display last activity box
-            layout.getChildren().remove(lastActivityBox);
-            lastActivityBox = createLastActivityBox(event);
-            layout.getChildren().add(0, lastActivityBox);
-        });
 
         Button participantAddButton = new Button("Add");
-        participantAddButton.setOnAction(e -> {
-            event.updateAndPrintLastActivity();
-            // Re-display last activity box
-            layout.getChildren().remove(lastActivityBox);
-            lastActivityBox = createLastActivityBox(event);
-            layout.getChildren().add(0, lastActivityBox);
-            mainCtrl.showContactDetails(event);
-        });
+        participantAddButton.setOnAction(e -> mainCtrl.showContactDetails(event));
 
         participantsBox.getChildren().addAll(participantsHeader,
                 participantEditButton, participantAddButton);
@@ -424,22 +389,6 @@ public class EventOverview implements DataBasedSceneController<EventDTO> {
      */
     public Scene getScene() {
         return scene;
-    }
-
-    private HBox createLastActivityBox(EventDTO event) {
-        HBox lastActivityBox = new HBox();
-        if (event != null) {
-            Text lastActivityText = new Text(event.lastActivityToString());
-            lastActivityText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            lastActivityBox.getChildren().add(lastActivityText);
-        } else {
-            Text defaultText = new Text("No activity recorded yet");
-            defaultText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            lastActivityBox.getChildren().add(defaultText);
-        }
-        lastActivityBox.setAlignment(Pos.TOP_RIGHT); // Align to the top-right corner
-        HBox.setHgrow(lastActivityBox, Priority.ALWAYS); // Allow the box to expand horizontally
-        return lastActivityBox;
     }
 
     /**

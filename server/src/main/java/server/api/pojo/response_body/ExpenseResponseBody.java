@@ -2,14 +2,11 @@ package server.api.pojo.response_body;
 
 import commons.Expense;
 
-import java.time.LocalDate;
-
 public record ExpenseResponseBody(
        Long id,
        String paidBy,
        Integer price,
-       String item,
-       LocalDate date
+       String item
 ) {
 
     /**
@@ -23,8 +20,7 @@ public record ExpenseResponseBody(
                 expense.getId(),
                 expense.getPaidBy().getName(),
                 expense.getPrice(),
-                expense.getItem(),
-                expense.getDate()
+                expense.getItem()
         );
     }
 }

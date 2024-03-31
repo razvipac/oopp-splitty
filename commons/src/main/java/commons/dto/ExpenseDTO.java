@@ -1,7 +1,5 @@
 package commons.dto;
 
-import java.time.LocalDate;
-
 /**
  * Data Transfer Object (DTO) representing an expense.
  */
@@ -10,7 +8,6 @@ public class ExpenseDTO {
     private int price;
     private String item;
     private ParticipantDTO paidBy;
-    private LocalDate date;
 
     /**
      * Default constructor for ExpenseDTO.
@@ -24,13 +21,11 @@ public class ExpenseDTO {
      * @param price   The price of the expense.
      * @param item    The item or description of the expense.
      * @param paidBy  The participant who paid for the expense.
-     * @param date    The date of the expense.
      */
-    public ExpenseDTO(int price, String item, ParticipantDTO paidBy, LocalDate date) {
+    public ExpenseDTO(int price, String item, ParticipantDTO paidBy) {
         this.price = price;
         this.item = item;
         this.paidBy = paidBy;
-        this.date = date;
     }
 
     /**
@@ -85,21 +80,5 @@ public class ExpenseDTO {
      */
     public void setPaidBy(ParticipantDTO paidBy) {
         this.paidBy = paidBy;
-    }
-
-    /**
-     * Retrieves the date of the expense.
-     * @return The date of the expense.
-     */
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * Sets the date of the expense.
-     * @param date The date of the expense.
-     */
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 }

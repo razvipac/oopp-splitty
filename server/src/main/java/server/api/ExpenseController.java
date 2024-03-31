@@ -95,8 +95,7 @@ public class ExpenseController {
             ExpenseRequestBody body = new ExpenseRequestBody(
                     expenseDTO.getPrice(),
                     expenseDTO.getItem(),
-                    expenseDTO.getPaidBy().getName(),
-                    expenseDTO.getDate()
+                    expenseDTO.getPaidBy().getName()
             );
 
             Expense expense = expenseService.createOne(eventCode, body);

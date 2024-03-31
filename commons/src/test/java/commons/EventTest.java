@@ -2,8 +2,6 @@ package commons;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -40,13 +38,9 @@ class EventTest {
         event3 = new Event("Event B", "CODE3", now);
         event4 = new Event("Event D", "CODE4", later);
 
-        LocalDate date = LocalDate.now();
-        LocalDate specificDate = LocalDate.of(2024, 3, 29);
-        LocalDate specificDate2 = LocalDate.of(2024, 3, 28);
-
-        expense1 = new Expense(100, "Item 1", null, date);
-        expense2 = new Expense(200, "Item 2", null, specificDate);
-        expense3 = new Expense(300, "Item 3", null, specificDate2);
+        expense1 = new Expense(100, "Item 1", null);
+        expense2 = new Expense(200, "Item 2", null);
+        expense3 = new Expense(300, "Item 3", null);
 
         participant1 = new Participant("Participant 1", null, "email1", "iban1", "bic1");
         participant2 = new Participant("Participant 2", null, "email2", "iban2", "bic2");

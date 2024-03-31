@@ -13,7 +13,7 @@ public class Participant {
     private String email;
     private String iban;
     private String bic;
-    @ManyToMany(mappedBy = "participants")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "pkey.paidBy")
     private List<Expense> expenses;
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "id.debtor")
     private List<Debt> debts;

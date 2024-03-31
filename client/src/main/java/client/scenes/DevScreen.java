@@ -91,7 +91,6 @@ public class DevScreen implements StaticSceneController {
         // Button for language selection
         Button languageButton = new LanguageButton("client/src/main/resources/userSettings/userPreferences.json");
 
-
         // Hbox for the language button
         HBox languageBox = new HBox(languageButton);
         languageBox.setAlignment(Pos.TOP_RIGHT);
@@ -110,3 +109,7 @@ public class DevScreen implements StaticSceneController {
         return layout;
     }
 }
+
+
+
+
