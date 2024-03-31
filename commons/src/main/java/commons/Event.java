@@ -320,7 +320,7 @@ public class Event {
     /**
      * Retrieves the debtors within a specific expense.
      *
-     * @param allParticipants A list of all participants involved.
+     * @param allParticipants A list of all participants involved in the expense.
      * @param expense         The expense for which debtors are to be retrieved.
      * @return A set of participants who are debtors within the expense.
      */
@@ -328,17 +328,17 @@ public class Event {
                                                     Expense expense) {
         Set<Participant> debtors = new HashSet<>();
         Participant creditor = expense.getPaidBy();
-        // The participant who paid for the expense is the creditor
 
-        for (Debt debt : settleDebts(allParticipants,
-                List.of(expense))) {
-            if (!debt.getCreditor().equals(creditor)) {
-                debtors.add(debt.getDebtor());
+        for (Participant participant : allParticipants) {
+            // Exclude the creditor from the set of debtors
+            if (!participant.equals(creditor)) {
+                debtors.add(participant);
             }
         }
 
         return debtors;
     }
+
 
 
 }
