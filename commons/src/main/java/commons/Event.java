@@ -190,21 +190,112 @@ public class Event {
     }
 
     /**
+     * Calculates and settles debts among participants based on expenses.
      *
-     * @param allParticipants Represents all the participants from the server
-     * @param event The event to be taken into consideration
+     * @param participants List of participants involved in the expenses.
+     * @param expenses     List of expenses incurred by participants.
+     * @return List of debts to settle within the group.
+     */
+    public static List<Debt> settleDebts(List<Participant> participants, List<Expense> expenses) {
+        if (participants.isEmpty() || expenses.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Calculate total expenses and individual shares
+        Map<Participant, Double> totalExpensesByParticipant = calculateTotalExpenses(expenses);
+        Map<Participant, Double> individualShareByParticipant =
+                calculateIndividualShare(participants, expenses);
+
+        // Calculate debts between each pair of participants
+        List<Debt> debts = new ArrayList<>();
+        for (Participant debtor : participants) {
+            for (Participant creditor : participants) {
+                if (!debtor.equals(creditor)) {
+                    double debtAmount = calculateDebtAmount(debtor, creditor,
+                            totalExpensesByParticipant, individualShareByParticipant);
+                    if (debtAmount > 0) {
+                        debts.add(new Debt(debtor, creditor, debtAmount));
+                    }
+                }
+            }
+        }
+
+        return debts;
+    }
+
+    /**
+     * Calculates the total expenses incurred by each participant.
+     *
+     * @param expenses List of expenses incurred by participants.
+     * @return Map containing total expenses by participant.
+     */
+    private static Map<Participant, Double> calculateTotalExpenses(List<Expense> expenses) {
+        Map<Participant, Double> totalExpensesByParticipant = new HashMap<>();
+        for (Expense expense : expenses) {
+            Participant paidBy = expense.getPaidBy();
+            double totalExpense = expense.getPrice();
+            totalExpensesByParticipant.put(paidBy, totalExpensesByParticipant
+                    .getOrDefault(paidBy, 0.0) + totalExpense);
+        }
+        return totalExpensesByParticipant;
+    }
+
+    /**
+     * Calculates the individual share of expenses for each participant.
+     *
+     * @param participants List of participants involved in the expenses.
+     * @param expenses     List of expenses incurred by participants.
+     * @return Map containing individual share of expenses by participant.
+     */
+    private static Map<Participant, Double> calculateIndividualShare(List<Participant> participants,
+                                                                     List<Expense> expenses) {
+        Map<Participant, Double> individualShareByParticipant = new HashMap<>();
+        for (Expense expense : expenses) {
+            double individualShare = (double) expense.getPrice() / (participants.size() - 1);
+            for (Participant participant : participants) {
+                if (!participant.equals(expense.getPaidBy())) {
+                    individualShareByParticipant.put(participant,
+                            individualShareByParticipant
+                                    .getOrDefault(participant, 0.0) + individualShare);
+                }
+            }
+        }
+        return individualShareByParticipant;
+    }
+
+    /**
+     * Calculates the amount of debt between a debtor and a creditor.
+     *
+     * @param debtor                      Participant who owes the debt.
+     * @param creditor                    Participant to whom the debt is owed.
+     * @param totalExpensesByParticipant Map of total expenses by participant.
+     * @param individualShareByParticipant Map of individual share of expenses by participant.
+     * @return Amount of debt between the debtor and the creditor.
+     */
+    private static double calculateDebtAmount(Participant debtor, Participant creditor,
+                                              Map<Participant, Double>
+                                                      totalExpensesByParticipant,
+                                              Map<Participant, Double>
+                                                      individualShareByParticipant) {
+        double debt = totalExpensesByParticipant.getOrDefault(creditor, 0.0)
+                - totalExpensesByParticipant.getOrDefault(debtor, 0.0);
+        double individualShare = individualShareByParticipant.getOrDefault(creditor, 0.0);
+        return Math.max(debt, individualShare);
+    }
+
+    /*/**
+     *
      * @param expenses The list of expenses within an event
      * @return Returns a list of debts to be settled
      */
-    public static List<Debt> settleDebts(List<Participant> allParticipants,
-                                  Event event, List<Expense> expenses) {
+    /*
+    public static List<Debt> settleDebts(List<Participant> participants, List<Expense> expenses) {
         Map<Participant, Double> debtMap = new HashMap<>();
 
         for (Expense expense : expenses) {
             Participant paidBy = expense.getPaidBy();
             double totalExpense = expense.getPrice();
 
-            List<Participant> participants = basicGetParticipants(allParticipants, event);
             double individualShare = totalExpense / participants.size();
 
             for (Participant participant : participants) {
@@ -223,34 +314,8 @@ public class Event {
         }
 
         return debts;
-    }
+    }*/
 
-    /**
-     *
-     * @param allParticipants Represents all the participants from the entire server
-     * @param event The event to be taken into consideration
-     * @return Returns the list of participants who are present within one specific event
-     */
-    private static List<Participant> basicGetParticipants(List<Participant> allParticipants,
-                                                          Event event) {
-        List<Participant> participants = new ArrayList<>();
-        for(Participant participant : allParticipants)
-            if(participant.getEvent().equals(event))
-                participants.add(participant);
-        return participants;
-    }
-
-    /**
-     *
-     * @param expense The expense to be taken into consideration
-     * @return Returns the list of people who participated in this event
-     */
-    private static List<Participant> advancedGetParticipants(Expense expense) {
-        List<Participant> participants = new ArrayList<>();
-        participants.add(expense.getPaidBy());
-        // Logic to be added for participants
-        return participants;
-    }
 
     /**
      * Retrieves the debtors within a specific expense.
@@ -266,8 +331,7 @@ public class Event {
         // The participant who paid for the expense is the creditor
 
         for (Debt debt : settleDebts(allParticipants,
-                                     expense.getPaidBy().getEvent(),
-                                     List.of(expense))) {
+                List.of(expense))) {
             if (!debt.getCreditor().equals(creditor)) {
                 debtors.add(debt.getDebtor());
             }
@@ -275,5 +339,6 @@ public class Event {
 
         return debtors;
     }
+
 
 }
