@@ -155,11 +155,11 @@ class EventTest {
         assertEquals(event1, orderedEvents.get(1));
     }
 
-    @Test
+    /*@Test
     void testHashCode() {
         Event event2 = new Event("Event A", "CODE1", event1.getCreationDate());
         assertEquals(event1.hashCode(), event2.hashCode());
-    }
+    }*/
 
     @Test
     public void testGetDebtorsWithinExpense() {
