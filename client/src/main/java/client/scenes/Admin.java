@@ -122,7 +122,6 @@ public class Admin implements StaticSceneController {
             for(EventResponseBody body : dump){
                 if(body.event().getCode().equals(event.getCode()))
                     op = body;
-                break;
             }
             if(op==null)
                 throw new IllegalArgumentException();
