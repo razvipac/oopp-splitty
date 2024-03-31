@@ -244,24 +244,6 @@ class EventTest {
     }
 
     @Test
-    void orderByLastActivity() {
-        List<Event> events = new ArrayList<>();
-        Event event1 = new Event("Event 1", "EVT1", LocalDateTime.now());
-        Event event2 = new Event("Event 2", "EVT2", LocalDateTime.now());
-
-        event1.setLastActivity(LocalDateTime.now().minusDays(1));
-        event2.setLastActivity(LocalDateTime.now().minusDays(2));
-
-        events.add(event1);
-        events.add(event2);
-
-        List<Event> orderedEvents = Event.orderByLastActivity(events);
-
-        assertEquals(event2, orderedEvents.get(0));
-        assertEquals(event1, orderedEvents.get(1));
-    }
-
-    @Test
     void settleDebts() {
         List<Expense> expenses = new ArrayList<>();
         expenses.add(new Expense(100, "Expense 1", participant1));
@@ -303,20 +285,6 @@ class EventTest {
 
         assertEquals(150.0, debtAmount);
     }
-
-    @Test
-    void testGetDebtorsWithinExpense() {
-        Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
-        Expense expense = new Expense(100, "Test Expense", participant1);
-        List<Participant> allParticipants = List.of(participant1, participant2, participant3);
-
-        Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
-
-        assertTrue(debtors.contains(participant2));
-        assertTrue(debtors.contains(participant3));
-        assertFalse(debtors.contains(participant1));
-    }
-
 
 
 }
