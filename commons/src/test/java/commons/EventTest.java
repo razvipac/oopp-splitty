@@ -244,6 +244,22 @@ class EventTest {
         assertEquals(event1, orderedEvents.get(1));
     }
 
+    @Test
+    void settleDebts() {
+        List<Expense> expenses = new ArrayList<>();
+        expenses.add(new Expense(100, "Expense 1", participant1));
+        expenses.add(new Expense(200, "Expense 2", participant2));
+        expenses.add(new Expense(150, "Expense 3", participant3));
+
+        List<Debt> debts = Event.settleDebts(List.of(participant1, participant2, participant3), expenses);
+
+        // Verifying the debts
+        assertEquals(6, debts.size());
+        for (Debt debt : debts) {
+            assertTrue(debt.getAmount() >= 0); // Debt amount should not be negative
+        }
+    }
+
     // These tests fail
 //    @Test
 //    public void testGetDebtorsWithinExpense() {
