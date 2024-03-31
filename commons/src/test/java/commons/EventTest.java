@@ -274,6 +274,18 @@ class EventTest {
         assertEquals(200.0, totalExpenses.get(participant2));
     }
 
+    @Test
+    void calculateDebtAmount() {
+        Participant debtor = new Participant("Alice", null, "email1", "iban1", "bic1");
+        Participant creditor = new Participant("Bob", null, "email2", "iban2", "bic2");
+
+        Map<Participant, Double> totalExpenses = Map.of(creditor, 300.0, debtor, 200.0);
+        Map<Participant, Double> individualShare = Map.of(creditor, 150.0, debtor, 100.0);
+
+        double debtAmount = Event.calculateDebtAmount(debtor, creditor, totalExpenses, individualShare);
+
+        assertEquals(150.0, debtAmount);
+    }
 
     // These tests fail
 //    @Test
