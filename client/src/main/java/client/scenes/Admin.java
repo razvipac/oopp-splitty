@@ -2,6 +2,8 @@ package client.scenes;
 
 import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import commons.dto.EventDTO;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -10,6 +12,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ComboBox;
+import javafx.stage.FileChooser;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -53,9 +61,6 @@ public class Admin implements StaticSceneController {
         // Creating GridPane for displaying data
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
-
-
-        List<EventDTO> events = serverUtils.getAllEvents();
 
         // Adding the grid and back button to the layout
         VBox layout = new VBox();
@@ -107,8 +112,10 @@ public class Admin implements StaticSceneController {
             eventEntry.getChildren().add(openPage);
             Button deleteEvent = deleteEvent(event);
             eventEntry.getChildren().add(deleteEvent);
-            Button getJSON = getJSON(event);
-            eventEntry.getChildren().add(getJSON);
+            List<EventDTO> dump = serverUtils.getAllEvents();
+            EventDTO op = dump.getFirst();
+            Button download = downloadEvent(op);
+            eventEntry.getChildren().add(download);
             eventsField.getChildren().add(eventEntry);
         }
     }
@@ -116,7 +123,48 @@ public class Admin implements StaticSceneController {
     private Button getJSON(EventDTO event) {
         Button get = new Button("Download");
         get.setOnAction(e -> {
+            //server.getJsonDumpUtils().getJSON();
+            StringSelection stringSelection = new StringSelection ("111");
+            Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
+            clpbrd.setContents (stringSelection, null);
+        });
+        return get;
+    }
 
+    /**
+     *
+     * @param event puts the JSON of an event in a file that is downloaded
+     * @return the button
+     */
+    public Button downloadEvent(EventDTO event) {
+        // Get the selected events
+        Button get = new Button("Download");
+        get.setOnAction(p -> {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            // Create a file chooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose Download Location");
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.getExtensionFilters()
+                    .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+
+            // Show the save dialog screen
+            File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
+
+            if (selectedFile != null) {
+                // Make a separate file for each event
+                String filename = selectedFile.getAbsolutePath();
+                try {
+                    // Write the JSON to the file using the objectMapper instance
+                    objectMapper.writeValue(selectedFile, event);
+                    System.out.println("(SUCCESS) Event downloaded");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    //System.err.println("(ERROR) Failed to download event: " + event.getCode());
+                }
+            }
         });
         return get;
     }
