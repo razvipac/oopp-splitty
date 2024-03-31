@@ -9,11 +9,9 @@ public class PasswordService {
 
     private final String password;
 
-    @SuppressWarnings("checkstyle:MemberName")
-    private final SecureRandom RANDOM = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
 
-    @SuppressWarnings("checkstyle:MemberName")
-    private final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+    private final String alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
             "abcdefghijklmnopqrstuvwxyz!@#$";
 
     /**
@@ -36,7 +34,7 @@ public class PasswordService {
 
         StringBuilder password = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            password.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+            password.append(alphabet.charAt(random.nextInt(alphabet.length())));
         }
         return password.toString();
     }
