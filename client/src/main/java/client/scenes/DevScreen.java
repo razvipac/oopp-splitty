@@ -89,8 +89,13 @@ public class DevScreen implements StaticSceneController {
         adminButton.setOnAction(e -> mainCtrl.showAdminScreen());
 
         // Button for language selection
+<<<<<<< HEAD
         Button languageButton = new LanguageButton("client/src/main/resources" +
                                                          "/userSettings/userPreferences.json");
+=======
+        Button languageButton = new LanguageButton("client/src/main" +
+                "/resources/userSettings/userPreferences.json");
+>>>>>>> TestCommons
 
         // Hbox for the language button
         HBox languageBox = new HBox(languageButton);

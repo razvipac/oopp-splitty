@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Set;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +21,7 @@ class EventTest {
     private Event event1;
     private Event event2;
     private Event event3;
+    private Event event4;
 
     private Expense expense1;
     private Expense expense2;
@@ -39,6 +40,7 @@ class EventTest {
         event1 = new Event("Event A", "CODE1", now);
         event2 = new Event("Event C", "CODE2", now);
         event3 = new Event("Event B", "CODE3", now);
+        event4 = new Event("Event D", "CODE4", later);
 
         LocalDate date = LocalDate.now();
         LocalDate specificDate = LocalDate.of(2024, 3, 29);
@@ -93,9 +95,9 @@ class EventTest {
 
     @Test
     void setLastActivity() {
-        LocalDateTime lastActivity = LocalDateTime.now();
-        event1.setLastActivity(lastActivity);
-        assertEquals(lastActivity, event1.getLastActivity());
+        LocalDateTime newLastActivity = LocalDateTime.now().minusDays(1);
+        event1.setLastActivity(newLastActivity);
+        assertEquals(newLastActivity, event1.getLastActivity());
     }
 
 
@@ -115,12 +117,10 @@ class EventTest {
         assertNotEquals(event1, new Event("Event A", "CODE1", earlier));
         assertNotEquals(event1, new Event("Event A", "CODE1", later));
     }
-
-//    @Test
-//    void testHashCode() {
-//        Event event2 = new Event("Event A", "CODE1", now);
-//        assertEquals(event1.hashCode(), event2.hashCode());
-//    }
+    @Test
+    void testHashCode() {
+        assertFalse(event2.hashCode() == event4.hashCode());
+    }
 
     @Test
     void testToString() {
@@ -138,6 +138,23 @@ class EventTest {
         assertEquals("Event A", sortedEvents.get(0).getName());
         assertEquals("Event B", sortedEvents.get(1).getName());
         assertEquals("Event C", sortedEvents.get(2).getName());
+    }
+
+    @Test
+    void orderByLastActivity() {
+        List<Event> events = List.of(event1, event2, event3);
+
+        LocalDateTime recentActivity = LocalDateTime.now().plusDays(1);
+        event2.setLastActivity(recentActivity);
+
+        LocalDateTime newLastActivity = LocalDateTime.now().minusDays(2);
+        event3.setLastActivity(newLastActivity);
+
+        List<Event> sortedEvents = Event.orderByLastActivity(events);
+
+        assertEquals("Event C", sortedEvents.get(0).getName());
+        assertEquals("Event A", sortedEvents.get(1).getName());
+        assertEquals("Event B", sortedEvents.get(2).getName());
     }
 
     @Test
@@ -164,38 +181,19 @@ class EventTest {
     }
 
 
-    // These tests fail
-//    @Test
-//    public void testGetDebtorsWithinExpense() {
-//        Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
-//        Expense expense = new Expense(100, "Test Expense", participant1);
-//        List<Participant> allParticipants = List.of(participant1, participant2, participant3);
-//
-//        Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
-//
-//        assertTrue(debtors.contains(participant2));
-//        assertTrue(debtors.contains(participant3));
-//        assertFalse(debtors.contains(participant1));
-//    }
-//
-//    @Test
-//    public void testSettleDebts() {
-//        Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
-//        Expense expense1 = new Expense(100, "Test Expense 1", participant1);
-//        Expense expense2 = new Expense(200, "Test Expense 2", participant2);
-//        List<Participant> allParticipants = List.of(participant1, participant2, participant3);
-//
-//        List<Debt> debts = Event.settleDebts(allParticipants, event, List.of(expense1, expense2));
-//
-//        for (Debt debt : debts) {
-//            if (debt.getDebtor().equals(participant1)) {
-//                assertEquals(50, debt.getAmount());
-//            } else if (debt.getDebtor().equals(participant2)) {
-//                assertEquals(50, debt.getAmount());
-//            } else if (debt.getDebtor().equals(participant3)) {
-//                assertEquals(100, debt.getAmount());
-//            }
-//        }
-//    }
+    @Test
+    void testGetDebtorsWithinExpense() {
+        Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
+        Expense expense = new Expense(100, "Test Expense", participant1);
+        List<Participant> allParticipants = List.of(participant1, participant2, participant3);
+
+        Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
+
+        assertTrue(debtors.contains(participant2));
+        assertTrue(debtors.contains(participant3));
+        assertFalse(debtors.contains(participant1));
+    }
+
+
 
 }

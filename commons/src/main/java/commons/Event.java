@@ -206,7 +206,7 @@ public class Event {
      */
     public static List<Event> orderByLastActivity(List<Event> events) {
         return events.stream()
-                .sorted(Comparator.comparing(Event::getLastActivity))
+                .sorted(Comparator.comparing(Event::getLastActivity).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -279,7 +279,7 @@ public class Event {
     /**
      * Retrieves the debtors within a specific expense.
      *
-     * @param allParticipants A list of all participants involved.
+     * @param allParticipants A list of all participants involved in the expense.
      * @param expense         The expense for which debtors are to be retrieved.
      * @return A set of participants who are debtors within the expense.
      */
@@ -287,8 +287,8 @@ public class Event {
                                                     Expense expense) {
         Set<Participant> debtors = new HashSet<>();
         Participant creditor = expense.getPaidBy();
-        // The participant who paid for the expense is the creditor
 
+        // Use the settleDebts method from the TestCommons branch
         for (Debt debt : settleDebts(allParticipants,
                 expense.getPaidBy().getEvent(),
                 List.of(expense))) {
@@ -299,5 +299,4 @@ public class Event {
 
         return debtors;
     }
-
 }
