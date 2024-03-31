@@ -65,8 +65,13 @@ public class PasswordService {
         return passwordEncoder.encode(toBeHashed);
     }
 
-    public boolean doesPasswordMatch(String inputPassword) {
-        return passwordEncoder.matches(inputPassword, hashPassword(password));
+    /**
+     * Checks whether the given String matches password
+     * @param input The entered password
+     * @return True iff input matches password, false otherwise
+     */
+    public boolean doesPasswordMatch(String input) {
+        return passwordEncoder.matches(input, hashPassword(password));
     }
 
 }
