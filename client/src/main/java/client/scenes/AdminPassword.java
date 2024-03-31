@@ -46,6 +46,17 @@ public class AdminPassword implements StaticPopupController {
      * @return the newly generated scene
      */
     public Scene initialize() {
+        VBox layout = createLayout();
+        // Initialize scene
+        scene = new Scene(layout, 300, 140);
+        return scene;
+    }
+
+    /**
+     * Creates and returns the GUI layout for this page
+     * @return The VBox that is the layout for this page
+     */
+    private VBox createLayout() {
         // Password label
         Label passwordLabel = new Label("Please enter the admin password:");
 
@@ -73,10 +84,7 @@ public class AdminPassword implements StaticPopupController {
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
         layout.getChildren().addAll(passwordLabel, errorText, passwordField, submitButton);
-
-        // Initialize scene
-        scene = new Scene(layout, 300, 140);
-        return scene;
+        return layout;
     }
 
     /**
