@@ -3,7 +3,6 @@ package server.service;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
 
 @Service
 public class PasswordService {
