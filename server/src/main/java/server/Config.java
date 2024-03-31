@@ -19,6 +19,8 @@ import java.util.Random;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class Config {
@@ -30,5 +32,14 @@ public class Config {
     @Bean
     public Random getRandom() {
         return new Random();
+    }
+
+    /**
+     * Provides a bean for password encoding using the BCrypt hashing algorithm.
+     * @return Object configured to use the BCrypt hashing algorithm.
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
