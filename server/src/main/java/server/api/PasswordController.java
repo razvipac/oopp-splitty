@@ -31,9 +31,6 @@ public class PasswordController {
      */
     @GetMapping("")
     public ResponseEntity<char[]> getPassword(){
-        char[] password = passwordService.generatePassword(20);
-        // Clears the password from memory after it's been used:
-        passwordService.clearPassword(password);
-        return new ResponseEntity<>(password, HttpStatus.OK);
+        return new ResponseEntity<>(passwordService.getPassword(), HttpStatus.OK);
     }
 }

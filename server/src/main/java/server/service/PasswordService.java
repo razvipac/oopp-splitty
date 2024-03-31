@@ -8,18 +8,20 @@ import java.util.Arrays;
 @Service
 public class PasswordService {
 
-    /**
-     * Creates PasswordService instance
-     */
-    public PasswordService() {
-    }
-
+    private char[] password;
     @SuppressWarnings("checkstyle:MemberName")
     private final SecureRandom RANDOM = new SecureRandom();
 
     @SuppressWarnings("checkstyle:MemberName")
     private final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
             "abcdefghijklmnopqrstuvwxyz!@#$";
+
+    /**
+     * Creates PasswordService instance
+     */
+    public PasswordService() {
+        password = generatePassword(20);
+    }
 
     /**
      * Generates a random, strong password to be used by the admin
@@ -38,11 +40,15 @@ public class PasswordService {
     }
 
     /**
-     * Securely clears the given char array.
-     * @param chars The char array to be cleared
+     * Retrieves the stored password (as a clone, so that the original can't be modified)
+     * @return The stored password
      */
-    public void clearPassword(char[] chars) {
-        Arrays.fill(chars, '\0');
+    public char[] getPassword() {
+        if(password == null) return null;
+
+        char[] clone = new char[password.length];
+        System.arraycopy(password, 0, clone, 0, password.length);
+        return password;
     }
 
 }
