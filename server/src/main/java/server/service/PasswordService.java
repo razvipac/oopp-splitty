@@ -42,15 +42,6 @@ public class PasswordService {
     }
 
     /**
-     * Retrieves the server password
-     *
-     * @return The server password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
      * Checks whether the given String matches password
      * @param input The entered password
      * @return True iff input matches password, false otherwise
