@@ -3,9 +3,7 @@ package server.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import server.service.PasswordService;
 
 @RestController
@@ -31,8 +29,8 @@ public class PasswordController {
      *         Returns HttpStatus.OK if successful.
      */
     @GetMapping("/matches-password")
-    public ResponseEntity<boolean> matchesPassword(String input) {
-        return new ResponseEntity<boolean>(passwordService.doesPasswordMatch(input), HttpStatus.OK);
+    public ResponseEntity<Boolean> matchesPassword(@RequestParam String input) {
+        return new ResponseEntity<Boolean>(passwordService.doesPasswordMatch(input), HttpStatus.OK);
     }
 
 }

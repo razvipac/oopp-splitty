@@ -28,6 +28,7 @@ public class PasswordService {
     public PasswordService(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
         password = generatePassword(20);
+        System.out.println("Admin password: " + password);
     }
 
     /**
@@ -70,7 +71,7 @@ public class PasswordService {
      * @param input The entered password
      * @return True iff input matches password, false otherwise
      */
-    public boolean doesPasswordMatch(String input) {
+    public Boolean doesPasswordMatch(String input) {
         return passwordEncoder.matches(input, hashPassword(password));
     }
 
