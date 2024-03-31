@@ -226,6 +226,24 @@ class EventTest {
         assertEquals(150.0, debtAmount);
     }
 
+    @Test
+    void orderByLastActivity() {
+        List<Event> events = new ArrayList<>();
+        Event event1 = new Event("Event 1", "EVT1", LocalDateTime.now());
+        Event event2 = new Event("Event 2", "EVT2", LocalDateTime.now());
+
+        event1.setLastActivity(LocalDateTime.now().minusDays(1));
+        event2.setLastActivity(LocalDateTime.now().minusDays(2));
+
+        events.add(event1);
+        events.add(event2);
+
+        List<Event> orderedEvents = Event.orderByLastActivity(events);
+
+        assertEquals(event2, orderedEvents.get(0));
+        assertEquals(event1, orderedEvents.get(1));
+    }
+
     // These tests fail
 //    @Test
 //    public void testGetDebtorsWithinExpense() {
