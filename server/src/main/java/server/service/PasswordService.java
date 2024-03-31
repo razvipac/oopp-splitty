@@ -58,10 +58,15 @@ public class PasswordService {
     /**
      * Hashes the provided password using BCryptPasswordEncoder
      *
-     * @param password The password to hash
+     * @param toBeHashed The password to hash
      * @return The hashed password
      */
-    public String hashPassword(String password) {
-        return passwordEncoder.encode(password);
+    public String hashPassword(String toBeHashed) {
+        return passwordEncoder.encode(toBeHashed);
     }
+
+    public boolean doesPasswordMatch(String inputPassword) {
+        return passwordEncoder.matches(inputPassword, hashPassword(password));
+    }
+
 }
