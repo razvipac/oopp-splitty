@@ -3,14 +3,12 @@ package server.service;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.SecureRandom;
 
 @Service
 public class PasswordService {
 
-    private final PasswordEncoder passwordEncoder;
     private final String password;
 
     @SuppressWarnings("checkstyle:MemberName")
@@ -21,12 +19,8 @@ public class PasswordService {
 
     /**
      * Constructs a PasswordService instance
-     *
-     * @param passwordEncoder Password encoder
      */
-    @Autowired
-    public PasswordService(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public PasswordService() {
         password = generatePassword(20);
         System.out.println("Admin password: " + password);
     }
@@ -57,22 +51,12 @@ public class PasswordService {
     }
 
     /**
-     * Hashes the provided password using BCryptPasswordEncoder
-     *
-     * @param toBeHashed The password to hash
-     * @return The hashed password
-     */
-    public String hashPassword(String toBeHashed) {
-        return passwordEncoder.encode(toBeHashed);
-    }
-
-    /**
      * Checks whether the given String matches password
      * @param input The entered password
      * @return True iff input matches password, false otherwise
      */
     public Boolean doesPasswordMatch(String input) {
-        return passwordEncoder.matches(input, hashPassword(password));
+        return password.equals(input);
     }
 
 }

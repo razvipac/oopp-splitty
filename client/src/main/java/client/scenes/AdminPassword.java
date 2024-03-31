@@ -51,8 +51,9 @@ public class AdminPassword implements StaticPopupController {
         // Submit Button
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
-            String entered = passwordField.getText();
-            validatePassword(entered);
+            String input = passwordField.getText();
+            Boolean isCorrect = serverUtils.matchesPassword(input);
+            System.out.println(isCorrect);
         });
 
         // Initialize layout
@@ -63,10 +64,6 @@ public class AdminPassword implements StaticPopupController {
         // Initialize scene
         scene = new Scene(layout, 300, 120);
         return scene;
-    }
-
-    private void validatePassword(String entered) {
-        char[] serverPassword = serverUtils.getPassword();
     }
 
     /**
