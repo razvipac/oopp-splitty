@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.interfaces.DataBasedPopupController;
 import client.interfaces.StaticPopupController;
 import client.utils.ServerUtils;
 import javafx.geometry.Insets;
@@ -22,6 +21,11 @@ public class AdminPassword implements StaticPopupController {
 
     private boolean passwordIsCorrect;
 
+    /**
+     * Constructor for the AdminPassword that calls the method to create the scene
+     * @param mainCtrl scene of the mainCtrl class
+     * @param serverUtils global serverUtils singleton
+     */
     public AdminPassword(MainCtrl mainCtrl, ServerUtils serverUtils) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
@@ -32,6 +36,10 @@ public class AdminPassword implements StaticPopupController {
         window.setOnCloseRequest(e -> closeAlertBox());
     }
 
+    /**
+     * Generate an ui from the given object instance
+     * @return the newly generated scene
+     */
     public Scene initialize() {
         // Password label
         Label passwordLabel = new Label("Please enter the admin password:");
