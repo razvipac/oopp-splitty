@@ -22,7 +22,8 @@ public class PasswordService {
      */
     public PasswordService() {
         password = generatePassword(20);
-        System.out.println("Admin password: " + password);
+        // Prints server password
+        System.out.println("\nAdmin password: " + password + "\n");
     }
 
     /**
