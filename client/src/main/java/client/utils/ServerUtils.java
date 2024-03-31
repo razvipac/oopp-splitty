@@ -1,4 +1,3 @@
-// CHECKSTYLE:OFF
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -158,6 +157,7 @@ public class ServerUtils {
     /**
      * Adds Expense to server
      * @param e Expense to add
+     * @param code Code of event to add to
      * @return True iff add was successful, false otherwise
      */
     public boolean addExpense(ExpenseDTO e, String code) {
@@ -193,6 +193,11 @@ public class ServerUtils {
 
     // Password methods
 
+    /**
+     * Checks if the given String matches the server's password
+     * @param input The entered password
+     * @return True iff input matches password, false otherwise.
+     */
     public Boolean matchesPassword(String input) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER)
