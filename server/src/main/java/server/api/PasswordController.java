@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import server.service.PasswordService;
 
 @RestController
-@RequestMapping("api/v1/admin")
+@RequestMapping("api/v1/admin/auth")
 public class PasswordController {
 
     private final PasswordService passwordService;
@@ -23,14 +23,16 @@ public class PasswordController {
     }
 
     /**
-     * GET api/v1/admin
-     * Returns a randomly generated password to be used by admin
+     * GET api/v1/admin/auth/matches-password
+     * Returns whether the given String matches the server's password
      *
-     * @return A ResponseEntity containing the randomly generated password if successful.
+     * @param input The entered password
+     * @return True iff input matches password, false otherwise.
      *         Returns HttpStatus.OK if successful.
      */
-    @GetMapping("")
-    public ResponseEntity<String> getPassword(){
-        return new ResponseEntity<>(passwordService.getPassword(), HttpStatus.OK);
+    @GetMapping("/matches-password")
+    public ResponseEntity<boolean> matchesPassword(String input) {
+        return new ResponseEntity<boolean>(passwordService.doesPasswordMatch(input), HttpStatus.OK);
     }
+
 }
