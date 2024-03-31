@@ -206,8 +206,8 @@ public class MainCtrl {
      * Shows the Start scene
      */
     public void showAdminScreen(){
-        showAdminPassword();
-        primaryStage.setScene(adminScreen.initialize());
+        if(adminPassword.isPasswordCorrect()) primaryStage.setScene(adminScreen.initialize());
+        else showAdminPassword();
     }
 
     /**
