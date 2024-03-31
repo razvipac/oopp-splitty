@@ -193,10 +193,11 @@ public class ServerUtils {
 
     // Password methods
 
-    public char[] getPassword() {
+    public Boolean matchesPassword(String input) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER)
-                .path("api/v1/admin")
+                .path("api/v1/admin/auth/matches-password")
+                .queryParam("input", input)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {});
