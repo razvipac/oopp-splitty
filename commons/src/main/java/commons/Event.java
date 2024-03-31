@@ -330,8 +330,10 @@ public class Event {
         Participant creditor = expense.getPaidBy();
         // The participant who paid for the expense is the creditor
 
-        for (Debt debt : settleDebts(allParticipants,
-                List.of(expense))) {
+        List<Expense> expenses = List.of(expense);
+        List<Debt> debts = settleDebts(allParticipants, expenses);
+
+        for (Debt debt : debts) {
             if (!debt.getCreditor().equals(creditor)) {
                 debtors.add(debt.getDebtor());
             }
@@ -339,6 +341,5 @@ public class Event {
 
         return debtors;
     }
-
 
 }
