@@ -77,7 +77,7 @@ public class Statistics {
                 slice3.getPieValue() + slice4.getPieValue());
 
 
-        Label totalCostLabel = new Label("Total Cost of Event: " + totalCost + "€");
+        Label totalCostLabel = new Label("Total Cost of Event: " + totalCost + "\u20AC");
         totalCostLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
 
