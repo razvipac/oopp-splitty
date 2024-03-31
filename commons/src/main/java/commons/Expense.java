@@ -19,18 +19,19 @@ public class Expense {
     private Integer price;
     private String item;
     private LocalDate date;
-
     @ManyToMany
     @JoinTable(
             name = "expense_participant",
             joinColumns = {
-                    @JoinColumn(name = "expense_id", referencedColumnName = "id"),
-                    @JoinColumn(name = "paidBy_name", referencedColumnName = "paidBy_name"),
-                    @JoinColumn(name = "paidBy_event_code", referencedColumnName = "paidBy_event_code")
+                @JoinColumn(name = "expense_id", referencedColumnName = "id"),
+                @JoinColumn(name = "paidBy_name", referencedColumnName = "paidBy_name"),
+                @JoinColumn(name = "paidBy_event_code",
+                        referencedColumnName = "paidBy_event_code")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "participant_name", referencedColumnName = "name"),
-                    @JoinColumn(name = "participant_event_code", referencedColumnName = "event_code")
+                @JoinColumn(name = "participant_name", referencedColumnName = "name"),
+                @JoinColumn(name = "participant_event_code",
+                        referencedColumnName = "event_code")
             }
     )
     private List<Participant> participants;
