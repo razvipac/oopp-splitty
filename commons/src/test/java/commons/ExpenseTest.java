@@ -81,4 +81,50 @@ class ExpenseTest {
 //                '}';
 //        assertEquals(expected, expense1.toString());
 //    }
+
+
+
+    @Test
+    void testExpenseIdParameterizedConstructor() {
+        ExpenseId expenseId = new ExpenseId(1L, participant1);
+        assertEquals(1L, expenseId.getId());
+        assertEquals(participant1, expenseId.getPaidBy());
+    }
+
+    @Test
+    void testExpenseIdGetAndSetId() {
+        ExpenseId expenseId = new ExpenseId();
+        expenseId.setId(1L);
+        assertEquals(1L, expenseId.getId());
+    }
+
+    @Test
+    void testExpenseIdGetAndSetPaidBy() {
+        ExpenseId expenseId = new ExpenseId();
+        expenseId.setPaidBy(participant1);
+        assertEquals(participant1, expenseId.getPaidBy());
+    }
+
+    @Test
+    void testExpenseIdEquals() {
+        ExpenseId expenseId1 = new ExpenseId(1L, participant1);
+        ExpenseId expenseId2 = new ExpenseId(1L, participant1);
+        assertEquals(expenseId1, expenseId2);
+        assertNotEquals(expenseId1, new ExpenseId(2L, participant2));
+    }
+
+    @Test
+    void testExpenseIdHashCode() {
+        ExpenseId expenseId1 = new ExpenseId(1L, participant1);
+        ExpenseId expenseId2 = new ExpenseId(1L, participant1);
+        assertEquals(expenseId1.hashCode(), expenseId2.hashCode());
+    }
+
+    @Test
+    void testExpenseIdToString() {
+        ExpenseId expenseId = new ExpenseId(1L, participant1);
+        String expected = "ExpenseId{id=" + expenseId.getId() + ", paidBy=" + expenseId.getPaidBy() + '}';
+        assertEquals(expected, expenseId.toString());
+    }
+
 }

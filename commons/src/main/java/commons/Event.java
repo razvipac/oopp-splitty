@@ -174,7 +174,7 @@ public class Event {
      */
     public static List<Event> orderByLastActivity(List<Event> events) {
         return events.stream()
-                .sorted(Comparator.comparing(Event::getLastActivity))
+                .sorted(Comparator.comparing(Event::getLastActivity).reversed())
                 .collect(Collectors.toList());
     }
 

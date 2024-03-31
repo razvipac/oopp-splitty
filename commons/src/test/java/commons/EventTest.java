@@ -19,6 +19,7 @@ class EventTest {
     private Event event1;
     private Event event2;
     private Event event3;
+    private Event event4;
 
     private Expense expense1;
     private Expense expense2;
@@ -37,6 +38,7 @@ class EventTest {
         event1 = new Event("Event A", "CODE1", now);
         event2 = new Event("Event C", "CODE2", now);
         event3 = new Event("Event B", "CODE3", now);
+        event4 = new Event("Event D", "CODE4", later);
 
         expense1 = new Expense(100, "Item 1", null);
         expense2 = new Expense(200, "Item 2", null);
@@ -87,9 +89,9 @@ class EventTest {
 
     @Test
     void setLastActivity() {
-        LocalDateTime lastActivity = LocalDateTime.now();
-        event1.setLastActivity(lastActivity);
-        assertEquals(lastActivity, event1.getLastActivity());
+        LocalDateTime newLastActivity = LocalDateTime.now().minusDays(1);
+        event1.setLastActivity(newLastActivity);
+        assertEquals(newLastActivity, event1.getLastActivity());
     }
 
 
@@ -109,11 +111,9 @@ class EventTest {
         assertNotEquals(event1, new Event("Event A", "CODE1", earlier));
         assertNotEquals(event1, new Event("Event A", "CODE1", later));
     }
-
     @Test
     void testHashCode() {
-        Event event2 = new Event("Event A", "CODE1", now);
-        assertNotEquals(event1.hashCode(), event2.hashCode());
+        assertFalse(event2.hashCode() == event4.hashCode());
     }
 
     @Test
@@ -132,6 +132,23 @@ class EventTest {
         assertEquals("Event A", sortedEvents.get(0).getName());
         assertEquals("Event B", sortedEvents.get(1).getName());
         assertEquals("Event C", sortedEvents.get(2).getName());
+    }
+
+    @Test
+    void orderByLastActivity() {
+        List<Event> events = List.of(event1, event2, event3);
+
+        LocalDateTime recentActivity = LocalDateTime.now().plusDays(1);
+        event2.setLastActivity(recentActivity);
+
+        LocalDateTime newLastActivity = LocalDateTime.now().minusDays(2);
+        event3.setLastActivity(newLastActivity);
+
+        List<Event> sortedEvents = Event.orderByLastActivity(events);
+
+        assertEquals("Event C", sortedEvents.get(0).getName());
+        assertEquals("Event A", sortedEvents.get(1).getName());
+        assertEquals("Event B", sortedEvents.get(2).getName());
     }
 
     @Test
@@ -159,7 +176,7 @@ class EventTest {
 
 
     @Test
-    public void testGetDebtorsWithinExpense() {
+    void testGetDebtorsWithinExpense() {
         Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
         Expense expense = new Expense(100, "Test Expense", participant1);
         List<Participant> allParticipants = List.of(participant1, participant2, participant3);
