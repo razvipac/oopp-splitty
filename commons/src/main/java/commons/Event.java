@@ -229,7 +229,7 @@ public class Event {
      * @param expenses List of expenses incurred by participants.
      * @return Map containing total expenses by participant.
      */
-    private static Map<Participant, Double> calculateTotalExpenses(List<Expense> expenses) {
+    public static Map<Participant, Double> calculateTotalExpenses(List<Expense> expenses) {
         Map<Participant, Double> totalExpensesByParticipant = new HashMap<>();
         for (Expense expense : expenses) {
             Participant paidBy = expense.getPaidBy();
@@ -247,7 +247,7 @@ public class Event {
      * @param expenses     List of expenses incurred by participants.
      * @return Map containing individual share of expenses by participant.
      */
-    private static Map<Participant, Double> calculateIndividualShare(List<Participant> participants,
+    public static Map<Participant, Double> calculateIndividualShare(List<Participant> participants,
                                                                      List<Expense> expenses) {
         Map<Participant, Double> individualShareByParticipant = new HashMap<>();
         for (Expense expense : expenses) {
@@ -272,7 +272,7 @@ public class Event {
      * @param individualShareByParticipant Map of individual share of expenses by participant.
      * @return Amount of debt between the debtor and the creditor.
      */
-    private static double calculateDebtAmount(Participant debtor, Participant creditor,
+    public static double calculateDebtAmount(Participant debtor, Participant creditor,
                                               Map<Participant, Double>
                                                       totalExpensesByParticipant,
                                               Map<Participant, Double>
