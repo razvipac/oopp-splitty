@@ -190,28 +190,23 @@ public class Event {
     }
 
     /**
-     *
+     * Settles the debts within an event.
      * @param allParticipants Represents all the participants from the server
      * @param event The event to be taken into consideration
      * @param expenses The list of expenses within an event
      * @return Returns a list of debts to be settled
      */
     public static List<Debt> settleDebts(List<Participant> allParticipants,
-                                  Event event, List<Expense> expenses) {
+                                         Event event, List<Expense> expenses) {
         Map<Participant, Double> debtMap = new HashMap<>();
-
         for (Expense expense : expenses) {
-            Participant paidBy = expense.getPaidBy();
+            List<Participant> participants = expense.getParticipants();
             double totalExpense = expense.getPrice();
-
-            List<Participant> participants = basicGetParticipants(allParticipants, event);
             double individualShare = totalExpense / participants.size();
 
             for (Participant participant : participants) {
-                if (!participant.equals(paidBy)) {
-                    double currentDebt = debtMap.getOrDefault(participant, 0.0);
-                    debtMap.put(participant, currentDebt + individualShare);
-                }
+                double currentDebt = debtMap.getOrDefault(participant, 0.0);
+                debtMap.put(participant, currentDebt + individualShare);
             }
         }
 
@@ -226,7 +221,7 @@ public class Event {
     }
 
     /**
-     *
+     * Settles the debts within an event.
      * @param allParticipants Represents all the participants from the entire server
      * @param event The event to be taken into consideration
      * @return Returns the list of participants who are present within one specific event
@@ -241,15 +236,12 @@ public class Event {
     }
 
     /**
-     *
+     * Retrieves the participants within a specific expense.
      * @param expense The expense to be taken into consideration
      * @return Returns the list of people who participated in this event
      */
     private static List<Participant> advancedGetParticipants(Expense expense) {
-        List<Participant> participants = new ArrayList<>();
-        participants.add(expense.getPaidBy());
-        // Logic to be added for participants
-        return participants;
+        return new ArrayList<>(expense.getParticipants());
     }
 
     /**
@@ -266,8 +258,8 @@ public class Event {
         // The participant who paid for the expense is the creditor
 
         for (Debt debt : settleDebts(allParticipants,
-                                     expense.getPaidBy().getEvent(),
-                                     List.of(expense))) {
+                expense.getPaidBy().getEvent(),
+                List.of(expense))) {
             if (!debt.getCreditor().equals(creditor)) {
                 debtors.add(debt.getDebtor());
             }
