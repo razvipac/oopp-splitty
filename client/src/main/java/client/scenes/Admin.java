@@ -19,14 +19,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.ComboBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
@@ -111,7 +107,7 @@ public class Admin implements StaticSceneController {
         List<EventDTO> list = serverUtils.getAllEvents();
         if(compare==1) list.sort(Comparator.comparing(EventDTO::getName));
         else if(compare==2) list.sort(Comparator.comparing(EventDTO::getCreationDate));
-        else if(compare==3) list.sort(Comparator.comparing(EventDTO::getCreationDate));
+        else list.sort(Comparator.comparing(EventDTO::getCreationDate));
 
         for (EventDTO event : list) {
             HBox eventEntry = new HBox();
@@ -126,6 +122,7 @@ public class Admin implements StaticSceneController {
             for(EventResponseBody body : dump){
                 if(body.event().getCode().equals(event.getCode()))
                     op = body;
+                break;
             }
             if(op==null)
                 throw new IllegalArgumentException();
@@ -200,7 +197,10 @@ public class Admin implements StaticSceneController {
         return openPage;
     }
 
-
+    /**
+     * Opens fileChooser when clicked
+     * @return the button
+     */
     public Button importJSON() {
         Button importEvent = new Button("Import Event");
         importEvent.setOnAction(b -> {
@@ -239,6 +239,11 @@ public class Admin implements StaticSceneController {
         return importEvent;
     }
 
+    /**
+     * Copies the contents of the file, and transforms them into entities
+     * @param jsonPath the path to the file
+     * @return returns the response entity with which the event is restored
+     */
     public EventResponseBody importEventFromJSON(String jsonPath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
