@@ -2,6 +2,8 @@ package commons;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,6 +18,24 @@ public class Expense {
 
     private Integer price;
     private String item;
+    private LocalDate date;
+    @ManyToMany
+    @JoinTable(
+            name = "expense_participant",
+            joinColumns = {
+                @JoinColumn(name = "expense_id", referencedColumnName = "id"),
+                @JoinColumn(name = "paidBy_name", referencedColumnName = "paidBy_name"),
+                @JoinColumn(name = "paidBy_event_code",
+                        referencedColumnName = "paidBy_event_code")
+            },
+            inverseJoinColumns = {
+                @JoinColumn(name = "participant_name", referencedColumnName = "name"),
+                @JoinColumn(name = "participant_event_code",
+                        referencedColumnName = "event_code")
+            }
+    )
+    private List<Participant> participants;
+
 
     /**
      * Default constructor.
@@ -29,13 +49,15 @@ public class Expense {
      * @param price  The price of the expense.
      * @param item   The item description of the expense.
      * @param paidBy The participant who paid for the expense.
+     * @param date   The date of the expense.
      */
-    public Expense(Integer price, String item, Participant paidBy) {
+    public Expense(Integer price, String item, Participant paidBy, LocalDate date) {
         ExpenseId eid = new ExpenseId();
         eid.setPaidBy(paidBy);
         this.pkey = eid;
         this.price = price;
         this.item = item;
+        this.date = date;
     }
 
     /**
@@ -111,6 +133,30 @@ public class Expense {
     }
 
     /**
+     * Retrieves the date of the expense.
+     * @return The date of the expense.
+     */
+    public LocalDate getDate() {
+        return date;
+    }
+
+    /**
+     * Sets the date of the expense.
+     * @param date The date of the expense to set.
+     */
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    /**
+     * Sets the participants of the expense.
+     * @return The participants of the expense.
+     */
+    public List<Participant> getParticipants() {
+        return this.participants;
+    }
+
+    /**
      * Returns a string representation of the expense.
      *
      * @return A string representation of the expense.
@@ -148,4 +194,5 @@ public class Expense {
     public int hashCode() {
         return Objects.hash(pkey, price, item);
     }
+
 }

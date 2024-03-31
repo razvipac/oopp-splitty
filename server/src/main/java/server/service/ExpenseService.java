@@ -112,7 +112,7 @@ public class ExpenseService {
 
         Participant paidBy = getOneParticipant(eventCode, body.participantName());
 
-        Expense newExpense = new Expense(body.price(), body.item(), paidBy);
+        Expense newExpense = new Expense(body.price(), body.item(), paidBy, body.date());
 
         expenseRepository.save(newExpense);
         return newExpense;
@@ -167,6 +167,7 @@ public class ExpenseService {
 
         found.setItem(body.item());
         found.setPrice(body.price());
+        found.setDate(body.date());
 
         expenseRepository.save(found);
         return found;
