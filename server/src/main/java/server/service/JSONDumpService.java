@@ -174,4 +174,55 @@ public class JSONDumpService {
             throw new ImproperDumpFormatException("Improper dump format");
         }
     }
+    /**
+     * Restores the state of an event to that stored inside the passed EventDump
+     *
+     * @param eventResponseBody contains the information of 1 event
+     * @throws ImproperDumpFormatException if the passed jsonDump is formatted improperly
+     */
+    @Transactional
+    public void restoreFromDump(EventResponseBody eventResponseBody)
+            throws ImproperDumpFormatException {
+        try {
+            Event event = eventResponseBody.event();
+            eventRepository.save(event);
+
+            for (DebtResponseBody debtResponseBody : eventResponseBody.debts()) {
+                Debt debt = new Debt(
+                        participantRepository.findParticipantByEventCodeAndName
+                                (debtResponseBody.debtor(), event.getCode()).get(),
+                        participantRepository.findParticipantByEventCodeAndName(
+                                debtResponseBody.creditor(), event.getCode()).get(),
+                        debtResponseBody.amount()
+                );
+                debtRepository.save(debt);
+            }
+
+            for (ParticipantResponseBody participantResponseBody :
+                    eventResponseBody.participants()) {
+                Participant participant = new Participant(
+                    participantResponseBody.name(),
+                    event,
+                    participantResponseBody.email(),
+                    participantResponseBody.iban(),
+                    participantResponseBody.bic()
+                );
+                participantRepository.save(participant);
+            }
+
+            for (ExpenseResponseBody expenseResponseBody : eventResponseBody.expenses()) {
+                Expense expense = new Expense(
+                    expenseResponseBody.price(),
+                    expenseResponseBody.item(),
+                    participantRepository.
+                            findParticipantByEventCodeAndName
+                                    (expenseResponseBody.paidBy(), event.getCode()).get(),
+                    expenseResponseBody.date()
+                );
+                expenseRepository.save(expense);
+            }
+        } catch (Exception e) {
+            throw new ImproperDumpFormatException("Improper dump format");
+        }
+    }
 }

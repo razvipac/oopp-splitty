@@ -11,10 +11,8 @@ import server.database.EventRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 
 /**
  * Handles input and output for saved Event objects
@@ -83,6 +81,7 @@ public class EventService {
         Event newEvent = new Event(name, code, creationDate);
         newEvent.setLastActivity(creationDate);
 
+
         eventRepository.save(newEvent);
         return newEvent;
     }
@@ -132,7 +131,10 @@ public class EventService {
         // if not found exception will be thrown
 
         found.setName(newName);
-
+        LocalDateTime l = new Date().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        found.setLastActivity(l);
         eventRepository.save(found);
         return found;
 
