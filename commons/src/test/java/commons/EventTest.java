@@ -260,6 +260,21 @@ class EventTest {
         }
     }
 
+    @Test
+    void calculateTotalExpenses() {
+        List<Expense> expenses = new ArrayList<>();
+
+        expenses.add(new Expense(100, "Test Expense 1", participant1));
+        expenses.add(new Expense(200, "Test Expense 2", participant2));
+        expenses.add(new Expense(150, "Test Expense 3", participant1));
+
+        Map<Participant, Double> totalExpenses = Event.calculateTotalExpenses(expenses);
+
+        assertEquals(250.0, totalExpenses.get(participant1));
+        assertEquals(200.0, totalExpenses.get(participant2));
+    }
+
+
     // These tests fail
 //    @Test
 //    public void testGetDebtorsWithinExpense() {
