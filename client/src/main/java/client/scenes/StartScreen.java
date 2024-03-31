@@ -100,16 +100,16 @@ public class StartScreen implements StaticSceneController {
 
 
         // hardcoded data of recently viewed events
-        HBox skiTripBox = createEventBox("• Ski Trip");
+        HBox skiTripBox = createEventBox("\u2022 Ski Trip");
         skiTripBox.setAlignment(Pos.CENTER);
 
-        HBox museumVisitBox = createEventBox("• Museum Visit");
+        HBox museumVisitBox = createEventBox("\u2022 Museum Visit");
         museumVisitBox.setAlignment(Pos.CENTER);
 
-        HBox giftForJohnBox = createEventBox("• Gift for John's Birthday");
+        HBox giftForJohnBox = createEventBox("\u2022 Gift for John's Birthday");
         giftForJohnBox.setAlignment(Pos.CENTER);
 
-        HBox newYearPartyBox = createEventBox("• New Year Party");
+        HBox newYearPartyBox = createEventBox("\u2022 New Year Party");
         newYearPartyBox.setAlignment(Pos.CENTER);
 
         // layout for the start screen
