@@ -21,6 +21,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.util.List;
 
 import commons.dto.*;
+import commons.response_body.EventResponseBody;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -189,5 +190,28 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {});
+    }
+
+    /**
+     *
+     * @return Gets the Json dump
+     */
+    public List<EventResponseBody> getJSON() {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/admin/jsondump")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
+    }
+
+    public boolean restoreEvent(EventResponseBody body) {
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/admin/jsondump")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(body, APPLICATION_JSON)); {
+                };
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 }

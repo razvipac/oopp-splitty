@@ -3,6 +3,8 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExpenseTest {
@@ -16,9 +18,9 @@ class ExpenseTest {
     void setUp() {
         participant1 = new Participant("A", null, "a@mail.com", "1234", "1234");
         participant2 = new Participant("B", null, "b@mail.com", "5678", "5678");
-        expense1 = new Expense(100, "Item", participant1);
-        expense2 = new Expense(100, "Item", participant1);
-        expense3 = new Expense(200, "Another Item", participant2);
+        expense1 = new Expense(100, "Item", participant1, LocalDate.now());
+        expense2 = new Expense(100, "Item", participant1, LocalDate.of(2024, 3, 29));
+        expense3 = new Expense(200, "Another Item", participant2, LocalDate.of(2024, 3, 29));
     }
 
     @Test
