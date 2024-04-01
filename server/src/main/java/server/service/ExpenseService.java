@@ -219,6 +219,14 @@ public class ExpenseService {
 
         return searchResult.get();
     }
+    /**
+     * Fetches an Event object with given code
+     *
+     * @param eventCode code of the fetched Event object
+     * @return a fetched Event object
+     * @throws NotFoundInDatabaseException if an object with given code
+     *                                     is not present in the database
+     */
     public Event getOneEvent(String eventCode) throws NotFoundInDatabaseException {
         Optional<Event> searchResult = eventRepository.findById(eventCode);
 
@@ -228,7 +236,14 @@ public class ExpenseService {
         return searchResult.get();
     }
 
-    public Event updateDate(String eventCode) throws NotFoundInDatabaseException {
+    /**
+     * Updates the Last Activity date on the Event
+     *
+     * @param eventCode code of the fetched Event object
+     * @throws NotFoundInDatabaseException if an object with given code
+     *                                     is not present in the database
+     */
+    public void updateDate(String eventCode) throws NotFoundInDatabaseException {
         Event found = getOneEvent(eventCode);
         // if not found exception will be thrown
         LocalDateTime l = new Date().toInstant()
@@ -236,6 +251,5 @@ public class ExpenseService {
                 .toLocalDateTime();
         found.setLastActivity(l);
         eventRepository.save(found);
-        return found;
     }
 }

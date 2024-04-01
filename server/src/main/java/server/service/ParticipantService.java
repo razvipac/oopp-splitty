@@ -198,7 +198,13 @@ public class ParticipantService {
 
         return searchResult.get();
     }
-
+    /**
+     * Updates the Last Activity date on the Event
+     *
+     * @param eventCode code of the fetched Event object
+     * @throws NotFoundInDatabaseException if an object with given code
+     *                                     is not present in the database
+     */
     public Event updateDate(String eventCode) throws NotFoundInDatabaseException {
         Event found = getOneEvent(eventCode);
         // if not found exception will be thrown
