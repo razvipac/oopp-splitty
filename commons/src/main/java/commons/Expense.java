@@ -2,6 +2,7 @@ package commons;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -17,6 +18,7 @@ public class Expense {
     private Integer price;
     private String item;
 
+    private LocalDate date;
     /**
      * Default constructor.
      */
@@ -29,13 +31,15 @@ public class Expense {
      * @param price  The price of the expense.
      * @param item   The item description of the expense.
      * @param paidBy The participant who paid for the expense.
+     * @param date The date of the expense.
      */
-    public Expense(Integer price, String item, Participant paidBy) {
+    public Expense(Integer price, String item, Participant paidBy, LocalDate date) {
         ExpenseId eid = new ExpenseId();
         eid.setPaidBy(paidBy);
         this.pkey = eid;
         this.price = price;
         this.item = item;
+        this.date = date;
     }
 
     /**
@@ -108,6 +112,22 @@ public class Expense {
      */
     public void setPaidBy(Participant paidBy) {
         pkey.setPaidBy(paidBy);
+    }
+
+    /**
+     * Retrieves the date of the expense.
+     * @return The date of the expense.
+     */
+    public LocalDate getDate() {
+        return date;
+    }
+
+    /**
+     * Sets the date of the expense.
+     * @param date The date of the expense.
+     */
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     /**
