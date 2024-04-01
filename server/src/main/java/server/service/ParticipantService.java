@@ -12,6 +12,9 @@ import server.database.EventRepository;
 import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +101,7 @@ public class ParticipantService {
         );
 
         participantRepository.save(newParticipant);
+        updateDate(eventCode);
         return newParticipant;
     }
 
@@ -136,7 +140,7 @@ public class ParticipantService {
                         WSAction.DELETED,
                         ParticipantResponseBody.build(found)
                 ));
-
+        updateDate(eventCode);
         return found;
     }
 
@@ -151,13 +155,15 @@ public class ParticipantService {
      */
     public Participant updateOne(String eventCode, String name, ParticipantRequestBody body)
             throws NotFoundInDatabaseException {
-        Participant found = getOne(eventCode, body.name());
+        Participant found = getOne(eventCode, name);
         // if not found exception will be thrown
         found.setEmail(body.email());
         found.setIban(body.iban());
         found.setBic(body.bic());
+        found.setName(body.name());
 
         participantRepository.save(found);
+        updateDate(eventCode);
         return found;
     }
 
@@ -191,5 +197,16 @@ public class ParticipantService {
                 "Event with code: " + eventCode + " is not present in the database!");
 
         return searchResult.get();
+    }
+
+    public Event updateDate(String eventCode) throws NotFoundInDatabaseException {
+        Event found = getOneEvent(eventCode);
+        // if not found exception will be thrown
+        LocalDateTime l = new Date().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        found.setLastActivity(l);
+        eventRepository.save(found);
+        return found;
     }
 }
