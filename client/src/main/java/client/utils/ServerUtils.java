@@ -86,8 +86,10 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(eventName, APPLICATION_JSON), EventDTO.class);
     }
+
     /**
      * Creates an event with the given event name.
+     *
      * @param eventCode the name of the event
      * @return the created Event
      */
@@ -120,6 +122,7 @@ public class ServerUtils {
 
     /**
      * Adds Participant to server
+     *
      * @param p Participant to add
      * @return True iff add was successful, false otherwise
      */
@@ -157,7 +160,8 @@ public class ServerUtils {
 
     /**
      * Adds Expense to server
-     * @param e Expense to add
+     *
+     * @param e    Expense to add
      * @param code Code of event to add to
      * @return True iff add was successful, false otherwise
      */
@@ -189,13 +193,15 @@ public class ServerUtils {
                 .path("api/v1/" + eventCode + "/debts")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {});
+                .get(new GenericType<>() {
+                });
     }
 
     // Password methods
 
     /**
      * Checks if the given String matches the server's password
+     *
      * @param input The entered password
      * @return True iff input matches password, false otherwise.
      */
@@ -206,13 +212,13 @@ public class ServerUtils {
                 .queryParam("input", input)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {});
+                .get(new GenericType<>() {
+                });
     }
 
     // JSON dump methods
 
     /**
-     *
      * @return Gets the Json dump
      */
     public List<EventResponseBody> getJSON() {
@@ -229,7 +235,7 @@ public class ServerUtils {
                 .target(SERVER).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(body, APPLICATION_JSON)); {
-                };
+                .post(Entity.entity(body, APPLICATION_JSON));
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
+}
