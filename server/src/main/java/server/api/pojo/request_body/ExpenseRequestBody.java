@@ -1,5 +1,7 @@
 package server.api.pojo.request_body;
 
+import java.time.LocalDate;
+
 /**
  * Structure of the request body for Create/Update operations on expenses
  *
@@ -10,5 +12,6 @@ package server.api.pojo.request_body;
 public record ExpenseRequestBody(
         Integer price,
         String item,
-        String participantName
+        String participantName,
+        LocalDate date
 ) {}

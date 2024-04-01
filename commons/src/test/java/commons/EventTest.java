@@ -2,6 +2,8 @@ package commons;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -38,9 +40,13 @@ class EventTest {
         event3 = new Event("Event B", "CODE3", now);
         event4 = new Event("Event D", "CODE4", later);
 
-        expense1 = new Expense(100, "Item 1", null);
-        expense2 = new Expense(200, "Item 2", null);
-        expense3 = new Expense(300, "Item 3", null);
+        LocalDate date = LocalDate.now();
+        LocalDate specificDate = LocalDate.of(2024, 3, 29);
+        LocalDate specificDate2 = LocalDate.of(2024, 3, 28);
+
+        expense1 = new Expense(100, "Item 1", null, date);
+        expense2 = new Expense(200, "Item 2", null, specificDate);
+        expense3 = new Expense(300, "Item 3", null, specificDate2);
 
         participant1 = new Participant("Participant 1", null, "email1", "iban1", "bic1");
         participant2 = new Participant("Participant 2", null, "email2", "iban2", "bic2");
@@ -111,7 +117,7 @@ class EventTest {
     }
     @Test
     void testHashCode() {
-        assertFalse(event2.hashCode() == event4.hashCode());
+        assertNotEquals(event2.hashCode(), event4.hashCode());
     }
 
     @Test
@@ -181,7 +187,7 @@ class EventTest {
     @Test
     public void testGetDebtorsWithinExpense() {
         Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
-        Expense expense = new Expense(100, "Test Expense", participant1);
+        Expense expense = new Expense(100, "Test Expense", participant1, LocalDate.now());
         List<Participant> allParticipants = List.of(participant1, participant2, participant3);
 
         Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
@@ -197,9 +203,9 @@ class EventTest {
         Participant participant1 = new Participant("Alice", null, "email1", "iban1", "bic1");
         Participant participant2 = new Participant("Bob", null, "email2", "iban2", "bic2");
 
-        expenses.add(new Expense(100, "Test Expense 1", participant1));
-        expenses.add(new Expense(200, "Test Expense 2", participant2));
-        expenses.add(new Expense(150, "Test Expense 3", participant1));
+        expenses.add(new Expense(100, "Test Expense 1", participant1, LocalDate.now()));
+        expenses.add(new Expense(200, "Test Expense 2", participant2, LocalDate.of(2024, 3, 29)));
+        expenses.add(new Expense(150, "Test Expense 3", participant1, LocalDate.of(2024, 2, 29)));
 
         // Calculate total expenses by participant
         Map<Participant, Double> totalExpenses = Event.calculateTotalExpenses(expenses);
@@ -216,8 +222,8 @@ class EventTest {
         List<Participant> participants = List.of(participant1, participant2);
 
         List<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense(100, "Test Expense 1", participant1));
-        expenses.add(new Expense(200, "Test Expense 2", participant2));
+        expenses.add(new Expense(100, "Test Expense 1", participant1, LocalDate.now()));
+        expenses.add(new Expense(200, "Test Expense 2", participant2, LocalDate.of(2024, 3, 29)));
 
         // Calculate individual share of expenses
         Map<Participant, Double> individualShare = Event.calculateIndividualShare(participants, expenses);
@@ -246,9 +252,9 @@ class EventTest {
     @Test
     void settleDebts() {
         List<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense(100, "Expense 1", participant1));
-        expenses.add(new Expense(200, "Expense 2", participant2));
-        expenses.add(new Expense(150, "Expense 3", participant3));
+        expenses.add(new Expense(100, "Expense 1", participant1, LocalDate.now()));
+        expenses.add(new Expense(200, "Expense 2", participant2, LocalDate.of(2024, 3, 29)));
+        expenses.add(new Expense(150, "Expense 3", participant3, LocalDate.of(2024, 2, 29)));
 
         List<Debt> debts = Event.settleDebts(List.of(participant1, participant2, participant3), expenses);
 
@@ -263,9 +269,9 @@ class EventTest {
     void calculateTotalExpenses() {
         List<Expense> expenses = new ArrayList<>();
 
-        expenses.add(new Expense(100, "Test Expense 1", participant1));
-        expenses.add(new Expense(200, "Test Expense 2", participant2));
-        expenses.add(new Expense(150, "Test Expense 3", participant1));
+        expenses.add(new Expense(100, "Test Expense 1", participant1, LocalDate.now()));
+        expenses.add(new Expense(200, "Test Expense 2", participant2, LocalDate.of(2024, 3, 29)));
+        expenses.add(new Expense(150, "Test Expense 3", participant1, LocalDate.of(2024, 2, 29)));
 
         Map<Participant, Double> totalExpenses = Event.calculateTotalExpenses(expenses);
 

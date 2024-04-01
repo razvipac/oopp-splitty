@@ -18,7 +18,8 @@ public class ExpenseDTOMapper {
         return new ExpenseDTO(
                 expense.getPrice(),
                 expense.getItem(),
-                ParticipantDTOMapper.toDTO(expense.getPaidBy())
+                ParticipantDTOMapper.toDTO(expense.getPaidBy()),
+                expense.getDate()
         );
     }
 
@@ -32,7 +33,8 @@ public class ExpenseDTOMapper {
         return new Expense(
                 dto.getPrice(),
                 dto.getItem(),
-                ParticipantDTOMapper.toEntity(dto.getPaidBy())
+                ParticipantDTOMapper.toEntity(dto.getPaidBy()),
+                dto.getDate()
         );
     }
 
