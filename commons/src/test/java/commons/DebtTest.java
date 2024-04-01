@@ -3,8 +3,8 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -145,4 +145,56 @@ class DebtTest {
 
         assertEquals(expected, debt.toString());
     }
+
+    @Test
+    void testDebtIdDefaultConstructor() {
+        DebtId debtId = new DebtId();
+        assertNotNull(debtId);
+        assertNull(debtId.getDebtor());
+        assertNull(debtId.getCreditor());
+    }
+
+    @Test
+    void testDebtIdParameterizedConstructor() {
+        DebtId debtId = new DebtId(participant1, participant2);
+        assertEquals(participant1, debtId.getDebtor());
+        assertEquals(participant2, debtId.getCreditor());
+    }
+
+    @Test
+    void testDebtIdGetAndSetDebtor() {
+        DebtId debtId = new DebtId();
+        debtId.setDebtor(participant1);
+        assertEquals(participant1, debtId.getDebtor());
+    }
+
+    @Test
+    void testDebtIdGetAndSetCreditor() {
+        DebtId debtId = new DebtId();
+        debtId.setCreditor(participant2);
+        assertEquals(participant2, debtId.getCreditor());
+    }
+
+    @Test
+    void testDebtIdEquals() {
+        DebtId debtId1 = new DebtId(participant1, participant2);
+        DebtId debtId2 = new DebtId(participant1, participant2);
+        assertEquals(debtId1, debtId2);
+        assertNotEquals(debtId1, new DebtId(participant2, participant3));
+    }
+
+    @Test
+    void testDebtIdHashCode() {
+        DebtId debtId1 = new DebtId(participant1, participant2);
+        DebtId debtId2 = new DebtId(participant1, participant2);
+        assertEquals(debtId1.hashCode(), debtId2.hashCode());
+    }
+
+    @Test
+    void testDebtIdToString() {
+        DebtId debtId = new DebtId(participant1, participant2);
+        String expected = "DebtId{debtor=" + participant1 + ", creditor=" + participant2 + '}';
+        assertEquals(expected, debtId.toString());
+    }
+
 }

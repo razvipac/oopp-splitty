@@ -8,7 +8,6 @@ import java.time.LocalDate;
  * @param price price in euros
  * @param item item for which a person paid
  * @param participantName name of the participant who paid
- * @param date date of the expense
  */
 public record ExpenseRequestBody(
         Integer price,

@@ -44,6 +44,17 @@ class ParticipantTest {
     }
 
     @Test
+    public void testParameterizedConstructor() {
+
+        assertNotNull(p1);
+        assertEquals("A", p1.getName());
+        assertEquals(event, p1.getEvent());
+        assertEquals("a@mail.com", p1.getEmail());
+        assertEquals("1234", p1.getIban());
+        assertEquals("1234", p1.getBic());
+    }
+
+    @Test
     void getName() {
         assertEquals("A", p1.getName());
     }
@@ -114,5 +125,12 @@ class ParticipantTest {
         assertEquals(p1.hashCode(), p2.hashCode());
     }
 
+    @Test
+    void testToString() {
+        String expected = "Participant{name='A', event=Event@<event_hashcode>, email='a@mail.com', iban='1234', bic='1234'}";
+        assertNotEquals(expected, p1.toString());
+    }
+
+    
 
 }

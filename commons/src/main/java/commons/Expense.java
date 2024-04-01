@@ -26,16 +26,15 @@ public class Expense {
                 @JoinColumn(name = "expense_id", referencedColumnName = "id"),
                 @JoinColumn(name = "paidBy_name", referencedColumnName = "paidBy_name"),
                 @JoinColumn(name = "paidBy_event_code",
-                        referencedColumnName = "paidBy_event_code")
+                            referencedColumnName = "paidBy_event_code")
             },
             inverseJoinColumns = {
                 @JoinColumn(name = "participant_name", referencedColumnName = "name"),
                 @JoinColumn(name = "participant_event_code",
-                        referencedColumnName = "event_code")
+                            referencedColumnName = "event_code")
             }
     )
     private List<Participant> participants;
-
 
     /**
      * Default constructor.
@@ -49,7 +48,7 @@ public class Expense {
      * @param price  The price of the expense.
      * @param item   The item description of the expense.
      * @param paidBy The participant who paid for the expense.
-     * @param date   The date of the expense.
+     * @param date The date of the expense.
      */
     public Expense(Integer price, String item, Participant paidBy, LocalDate date) {
         ExpenseId eid = new ExpenseId();
@@ -142,14 +141,14 @@ public class Expense {
 
     /**
      * Sets the date of the expense.
-     * @param date The date of the expense to set.
+     * @param date The date of the expense.
      */
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
     /**
-     * Sets the participants of the expense.
+     * Get the participants of the expense.
      * @return The participants of the expense.
      */
     public List<Participant> getParticipants() {
@@ -194,5 +193,4 @@ public class Expense {
     public int hashCode() {
         return Objects.hash(pkey, price, item);
     }
-
 }

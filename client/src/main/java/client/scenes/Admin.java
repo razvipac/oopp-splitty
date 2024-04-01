@@ -2,17 +2,23 @@ package client.scenes;
 
 import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import commons.dto.EventDTO;
+import commons.response_body.EventResponseBody;
+
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ComboBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -89,9 +95,8 @@ public class Admin implements StaticSceneController {
             System.out.println("Sorting by: " + selectedOption);
             // For now, let's just print the selected option
         });
-
-        layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton);
-
+        Button importEvent = importJSON();
+        layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton, importEvent);
         // Show events
         showEvent(1);
 
@@ -102,7 +107,7 @@ public class Admin implements StaticSceneController {
         List<EventDTO> list = serverUtils.getAllEvents();
         if(compare==1) list.sort(Comparator.comparing(EventDTO::getName));
         else if(compare==2) list.sort(Comparator.comparing(EventDTO::getCreationDate));
-        else if(compare==3) list.sort(Comparator.comparing(EventDTO::getCreationDate));
+        else list.sort(Comparator.comparing(EventDTO::getCreationDate));
 
         for (EventDTO event : list) {
             HBox eventEntry = new HBox();
@@ -112,8 +117,14 @@ public class Admin implements StaticSceneController {
             eventEntry.getChildren().add(openPage);
             Button deleteEvent = deleteEvent(event);
             eventEntry.getChildren().add(deleteEvent);
-            List<EventDTO> dump = serverUtils.getAllEvents();
-            EventDTO op = dump.getFirst();
+            List<EventResponseBody> dump = serverUtils.getJSON();
+            EventResponseBody op=null;
+            for(EventResponseBody body : dump){
+                if(body.event().getCode().equals(event.getCode()))
+                    op = body;
+            }
+            if(op==null)
+                throw new IllegalArgumentException();
             Button download = downloadEvent(op);
             eventEntry.getChildren().add(download);
             eventsField.getChildren().add(eventEntry);
@@ -136,7 +147,7 @@ public class Admin implements StaticSceneController {
      * @param event puts the JSON of an event in a file that is downloaded
      * @return the button
      */
-    public Button downloadEvent(EventDTO event) {
+    public Button downloadEvent(EventResponseBody event) {
         // Get the selected events
         Button get = new Button("Download");
         get.setOnAction(p -> {
@@ -150,7 +161,6 @@ public class Admin implements StaticSceneController {
             fileChooser.getExtensionFilters()
                     .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
 
-            // Show the save dialog screen
             File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
 
             if (selectedFile != null) {
@@ -162,7 +172,6 @@ public class Admin implements StaticSceneController {
                     System.out.println("(SUCCESS) Event downloaded");
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                    //System.err.println("(ERROR) Failed to download event: " + event.getCode());
                 }
             }
         });
@@ -185,6 +194,72 @@ public class Admin implements StaticSceneController {
         openPage.setOnAction(e -> mainCtrl.showEventOverview(event));
 
         return openPage;
+    }
+
+    /**
+     * Opens fileChooser when clicked
+     * @return the button
+     */
+    public Button importJSON() {
+        Button importEvent = new Button("Import Event");
+        importEvent.setOnAction(b -> {
+            // Create file chooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose JSON File");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+
+            // Show open dialog
+            Stage stage = new Stage();
+            File selectedFile = fileChooser.showOpenDialog(stage);
+
+            // Check if file is selected
+            if (selectedFile != null) {
+                try {
+                    // Import event from JSON
+                    EventResponseBody result = importEventFromJSON(selectedFile.getAbsolutePath());
+
+                    // Throw an exception if result is null
+                    if (result == null) {
+                        throw new IllegalArgumentException();
+                    }
+
+                    // Do something with the result if needed
+                } catch (Exception e) {
+                    // Display an error message
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Failed to import event");
+                    alert.setContentText("An error occurred while importing the event from JSON: " + e.getMessage());
+                    alert.showAndWait();
+                }
+
+            }
+        });
+        return importEvent;
+    }
+
+    /**
+     * Copies the contents of the file, and transforms them into entities
+     * @param jsonPath the path to the file
+     * @return returns the response entity with which the event is restored
+     */
+    public EventResponseBody importEventFromJSON(String jsonPath) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            File jsonFile = new File(jsonPath);
+            EventResponseBody event = objectMapper.readValue(jsonFile, EventResponseBody.class);
+            serverUtils.restoreEvent(event);
+            return event;
+        } catch(JsonParseException | JsonMappingException e) {
+            System.err.println("Error while parsing JSON: " + e.getMessage());
+            System.err.println("Please ensure that the JSON content is correctly formatted.");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("File not found");
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
