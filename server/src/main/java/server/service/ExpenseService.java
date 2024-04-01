@@ -1,5 +1,6 @@
 package server.service;
 
+import commons.Event;
 import commons.Expense;
 import commons.ExpenseId;
 import commons.Participant;
@@ -10,10 +11,14 @@ import server.api.pojo.request_body.ExpenseRequestBody;
 import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.WSAction;
 import server.api.pojo.response_body.WSWrapperResponseBody;
+import server.database.EventRepository;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -26,22 +31,26 @@ public class ExpenseService {
     private ExpenseRepository expenseRepository;
     private ParticipantRepository participantRepository;
     private SimpMessagingTemplate simpMessagingTemplate;
+    private EventRepository eventRepository;
 
     /**
      * Constructs an ExpenseService instance with
      * the specified ExpenseRepository and ParticipantRepository.
      *
-     * @param expenseRepository  The ExpenseRepository to be injected into the service.
+     * @param expenseRepository     The ExpenseRepository to be injected into the service.
      * @param participantRepository The ParticipantRepository to be injected into the service.
      * @param simpMessagingTemplate The SimpMessagingTemplate to be injected into the service.
+     * @param eventRepository
      */
     public ExpenseService(
             @Autowired ExpenseRepository expenseRepository,
             @Autowired ParticipantRepository participantRepository,
-            @Autowired SimpMessagingTemplate simpMessagingTemplate) {
+            @Autowired SimpMessagingTemplate simpMessagingTemplate,
+            @Autowired EventRepository eventRepository) {
         this.expenseRepository = expenseRepository;
         this.participantRepository = participantRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.eventRepository = eventRepository;
     }
 
     /**
@@ -115,6 +124,7 @@ public class ExpenseService {
         Expense newExpense = new Expense(body.price(), body.item(), paidBy, body.date());
 
         expenseRepository.save(newExpense);
+        updateDate(eventCode);
         return newExpense;
     }
 
@@ -145,7 +155,7 @@ public class ExpenseService {
                         WSAction.DELETED,
                         ExpenseResponseBody.build(found)
                 ));
-
+        updateDate(eventCode);
         return found;
     }
 
@@ -170,6 +180,7 @@ public class ExpenseService {
         found.setDate(body.date());
 
         expenseRepository.save(found);
+        updateDate(eventCode);
         return found;
 
     }
@@ -207,5 +218,24 @@ public class ExpenseService {
         );
 
         return searchResult.get();
+    }
+    public Event getOneEvent(String eventCode) throws NotFoundInDatabaseException {
+        Optional<Event> searchResult = eventRepository.findById(eventCode);
+
+        if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
+                "Event with code: " + eventCode + " is not present in the database!");
+
+        return searchResult.get();
+    }
+
+    public Event updateDate(String eventCode) throws NotFoundInDatabaseException {
+        Event found = getOneEvent(eventCode);
+        // if not found exception will be thrown
+        LocalDateTime l = new Date().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        found.setLastActivity(l);
+        eventRepository.save(found);
+        return found;
     }
 }
