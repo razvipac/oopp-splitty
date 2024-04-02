@@ -94,6 +94,7 @@ public class MainCtrl {
     private final Statistics statistics;
     private final DevScreen devScreen;
     private final Admin adminScreen;
+    private final AdminPassword adminPassword;
 
 
     /**
@@ -113,6 +114,7 @@ public class MainCtrl {
         statistics = new Statistics(this, serverUtils, null);
         devScreen = new DevScreen(this, serverUtils);
         adminScreen = new Admin(this, serverUtils);
+        adminPassword = new AdminPassword(this, serverUtils);
 
         // default scene
         showDevScreen();
@@ -204,7 +206,19 @@ public class MainCtrl {
      * Shows the Start scene
      */
     public void showAdminScreen(){
-        primaryStage.setScene(adminScreen.initialize());
+        if(adminPassword.isPasswordCorrect()) primaryStage.setScene(adminScreen.initialize());
+        else showAdminPassword();
+    }
+
+    /**
+     * Shows the Admin Password scene
+     */
+    public void showAdminPassword() {
+        if (adminPassword.isOpen()){
+            adminPassword.closeAlertBox();
+        }
+        adminPassword.initialize();
+        adminPassword.displayAlertBox();
     }
 
     /**
