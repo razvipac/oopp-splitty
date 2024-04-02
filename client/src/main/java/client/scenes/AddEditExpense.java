@@ -278,22 +278,22 @@ public class AddEditExpense implements
      * @param e The (validated) expense to add
      */
     private void addExpenseToServer(ExpenseDTO e) {
-        boolean success = serverUtils.addExpense(e, event.getCode());
-        if(success) {
-            Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
-                    "Success", "Expense Added Successfully",
-                    "Expense has been added to the event");
-            confirmation.getButtonTypes().clear();
-            confirmation.getButtonTypes().add(ButtonType.OK);
-            confirmation.showAndWait();
-        } else {
-            Alert alert = createAlert(Alert.AlertType.ERROR,
-                    "Error", "Adding Expense Failed",
-                    "The expense has not been added due to an error. Please try again");
-            alert.showAndWait();
-        }
-
-        closeAlertBox();
+//        boolean success = serverUtils.addExpense(e, event.getCode());
+//        if(success) {
+//            Alert confirmation = createAlert(Alert.AlertType.CONFIRMATION,
+//                    "Success", "Expense Added Successfully",
+//                    "Expense has been added to the event");
+//            confirmation.getButtonTypes().clear();
+//            confirmation.getButtonTypes().add(ButtonType.OK);
+//            confirmation.showAndWait();
+//        } else {
+//            Alert alert = createAlert(Alert.AlertType.ERROR,
+//                    "Error", "Adding Expense Failed",
+//                    "The expense has not been added due to an error. Please try again");
+//            alert.showAndWait();
+//        }
+//
+//        closeAlertBox();
     }
 
 

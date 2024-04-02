@@ -72,28 +72,28 @@ public class DevScreen implements StaticSceneController {
 
         // Button for EventOverview page
         Button eoButton = new Button(lm.get("EventOverview"));
-        eoButton.setOnAction(e -> mainCtrl.showEventOverview(null));
+//        eoButton.setOnAction(e -> mainCtrl.showEventOverview(null));
 
         // Button for ContactDetails page
         Button cdButton = new Button(lm.get("ContactDetails"));
-        cdButton.setOnAction(e -> mainCtrl.showContactDetails(null));
+//        cdButton.setOnAction(e -> mainCtrl.showContactDetails(null));
 
         // Button for Invitation page
         Button invitationButton = new Button(lm.get("Invitation"));
-        invitationButton.setOnAction(e -> mainCtrl.showInvitation(null));
+//        invitationButton.setOnAction(e -> mainCtrl.showInvitation(null));
 
         // Button for OpenDebts page
         Button odButton = new Button(lm.get("OpenDebts"));
-        odButton.setOnAction(e -> mainCtrl.showOpenDebts(null));
+//        odButton.setOnAction(e -> mainCtrl.showOpenDebts(null));
 
         Button addExpenseButton = new Button(lm.get("AddExpense"));
-        addExpenseButton.setOnAction(e -> mainCtrl.showAddExpense(null));
+//        addExpenseButton.setOnAction(e -> mainCtrl.showAddExpense(null));
 
         Button statisticsButton = new Button(lm.get("Statistics"));
-        statisticsButton.setOnAction(e -> mainCtrl.showStatistics(null));
+//        statisticsButton.setOnAction(e -> mainCtrl.showStatistics(null));
 
         Button adminButton = new Button(lm.get("Admin"));
-        adminButton.setOnAction(e -> mainCtrl.showAdminScreen());
+//        adminButton.setOnAction(e -> mainCtrl.showAdminScreen());
 
 
 

@@ -48,7 +48,7 @@ public class ContactDetails implements DataBasedPopupController<EventDTO> {
         window = new Stage();
         window.setTitle("Add Participant");
         window.initModality(Modality.APPLICATION_MODAL);
-        window.initOwner(mainCtrl.getPrimaryStage());
+//        window.initOwner(mainCtrl.getPrimaryStage());
         window.setOnCloseRequest(e -> closeAlertBox());
 
         initialize(event);
