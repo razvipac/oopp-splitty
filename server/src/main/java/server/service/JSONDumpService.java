@@ -17,7 +17,10 @@ import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
 import server.service.exceptions.ImproperDumpFormatException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -186,6 +189,10 @@ public class JSONDumpService {
             throws ImproperDumpFormatException {
         try {
             Event event = eventResponseBody.event();
+            LocalDateTime l = new Date().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            event.setLastActivity(l);
             eventRepository.save(event);
 
             for (DebtResponseBody debtResponseBody : eventResponseBody.debts()) {

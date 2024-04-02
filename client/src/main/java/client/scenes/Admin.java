@@ -107,7 +107,7 @@ public class Admin implements StaticSceneController {
         List<EventDTO> list = serverUtils.getAllEvents();
         if(compare==1) list.sort(Comparator.comparing(EventDTO::getName));
         else if(compare==2) list.sort(Comparator.comparing(EventDTO::getCreationDate));
-        else list.sort(Comparator.comparing(EventDTO::getCreationDate));
+        else list.sort(Comparator.comparing(EventDTO::getLastActivity));
 
         for (EventDTO event : list) {
             HBox eventEntry = new HBox();

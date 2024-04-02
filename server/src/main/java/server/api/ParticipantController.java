@@ -130,13 +130,13 @@ public class ParticipantController {
 
 
     /**
-     * PUT /api/v1/{eventCode}/participant with parameter name and body
+     * PUT /api/v1/{eventCode}/participant?name={name} with parameter name and body
      * in ParticipantRequestBody format
      * Updates a Participant specified by the eventCode and name with data in the body
      *
      * @param name      The participant's name
      * @param eventCode The event code
-     * @param body      The ParticipantRequestBody instance
+     * @param body      The ParticipantRequestBody that includes the changes that are being made
      * @return ResponseEntity with ParticipantResponseBody or HttpStatus.NOT_FOUND if not found
      */
     @PutMapping("")
