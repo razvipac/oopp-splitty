@@ -16,6 +16,7 @@
 package client.scenes;
 
 import client.LanguageButton;
+import client.LanguageManager;
 import client.interfaces.StaticSceneController;
 import client.utils.ServerUtils;
 import javafx.geometry.Insets;
@@ -59,38 +60,42 @@ public class DevScreen implements StaticSceneController {
     }
 
     private Parent generateLayout(){
-        // Button for StartScreen page
-        Button startButton = new Button("Start Screen");
-        startButton.setOnAction(e -> mainCtrl.showStartScreen());
-
-        // Button for EventOverview page
-        Button eoButton = new Button("Event Overview");
-        eoButton.setOnAction(e -> mainCtrl.showEventOverview(null));
-
-        // Button for ContactDetails page
-        Button cdButton = new Button("Contact Details");
-        cdButton.setOnAction(e -> mainCtrl.showContactDetails(null));
-
-        // Button for Invitation page
-        Button invitationButton = new Button("Invitation");
-        invitationButton.setOnAction(e -> mainCtrl.showInvitation(null));
-
-        // Button for OpenDebts page
-        Button odButton = new Button("Open Debts");
-        odButton.setOnAction(e -> mainCtrl.showOpenDebts(null));
-
-        Button addExpenseButton = new Button("Add Expense");
-        addExpenseButton.setOnAction(e -> mainCtrl.showAddExpense(null));
-
-        Button statisticsButton = new Button("Statistics");
-        statisticsButton.setOnAction(e -> mainCtrl.showStatistics(null));
-
-        Button adminButton = new Button("Admin");
-        adminButton.setOnAction(e -> mainCtrl.showAdminScreen());
-
         // Button for language selection
         Button languageButton = new LanguageButton("client/src/main/resources" +
                 "/userSettings/userPreferences.json");
+        LanguageManager lm = new LanguageManager("client/src/main/resources" +
+                "/userSettings/userPreferences.json");
+
+        // Button for StartScreen page
+        Button startButton = new Button(lm.get("StartScreen"));
+        startButton.setOnAction(e -> mainCtrl.showStartScreen());
+
+        // Button for EventOverview page
+        Button eoButton = new Button(lm.get("EventOverview"));
+        eoButton.setOnAction(e -> mainCtrl.showEventOverview(null));
+
+        // Button for ContactDetails page
+        Button cdButton = new Button(lm.get("ContactDetails"));
+        cdButton.setOnAction(e -> mainCtrl.showContactDetails(null));
+
+        // Button for Invitation page
+        Button invitationButton = new Button(lm.get("Invitation"));
+        invitationButton.setOnAction(e -> mainCtrl.showInvitation(null));
+
+        // Button for OpenDebts page
+        Button odButton = new Button(lm.get("OpenDebts"));
+        odButton.setOnAction(e -> mainCtrl.showOpenDebts(null));
+
+        Button addExpenseButton = new Button(lm.get("AddExpense"));
+        addExpenseButton.setOnAction(e -> mainCtrl.showAddExpense(null));
+
+        Button statisticsButton = new Button(lm.get("Statistics"));
+        statisticsButton.setOnAction(e -> mainCtrl.showStatistics(null));
+
+        Button adminButton = new Button(lm.get("Admin"));
+        adminButton.setOnAction(e -> mainCtrl.showAdminScreen());
+
+
 
         // Hbox for the language button
         HBox languageBox = new HBox(languageButton);
