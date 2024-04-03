@@ -222,6 +222,10 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         mainCtrl.showOpenDebts(event);
     }
 
+    public void openAddEditParticipant(){
+        mainCtrl.showContactDetails(event);
+    }
+
     public void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE){
             goBack();
