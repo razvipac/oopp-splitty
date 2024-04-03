@@ -36,10 +36,14 @@ public class MainCtrl {
     private ContactDetailsCtrl contactDetailsCtrl;
     private Scene contactDetails;
 
+    private InvitationsCtrl invitationsCtrl;
+    private Scene invitations;
+
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
                            Pair<EventOverviewCtrl, Parent> eventOverviewPair,
-                           Pair<ContactDetailsCtrl, Parent> contactDetailsPair) {
+                           Pair<ContactDetailsCtrl, Parent> contactDetailsPair,
+                           Pair<InvitationsCtrl, Parent> invitationsPair) {
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
@@ -51,7 +55,10 @@ public class MainCtrl {
         this.contactDetailsCtrl = contactDetailsPair.getKey();
         this.contactDetails = new Scene(contactDetailsPair.getValue());
 
-        showContactDetails(new EventDTO("Name", "Code", LocalDateTime.now(), LocalDateTime.now()));
+        this.invitationsCtrl = invitationsPair.getKey();
+        this.invitations = new Scene(invitationsPair.getValue());
+
+        showStartScreen();
         primaryStage.show();
     }
 
@@ -73,4 +80,11 @@ public class MainCtrl {
         contactDetailsCtrl.initialize(eventDTO);
         primaryStage.setScene(contactDetails);
     }
+
+    public void showInvitations(EventDTO eventDTO){
+        primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.getName());
+        invitationsCtrl.initialize(eventDTO);
+        primaryStage.setScene(invitations);
+    }
+
 }
