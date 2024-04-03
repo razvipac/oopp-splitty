@@ -120,7 +120,7 @@ public class MainCtrl {
 
     public void showAdmin() {
         primaryStage.setTitle("Splitty: Administrator Control Panel");
-        adminCtrl.initalize();
+        adminCtrl.initialize();
         primaryStage.setScene(admin);
     }
 
