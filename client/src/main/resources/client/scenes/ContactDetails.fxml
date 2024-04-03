@@ -14,7 +14,7 @@
 
 <AnchorPane onKeyPressed="#onGlobalKeyPress" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
    <children>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="275.0" prefWidth="375.0" spacing="10.0">
+      <VBox spacing="10.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Add/Edit Participant">
                <font>
@@ -25,7 +25,7 @@
                </VBox.margin>
             </Text>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter the following form:" />
-            <GridPane prefHeight="304.0" prefWidth="360.0">
+            <GridPane hgap="3.0" vgap="3.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="68.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="507.0" minWidth="10.0" prefWidth="267.0" />
@@ -42,28 +42,28 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField GridPane.columnIndex="1" />
+                  <TextField fx:id="boxName" GridPane.columnIndex="1" />
                   <Label text="Email" GridPane.rowIndex="1">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="boxIban" onKeyReleased="#formatIban" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="boxEmail" onKeyReleased="#formatIban" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="IBAN" GridPane.rowIndex="2">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="boxIban" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label text="BIC" GridPane.rowIndex="3">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField prefWidth="297.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="boxBic" prefWidth="297.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
-            <AnchorPane prefHeight="29.0" prefWidth="335.0">
+            <AnchorPane>
                <children>
                   <Text layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
                      <font>
@@ -71,13 +71,14 @@
                      </font>
                   </Text>
                   <Button layoutX="246.0" layoutY="1.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
-                  <Button layoutX="301.0" layoutY="1.0" mnemonicParsing="false" text="OK">
+                  <Button layoutX="301.0" layoutY="1.0" mnemonicParsing="false" onAction="#ok" text="OK">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
                </children>
             </AnchorPane>
+            <Text fx:id="errorText" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" />
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
