@@ -50,12 +50,14 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         this.eventTitleLabel.setText(event.getName());
     }
 
-    public void goBack(){
+    @FXML
+    private void goBack(){
         emailAddressesTextArea.setText("");
         mainCtrl.showEventOverview(event);
     }
 
-    public void sendInvites(){
+    @FXML
+    private void sendInvites(){
         System.out.println("Sending invites...");
         // TODO: implement sending emails
         Alert successAlert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
@@ -66,7 +68,8 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         goBack();
     }
 
-    public void onGlobalKeyPress(KeyEvent keyEvent){
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
     }
 }
