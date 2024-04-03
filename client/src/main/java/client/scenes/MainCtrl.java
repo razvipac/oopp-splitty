@@ -124,4 +124,7 @@ public class MainCtrl {
         primaryStage.setScene(admin);
     }
 
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
 }
