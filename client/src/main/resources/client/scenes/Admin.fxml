@@ -29,7 +29,7 @@
         </Text>
         <ScrollPane layoutX="23.0" layoutY="84.0" prefHeight="293.0" prefWidth="340.0" vbarPolicy="ALWAYS">
             <content>
-                <GridPane fx:id="eventGrid" prefHeight="90.0" prefWidth="323.0">
+                <GridPane fx:id="eventGrid" prefWidth="323.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" prefWidth="193.5"/>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="58.0"/>
