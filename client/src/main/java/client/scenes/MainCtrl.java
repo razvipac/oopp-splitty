@@ -43,13 +43,17 @@ public class MainCtrl {
     private AddEditExpenseCtrl addEditExpenseCtrl;
     private Scene addEditExpense;
 
+    private AdminCtrl adminCtrl;
+    private Scene admin;
+
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
                            Pair<EventOverviewCtrl, Parent> eventOverviewPair,
                            Pair<ContactDetailsCtrl, Parent> contactDetailsPair,
                            Pair<InvitationsCtrl, Parent> invitationsPair,
                            Pair<OpenDebtsCtrl, Parent> openDebtsPair,
-                           Pair<AddEditExpenseCtrl, Parent> addEditExpensePair
+                           Pair<AddEditExpenseCtrl, Parent> addEditExpensePair,
+                           Pair<AdminCtrl, Parent> adminPair
     ) {
         this.primaryStage = primaryStage;
 
@@ -71,7 +75,10 @@ public class MainCtrl {
         this.addEditExpenseCtrl = addEditExpensePair.getKey();
         this.addEditExpense = new Scene(addEditExpensePair.getValue());
 
-        showStartScreen();
+        this.adminCtrl = adminPair.getKey();
+        this.admin = new Scene(adminPair.getValue());
+
+        showAdmin();
         primaryStage.show();
     }
 
@@ -110,4 +117,11 @@ public class MainCtrl {
         addEditExpenseCtrl.initialize(eventDTO);
         primaryStage.setScene(addEditExpense);
     }
+
+    public void showAdmin() {
+        primaryStage.setTitle("Splitty: Administrator Control Panel");
+        adminCtrl.initalize();
+        primaryStage.setScene(admin);
+    }
+
 }

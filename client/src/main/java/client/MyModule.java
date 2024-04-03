@@ -31,5 +31,6 @@ public class MyModule implements Module {
         binder.bind(InvitationsCtrl.class).in(Scopes.SINGLETON);
         binder.bind(OpenDebtsCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddEditExpenseCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
     }
 }
