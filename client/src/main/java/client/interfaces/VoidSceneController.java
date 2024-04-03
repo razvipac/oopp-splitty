@@ -1,12 +1,10 @@
 package client.interfaces;
 
-import javafx.scene.Scene;
-
-public interface StaticSceneController {
+public interface VoidSceneController {
 
     /**
      * Generates a scene
      * @return the newly generated scene
      */
-    Scene initialize();
+    void initialize();
 }

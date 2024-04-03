@@ -8,6 +8,6 @@ public interface DataBasedSceneController<T> {
      * @param data data to populate the scene with
      * @return the newly populated scene
      */
-    Scene initialize(T data);
+    void initialize(T data);
 
 }

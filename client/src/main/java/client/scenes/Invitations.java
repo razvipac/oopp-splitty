@@ -17,7 +17,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class Invitations implements DataBasedPopupController<EventDTO> {
+public class Invitations {
     private final MainCtrl mainCtrl; // reference to MainCtrl class
     private final ServerUtils serverUtils;
 

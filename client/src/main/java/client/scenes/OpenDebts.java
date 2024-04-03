@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-public class OpenDebts implements DataBasedPopupController<EventDTO> {
+public class OpenDebts {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;

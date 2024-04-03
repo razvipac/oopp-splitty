@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ContactDetails implements DataBasedPopupController<EventDTO> {
+public class ContactDetails {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;

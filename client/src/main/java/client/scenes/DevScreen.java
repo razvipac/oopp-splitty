@@ -17,7 +17,7 @@ package client.scenes;
 
 import client.LanguageButton;
 import client.LanguageManager;
-import client.interfaces.StaticSceneController;
+import client.interfaces.VoidSceneController;
 import client.utils.ServerUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,7 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class DevScreen implements StaticSceneController {
+public class DevScreen {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
