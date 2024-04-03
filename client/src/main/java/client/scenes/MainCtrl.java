@@ -21,6 +21,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.time.LocalDateTime;
+
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -49,7 +51,7 @@ public class MainCtrl {
         this.contactDetailsCtrl = contactDetailsPair.getKey();
         this.contactDetails = new Scene(contactDetailsPair.getValue());
 
-        showStartScreen();
+        showContactDetails(new EventDTO("Name", "Code", LocalDateTime.now(), LocalDateTime.now()));
         primaryStage.show();
     }
 
