@@ -6,6 +6,8 @@ import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
@@ -84,6 +86,11 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void inputIsInvalid() {
         // Handle invalid input
+    }
+
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
     }
 
 }
