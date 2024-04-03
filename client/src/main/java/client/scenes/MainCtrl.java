@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import commons.dto.EventDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -27,19 +28,34 @@ public class MainCtrl {
     private StartScreenCtrl startScreenCtrl;
     private Scene startScreen;
 
-    public void initialize(Stage primaryStage, Pair<StartScreenCtrl, Parent> startScreenPair) {
+    private EventOverviewCtrl eventOverviewCtrl;
+    private Scene eventOverview;
+
+    public void initialize(Stage primaryStage,
+                           Pair<StartScreenCtrl, Parent> startScreenPair,
+                           Pair<EventOverviewCtrl, Parent> eventOverviewPair) {
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
         this.startScreen = new Scene(startScreenPair.getValue());
+
+        this.eventOverviewCtrl = eventOverviewPair.getKey();
+        this.eventOverview = new Scene(eventOverviewPair.getValue());
 
         showStartScreen();
         primaryStage.show();
     }
 
     public void showStartScreen() {
-        primaryStage.setTitle("Quotes: Overview");
+        primaryStage.setTitle("Splitty: Start Screen");
+        startScreenCtrl.initialize();
         primaryStage.setScene(startScreen);
-        startScreenCtrl.refresh();
+    }
+
+    public void showEventOverview(EventDTO eventDTO){
+        primaryStage.setTitle("Splitty: Event " + eventDTO.getName());
+        eventOverviewCtrl.initialize(eventDTO);
+        primaryStage.setScene(eventOverview);
+
     }
 }
