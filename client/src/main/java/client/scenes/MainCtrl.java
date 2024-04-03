@@ -78,7 +78,7 @@ public class MainCtrl {
         this.adminCtrl = adminPair.getKey();
         this.admin = new Scene(adminPair.getValue());
 
-        showAdmin();
+        showStartScreen();
         primaryStage.show();
     }
 
