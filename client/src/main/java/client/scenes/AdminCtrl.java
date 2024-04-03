@@ -3,6 +3,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
+import javafx.fxml.FXML;
+import javafx.scene.layout.GridPane;
 
 import java.util.List;
 
@@ -11,6 +13,9 @@ public class AdminCtrl {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
     private List<EventDTO> events;
+
+    @FXML
+    private GridPane eventGrid;
 
     /**
      * Constructor for AdminCtrl.
@@ -23,8 +28,14 @@ public class AdminCtrl {
         this.serverUtils = serverUtils;
     }
 
-    public void initalize() {
+    public void initialize() {
+        refresh();
+    }
+
+    public void refresh() {
         events = serverUtils.getAllEvents();
     }
+
+
 
 }
