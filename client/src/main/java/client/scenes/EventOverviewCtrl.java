@@ -218,6 +218,10 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         mainCtrl.showInvitations(event);
     }
 
+    public void openOpenDebts(){
+        mainCtrl.showOpenDebts(event);
+    }
+
     public void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE){
             goBack();

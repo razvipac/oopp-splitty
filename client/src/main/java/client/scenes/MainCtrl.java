@@ -35,10 +35,15 @@ public class MainCtrl {
     private InvitationsCtrl invitationsCtrl;
     private Scene invitations;
 
+    private OpenDebtsCtrl openDebtsCtrl;
+    private Scene openDebts;
+
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
                            Pair<EventOverviewCtrl, Parent> eventOverviewPair,
-                           Pair<InvitationsCtrl, Parent> invitationsPair) {
+                           Pair<InvitationsCtrl, Parent> invitationsPair,
+                           Pair<OpenDebtsCtrl, Parent> openDebtsPair
+                           ) {
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
@@ -49,6 +54,9 @@ public class MainCtrl {
 
         this.invitationsCtrl = invitationsPair.getKey();
         this.invitations = new Scene(invitationsPair.getValue());
+
+        this.openDebtsCtrl = openDebtsPair.getKey();
+        this.openDebts = new Scene(openDebtsPair.getValue());
 
         showStartScreen();
         primaryStage.show();
@@ -70,5 +78,11 @@ public class MainCtrl {
         primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.getName());
         invitationsCtrl.initialize(eventDTO);
         primaryStage.setScene(invitations);
+    }
+
+    public void showOpenDebts(EventDTO eventDTO){
+        primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.getName());
+        openDebtsCtrl.initialize(eventDTO);
+        primaryStage.setScene(openDebts);
     }
 }
