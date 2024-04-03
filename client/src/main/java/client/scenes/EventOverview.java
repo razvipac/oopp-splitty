@@ -15,7 +15,7 @@ import javafx.scene.text.*;
 import java.util.List;
 import javafx.util.Pair;
 
-public class EventOverview implements DataBasedSceneController<EventDTO> {
+public class EventOverview {
 
     private Scene scene;
 

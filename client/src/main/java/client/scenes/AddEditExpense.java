@@ -27,8 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddEditExpense implements
-        DataBasedPopupController<Pair<EventDTO, List<ParticipantDTO>>> {
+public class AddEditExpense {
 
     private Scene scene;
     private EventDTO event;

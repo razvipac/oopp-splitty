@@ -1,6 +1,6 @@
 //package client.scenes;
 //
-//import client.interfaces.StaticSceneController;
+//import client.interfaces.VoidSceneController;
 //import client.utils.ServerUtils;
 //import com.fasterxml.jackson.core.JsonParseException;
 //import com.fasterxml.jackson.databind.JsonMappingException;
@@ -28,7 +28,7 @@
 //import java.util.List;
 //import java.util.Objects;
 //
-//public class Admin implements StaticSceneController {
+//public class Admin implements VoidSceneController {
 //    private final MainCtrl mainCtrl;
 //    private Scene scene;
 //    private ServerUtils serverUtils;
