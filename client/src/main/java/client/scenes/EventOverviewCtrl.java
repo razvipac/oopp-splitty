@@ -231,6 +231,11 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     @FXML
+    private void openAddEditExpense(){
+        mainCtrl.showAddEditExpense(event);
+    }
+
+    @FXML
     private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE){
             goBack();

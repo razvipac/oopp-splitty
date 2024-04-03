@@ -40,12 +40,16 @@ public class MainCtrl {
     private OpenDebtsCtrl openDebtsCtrl;
     private Scene openDebts;
 
+    private AddEditExpenseCtrl addEditExpenseCtrl;
+    private Scene addEditExpense;
+
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
                            Pair<EventOverviewCtrl, Parent> eventOverviewPair,
                            Pair<ContactDetailsCtrl, Parent> contactDetailsPair,
                            Pair<InvitationsCtrl, Parent> invitationsPair,
-                           Pair<OpenDebtsCtrl, Parent> openDebtsPair
+                           Pair<OpenDebtsCtrl, Parent> openDebtsPair,
+                           Pair<AddEditExpenseCtrl, Parent> addEditExpensePair
     ) {
         this.primaryStage = primaryStage;
 
@@ -63,6 +67,9 @@ public class MainCtrl {
 
         this.openDebtsCtrl = openDebtsPair.getKey();
         this.openDebts = new Scene(openDebtsPair.getValue());
+
+        this.addEditExpenseCtrl = addEditExpensePair.getKey();
+        this.addEditExpense = new Scene(addEditExpensePair.getValue());
 
         showStartScreen();
         primaryStage.show();
@@ -96,5 +103,11 @@ public class MainCtrl {
         primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.getName());
         openDebtsCtrl.initialize(eventDTO);
         primaryStage.setScene(openDebts);
+    }
+
+    public void showAddEditExpense(EventDTO eventDTO){
+        primaryStage.setTitle("Splitty: Add/edit expenses for event " + eventDTO.getName());
+        addEditExpenseCtrl.initialize(eventDTO);
+        primaryStage.setScene(addEditExpense);
     }
 }
