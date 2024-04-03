@@ -32,7 +32,7 @@
                         </Label>
                      </children>
                   </VBox>
-                  <Button mnemonicParsing="false" text="Send Invite" />
+                  <Button mnemonicParsing="false" onAction="#openInvitations" text="Send Invite" />
                </children>
             </HBox>
             <VBox spacing="10.0" style="-fx-border-style: solid; -fx-border-color: #666666;">
