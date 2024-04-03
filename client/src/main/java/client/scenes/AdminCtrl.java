@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.interfaces.VoidSceneController;
+import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,6 +27,8 @@ public class AdminCtrl implements VoidSceneController {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+    @Inject
+    private ControllerUtils controllerUtils;
     private List<EventDTO> events;
 
     @FXML
@@ -134,8 +137,14 @@ public class AdminCtrl implements VoidSceneController {
     private Button createDeleteEventButton(EventDTO event) {
         Button delete = new Button("Delete");
         delete.setOnAction(e -> {
-            serverUtils.deleteEvent(event.getCode());
-            refresh();
+            boolean confirmed = controllerUtils.createConfirmationAlert(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete event '" + event.getName() + "'?\n" +
+                            "This action cannot be undone.");
+            if (confirmed) {
+                serverUtils.deleteEvent(event.getCode());
+                refresh();
+            }
         });
         return delete;
     }
