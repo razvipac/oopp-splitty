@@ -44,7 +44,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" text="Add/Edit Participant" />
+                        <Button mnemonicParsing="false" onAction="#openAddEditParticipant" text="Add/Edit Participant" />
                      </children>
                   </HBox>
                   <HBox fx:id="participantsHBox" alignment="CENTER_LEFT" spacing="10.0">
@@ -87,7 +87,7 @@
                         <VBox fx:id="expenseItemContainer" />
                      </content>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" text="Settle Debts" />
+                  <Button mnemonicParsing="false" onAction="#openOpenDebts" text="Settle Debts" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

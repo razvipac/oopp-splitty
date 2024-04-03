@@ -15,7 +15,6 @@
  */
 package client.scenes;
 
-import commons.Event;
 import commons.dto.EventDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,13 +31,22 @@ public class MainCtrl {
     private EventOverviewCtrl eventOverviewCtrl;
     private Scene eventOverview;
 
+    private ContactDetailsCtrl contactDetailsCtrl;
+    private Scene contactDetails;
+
     private InvitationsCtrl invitationsCtrl;
     private Scene invitations;
+
+    private OpenDebtsCtrl openDebtsCtrl;
+    private Scene openDebts;
 
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
                            Pair<EventOverviewCtrl, Parent> eventOverviewPair,
-                           Pair<InvitationsCtrl, Parent> invitationsPair) {
+                           Pair<ContactDetailsCtrl, Parent> contactDetailsPair,
+                           Pair<InvitationsCtrl, Parent> invitationsPair,
+                           Pair<OpenDebtsCtrl, Parent> openDebtsPair
+    ) {
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
@@ -47,8 +55,14 @@ public class MainCtrl {
         this.eventOverviewCtrl = eventOverviewPair.getKey();
         this.eventOverview = new Scene(eventOverviewPair.getValue());
 
+        this.contactDetailsCtrl = contactDetailsPair.getKey();
+        this.contactDetails = new Scene(contactDetailsPair.getValue());
+
         this.invitationsCtrl = invitationsPair.getKey();
         this.invitations = new Scene(invitationsPair.getValue());
+
+        this.openDebtsCtrl = openDebtsPair.getKey();
+        this.openDebts = new Scene(openDebtsPair.getValue());
 
         showStartScreen();
         primaryStage.show();
@@ -66,9 +80,21 @@ public class MainCtrl {
         primaryStage.setScene(eventOverview);
     }
 
+    public void showContactDetails(EventDTO eventDTO) {
+        primaryStage.setTitle("Splitty: Add/Edit Participant");
+        contactDetailsCtrl.initialize(eventDTO);
+        primaryStage.setScene(contactDetails);
+    }
+
     public void showInvitations(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.getName());
         invitationsCtrl.initialize(eventDTO);
         primaryStage.setScene(invitations);
+    }
+
+    public void showOpenDebts(EventDTO eventDTO){
+        primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.getName());
+        openDebtsCtrl.initialize(eventDTO);
+        primaryStage.setScene(openDebts);
     }
 }

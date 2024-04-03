@@ -15,14 +15,10 @@
  */
 package client;
 
-import client.scenes.EventOverviewCtrl;
-import client.scenes.InvitationsCtrl;
+import client.scenes.*;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
-
-import client.scenes.MainCtrl;
-import client.scenes.StartScreenCtrl;
 
 public class MyModule implements Module {
 
@@ -31,6 +27,8 @@ public class MyModule implements Module {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(StartScreenCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EventOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(ContactDetailsCtrl.class).in(Scopes.SINGLETON);
         binder.bind(InvitationsCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(OpenDebtsCtrl.class).in(Scopes.SINGLETON);
     }
 }

@@ -46,11 +46,13 @@ public class StartScreenCtrl implements VoidSceneController {
         refresh();
     }
 
+    @FXML
     private void goBack() {
 //        mainCtrl.showDevScreen();
     }
 
-    public void joinEvent() {
+    @FXML
+    private void joinEvent() {
         System.out.println("joinEvent()");
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
@@ -60,7 +62,8 @@ public class StartScreenCtrl implements VoidSceneController {
         else System.out.println("Event with code: " + code + " doesn't exist");
     }
 
-    public void createEvent() {
+    @FXML
+    private void createEvent() {
         System.out.println("createEvent()");
         String eventName = createEventTextField.getText();
         EventDTO event = server.createEvent(eventName);
@@ -74,7 +77,7 @@ public class StartScreenCtrl implements VoidSceneController {
      * @param code Code of the event
      * @return The event
      */
-    public Optional<EventDTO> getEvent(String code) {
+    private Optional<EventDTO> getEvent(String code) {
         return events.stream()
                 .filter(event -> event.getCode().equals(code))
                 .findFirst();
@@ -84,5 +87,4 @@ public class StartScreenCtrl implements VoidSceneController {
         System.out.println("StartScreenCtrl refresh()");
         events = server.getAllEvents();
     }
-
 }

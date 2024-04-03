@@ -91,7 +91,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         );
     }
 
-    private void refresh() {
+    public void refresh() {
         participants = serverUtils.getParticipants(event.getCode());
         expenses = serverUtils.getExpenses(event.getCode());
 
@@ -210,15 +210,28 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     /**
      * Back button action
      */
-    public void goBack() {
+    @FXML
+    private void goBack() {
         mainCtrl.showStartScreen();
     }
 
-    public void openInvitations(){
+    @FXML
+    private void openInvitations(){
         mainCtrl.showInvitations(event);
     }
 
-    public void onGlobalKeyPress(KeyEvent keyEvent){
+    @FXML
+    private void openOpenDebts(){
+        mainCtrl.showOpenDebts(event);
+    }
+
+    @FXML
+    private void openAddEditParticipant(){
+        mainCtrl.showContactDetails(event);
+    }
+
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE){
             goBack();
         }
@@ -227,7 +240,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     /**
      * Nested class Expense Item.
      */
-    public static class ExpenseItem extends GridPane {
+    private static class ExpenseItem extends GridPane {
 
         private int price;
         private String item;
