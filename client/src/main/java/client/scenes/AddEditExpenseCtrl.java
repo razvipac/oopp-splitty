@@ -1,31 +1,18 @@
 package client.scenes;
 
-import client.interfaces.DataBasedPopupController;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Event;
 import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
