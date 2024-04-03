@@ -31,7 +31,7 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     private GridPane eventGrid;
     @FXML
-    private ComboBox orderByComboBox;
+    private ComboBox<String> orderByComboBox;
 
     /**
      * Constructor for AdminCtrl.
@@ -45,40 +45,50 @@ public class AdminCtrl implements VoidSceneController {
         this.serverUtils = serverUtils;
     }
 
+    /**
+     * Initializes the Scene
+     */
     public void initialize() {
         orderByComboBox.getSelectionModel().selectFirst();    // default selection
         refresh();
     }
 
+    /**
+     * Refreshes the page.
+     * Gets all events from server and orders them.
+     */
     public void refresh() {
         events = serverUtils.getAllEvents();
         orderEvents();
     }
 
+    /**
+     * Orders the list events based on the selected option, and calls addEventsToGrid to show
+     * the new ordering.
+     */
     @FXML
     public void orderEvents() {
-        switch (orderByComboBox.getValue().toString()) {
-            case "Title" -> {
-                events.sort(Comparator.comparing(EventDTO::getName, String.CASE_INSENSITIVE_ORDER));
-            }
-            case "Creation Date (Newest)" -> {
-                events.sort(Comparator.comparing(EventDTO::getCreationDate,
-                        Comparator.reverseOrder()));
-            }
-            case "Creation Date (Oldest)" -> {
-                events.sort(Comparator.comparing(EventDTO::getCreationDate));
-            }
-            case "Last Activity (Most recent)" -> {
-                events.sort(Comparator.comparing(EventDTO::getLastActivity,
-                        Comparator.reverseOrder()));
-            }
-            case "Last Activity (Least recent)" -> {
-                events.sort(Comparator.comparing(EventDTO::getLastActivity));
-            }
+        switch (orderByComboBox.getValue()) {
+            case "Title" ->
+                    events.sort(Comparator.comparing
+                            (EventDTO::getName, String.CASE_INSENSITIVE_ORDER));
+            case "Creation Date (Newest)" ->
+                    events.sort(Comparator.comparing(EventDTO::getCreationDate,
+                    Comparator.reverseOrder()));
+            case "Creation Date (Oldest)" ->
+                    events.sort(Comparator.comparing(EventDTO::getCreationDate));
+            case "Last Activity (Most recent)" ->
+                    events.sort(Comparator.comparing(EventDTO::getLastActivity,
+                    Comparator.reverseOrder()));
+            case "Last Activity (Least recent)" ->
+                    events.sort(Comparator.comparing(EventDTO::getLastActivity));
         }
         addEventsToEventGrid();
     }
 
+    /**
+     * Adds all events to the eventGrid GridPane.
+     */
     public void addEventsToEventGrid() {
         eventGrid.getChildren().clear();
         for (int i = 0; i < events.size(); i++) {
@@ -86,7 +96,7 @@ public class AdminCtrl implements VoidSceneController {
             Button eventNameButton = createEventNameButton(e);
             Button deleteButton = createDeleteEventButton(e);
 
-            // TODO
+            // TODO: Reimplement download functionality
 //            List<EventResponseBody> dump = serverUtils.getJSON();
 //            EventResponseBody op=null;
 //            for(EventResponseBody body : dump){
@@ -104,6 +114,11 @@ public class AdminCtrl implements VoidSceneController {
         }
     }
 
+    /**
+     * Creates button with the event's name, that takes the user to the event's page.
+     * @param event The event to link to.
+     * @return Button Object.
+     */
     private Button createEventNameButton(EventDTO event) {
         Button openPage = new Button(event.getName());
         openPage.setOnAction(e -> mainCtrl.showEventOverview(event));
@@ -111,6 +126,11 @@ public class AdminCtrl implements VoidSceneController {
         return openPage;
     }
 
+    /**
+     * Creates button that deletes the event.
+     * @param event Event to link to.
+     * @return Button Object.
+     */
     private Button createDeleteEventButton(EventDTO event) {
         Button delete = new Button("Delete");
         delete.setOnAction(e -> {
@@ -120,7 +140,7 @@ public class AdminCtrl implements VoidSceneController {
         return delete;
     }
 
-    // TODO
+    // TODO Reimplement download functionality
 //    /**
 //     *
 //     * @param event puts the JSON of an event in a file that is downloaded
@@ -158,14 +178,13 @@ public class AdminCtrl implements VoidSceneController {
 
     /**
      * Opens fileChooser when clicked
-     *
-     * @return the button
      */
     @FXML
     public void importEvent() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose JSON File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
 
         // Show open dialog
         Stage stage = new Stage();
@@ -188,7 +207,8 @@ public class AdminCtrl implements VoidSceneController {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Failed to import event");
-                alert.setContentText("An error occurred while importing the event from JSON: " + e.getMessage());
+                alert.setContentText("An error occurred while importing the event from JSON: "
+                        + e.getMessage());
                 alert.showAndWait();
             }
 
