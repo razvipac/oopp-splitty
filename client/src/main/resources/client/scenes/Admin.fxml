@@ -13,6 +13,9 @@
 <?import javafx.scene.text.Text?>
 
 
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="469.0"
             prefWidth="391.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
@@ -43,25 +46,28 @@
                 </GridPane>
             </content>
         </ScrollPane>
-        <Button layoutX="293.0" layoutY="384.0" mnemonicParsing="false" text="Import Event">
+        <Button layoutX="293.0" layoutY="384.0" mnemonicParsing="false" text="Import Event" onAction="#importEvent">
             <font>
                 <Font size="10.0"/>
             </font>
         </Button>
-        <MenuButton layoutX="317.0" layoutY="54.0" mnemonicParsing="false" text="Title">
+        <ComboBox fx:id="orderByComboBox" layoutX="219.0" layoutY="55.0" prefHeight="22.0" prefWidth="144.0"
+                  style="-fx-font-size: 10;" onAction="#orderEvents">
             <items>
-                <MenuItem mnemonicParsing="false" text="Action 1"/>
-                <MenuItem mnemonicParsing="false" text="Action 2"/>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Title"/>
+                    <String fx:value="Creation Date (Newest)"/>
+                    <String fx:value="Creation Date (Oldest)"/>
+                    <String fx:value="Last Activity (Most recent)"/>
+                    <String fx:value="Last Activity (Least recent)"/>
+                </FXCollections>
             </items>
-            <font>
-                <Font size="10.0"/>
-            </font>
-        </MenuButton>
-        <Label layoutX="247.0" layoutY="58.0" text="Order by:">
+        </ComboBox>
+        <Label layoutX="172.0" layoutY="59.0" text="Order by:">
             <font>
                 <Font size="10.0"/>
             </font>
         </Label>
-        <Button layoutX="23.0" layoutY="421.0" mnemonicParsing="false" text="Back"/>
+        <Button layoutX="23.0" layoutY="421.0" mnemonicParsing="false" text="Back" onAction="#goBack"/>
     </children>
 </AnchorPane>
