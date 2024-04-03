@@ -131,19 +131,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Back button action
-     */
-    public void goBack() {
-        mainCtrl.showStartScreen();
-    }
-
-    public void onGlobalKeyPress(KeyEvent keyEvent){
-        if (keyEvent.getCode() == KeyCode.ESCAPE){
-            goBack();
-        }
-    }
-
-    /**
      * Gets participantDropDown, a ComboBox containing all the participants of the event.
      * The selected option is saved to selectedParticipant.
      */
@@ -218,21 +205,23 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             }
         }
     }
-//
+
+
     /**
-     * Creates an alert window
-     * @param type The type of alert (e.g. CONFIRMATION or ERROR)
-     * @param title The title of the window
-     * @param header The header of the window
-     * @param content The content of the window
-     * @return Alert object
+     * Back button action
      */
-    private Alert createAlert(Alert.AlertType type, String title, String header, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        return alert;
+    public void goBack() {
+        mainCtrl.showStartScreen();
+    }
+
+    public void openInvitations(){
+        mainCtrl.showInvitations(event);
+    }
+
+    public void onGlobalKeyPress(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ESCAPE){
+            goBack();
+        }
     }
 
     /**

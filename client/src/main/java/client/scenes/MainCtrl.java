@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import commons.Event;
 import commons.dto.EventDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,9 +32,13 @@ public class MainCtrl {
     private EventOverviewCtrl eventOverviewCtrl;
     private Scene eventOverview;
 
+    private InvitationsCtrl invitationsCtrl;
+    private Scene invitations;
+
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
-                           Pair<EventOverviewCtrl, Parent> eventOverviewPair) {
+                           Pair<EventOverviewCtrl, Parent> eventOverviewPair,
+                           Pair<InvitationsCtrl, Parent> invitationsPair) {
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
@@ -41,6 +46,9 @@ public class MainCtrl {
 
         this.eventOverviewCtrl = eventOverviewPair.getKey();
         this.eventOverview = new Scene(eventOverviewPair.getValue());
+
+        this.invitationsCtrl = invitationsPair.getKey();
+        this.invitations = new Scene(invitationsPair.getValue());
 
         showStartScreen();
         primaryStage.show();
@@ -56,6 +64,11 @@ public class MainCtrl {
         primaryStage.setTitle("Splitty: Event " + eventDTO.getName());
         eventOverviewCtrl.initialize(eventDTO);
         primaryStage.setScene(eventOverview);
+    }
 
+    public void showInvitations(EventDTO eventDTO){
+        primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.getName());
+        invitationsCtrl.initialize(eventDTO);
+        primaryStage.setScene(invitations);
     }
 }
