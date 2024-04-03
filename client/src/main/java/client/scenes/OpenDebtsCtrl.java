@@ -67,11 +67,13 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     /**
      * Back button action
      */
-    public void goBack() {
+    @FXML
+    private void goBack() {
         mainCtrl.showEventOverview(event);
     }
 
-    public void onGlobalKeyPress(KeyEvent keyEvent){
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
     }
 
