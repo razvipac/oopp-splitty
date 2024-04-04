@@ -1,39 +1,40 @@
-///*
-// * Copyright 2021 Delft University of Technology
-// *
-// * Licensed under the Apache License, Version 2.0 (the "License");
-// * you may not use this file except in compliance with the License.
-// * You may obtain a copy of the License at
-// *
-// *    http://www.apache.org/licenses/LICENSE-2.0
-// *
-// * Unless required by applicable law or agreed to in writing, software
-// * distributed under the License is distributed on an "AS IS" BASIS,
-// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// * See the License for the specific language governing permissions and
-// * limitations under the License.
-// */
-//package client;
-//
-//import com.google.inject.Binder;
-//import com.google.inject.Module;
-//import com.google.inject.Scopes;
-//
-//import client.scenes.AddQuoteCtrl;
-//import client.utils.MainCtrl;
-//import client.scenes.QuoteOverviewCtrl;
-//
-//public class MyModule implements Module {
-//
-//    /**
-//     * Configures dependency injection bindings.
-//     *
-//     * @param binder The Guice binder.
-//     */
-//    @Override
-//    public void configure(Binder binder) {
-//        binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-//        binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
-//        binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
-//    }
-//}
+/*
+ * Copyright 2021 Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package client;
+
+import client.scenes.*;
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import com.google.inject.Scopes;
+
+public class MyModule implements Module {
+
+    /**
+     * Configures the bindings for the controllers.
+     * @param binder The Guice binder
+     */
+    @Override
+    public void configure(Binder binder) {
+        binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(StartScreenCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(EventOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(ContactDetailsCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(InvitationsCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(OpenDebtsCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AddEditExpenseCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
+    }
+}

@@ -34,26 +34,24 @@ public class MyFXML {
     private Injector injector;
 
     /**
-     * Constructs a MyFXML instance with the specified injector.
-     *
-     * @param injector The Guice injector.
+     * Constructor for MyFXML class
+     * @param injector the injector to be used for instance creation
      */
     public MyFXML(Injector injector) {
         this.injector = injector;
     }
 
     /**
-     * Loads an FXML file and returns the controller and root parent.
-     *
-     * @param <T>    The type of the controller.
-     * @param c      The controller class.
-     * @param parts  The path parts of the FXML file.
-     * @return A Pair containing the controller and the root parent.
+     * Load an FXML file along with its controller.
+     * @param c The controller class
+     * @param parts The path parts to the FXML file
+     * @param <T> The type of the controller
+     * @return A pair containing the controller instance and the parent node
      */
     public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
         try {
-            var loader = new FXMLLoader(getLocation(parts), null,
-                    null, new MyFactory(), StandardCharsets.UTF_8);
+            var loader = new FXMLLoader(getLocation(parts),
+                    null, null, new MyFactory(), StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
             return new Pair<>(ctrl, parent);
@@ -62,12 +60,6 @@ public class MyFXML {
         }
     }
 
-    /**
-     * Gets the location URL of the FXML file.
-     *
-     * @param parts The path parts of the FXML file.
-     * @return The URL of the FXML file location.
-     */
     private URL getLocation(String... parts) {
         var path = Path.of("", parts).toString();
         return MyFXML.class.getClassLoader().getResource(path);

@@ -19,7 +19,10 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import commons.dto.*;
+import commons.dto.DebtDTO;
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import commons.response_body.EventResponseBody;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
@@ -30,32 +33,7 @@ import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
-    private static ServerUtils serverUtils;
-
-    // Server address
     private static final String SERVER = "http://localhost:8080/";
-
-    /**
-     * Utility class for managing server-related functionality. Follows the Singleton design
-     * pattern (ensures only one instance exists throughout the application).
-     */
-    private ServerUtils() {
-    }
-
-    /**
-     * Gets single instance of ServerUtils.
-     * If the instance does not exist, a new one is created.
-     *
-     * @return The instance of ServerUtils
-     */
-    public static synchronized ServerUtils getServerUtils() {
-        if (serverUtils == null) {
-            serverUtils = new ServerUtils();
-        }
-        return serverUtils;
-    }
-
-    // Event methods
 
     /**
      * Gets all events.
@@ -86,10 +64,8 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(eventName, APPLICATION_JSON), EventDTO.class);
     }
-
     /**
      * Creates an event with the given event name.
-     *
      * @param eventCode the name of the event
      * @return the created Event
      */
@@ -122,7 +98,6 @@ public class ServerUtils {
 
     /**
      * Adds Participant to server
-     *
      * @param p Participant to add
      * @return True iff add was successful, false otherwise
      */
@@ -160,9 +135,8 @@ public class ServerUtils {
 
     /**
      * Adds Expense to server
-     *
-     * @param e    Expense to add
-     * @param code Code of event to add to
+     * @param e Expense to add
+     * @param code Code of event
      * @return True iff add was successful, false otherwise
      */
     public boolean addExpense(ExpenseDTO e, String code) {
@@ -193,32 +167,11 @@ public class ServerUtils {
                 .path("api/v1/" + eventCode + "/debts")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {
-                });
+                .get(new GenericType<>() {});
     }
 
-    // Password methods
-
     /**
-     * Checks if the given String matches the server's password
      *
-     * @param input The entered password
-     * @return True iff input matches password, false otherwise.
-     */
-    public Boolean matchesPassword(String input) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER)
-                .path("api/v1/admin/auth/matches-password")
-                .queryParam("input", input)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {
-                });
-    }
-
-    // JSON dump methods
-
-    /**
      * @return Gets the Json dump
      */
     public List<EventResponseBody> getJSON() {
@@ -230,6 +183,11 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Restore event from JSON
+     * @param body EventResponseBody
+     * @return True iff successfully created, false otherwise
+     */
     public boolean restoreEvent(EventResponseBody body) {
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/admin/jsondump")

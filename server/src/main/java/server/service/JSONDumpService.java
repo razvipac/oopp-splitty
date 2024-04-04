@@ -167,10 +167,9 @@ public class JSONDumpService {
                     Expense expense = new Expense(
                             expenseResponseBody.price(),
                             expenseResponseBody.item(),
-                            participantRepository.
-                                    findParticipantByEventCodeAndName
-                                            (expenseResponseBody.paidBy(), event.getCode()).get(), expenseResponseBody.date()
-                    );
+                            participantRepository.findParticipantByEventCodeAndName
+                                    (expenseResponseBody.paidBy(),
+                                            event.getCode()).get(), expenseResponseBody.date());
                     expenseRepository.save(expense);
                 }
             }
@@ -178,6 +177,7 @@ public class JSONDumpService {
             throw new ImproperDumpFormatException("Improper dump format");
         }
     }
+
     /**
      * Restores the state of an event to that stored inside the passed EventDump
      *
@@ -209,23 +209,23 @@ public class JSONDumpService {
             for (ParticipantResponseBody participantResponseBody :
                     eventResponseBody.participants()) {
                 Participant participant = new Participant(
-                    participantResponseBody.name(),
-                    event,
-                    participantResponseBody.email(),
-                    participantResponseBody.iban(),
-                    participantResponseBody.bic()
+                        participantResponseBody.name(),
+                        event,
+                        participantResponseBody.email(),
+                        participantResponseBody.iban(),
+                        participantResponseBody.bic()
                 );
                 participantRepository.save(participant);
             }
 
             for (ExpenseResponseBody expenseResponseBody : eventResponseBody.expenses()) {
                 Expense expense = new Expense(
-                    expenseResponseBody.price(),
-                    expenseResponseBody.item(),
-                    participantRepository.
-                            findParticipantByEventCodeAndName
-                                    (expenseResponseBody.paidBy(), event.getCode()).get(),
-                    expenseResponseBody.date()
+                        expenseResponseBody.price(),
+                        expenseResponseBody.item(),
+                        participantRepository.
+                                findParticipantByEventCodeAndName
+                                        (expenseResponseBody.paidBy(), event.getCode()).get(),
+                        expenseResponseBody.date()
                 );
                 expenseRepository.save(expense);
             }

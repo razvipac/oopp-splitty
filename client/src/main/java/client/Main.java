@@ -15,37 +15,59 @@
  */
 package client;
 
-import client.scenes.MainCtrl;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import client.scenes.*;
+import com.google.inject.Injector;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 public class Main extends Application {
 
+    private static final Injector INJECTOR = createInjector(new MyModule());
+    private static final MyFXML FXML = new MyFXML(INJECTOR);
+
     /**
-     * MainCtrl method that starts the application
-     * @param args command line arguments
-     * @throws URISyntaxException if the URI is invalid or cannot be constructed
-     * @throws IOException if an I/O error occurs
+     * The entry point for the client application.
+     *
+     * @param args Arguments passed to the application.
+     * @throws URISyntaxException If there is an error in creating a URI.
+     * @throws IOException If an I/O error occurs.
      */
     public static void main(String[] args) throws URISyntaxException, IOException {
         launch();
     }
 
     /**
-     * Starts the application
-     * @param primaryStage JavaFX passed primary stage
-     * @throws IOException IO Exception
+     * Initializes the primary stage and loads the scenes for various controllers.
+     *
+     * @param primaryStage The primary stage of the JavaFX application.
+     * @throws IOException If an I/O error occurs while loading the FXML files.
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Stage mainStage = new Stage();
-        MainCtrl mainCtrl = new MainCtrl(mainStage);
+
+        var startScreen = FXML.load(StartScreenCtrl.class,
+                "client", "scenes", "StartScreen.fxml");
+        var eventOverview = FXML.load(EventOverviewCtrl.class,
+                "client", "scenes", "EventOverview.fxml");
+        var contactDetails = FXML.load(ContactDetailsCtrl.class,
+                "client", "scenes", "ContactDetails.fxml");
+        var invitations = FXML.load(InvitationsCtrl.class,
+                "client", "scenes", "Invitations.fxml");
+        var openDebts = FXML.load(OpenDebtsCtrl.class,
+                "client", "scenes", "OpenDebts.fxml");
+        var addEditExpense = FXML.load(AddEditExpenseCtrl.class,
+                "client", "scenes", "AddEditExpense.fxml");
+        var admin = FXML.load(AdminCtrl.class,
+                "client", "scenes", "Admin.fxml");
+
+        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, startScreen, eventOverview, contactDetails,
+                invitations, openDebts, addEditExpense, admin);
     }
 }
-
-
-
-

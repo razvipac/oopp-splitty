@@ -1,119 +1,87 @@
 package client.scenes;
 
-import client.interfaces.DataBasedPopupController;
+import client.interfaces.DataBasedSceneController;
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.dto.DebtDTO;
 import commons.dto.EventDTO;
 import commons.dto.ParticipantDTO;
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
-import javafx.scene.text.*;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class OpenDebts implements DataBasedPopupController<EventDTO> {
+public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
 
-    private Scene scene;
-    private final Stage window;
-    private boolean isOpen;
-
     private EventDTO event;
-    private List<DebtDTO> debtList;
+    private final List<DebtDTO> debtList;
+
+    @FXML
+    private VBox debtVBox;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
      * @param mainCtrl scene of the mainCtrl class
      * @param serverUtils global serverUtils singleton
-     * @param event event entity corresponding to this window
      */
-    public OpenDebts(MainCtrl mainCtrl, ServerUtils serverUtils, EventDTO event) {
+    @Inject
+    public OpenDebtsCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
 
-        window = new Stage();
-        window.setTitle("Add Participant");
-        window.initModality(Modality.APPLICATION_MODAL);
-        isOpen = false;
-
-        initialize(event);
+        // TODO: Functionality to be tested when debts are available on the server
+        debtList = new ArrayList<>();
     }
 
     /**
      * Generate an ui from the given object instance
+     *
      * @param event Event instance to populate the UI with
-     * @return the newly generated scene
      */
-    public Scene initialize(EventDTO event) {
+    public void initialize(EventDTO event) {
         this.event = event;
 
-        if (event == null) createSceneNoEvent();
-        else {
-            debtList = serverUtils.getAllOpenDebts(event.getCode());
-            createScene();
-        }
-
-        return scene;
-    }
-
-    private void createSceneNoEvent() {
-        VBox layout = new VBox(5);
-        Text noEventText = new Text("You have to join an event before checking the debts.");
-        Button backButton = new Button("Back");
-        backButton.setOnAction(e -> goBack());
-
-        layout.setAlignment(Pos.CENTER);
-        layout.getChildren().addAll(noEventText, backButton);
-        layout.setPadding(new Insets(20));
-
-        scene = new Scene(layout, 350, 300);
-        scene.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
-        });
+        refreshDebtList();
     }
 
     /**
-     * Creates the scene for the Open Debts page
+     * Refreshes the debt list by clearing it and fetching all open debts from the server for the
+     * current event. Each debt is then added to the layout.
      */
-    public void createScene() {
-        // Layout
-        VBox layout = new VBox();
-        layout.setPadding(new Insets(10));
-
-        // Header
-        Text header = new Text("Open Debts");
-        header.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        layout.getChildren().addAll(header);
-
-        Button backButton = new Button("Back");
-        backButton.setOnAction(e -> goBack());
-        layout.getChildren().add(backButton);
+    public void refreshDebtList(){
+        debtList.clear();
+        debtList.addAll(serverUtils.getAllOpenDebts(event.getCode()));
 
         // Adding each debt
         for(DebtDTO d : debtList) {
-            addDebtToLayout(d, layout);
+            addDebtToLayout(d, debtVBox);
         }
-        // Scene
-        scene = new Scene(layout, 400, 500);
-        scene.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
-        });
-
     }
+
 
     /**
      * Back button action
      */
+    @FXML
     private void goBack() {
-        closeAlertBox();
+        mainCtrl.showEventOverview(event);
+    }
+
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
     }
 
     /**
@@ -185,9 +153,9 @@ public class OpenDebts implements DataBasedPopupController<EventDTO> {
 
         String creditorBankInfo =
                 "Bank Information for creditor (" + creditor.getName() + "):\n" +
-                "Account Holder: " + creditor.getName() + "\n" +
-                "IBAN: " + creditor.getIban() + "\n" +
-                "BIC: " + creditor.getBic();
+                        "Account Holder: " + creditor.getName() + "\n" +
+                        "IBAN: " + creditor.getIban() + "\n" +
+                        "BIC: " + creditor.getBic();
 
         return "Debt Details:\n" +
                 "Debtor: " + debtor.getName() + "\n" +
@@ -195,38 +163,4 @@ public class OpenDebts implements DataBasedPopupController<EventDTO> {
                 "Amount: " + amount + " Euro\n\n" +
                 creditorBankInfo;
     }
-
-    /**
-     * Displays a modal alert box for viewing Open Debts.
-     */
-    public void displayAlertBox() {
-        isOpen = true;
-        window.setScene(scene);
-        window.showAndWait();
-    }
-
-    /**
-     * Closes a modal alert box for viewing Open Debts.
-     */
-    public void closeAlertBox() {
-        isOpen = false;
-        window.close();
-    }
-
-    /**
-     * Getter for the scene
-     * @return the scene
-     */
-    public Scene getScene() {
-        return scene;
-    }
-
-    /**
-     * Getter for isOpen, true - window is open - false otherwise
-     * @return value for isOpen
-     */
-    public boolean isOpen(){
-        return isOpen;
-    }
-
 }

@@ -1,0 +1,41 @@
+package client.utils;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
+import java.util.Optional;
+
+public class ControllerUtils {
+    /**
+     * Creates an alert window
+     * @param type The type of alert (e.g. CONFIRMATION or ERROR)
+     * @param title The title of the window
+     * @param header The header of the window
+     * @param content The content of the window
+     * @return Alert object
+     */
+    public Alert createAlert(Alert.AlertType type, String title, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert;
+    }
+
+    /**
+     * Creates a confirmation alert window.
+     * @param title The title of the confirmation window.
+     * @param content The content of the confirmation window.
+     * @return true if the user confirms, false otherwise.
+     */
+    public boolean createConfirmationAlert(String title, String content) {
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle(title);
+        confirmationAlert.setHeaderText(null);
+        confirmationAlert.setContentText(content);
+
+        Optional<ButtonType> result = confirmationAlert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+}
