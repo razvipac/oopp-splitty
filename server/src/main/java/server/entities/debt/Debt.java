@@ -1,8 +1,9 @@
 // CHECKSTYLE:OFF
 
-package server.api.entities;
+package server.entities.debt;
 
 import jakarta.persistence.*;
+import server.entities.participant.Participant;
 
 import java.util.*;
 

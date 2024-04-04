@@ -1,28 +1,25 @@
 package server.api;
 
-import server.api.entities.Debt;
+import server.entities.DTOMapper;
+import server.entities.debt.Debt;
 import commons.dto.DebtDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
-import server.api.pojo.request_body.DebtRequestBody;
-import server.api.pojo.response_body.DebtResponseBody;
 import server.service.DebtService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-
-
-
 @RestController
 @RequestMapping("api/v1/{eventCode}/debts")
 public class DebtController {
 
     private final DebtService debtService;
+    private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
 
     /**
      * Constructs a DebtController with the specified DebtService
@@ -30,8 +27,12 @@ public class DebtController {
      * @param debtService The service for managing Debt entities
      */
     @Autowired
-    public DebtController(DebtService debtService) {
+    public DebtController(
+            @Autowired DebtService debtService,
+            @Autowired DTOMapper<Debt, DebtDTO> debtDTOMapper
+    ) {
         this.debtService = debtService;
+        this.debtDTOMapper = debtDTOMapper;
     }
 
     /**
@@ -51,7 +52,7 @@ public class DebtController {
         ForkJoinPool.commonPool().submit(() -> {
             List<Debt> unsettledDebts = debtService.getAllUnsettledDebtsForEvent(eventCode);
             List<DebtDTO> unsettledDebtDTOs = unsettledDebts.stream()
-                    .map(DebtDTOMapper::toDTO)
+                    .map(debtDTOMapper::toDTO)
                     .toList();
             output.setResult(new ResponseEntity<>(unsettledDebtDTOs, HttpStatus.OK));
         });
@@ -68,14 +69,15 @@ public class DebtController {
      * @return ResponseEntity with changed received status if it is found
      */
     @PutMapping("")
-    public ResponseEntity<DebtResponseBody> updateUnsettledDebt(
+    public ResponseEntity<DebtDTO> updateUnsettledDebt(
             @PathVariable("eventCode") String eventCode,
-            @RequestBody DebtRequestBody body
+            @RequestBody DebtDTO body
     ) {
         try {
             Debt updated = debtService.updateOne(eventCode, body);
-            DebtResponseBody response = DebtResponseBody.build(updated);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            DebtDTO debtDTO = debtDTOMapper.toDTO(updated);
+
+            return new ResponseEntity<>(debtDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
