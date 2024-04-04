@@ -25,7 +25,7 @@ public class StartScreenCtrl implements VoidSceneController {
     @FXML
     private GridPane recentViewedEvents;
 
-    private List<EventDTO> recentlyJoinedEvents = new LinkedList<>();
+    private Set<EventDTO> recentlyJoinedEvents = new LinkedHashSet<>();
     private List<EventDTO> events;
 
     @Inject
@@ -51,8 +51,9 @@ public class StartScreenCtrl implements VoidSceneController {
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
-            recentlyJoinedEvents.remove(found.get());
+            recentlyJoinedEvents.removeIf(event -> event.getCode().equals(code));
             recentlyJoinedEvents.add(found.get());
+            updateRecentEvents();
             mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
@@ -70,15 +71,15 @@ public class StartScreenCtrl implements VoidSceneController {
     private void updateRecentEvents() {
         recentViewedEvents.getChildren().clear();
         int amountOfEvents = 0;
-        Iterator<EventDTO> iterator = recentlyJoinedEvents.iterator();
-        while (iterator.hasNext() && amountOfEvents < 4) { // Cap the amount of recent events to 4
-            EventDTO event = iterator.next();
+        int lastIndex = recentlyJoinedEvents.size() - 1;
+        for (int i = lastIndex; i >= 0 && amountOfEvents < 4; i--) {
+            EventDTO event = new ArrayList<>(recentlyJoinedEvents).get(i);
             Label eventName = new Label(event.getName());
             Button overviewButton = new Button("\u2192");
             overviewButton.setOnAction(e -> mainCtrl.showEventOverview(event));
             Button removeButton = new Button("\u0078");
             removeButton.setOnAction(e -> {
-                iterator.remove();
+                recentlyJoinedEvents.remove(event);
                 refresh();
             });
 
