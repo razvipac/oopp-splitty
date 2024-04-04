@@ -1,11 +1,12 @@
 package server.service;
 
-import server.api.entities.Debt;
-import server.api.entities.DebtId;
-import server.api.entities.Participant;
+import commons.dto.DebtDTO;
+import server.entities.DTOMapper;
+import server.entities.debt.Debt;
+import server.entities.debt.DebtId;
+import server.entities.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.api.pojo.request_body.DebtRequestBody;
 import server.database.DebtRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -16,7 +17,8 @@ import java.util.Optional;
 @Service
 public class DebtService {
     private final DebtRepository debtRepository;
-    private ParticipantService participantService;
+    private final ParticipantService participantService;
+    private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
 
     /**
      * Constructs a DebtService with the specified DebtRepository
@@ -25,9 +27,14 @@ public class DebtService {
      * @param participantService Todo
      */
     @Autowired
-    public DebtService(DebtRepository debtRepository, ParticipantService participantService) {
+    public DebtService(
+            DebtRepository debtRepository,
+            ParticipantService participantService,
+            DTOMapper<Debt, DebtDTO> debtDTOMapper
+    ) {
         this.debtRepository = debtRepository;
         this.participantService = participantService;
+        this.debtDTOMapper = debtDTOMapper;
     }
 
     /**
@@ -74,9 +81,9 @@ public class DebtService {
      * @return the object
      * @throws NotFoundInDatabaseException
      */
-    public Debt updateOne(String eventCode, DebtRequestBody body)
+    public Debt updateOne(String eventCode, DebtDTO body)
             throws NotFoundInDatabaseException {
-        Debt found = getOne(eventCode, body.debtor_name(), body.creditor_name());
+        Debt found = getOne(eventCode, body.debtorName(), body.creditorName());
         // if not found exception will be thrown
         found.setReceived(!body.received());
         debtRepository.save(found);

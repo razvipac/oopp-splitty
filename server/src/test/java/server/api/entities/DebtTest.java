@@ -2,6 +2,11 @@ package server.api.entities;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.entities.debt.Debt;
+import server.entities.debt.DebtId;
+import server.entities.event.Event;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
