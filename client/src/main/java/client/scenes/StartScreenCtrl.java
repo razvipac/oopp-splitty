@@ -84,7 +84,8 @@ public class StartScreenCtrl implements VoidSceneController {
     }
 
     public void refresh(){
-        System.out.println("StartScreenCtrl refresh()");
+        createEventTextField.clear();
+        joinEventTextField.clear();
         events = server.getAllEvents();
     }
 }
