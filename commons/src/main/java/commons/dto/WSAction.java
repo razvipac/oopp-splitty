@@ -1,4 +1,4 @@
-package commons.response_body;
+package commons.dto;
 
 public enum WSAction {
     RESPONDED,
