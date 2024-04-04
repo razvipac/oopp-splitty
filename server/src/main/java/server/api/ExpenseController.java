@@ -1,16 +1,15 @@
 package server.api;
 
-import server.api.entities.Expense;
+import commons.dto.WSAction;
+import commons.dto.WSWrapperResponseBody;
+import server.entities.DTOMapper;
+import server.entities.expense.Expense;
 import commons.dto.ExpenseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import server.api.pojo.request_body.ExpenseRequestBody;
-import server.api.pojo.response_body.ExpenseResponseBody;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.service.ExpenseService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -21,6 +20,7 @@ import java.util.List;
 public class ExpenseController {
     private final ExpenseService expenseService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final DTOMapper<Expense, ExpenseDTO> expenseDTOMapper;
 
     /**
      * Constructor for initializing the ExpenseController.
@@ -29,10 +29,12 @@ public class ExpenseController {
      * @param simpMessagingTemplate The SimpMessagingTemplate instance to be used.
      */
     @Autowired
-    public ExpenseController(ExpenseService expenseService,
-                             SimpMessagingTemplate simpMessagingTemplate) {
+    public ExpenseController(@Autowired ExpenseService expenseService,
+                             @Autowired SimpMessagingTemplate simpMessagingTemplate,
+                             @Autowired DTOMapper<Expense, ExpenseDTO> expenseDTOMapper) {
         this.expenseService = expenseService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.expenseDTOMapper = expenseDTOMapper;
     }
 
     /**
@@ -59,14 +61,14 @@ public class ExpenseController {
         if (id == null && participantName == null) {
             List<Expense> expenses = expenseService.getAllInEvent(eventCode);
             List<ExpenseDTO> expenseDTOs = expenses.stream()
-                    .map(ExpenseDTOMapper::toDTO)
+                    .map(expenseDTOMapper::toDTO)
                     .toList();
             return new ResponseEntity<>(expenseDTOs, HttpStatus.OK);
         }
 
         try {
             return new ResponseEntity<>(List.of(
-                    ExpenseDTOMapper.toDTO(expenseService.getOne(eventCode, participantName, id))
+                    expenseDTOMapper.toDTO(expenseService.getOne(eventCode, participantName, id))
             ), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -86,22 +88,14 @@ public class ExpenseController {
      *         if successful, or a NOT_FOUND response if the event or participant is not found.
      */
     @PostMapping("")
-    public ResponseEntity<ExpenseResponseBody> createOne(
+    public ResponseEntity<ExpenseDTO> createOne(
             @PathVariable("eventCode") String eventCode,
             @RequestBody ExpenseDTO expenseDTO
     ) {
         try {
-            ExpenseRequestBody body = new ExpenseRequestBody(
-                    expenseDTO.getPrice(),
-                    expenseDTO.getItem(),
-                    expenseDTO.getPaidBy().getName(),
-                    expenseDTO.getDate()
-            );
+            Expense expense = expenseService.createOne(eventCode, expenseDTO);
 
-            Expense expense = expenseService.createOne(eventCode, body);
-            ExpenseResponseBody responseBody = ExpenseResponseBody.build(expense);
-
-            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+            return new ResponseEntity<>(expenseDTOMapper.toDTO(expense), HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -121,23 +115,23 @@ public class ExpenseController {
      *         if successful, or a NOT_FOUND response if the expense is not found.
      */
     @DeleteMapping("")
-    public ResponseEntity<ExpenseResponseBody> deleteOne(
+    public ResponseEntity<ExpenseDTO> deleteOne(
             @RequestParam("id") Long id,
             @RequestParam("participantName") String participantName,
             @PathVariable("eventCode") String eventCode
     ) {
         try {
             Expense expense = expenseService.deleteOne(eventCode, participantName, id);
-            ExpenseResponseBody responseBody = ExpenseResponseBody.build(expense);
+            ExpenseDTO expenseDTO = expenseDTOMapper.toDTO(expense);
 
             simpMessagingTemplate.convertAndSend(
                     "/api/websocket/v1/channel/" + eventCode + "/expense",
                     new WSWrapperResponseBody<>(
                             WSAction.DELETED,
-                            responseBody
+                            expenseDTO
                     ));
 
-            return new ResponseEntity<>(responseBody, HttpStatus.OK);
+            return new ResponseEntity<>(expenseDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -158,27 +152,26 @@ public class ExpenseController {
      *         if successful, or a NOT_FOUND response if the expense is not found.
      */
     @PutMapping("")
-    public ResponseEntity<ExpenseResponseBody> updateOneById(
+    public ResponseEntity<ExpenseDTO> updateOneById(
             @RequestParam("id") Long id,
             @PathVariable("eventCode") String eventCode,
-            @RequestBody ExpenseRequestBody body
+            @RequestBody ExpenseDTO body
     ) {
         try {
             Expense updated = expenseService.updateOne(eventCode, id, body);
-            ExpenseResponseBody response = ExpenseResponseBody.build(updated);
+            ExpenseDTO expenseDTO = expenseDTOMapper.toDTO(updated);
 
             simpMessagingTemplate.convertAndSend(
                     "/api/websocket/v1/channel/" + eventCode + "/expense",
                     new WSWrapperResponseBody<>(
                             WSAction.MODIFIED,
-                            response
+                            expenseDTO
                     ));
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(expenseDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 }
 

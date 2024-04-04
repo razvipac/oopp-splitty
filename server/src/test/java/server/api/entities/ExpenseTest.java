@@ -2,6 +2,9 @@ package server.api.entities;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.entities.expense.Expense;
+import server.entities.expense.ExpenseId;
+import server.entities.participant.Participant;
 
 import java.time.LocalDate;
 

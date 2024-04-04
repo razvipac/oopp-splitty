@@ -1,6 +1,8 @@
-package server.api.entities;
+package server.entities.expense;
 
 import jakarta.persistence.*;
+import server.entities.participant.Participant;
+
 import java.io.Serializable;
 import java.util.Objects;
 
