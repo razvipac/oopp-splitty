@@ -1,15 +1,10 @@
 package server.service;
 
-import commons.dto.EventDTO;
-import commons.dto.WSAction;
-import commons.dto.WSWrapperResponseBody;
-import server.entities.DTOMapper;
-import server.entities.event.Event;
-import server.entities.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import server.database.EventRepository;
+import server.entities.event.Event;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.time.LocalDateTime;
@@ -24,7 +19,6 @@ public class EventService {
     private final EventRepository eventRepository;
     private final ParticipantService participantService;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final DTOMapper<Event, EventDTO> eventDTOMapper;
 
     /**
      * Constructs an EventService instance with the specified EventRepository.
@@ -35,12 +29,10 @@ public class EventService {
      */
     public EventService(@Autowired EventRepository eventRepository,
                         @Autowired ParticipantService participantService,
-                        @Autowired SimpMessagingTemplate simpMessagingTemplate,
-                        @Autowired DTOMapper<Event, EventDTO> eventDTOMapper) {
+                        @Autowired SimpMessagingTemplate simpMessagingTemplate) {
         this.eventRepository = eventRepository;
         this.participantService = participantService;
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.eventDTOMapper = eventDTOMapper;
     }
 
     /**
@@ -86,7 +78,6 @@ public class EventService {
         Event newEvent = new Event(name, code, creationDate);
         newEvent.setLastActivity(creationDate);
 
-
         eventRepository.save(newEvent);
         return newEvent;
     }
@@ -102,23 +93,7 @@ public class EventService {
         Event found = getOne(eventCode);
         // if not found exception will be thrown
 
-        List<Participant> dependantParticipant = participantService.getAll(eventCode);
-        dependantParticipant.forEach((Participant participant) -> {
-            try {
-                participantService.deleteOne(eventCode, participant.getName());
-            } catch (NotFoundInDatabaseException e) {
-                throw new RuntimeException("Could not find dependant participant!");
-            }
-        });
-
         eventRepository.deleteById(eventCode);
-
-        simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/" + eventCode,
-                new WSWrapperResponseBody<>(
-                        WSAction.MODIFIED,
-                        eventDTOMapper.toDTO(found)
-                ));
 
         return found;
     }

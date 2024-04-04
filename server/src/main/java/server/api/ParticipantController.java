@@ -1,15 +1,16 @@
 package server.api;
 
+import commons.dto.ParticipantDTO;
 import commons.dto.WSAction;
 import commons.dto.WSWrapperResponseBody;
-import server.entities.DTOMapper;
-import server.entities.participant.Participant;
-import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import server.entities.DTOMapper;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
 import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -21,6 +22,8 @@ public class ParticipantController {
     private final ParticipantService participantService;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
+    private final ExpenseController expenseController;
+    private final DebtController debtController;
 
     /**
      * Constructor for ParticipantController
@@ -31,10 +34,15 @@ public class ParticipantController {
      */
     public ParticipantController(@Autowired ParticipantService participantService,
                                  @Autowired SimpMessagingTemplate simpMessagingTemplate,
-                                 @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper) {
+                                 @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
+                                 @Autowired ExpenseController expenseController,
+                                 @Autowired DebtController debtController
+    ) {
         this.participantService = participantService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.participantDTOMapper = participantDTOMapper;
+        this.expenseController = expenseController;
+        this.debtController = debtController;
     }
 
     /**
@@ -110,9 +118,21 @@ public class ParticipantController {
             @PathVariable("eventCode") String eventCode
     ){
         try{
-            Participant participant = participantService.deleteOne(eventCode, participantName);
+            Participant participant = participantService.getOne(eventCode, participantName);
+            ParticipantDTO participantDTO = participantDTOMapper.toDTO(participant);
 
-            return new ResponseEntity<>(participantDTOMapper.toDTO(participant), HttpStatus.OK);
+            deleteDependants(participant);
+
+            participantService.deleteOne(eventCode, participantName);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/participant",
+                    new WSWrapperResponseBody<>(
+                            WSAction.DELETED,
+                            participantDTO
+                    ));
+
+            return new ResponseEntity<>(participantDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -137,6 +157,8 @@ public class ParticipantController {
             Participant updated = participantService.updateOne(eventCode, name, body);
             ParticipantDTO participantDTO = participantDTOMapper.toDTO(updated);
 
+            //TODO: add modifying the name
+
             simpMessagingTemplate.convertAndSend(
                     "/api/websocket/v1/channel/" + eventCode + "/participant",
                     new WSWrapperResponseBody<>(
@@ -149,5 +171,16 @@ public class ParticipantController {
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    private void deleteDependants(Participant participant){
+        for (Expense expense : participant.getExpenses()){
+            expenseController.deleteOne(
+                    expense.getId(),
+                    expense.getPaidBy().getName(),
+                    participant.getEvent().getCode()
+            );
+        }
+        // TODO: Delete debts
     }
 }

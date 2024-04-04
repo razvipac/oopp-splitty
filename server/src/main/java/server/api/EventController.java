@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.entities.DTOMapper;
 import server.entities.event.Event;
+import server.entities.participant.Participant;
 import server.service.EventService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -21,6 +22,7 @@ public class EventController {
     private final EventService eventService;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final DTOMapper<Event, EventDTO> eventDTOMapper;
+    private final ParticipantController participantController;
 
     /**
      * Constructs an EventController with the specified EventService and SimpMessagingTemplate.
@@ -30,11 +32,13 @@ public class EventController {
      */
     public EventController(@Autowired EventService eventService,
                            @Autowired SimpMessagingTemplate simpMessagingTemplate,
-                           @Autowired DTOMapper<Event, EventDTO> eventDTOMapper
+                           @Autowired DTOMapper<Event, EventDTO> eventDTOMapper,
+                           @Autowired ParticipantController participantController
     ) {
         this.eventService = eventService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.eventDTOMapper = eventDTOMapper;
+        this.participantController = participantController;
     }
 
     /**
@@ -93,10 +97,20 @@ public class EventController {
             @RequestParam("eventCode") String eventCode
     ) {
         try{
-            Event event = eventService.deleteOne(eventCode);
+            Event event = eventService.getOne(eventCode);
+            EventDTO eventDTO = eventDTOMapper.toDTO(event);
 
-            return new ResponseEntity<>(eventDTOMapper.toDTO(event), HttpStatus.OK);
+            deleteDependants(event);
+            eventService.deleteOne(eventCode);
 
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode,
+                    new WSWrapperResponseBody<>(
+                            WSAction.MODIFIED,
+                            eventDTO
+                    )
+            );
+            return new ResponseEntity<>(eventDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -124,6 +138,15 @@ public class EventController {
             return new ResponseEntity<>(eventDTOMapper.toDTO(event), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void deleteDependants(Event event){
+        for (Participant participant : event.getParticipants()){
+            participantController.deleteOne(
+                    participant.getName(),
+                    event.getCode()
+            );
         }
     }
 }

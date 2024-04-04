@@ -109,6 +109,10 @@ public class Event {
         this.lastActivity = lastActivity;
     }
 
+    public List<Participant> getParticipants(){
+        return participants;
+    }
+
     /**
      * A proper equals method for the class Event
      *

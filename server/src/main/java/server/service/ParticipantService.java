@@ -1,18 +1,14 @@
 package server.service;
 
 import commons.dto.ParticipantDTO;
-import commons.dto.WSAction;
-import commons.dto.WSWrapperResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import server.entities.DTOMapper;
-import server.entities.event.Event;
-import server.entities.expense.Expense;
-import server.entities.participant.Participant;
-import server.entities.participant.ParticipantId;
 import server.database.EventRepository;
 import server.database.ParticipantRepository;
+import server.entities.event.Event;
+import server.entities.participant.Participant;
+import server.entities.participant.ParticipantId;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.time.LocalDateTime;
@@ -31,7 +27,6 @@ public class ParticipantService {
     private final EventRepository eventRepository;
     private final ExpenseService expenseService;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
 
     /**
      * Constructor for ParticipantService
@@ -45,14 +40,12 @@ public class ParticipantService {
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
                               @Autowired EventRepository eventRepository,
                               @Autowired ExpenseService expenseService,
-                              @Autowired SimpMessagingTemplate simpMessagingTemplate,
-                              @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper
+                              @Autowired SimpMessagingTemplate simpMessagingTemplate
     ) {
         this.participantRepository = participantRepository;
         this.eventRepository = eventRepository;
         this.expenseService = expenseService;
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.participantDTOMapper = participantDTOMapper;
     }
 
     /**
@@ -126,28 +119,11 @@ public class ParticipantService {
         Participant found = getOne(eventCode, participantName);
         // if not found, exception will be thrown
 
-        List<Expense> dependantExpenses = expenseService
-                .getAllInEventAndPaidByParticipant(eventCode, found);
-
-        dependantExpenses.forEach((Expense expense) -> {
-            try {
-                expenseService.deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
-            } catch (NotFoundInDatabaseException e) {
-                throw new RuntimeException("Dependant expense not found in db!");
-            }
-        });
-
         participantRepository.deleteById(getParticipantId(
                 eventCode,
                 participantName
         ));
 
-        simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/" + eventCode + "/participant",
-                new WSWrapperResponseBody<>(
-                        WSAction.DELETED,
-                        participantDTOMapper.toDTO(found)
-                ));
 
         updateDate(eventCode);
         return found;

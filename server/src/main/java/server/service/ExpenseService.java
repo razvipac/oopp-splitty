@@ -1,15 +1,12 @@
 package server.service;
 
 import commons.dto.ExpenseDTO;
-import commons.dto.WSAction;
-import commons.dto.WSWrapperResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import server.database.EventRepository;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
-import server.entities.DTOMapper;
 import server.entities.event.Event;
 import server.entities.expense.Expense;
 import server.entities.expense.ExpenseId;
@@ -32,7 +29,6 @@ public class ExpenseService {
     private final ParticipantRepository participantRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final EventRepository eventRepository;
-    private final DTOMapper<Expense, ExpenseDTO> expenseDTOMapper;
 
 
     /**
@@ -48,13 +44,12 @@ public class ExpenseService {
             @Autowired ExpenseRepository expenseRepository,
             @Autowired ParticipantRepository participantRepository,
             @Autowired SimpMessagingTemplate simpMessagingTemplate,
-            @Autowired EventRepository eventRepository,
-            @Autowired DTOMapper<Expense, ExpenseDTO> expenseDTOMapper) {
+            @Autowired EventRepository eventRepository
+    ) {
         this.expenseRepository = expenseRepository;
         this.participantRepository = participantRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.eventRepository = eventRepository;
-        this.expenseDTOMapper = expenseDTOMapper;
     }
 
     /**
@@ -152,13 +147,6 @@ public class ExpenseService {
                 participantName,
                 id
         ));
-
-        simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/" + eventCode + "/expense",
-                new WSWrapperResponseBody<>(
-                        WSAction.DELETED,
-                        expenseDTOMapper.toDTO(found)
-                ));
 
         updateDate(eventCode);
         return found;

@@ -112,6 +112,11 @@ public class Participant {
         this.bic = bic;
     }
 
+    public List<Expense> getExpenses(){
+        return expenses;
+    }
+
+
     /**
      * @return legible information of the participant
      */

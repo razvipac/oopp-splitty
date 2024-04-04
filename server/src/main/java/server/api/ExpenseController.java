@@ -68,16 +68,20 @@ public class ExpenseController {
 
         try {
             return new ResponseEntity<>(List.of(
-                    expenseDTOMapper.toDTO(expenseService.getOne(eventCode, participantName, id))
+                    expenseDTOMapper.toDTO(
+                            expenseService.getOne(eventCode, participantName, id)
+                    )
             ), HttpStatus.OK);
+
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     /**
-     * POST api/v1/{eventCode}/expense with request body in format of ExpenseRequestBody
+     * POST api/v1/{eventCode}/expense with request body in format of ExpenseDTO
      * creates a new Expense populated with data from body under an event with {eventCode}
+     * ID gets automatically generated
      * <p>
      * Sends out a WebSocket STOMP message to all listeners
      * on "/api/websocket/v1/channel/{eventCode}/expense with WSAction CREATED
@@ -94,8 +98,16 @@ public class ExpenseController {
     ) {
         try {
             Expense expense = expenseService.createOne(eventCode, expenseDTO);
+            ExpenseDTO createdDTO = expenseDTOMapper.toDTO(expense);
 
-            return new ResponseEntity<>(expenseDTOMapper.toDTO(expense), HttpStatus.CREATED);
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/expense",
+                    new WSWrapperResponseBody<>(
+                            WSAction.CREATED,
+                            createdDTO
+                    ));
+
+            return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

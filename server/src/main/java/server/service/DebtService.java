@@ -1,24 +1,22 @@
 package server.service;
 
 import commons.dto.DebtDTO;
-import server.entities.DTOMapper;
-import server.entities.debt.Debt;
-import server.entities.debt.DebtId;
-import server.entities.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.DebtRepository;
+import server.entities.debt.Debt;
+import server.entities.debt.DebtId;
+import server.entities.participant.Participant;
 import server.service.exceptions.NotFoundInDatabaseException;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DebtService {
     private final DebtRepository debtRepository;
     private final ParticipantService participantService;
-    private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
 
     /**
      * Constructs a DebtService with the specified DebtRepository
@@ -29,12 +27,10 @@ public class DebtService {
     @Autowired
     public DebtService(
             DebtRepository debtRepository,
-            ParticipantService participantService,
-            DTOMapper<Debt, DebtDTO> debtDTOMapper
+            ParticipantService participantService
     ) {
         this.debtRepository = debtRepository;
         this.participantService = participantService;
-        this.debtDTOMapper = debtDTOMapper;
     }
 
     /**

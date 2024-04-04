@@ -1,11 +1,9 @@
 package server.entities.expense;
 
 import commons.dto.ExpenseDTO;
-import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.entities.DTOMapper;
-import server.entities.participant.Participant;
 import server.service.ExpenseService;
 import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
@@ -48,12 +46,13 @@ public class ExpenseDTOMapper implements DTOMapper<Expense, ExpenseDTO> {
      * Transforms ExpenseDTO to corresponding Expense entity in the database
      * @param expenseDTO DTO to transform
      * @param args additional arguments, here eventCode of the event to which the expense belongs
+     *             and long ID of the expense in the database
      * @return corresponding entity
      * @throws NotFoundInDatabaseException if not present in the database
      */
     @Override
     public Expense getEntity(ExpenseDTO expenseDTO, Object... args) throws NotFoundInDatabaseException {
-        return expenseService.getOne((String) args[0], expenseDTO.paidByName(), expenseDTO.id());
+        return expenseService.getOne((String) args[0], expenseDTO.paidByName(), (Long) args[1]);
     }
 
     /**
