@@ -7,8 +7,7 @@ import commons.dto.*;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
@@ -210,7 +209,21 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+    @FXML
+    private void handleCopyInvitationCode(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+            Label invitationCodeLabel = (Label) event.getSource();
+            String invitationCode = invitationCodeLabel.getText();
 
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(invitationCode);
+            clipboard.setContent(content);
+
+            invitationCodeLabel.setStyle("-fx-background-color: lightblue;");
+        }
+    }
+    
     /**
      * Back button action
      */
