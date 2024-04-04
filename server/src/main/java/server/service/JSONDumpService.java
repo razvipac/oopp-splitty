@@ -1,9 +1,9 @@
 package server.service;
 
-import commons.Debt;
-import commons.Event;
-import commons.Expense;
-import commons.Participant;
+import server.api.entities.Debt;
+import server.api.entities.Event;
+import server.api.entities.Expense;
+import server.api.entities.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

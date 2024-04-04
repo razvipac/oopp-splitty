@@ -1,7 +1,7 @@
 package server.database;
 
-import commons.Expense;
-import commons.ExpenseId;
+import server.api.entities.Expense;
+import server.api.entities.ExpenseId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

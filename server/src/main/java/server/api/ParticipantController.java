@@ -1,8 +1,7 @@
 package server.api;
 
-import commons.Participant;
+import server.api.entities.Participant;
 import commons.dto.ParticipantDTO;
-import commons.dto.ParticipantDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

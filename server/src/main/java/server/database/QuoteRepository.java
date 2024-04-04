@@ -17,6 +17,6 @@ package server.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import commons.Quote;
+import server.api.entities.Quote;
 
 public interface QuoteRepository extends JpaRepository<Quote, Long> {}

@@ -1,9 +1,9 @@
 package server.service;
 
-import commons.Event;
-import commons.Expense;
-import commons.ExpenseId;
-import commons.Participant;
+import server.api.entities.Event;
+import server.api.entities.Expense;
+import server.api.entities.ExpenseId;
+import server.api.entities.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,7 @@
 package server.api;
 
-import commons.Event;
+import server.api.entities.Event;
 import commons.dto.EventDTO;
-import commons.dto.EventDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

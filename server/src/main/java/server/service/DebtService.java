@@ -1,8 +1,8 @@
 package server.service;
 
-import commons.Debt;
-import commons.DebtId;
-import commons.Participant;
+import server.api.entities.Debt;
+import server.api.entities.DebtId;
+import server.api.entities.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.api.pojo.request_body.DebtRequestBody;

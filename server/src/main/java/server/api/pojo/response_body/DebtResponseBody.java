@@ -1,6 +1,6 @@
 package server.api.pojo.response_body;
 
-import commons.Debt;
+import server.api.entities.Debt;
 public record DebtResponseBody(
         String debtor,
         String creditor,

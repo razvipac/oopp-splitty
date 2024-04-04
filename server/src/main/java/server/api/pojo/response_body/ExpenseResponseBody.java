@@ -1,6 +1,6 @@
 package server.api.pojo.response_body;
 
-import commons.Expense;
+import server.api.entities.Expense;
 
 import java.time.LocalDate;
 

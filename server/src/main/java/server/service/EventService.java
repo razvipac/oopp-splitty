@@ -1,7 +1,7 @@
 package server.service;
 
-import commons.Event;
-import commons.Participant;
+import server.api.entities.Event;
+import server.api.entities.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

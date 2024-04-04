@@ -1,6 +1,6 @@
 package server.api.pojo.response_body;
 
-import commons.Participant;
+import server.api.entities.Participant;
 
 public record ParticipantResponseBody(
         String name,

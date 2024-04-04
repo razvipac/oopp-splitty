@@ -1,9 +1,12 @@
 package server.service;
 
-import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import server.api.entities.Event;
+import server.api.entities.Expense;
+import server.api.entities.Participant;
+import server.api.entities.ParticipantId;
 import server.api.pojo.request_body.ParticipantRequestBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
 import server.api.pojo.response_body.WSAction;

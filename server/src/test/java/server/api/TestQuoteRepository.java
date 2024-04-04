@@ -26,7 +26,7 @@
 //import org.springframework.data.domain.Sort;
 //import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
 //
-//import commons.Quote;
+//import server.api.entities.Quote;
 //import server.database.QuoteRepository;
 //
 //public class TestQuoteRepository implements QuoteRepository {

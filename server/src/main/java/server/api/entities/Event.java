@@ -1,4 +1,4 @@
-package commons;
+package server.api.entities;
 
 import jakarta.persistence.*;
 
@@ -11,10 +11,12 @@ import java.util.stream.Collectors;
 public class Event {
 
     private String name;
+
     @Id
     private String code;
     private LocalDateTime creationDate;
     private LocalDateTime lastActivity;
+
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "pkey.event")
     private List<Participant> participants;
 

@@ -1,6 +1,6 @@
 package server.api.pojo.response_body;
 
-import commons.Event;
+import server.api.entities.Event;
 
 import java.util.List;
 

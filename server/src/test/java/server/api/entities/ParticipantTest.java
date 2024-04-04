@@ -1,4 +1,4 @@
-package commons;
+package server.api.entities;
 
 import org.junit.jupiter.api.Test;
 

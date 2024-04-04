@@ -1,4 +1,4 @@
-package commons;
+package server.api.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
