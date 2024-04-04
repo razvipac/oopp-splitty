@@ -93,4 +93,25 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+    /**
+     * Handles the hover-in event for a label.
+     *
+     * @param event The MouseEvent representing the hover-in event.
+     */
+    @FXML
+    private void handleHoverIn(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: lightgray; -fx-cursor: hand;");
+    }
+
+    /**
+     * Handles the hover-out event for a label.
+     *
+     * @param event The MouseEvent representing the hover-out event.
+     */
+    @FXML
+    private void handleHoverOut(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
+    }
 }

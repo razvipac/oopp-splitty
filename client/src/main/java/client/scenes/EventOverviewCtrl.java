@@ -214,22 +214,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      *
      * @param event The MouseEvent representing the double click event.
      */
-    @FXML
-    private void handleCopyInvitationCode(MouseEvent event) {
-        if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-            // Get the source of the event, which should be the invitation code label
-            Label invitationCodeLabel = (Label) event.getSource();
-            String invitationCode = invitationCodeLabel.getText();
 
-            // Create a clipboard and add the invitation code to its content
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(invitationCode);
-            clipboard.setContent(content);
-
-            invitationCodeLabel.setStyle("-fx-background-color: lightblue;");
-        }
-    }
 
     /**
      * Back button action
@@ -265,6 +250,51 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             goBack();
         }
     }
+
+    /**
+     * Handles the copying of the event code when the label is double-clicked.
+     *
+     * @param event The MouseEvent representing the double click event.
+     */
+    @FXML
+    private void handleCopyEventCode(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+            // Get the source of the event, which should be the event code label
+            Label eventCodeLabel = (Label) event.getSource();
+            String eventCode = eventCodeLabel.getText();
+
+            // Create a clipboard and add the event code to its content
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(eventCode);
+            clipboard.setContent(content);
+
+            eventCodeLabel.setStyle("-fx-background-color: lightblue;");
+        }
+    }
+
+    /**
+     * Handles the hover-in event for a label.
+     *
+     * @param event The MouseEvent representing the hover-in event.
+     */
+    @FXML
+    private void handleHoverIn(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: lightgray; -fx-cursor: hand;");
+    }
+
+    /**
+     * Handles the hover-out event for a label.
+     *
+     * @param event The MouseEvent representing the hover-out event.
+     */
+    @FXML
+    private void handleHoverOut(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
+    }
+
 
     /**
      * Nested class Expense Item.

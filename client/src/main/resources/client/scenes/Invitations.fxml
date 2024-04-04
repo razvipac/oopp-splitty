@@ -22,7 +22,7 @@
             <HBox alignment="CENTER">
                <children>
                   <Label text="Give people the following Invite Code: " />
-                  <Label fx:id="eventCodeLabel" text="&lt;eventCode&gt;" onMouseClicked="#handleCopyInvitationCode">
+                  <Label fx:id="eventCodeLabel" text="&lt;eventCode&gt;" onMouseClicked="#handleCopyInvitationCode" onMouseEntered="#handleHoverIn" onMouseExited="#handleHoverOut">
                      <font>
                         <Font size="14.0" />
                      </font>
