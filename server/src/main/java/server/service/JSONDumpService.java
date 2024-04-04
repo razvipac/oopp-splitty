@@ -1,14 +1,16 @@
 package server.service;
 
-import server.api.entities.Debt;
-import server.api.entities.Event;
-import server.api.entities.Expense;
-import server.api.entities.Participant;
+import commons.dto.*;
+import server.entities.DTOMapper;
+import server.entities.debt.Debt;
+import server.entities.event.Event;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import server.api.pojo.response_body.DebtResponseBody;
-import server.api.pojo.response_body.EventResponseBody;
+import server.api.pojo.response_body.JSONDumpEventDTO;
 import server.api.pojo.response_body.ExpenseResponseBody;
 import server.api.pojo.response_body.ParticipantResponseBody;
 import server.database.DebtRepository;
@@ -33,6 +35,10 @@ public class JSONDumpService {
     private final ParticipantRepository participantRepository;
     private final ExpenseRepository expenseRepository;
     private final DebtRepository debtRepository;
+    private final DTOMapper<Event, EventDTO> eventDTOMapper;
+    private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
+    private final DTOMapper<Expense, ExpenseDTO> expenseDTOMapper;
+    private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
 
     /**
      * Constructs a JSONDumpService with the specified dependencies.
@@ -54,7 +60,12 @@ public class JSONDumpService {
             @Autowired EventRepository eventRepository,
             @Autowired ParticipantRepository participantRepository,
             @Autowired ExpenseRepository expenseRepository,
-            @Autowired DebtRepository debtRepository) {
+            @Autowired DebtRepository debtRepository,
+            @Autowired DTOMapper<Event, EventDTO> eventDTOMapper,
+            @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
+            @Autowired DTOMapper<Expense, ExpenseDTO> expenseDTOMapper,
+            @Autowired DTOMapper<Debt, DebtDTO> debtDTOMapper
+    ) {
         this.eventService = eventService;
         this.participantService = participantService;
         this.expenseService = expenseService;
@@ -63,6 +74,10 @@ public class JSONDumpService {
         this.participantRepository = participantRepository;
         this.expenseRepository = expenseRepository;
         this.debtRepository = debtRepository;
+        this.eventDTOMapper = eventDTOMapper;
+        this.participantDTOMapper = participantDTOMapper;
+        this.expenseDTOMapper = expenseDTOMapper;
+        this.debtDTOMapper = debtDTOMapper;
     }
 
     /**
@@ -71,15 +86,15 @@ public class JSONDumpService {
      *
      * @return state of the server in List<EventDump>
      */
-    public List<EventResponseBody> createDump() {
+    public List<JSONDumpEventDTO> createDump() {
 
-        List<EventResponseBody> response = new ArrayList<>();
+        List<JSONDumpEventDTO> response = new ArrayList<>();
 
         List<Event> events = eventService.getAll();
 
         for (Event event : events) {
-            EventResponseBody eventResponseBody =
-                    new EventResponseBody(event, new ArrayList<>(),
+            JSONDumpEventDTO jsonDumpEventDTO =
+                    new JSONDumpEventDTO(eventDTOMapper.toDTO(event), new ArrayList<>(),
                             new ArrayList<>(), new ArrayList<>());
 
             List<Participant> participants = participantService.getAll(event.getCode());
@@ -87,36 +102,21 @@ public class JSONDumpService {
             List<Debt> debts = debtService.getAllUnsettledDebtsForEvent(event.getCode());
 
             for (Participant participant : participants) {
-                ParticipantResponseBody participantResponseBody = new ParticipantResponseBody(
-                        participant.getName(),
-                        participant.getEmail(),
-                        participant.getIban(),
-                        participant.getBic()
-                );
-                eventResponseBody.participants().add(participantResponseBody);
+                ParticipantDTO participantDTO = participantDTOMapper.toDTO(participant);
+                jsonDumpEventDTO.participantDTOs().add(participantDTO);
             }
 
             for (Expense expense : expenses) {
-                ExpenseResponseBody expenseResponseBody = new ExpenseResponseBody(
-                        expense.getId(),
-                        expense.getPaidBy().getName(),
-                        expense.getPrice(),
-                        expense.getItem(),
-                        expense.getDate()
-                );
-                eventResponseBody.expenses().add(expenseResponseBody);
+                ExpenseDTO expenseDTO = expenseDTOMapper.toDTO(expense);
+                jsonDumpEventDTO.expenseDTOs().add(expenseDTO);
             }
 
             for (Debt debt : debts) {
-                DebtResponseBody debtResponseBody = new DebtResponseBody(
-                        debt.getDebtor().getName(),
-                        debt.getCreditor().getName(),
-                        debt.getAmount(),
-                        debt.isReceived()
-                );
-                eventResponseBody.debts().add(debtResponseBody);
+                DebtDTO debtDTO = debtDTOMapper.toDTO(debt)
+                jsonDumpEventDTO.debtDTOs().add(debtDTO);
             }
-            response.add(eventResponseBody);
+
+            response.add(jsonDumpEventDTO);
         }
 
         return response;
@@ -129,41 +129,34 @@ public class JSONDumpService {
      * @throws ImproperDumpFormatException if the passed jsonDump is formatted improperly
      */
     @Transactional
-    public void restoreFromDump(List<EventResponseBody> jsonDump)
+    public void restoreFromDump(List<JSONDumpEventDTO> jsonDump)
             throws ImproperDumpFormatException {
         debtRepository.deleteAll();
         expenseRepository.deleteAll();
         participantRepository.deleteAll();
         eventRepository.deleteAll();
         try {
-            for (EventResponseBody eventResponseBody : jsonDump) {
-                Event event = eventResponseBody.event();
-                eventRepository.save(event);
+            for (JSONDumpEventDTO JSONDumpEventDTO : jsonDump) {
+                EventDTO eventDTO = JSONDumpEventDTO.eventDTO();
+                eventRepository.save(eventDTOMapper.toEntity(eventDTO));
 
-                for (DebtResponseBody debtResponseBody : eventResponseBody.debts()) {
-                    Debt debt = new Debt(
-                            participantRepository.findParticipantByEventCodeAndName
-                                    (debtResponseBody.debtor(), event.getCode()).get(),
-                            participantRepository.findParticipantByEventCodeAndName(
-                                    debtResponseBody.creditor(), event.getCode()).get(),
-                            debtResponseBody.amount()
-                    );
-                    debtRepository.save(debt);
+                for (DebtDTO debtDTO : JSONDumpEventDTO.debtDTOs()) {
+                    debtRepository.save(debtDTOMapper.toEntity(debtDTO, eventDTO.code()));
                 }
 
-                for (ParticipantResponseBody participantResponseBody :
-                        eventResponseBody.participants()) {
+                for (ParticipantDTO participantDTO :
+                        JSONDumpEventDTO.participantDTOs()) {
                     Participant participant = new Participant(
-                            participantResponseBody.name(),
+                            participantDTO.name(),
                             event,
-                            participantResponseBody.email(),
-                            participantResponseBody.iban(),
-                            participantResponseBody.bic()
+                            participantDTO.email(),
+                            participantDTO.iban(),
+                            participantDTO.bic()
                     );
                     participantRepository.save(participant);
                 }
 
-                for (ExpenseResponseBody expenseResponseBody : eventResponseBody.expenses()) {
+                for (ExpenseResponseBody expenseResponseBody : JSONDumpEventDTO.expenses()) {
                     Expense expense = new Expense(
                             expenseResponseBody.price(),
                             expenseResponseBody.item(),
@@ -181,21 +174,21 @@ public class JSONDumpService {
     /**
      * Restores the state of an event to that stored inside the passed EventDump
      *
-     * @param eventResponseBody contains the information of 1 event
+     * @param JSONDumpEventDTO contains the information of 1 event
      * @throws ImproperDumpFormatException if the passed jsonDump is formatted improperly
      */
     @Transactional
-    public void restoreFromDump(EventResponseBody eventResponseBody)
+    public void restoreFromDump(JSONDumpEventDTO JSONDumpEventDTO)
             throws ImproperDumpFormatException {
         try {
-            Event event = eventResponseBody.event();
+            Event event = JSONDumpEventDTO.event();
             LocalDateTime l = new Date().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
             event.setLastActivity(l);
             eventRepository.save(event);
 
-            for (DebtResponseBody debtResponseBody : eventResponseBody.debts()) {
+            for (DebtResponseBody debtResponseBody : JSONDumpEventDTO.debts()) {
                 Debt debt = new Debt(
                         participantRepository.findParticipantByEventCodeAndName
                                 (debtResponseBody.debtor(), event.getCode()).get(),
@@ -207,7 +200,7 @@ public class JSONDumpService {
             }
 
             for (ParticipantResponseBody participantResponseBody :
-                    eventResponseBody.participants()) {
+                    JSONDumpEventDTO.participants()) {
                 Participant participant = new Participant(
                         participantResponseBody.name(),
                         event,
@@ -218,7 +211,7 @@ public class JSONDumpService {
                 participantRepository.save(participant);
             }
 
-            for (ExpenseResponseBody expenseResponseBody : eventResponseBody.expenses()) {
+            for (ExpenseResponseBody expenseResponseBody : JSONDumpEventDTO.expenses()) {
                 Expense expense = new Expense(
                         expenseResponseBody.price(),
                         expenseResponseBody.item(),

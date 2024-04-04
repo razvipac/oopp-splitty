@@ -1,10 +1,19 @@
 package server.api;
 
+import commons.dto.DebtDTO;
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.api.pojo.response_body.EventResponseBody;
+import server.entities.DTOMapper;
+import server.entities.debt.Debt;
+import server.entities.event.Event;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
 import server.service.JSONDumpService;
 import server.service.exceptions.ImproperDumpFormatException;
 
@@ -14,14 +23,28 @@ import java.util.List;
 @RequestMapping("api/v1/admin/jsondump")
 public class JSONDumpController {
     private final JSONDumpService jsonDumpService;
+    private final DTOMapper<Event, EventDTO> eventDTOMapper;
+    private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
+    private final DTOMapper<Expense, ExpenseDTO> expenseDTOMapper;
+    private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
 
     /**
      * Constructs a JSONDumpController with the specified JSONDumpService.
      *
      * @param jsonDumpService The JSONDumpService instance to be injected.
      */
-    public JSONDumpController(@Autowired JSONDumpService jsonDumpService) {
+    public JSONDumpController(
+            @Autowired JSONDumpService jsonDumpService,
+            @Autowired DTOMapper<Event, EventDTO> eventDTOMapper,
+            @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
+            @Autowired DTOMapper<Expense, ExpenseDTO> expenseDTOMapper,
+            @Autowired DTOMapper<Debt, DebtDTO> debtDTOMapper
+            ) {
         this.jsonDumpService = jsonDumpService;
+        this.eventDTOMapper = eventDTOMapper;
+        this.participantDTOMapper = participantDTOMapper;
+        this.expenseDTOMapper = expenseDTOMapper;
+        this.debtDTOMapper = debtDTOMapper;
     }
 
     /**
