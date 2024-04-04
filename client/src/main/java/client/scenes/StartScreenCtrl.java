@@ -7,6 +7,7 @@ import commons.dto.EventDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,8 @@ public class StartScreenCtrl implements VoidSceneController {
     private TextField createEventTextField;
     @FXML
     private TextField joinEventTextField;
+    @FXML
+    private GridPane recentViewedEvents;
 
     private List<EventDTO> events;
 
