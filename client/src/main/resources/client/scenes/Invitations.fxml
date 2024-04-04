@@ -22,7 +22,11 @@
             <HBox alignment="CENTER">
                <children>
                   <Label text="Give people the following Invite Code: " />
-                  <Label fx:id="eventCodeLabel" text="&lt;eventCode&gt;" />
+                  <Label fx:id="eventCodeLabel" text="&lt;eventCode&gt;" onMouseClicked="#handleCopyEventCode">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </children>
             </HBox>
             <Label text="Invite the following people by email (one address per line)" />
