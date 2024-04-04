@@ -1,23 +1,30 @@
 package server.entities.expense;
 
 import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.entities.DTOMapper;
+import server.entities.participant.Participant;
 import server.service.ExpenseService;
+import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 @Service
 public class ExpenseDTOMapper implements DTOMapper<Expense, ExpenseDTO> {
 
     private final ExpenseService expenseService;
+    private final ParticipantService participantService;
 
     /**
      * Constructor for participantDTOMapper
      * @param expenseService ExpenseService instance to be injected
      */
-    public ExpenseDTOMapper (@Autowired ExpenseService expenseService){
+    public ExpenseDTOMapper (
+            @Autowired ExpenseService expenseService,
+            @Autowired ParticipantService participantService){
         this.expenseService = expenseService;
+        this.participantService = participantService;
     }
 
     /**
@@ -38,17 +45,31 @@ public class ExpenseDTOMapper implements DTOMapper<Expense, ExpenseDTO> {
 
 
     /**
-     * Transforms ExpenseDTO to corresponding Expense entity
+     * Transforms ExpenseDTO to corresponding Expense entity in the database
      * @param expenseDTO DTO to transform
      * @param args additional arguments, here eventCode of the event to which the expense belongs
-     * @return corresponding entity or null if not found in the database
+     * @return corresponding entity
+     * @throws NotFoundInDatabaseException if not present in the database
      */
     @Override
-    public Expense toEntity(ExpenseDTO expenseDTO, Object ...args) {
-        try {
-            return expenseService.getOne((String) args[0], expenseDTO.paidByName(), expenseDTO.id());
-        } catch (NotFoundInDatabaseException e){
-            return null;
-        }
+    public Expense getEntity(ExpenseDTO expenseDTO, Object... args) throws NotFoundInDatabaseException {
+        return expenseService.getOne((String) args[0], expenseDTO.paidByName(), expenseDTO.id());
+    }
+
+    /**
+     * Transforms ExpenseDTO to corresponding, new, Expense
+     * @param expenseDTO DTO to transform
+     * @param args additional arguments, here eventCode of the event to which the expense belongs
+     * @return corresponding entity
+     * @throws NotFoundInDatabaseException if not present in the database
+     */
+    @Override
+    public Expense newEntity(ExpenseDTO expenseDTO, Object... args) throws NotFoundInDatabaseException {
+        return new Expense(
+                expenseDTO.price(),
+                expenseDTO.item(),
+                participantService.getOne((String) args[0], expenseDTO.paidByName()),
+                expenseDTO.date()
+        );
     }
 }

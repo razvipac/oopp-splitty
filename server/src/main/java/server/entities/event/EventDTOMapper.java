@@ -7,6 +7,8 @@ import server.entities.DTOMapper;
 import server.service.EventService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
+import java.time.LocalDateTime;
+
 @Service
 public class EventDTOMapper implements DTOMapper<Event, EventDTO> {
 
@@ -49,6 +51,6 @@ public class EventDTOMapper implements DTOMapper<Event, EventDTO> {
 
     @Override
     public Event newEntity(EventDTO eventDTO, Object... args) throws NotFoundInDatabaseException {
-        return null;
+        return new Event(eventDTO.name(), eventDTO.code(), LocalDateTime.now());
     }
 }

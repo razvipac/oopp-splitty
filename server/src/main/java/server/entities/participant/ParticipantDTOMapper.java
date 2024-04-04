@@ -4,6 +4,9 @@ import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.entities.DTOMapper;
+import server.entities.event.Event;
+import server.entities.event.EventDTOMapper;
+import server.service.EventService;
 import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -11,13 +14,17 @@ import server.service.exceptions.NotFoundInDatabaseException;
 public class ParticipantDTOMapper implements DTOMapper<Participant, ParticipantDTO> {
 
     private final ParticipantService participantService;
+    private final EventService eventService;
 
     /**
      * Constructor for participantDTOMapper
      * @param participantService participantService instance to be injected
      */
-    public ParticipantDTOMapper (@Autowired ParticipantService participantService){
+    public ParticipantDTOMapper (
+            @Autowired ParticipantService participantService,
+            @Autowired EventService eventService){
         this.participantService = participantService;
+        this.eventService = eventService;
     }
 
     /**
@@ -35,19 +42,34 @@ public class ParticipantDTOMapper implements DTOMapper<Participant, ParticipantD
         );
     }
 
-
     /**
-     * Transforms ParticipantDTO to corresponding Participant entity
+     * Transforms ParticipantDTO to corresponding Participant entity in the database
      * @param participantDTO DTO to transform
      * @param args additional arguments, here eventCode of the event to which the participant belongs
-     * @return corresponding entity or null if not found in the database
+     * @return corresponding entity
+     * @throws NotFoundInDatabaseException if not present in the database
      */
     @Override
-    public Participant toEntity(ParticipantDTO participantDTO, Object ...args) {
-        try {
-            return participantService.getOne((String) args[0], participantDTO.name());
-        } catch (NotFoundInDatabaseException e){
-            return null;
-        }
+    public Participant getEntity(ParticipantDTO participantDTO, Object... args) throws NotFoundInDatabaseException {
+        return participantService.getOne((String) args[0], participantDTO.name());
+    }
+
+    /**
+     * Transforms ParticipantDTO to corresponding, new, Participant
+     * @param participantDTO DTO to transform
+     * @param args additional arguments, here eventCode of the event to which the participant belongs
+     * @return corresponding entity
+     * @throws NotFoundInDatabaseException if not present in the database
+     */
+    @Override
+    public Participant newEntity(ParticipantDTO participantDTO, Object... args) throws NotFoundInDatabaseException {
+        return new Participant(
+                participantDTO.name(),
+                eventService.getOne((String) args[0]),
+                participantDTO.email(),
+                participantDTO.iban(),
+                participantDTO.bic()
+        );
+
     }
 }
