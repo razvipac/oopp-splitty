@@ -25,7 +25,7 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="eventCodeLabel" text="event code">
+                        <Label fx:id="eventCodeLabel" text="event code" onMouseClicked="#handleCopyInvitationCode">
                            <font>
                               <Font name="System Italic" size="13.0" />
                            </font>
