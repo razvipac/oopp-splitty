@@ -90,9 +90,9 @@ public class StartScreenCtrl implements VoidSceneController {
         recentViewedEvents.getChildren().clear();
         for (EventDTO event : recentlyJoinedEvents) {
             Label eventName = new Label(event.getName());
-            Button overviewButton = new Button("→");
+            Button overviewButton = new Button("\u2192");
             overviewButton.setOnAction(e -> mainCtrl.showEventOverview(event));
-            Button removeButton = new Button("×");
+            Button removeButton = new Button("\u0078");
             removeButton.setOnAction(e -> {
                 recentlyJoinedEvents.remove(event);
                 refresh();
