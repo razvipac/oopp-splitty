@@ -24,9 +24,9 @@ public class StartScreenCtrl implements VoidSceneController {
     private List<EventDTO> events;
 
     /**
-     * Constructor for the AddEditExpense that calls the method to create the scene
-     * @param mainCtrl scene of the mainCtrl class
-     * @param server global serverUtils singleton
+     * Constructor for the StartScreenCtrl class.
+     * @param server The global serverUtils singleton.
+     * @param mainCtrl The scene of the mainCtrl class.
      */
     @Inject
     public StartScreenCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -34,6 +34,10 @@ public class StartScreenCtrl implements VoidSceneController {
         this.server = server;
     }
 
+    /**
+     * Initializes the controller.
+     * Sets up event listeners and refreshes the scene.
+     */
     public void initialize(){
         createEventTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) createEvent();
@@ -46,14 +50,12 @@ public class StartScreenCtrl implements VoidSceneController {
         refresh();
     }
 
-    @FXML
-    private void goBack() {
-//        mainCtrl.showDevScreen();
-    }
-
+    /**
+     * Handles the "Join Event" button action.
+     * Retrieves the event with the provided code and navigates to its overview.
+     */
     @FXML
     private void joinEvent() {
-        System.out.println("joinEvent()");
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
@@ -62,9 +64,12 @@ public class StartScreenCtrl implements VoidSceneController {
         else System.out.println("Event with code: " + code + " doesn't exist");
     }
 
+    /**
+     * Handles the "Create Event" button action.
+     * Creates a new event with the provided name and navigates to its overview.
+     */
     @FXML
     private void createEvent() {
-        System.out.println("createEvent()");
         String eventName = createEventTextField.getText();
         EventDTO event = server.createEvent(eventName);
         events = server.getAllEvents();
@@ -73,9 +78,9 @@ public class StartScreenCtrl implements VoidSceneController {
     }
 
     /**
-     * Get event corresponding to the given code
-     * @param code Code of the event
-     * @return The event
+     * Retrieves the event corresponding to the given code.
+     * @param code The code of the event.
+     * @return The event with the provided code, if found.
      */
     private Optional<EventDTO> getEvent(String code) {
         return events.stream()
@@ -83,6 +88,9 @@ public class StartScreenCtrl implements VoidSceneController {
                 .findFirst();
     }
 
+    /**
+     * Refreshes the start screen by clearing text fields and updating event data.
+     */
     public void refresh(){
         createEventTextField.clear();
         joinEventTextField.clear();
