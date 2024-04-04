@@ -113,7 +113,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void goBack() {
-        // Handle going back
+        mainCtrl.showEventOverview(event);
     }
 
     /**

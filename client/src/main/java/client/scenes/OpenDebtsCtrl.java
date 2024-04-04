@@ -153,9 +153,9 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
         String creditorBankInfo =
                 "Bank Information for creditor (" + creditor.getName() + "):\n" +
-                "Account Holder: " + creditor.getName() + "\n" +
-                "IBAN: " + creditor.getIban() + "\n" +
-                "BIC: " + creditor.getBic();
+                        "Account Holder: " + creditor.getName() + "\n" +
+                        "IBAN: " + creditor.getIban() + "\n" +
+                        "BIC: " + creditor.getBic();
 
         return "Debt Details:\n" +
                 "Debtor: " + debtor.getName() + "\n" +

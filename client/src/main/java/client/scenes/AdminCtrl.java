@@ -77,12 +77,12 @@ public class AdminCtrl implements VoidSceneController {
                             (EventDTO::getName, String.CASE_INSENSITIVE_ORDER));
             case "Creation Date (Newest)" ->
                     events.sort(Comparator.comparing(EventDTO::getCreationDate,
-                    Comparator.reverseOrder()));
+                            Comparator.reverseOrder()));
             case "Creation Date (Oldest)" ->
                     events.sort(Comparator.comparing(EventDTO::getCreationDate));
             case "Last Activity (Most recent)" ->
                     events.sort(Comparator.comparing(EventDTO::getLastActivity,
-                    Comparator.reverseOrder()));
+                            Comparator.reverseOrder()));
             case "Last Activity (Least recent)" ->
                     events.sort(Comparator.comparing(EventDTO::getLastActivity));
         }
