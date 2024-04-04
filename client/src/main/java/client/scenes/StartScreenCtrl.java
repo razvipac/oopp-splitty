@@ -5,10 +5,13 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +27,8 @@ public class StartScreenCtrl implements VoidSceneController {
     @FXML
     private GridPane recentViewedEvents;
 
+
+    private List<EventDTO> recentlyJoinedEvents = new ArrayList<>();
     private List<EventDTO> events;
 
     /**
@@ -62,6 +67,7 @@ public class StartScreenCtrl implements VoidSceneController {
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
+            recentlyJoinedEvents.add(found.get());
             mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
@@ -79,6 +85,26 @@ public class StartScreenCtrl implements VoidSceneController {
         System.out.println(event.toString());
         mainCtrl.showEventOverview(event);
     }
+
+    private void updateRecentEvents() {
+        recentViewedEvents.getChildren().clear();
+        for (EventDTO event : recentlyJoinedEvents) {
+            Label eventName = new Label(event.getName());
+            Button overviewButton = new Button("→");
+            overviewButton.setOnAction(e -> mainCtrl.showEventOverview(event));
+            Button removeButton = new Button("×");
+            removeButton.setOnAction(e -> {
+                recentlyJoinedEvents.remove(event);
+                refresh();
+            });
+
+            int rowIndex = recentlyJoinedEvents.indexOf(event);
+            recentViewedEvents.add(eventName, 0, rowIndex);
+            recentViewedEvents.add(overviewButton, 1, rowIndex);
+            recentViewedEvents.add(removeButton, 2, rowIndex);
+        }
+    }
+
 
     /**
      * Retrieves the event corresponding to the given code.
@@ -98,5 +124,6 @@ public class StartScreenCtrl implements VoidSceneController {
         createEventTextField.clear();
         joinEventTextField.clear();
         events = server.getAllEvents();
+        updateRecentEvents();
     }
 }
