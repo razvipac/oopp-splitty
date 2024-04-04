@@ -48,6 +48,15 @@ public class MainCtrl {
 
     /**
      * Initializes the MainCtrl with the primary stage and scenes for various controllers.
+     *
+     * @param primaryStage primary stage
+     * @param startScreenPair the startScreenPair from MyFXML output
+     * @param eventOverviewPair the eventOverviewPair from MyFXML output
+     * @param contactDetailsPair the contactDetailsPair from MyFXML output
+     * @param invitationsPair the invitationsPair from MyFXML output
+     * @param openDebtsPair the openDebtsPair from MyFXML output
+     * @param addEditExpensePair the addEditExpensePair from MyFXML output
+     * @param adminPair the adminPair from MyFXML output
      */
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
