@@ -1,6 +1,6 @@
 package server.database;
 
-import server.api.entities.Event;
+import server.entities.event.Event;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,12 +1,14 @@
 package server.service;
 
-import server.api.entities.Event;
-import server.api.entities.Participant;
+import commons.dto.EventDTO;
+import commons.dto.WSAction;
+import commons.dto.WSWrapperResponseBody;
+import server.entities.DTOMapper;
+import server.entities.event.Event;
+import server.entities.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.EventRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -19,9 +21,10 @@ import java.util.*;
  */
 @Service
 public class EventService {
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private final ParticipantService participantService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final DTOMapper<Event, EventDTO> eventDTOMapper;
 
     /**
      * Constructs an EventService instance with the specified EventRepository.
@@ -32,10 +35,12 @@ public class EventService {
      */
     public EventService(@Autowired EventRepository eventRepository,
                         @Autowired ParticipantService participantService,
-                        @Autowired SimpMessagingTemplate simpMessagingTemplate) {
+                        @Autowired SimpMessagingTemplate simpMessagingTemplate,
+                        @Autowired DTOMapper<Event, EventDTO> eventDTOMapper) {
         this.eventRepository = eventRepository;
         this.participantService = participantService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.eventDTOMapper = eventDTOMapper;
     }
 
     /**
@@ -112,7 +117,7 @@ public class EventService {
                 "/api/websocket/v1/channel/" + eventCode,
                 new WSWrapperResponseBody<>(
                         WSAction.MODIFIED,
-                        found
+                        eventDTOMapper.toDTO(found)
                 ));
 
         return found;

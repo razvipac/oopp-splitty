@@ -1,14 +1,15 @@
 package server.api;
 
-import server.api.entities.Event;
 import commons.dto.EventDTO;
+import commons.dto.WSAction;
+import commons.dto.WSWrapperResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
+import server.entities.DTOMapper;
+import server.entities.event.Event;
 import server.service.EventService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -19,6 +20,7 @@ import java.util.List;
 public class EventController {
     private final EventService eventService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final DTOMapper<Event, EventDTO> eventDTOMapper;
 
     /**
      * Constructs an EventController with the specified EventService and SimpMessagingTemplate.
@@ -27,9 +29,12 @@ public class EventController {
      * @param simpMessagingTemplate The SimpMessagingTemplate to be injected into the controller.
      */
     public EventController(@Autowired EventService eventService,
-                           @Autowired SimpMessagingTemplate simpMessagingTemplate) {
+                           @Autowired SimpMessagingTemplate simpMessagingTemplate,
+                           @Autowired DTOMapper<Event, EventDTO> eventDTOMapper
+    ) {
         this.eventService = eventService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.eventDTOMapper = eventDTOMapper;
     }
 
     /**
@@ -41,8 +46,9 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<EventDTO>> getAll() {
         List<Event> events = eventService.getAll();
-        List<EventDTO> eventDTOs = events.stream()
-                .map(EventDTOMapper::toDTO)
+        List<EventDTO> eventDTOs = events
+                .stream()
+                .map(eventDTOMapper::toDTO)
                 .toList();
         return new ResponseEntity<>(eventDTOs, HttpStatus.OK);
     }
@@ -50,7 +56,7 @@ public class EventController {
 
     /**
      * Creates a new Event with the specified name through a POST request to /api/v1/?name={name}.
-     * <p>
+     *
      * Sends out a WebSocket STOMP message to all listeners on "/api/websocket/v1/channel/event"
      * with WSAction CREATED.
      *
@@ -68,7 +74,7 @@ public class EventController {
                         event
                 ));
 
-        return new ResponseEntity<>(EventDTOMapper.toDTO(event), HttpStatus.CREATED);
+        return new ResponseEntity<>(eventDTOMapper.toDTO(event), HttpStatus.CREATED);
     }
 
 
@@ -89,7 +95,7 @@ public class EventController {
         try{
             Event event = eventService.deleteOne(eventCode);
 
-            return new ResponseEntity<>(EventDTOMapper.toDTO(event), HttpStatus.OK);
+            return new ResponseEntity<>(eventDTOMapper.toDTO(event), HttpStatus.OK);
 
         } catch (NotFoundInDatabaseException e){
             return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -115,7 +121,7 @@ public class EventController {
         try {
             Event event = eventService.updateOne(eventCode, name);
 
-            return new ResponseEntity<>(EventDTOMapper.toDTO(event), HttpStatus.OK);
+            return new ResponseEntity<>(eventDTOMapper.toDTO(event), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

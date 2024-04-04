@@ -1,6 +1,9 @@
-package server.api.entities;
+package server.entities.event;
 
 import jakarta.persistence.*;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
+import server.entities.debt.Debt;
 
 import java.time.LocalDateTime;
 import java.util.*;
