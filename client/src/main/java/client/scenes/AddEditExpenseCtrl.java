@@ -62,7 +62,8 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
-     * @param mainCtrl scene of the mainCtrl class
+     *
+     * @param mainCtrl    scene of the mainCtrl class
      * @param serverUtils global serverUtils singleton
      */
     @Inject
@@ -73,6 +74,7 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
 
     /**
      * Generate an ui from the given object instance
+     *
      * @param event event
      */
     public void initialize(EventDTO event) {
@@ -86,20 +88,20 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
 
         radioGroup.selectedToggleProperty().addListener(
                 (v, oldValue, newValue) -> {
-            boolean somePeopleSelected = newValue == onlySomeButton;
-            for (Node node : checkboxContainer.getChildren()) {
-                if (node instanceof CheckBox) {
-                    node.setDisable(!somePeopleSelected);
-                }
-            }
-        });
+                    boolean somePeopleSelected = newValue == onlySomeButton;
+                    for (Node node : checkboxContainer.getChildren()) {
+                        if (node instanceof CheckBox) {
+                            node.setDisable(!somePeopleSelected);
+                        }
+                    }
+                });
 
         refreshWhoPaidDropdown();
 
         refreshParticipantContainer();
     }
 
-    private void refreshWhoPaidDropdown(){
+    private void refreshWhoPaidDropdown() {
         participantMap = new HashMap<>();
         whoPaidDropdown.getItems().clear();
         this.participants = serverUtils.getParticipants(event.getCode());
@@ -111,7 +113,7 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
-    private void refreshParticipantContainer(){
+    private void refreshParticipantContainer() {
         checkboxContainer.getChildren().clear();
         this.participants = serverUtils.getParticipants(event.getCode());
 
@@ -129,17 +131,17 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     private boolean formIsValid() {
         // TODO: add validation for the optional fields
 
-        if(whoPaidDropdown.getValue() == null || whoPaidDropdown.getValue().isEmpty()) {
+        if (whoPaidDropdown.getValue() == null || whoPaidDropdown.getValue().isEmpty()) {
             errorText.setText("Please select the participant who paid for this expense.");
             return false;
         }
 
-        if(howMuchField.getText().isEmpty()) {
+        if (howMuchField.getText().isEmpty()) {
             errorText.setText("Please fill in the price of the expense.");
             return false;
         }
 
-        if(whatForField.getText().isEmpty()) {
+        if (whatForField.getText().isEmpty()) {
             errorText.setText("Please enter what the expense was for.");
             return false;
         }
@@ -161,11 +163,12 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
 
     /**
      * Adds the given Expense to the server, and displays an alert box with the outcome.
+     *
      * @param e The (validated) expense to add
      */
     private void addExpenseToServer(ExpenseDTO e) {
         boolean success = serverUtils.addExpense(e, event.getCode());
-        if(success) {
+        if (success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Expense Added Successfully",
                     "Expense has been added to the event");
@@ -191,8 +194,8 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     @FXML
-    private void submit(){
-        if(formIsValid()) {
+    private void submit() {
+        if (formIsValid()) {
             int price = Integer.parseInt(howMuchField.getText());
             String item = whatForField.getText();
             ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
