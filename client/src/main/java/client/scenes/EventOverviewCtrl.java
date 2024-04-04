@@ -209,12 +209,19 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+    /**
+     * Handles the copying of the invitation code when the label is double-clicked.
+     *
+     * @param event The MouseEvent representing the double click event.
+     */
     @FXML
     private void handleCopyInvitationCode(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+            // Get the source of the event, which should be the invitation code label
             Label invitationCodeLabel = (Label) event.getSource();
             String invitationCode = invitationCodeLabel.getText();
 
+            // Create a clipboard and add the invitation code to its content
             Clipboard clipboard = Clipboard.getSystemClipboard();
             ClipboardContent content = new ClipboardContent();
             content.putString(invitationCode);
@@ -223,7 +230,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             invitationCodeLabel.setStyle("-fx-background-color: lightblue;");
         }
     }
-    
+
     /**
      * Back button action
      */
