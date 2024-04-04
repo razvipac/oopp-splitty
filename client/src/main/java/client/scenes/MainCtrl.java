@@ -46,6 +46,9 @@ public class MainCtrl {
     private AdminCtrl adminCtrl;
     private Scene admin;
 
+    /**
+     * Initializes the MainCtrl with the primary stage and scenes for various controllers.
+     */
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
                            Pair<EventOverviewCtrl, Parent> eventOverviewPair,
@@ -82,48 +85,90 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    /**
+     * Sets the title of the primary stage and switches to the Start Screen.
+     */
     public void showStartScreen() {
         primaryStage.setTitle("Splitty: Start Screen");
         startScreenCtrl.initialize();
         primaryStage.setScene(startScreen);
     }
 
+    /**
+     * Sets the title of the primary stage and switches to the Event Overview screen for
+     * the specified event.
+     *
+     * @param eventDTO The EventDTO representing the event to display.
+     */
     public void showEventOverview(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Event " + eventDTO.getName());
         eventOverviewCtrl.initialize(eventDTO);
         primaryStage.setScene(eventOverview);
     }
 
+    /**
+     * Sets the title of the primary stage and switches to the Contact Details screen for the
+     * specified event.
+     *
+     * @param eventDTO The EventDTO representing the event for which to display contact details.
+     */
     public void showContactDetails(EventDTO eventDTO) {
         primaryStage.setTitle("Splitty: Add/Edit Participant");
         contactDetailsCtrl.initialize(eventDTO);
         primaryStage.setScene(contactDetails);
     }
 
+    /**
+     * Sets the title of the primary stage and switches to the Invitations screen for the
+     * specified event.
+     *
+     * @param eventDTO The EventDTO representing the event for which to manage invitations.
+     */
     public void showInvitations(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.getName());
         invitationsCtrl.initialize(eventDTO);
         primaryStage.setScene(invitations);
     }
 
+    /**
+     * Sets the title of the primary stage and switches to the Open Debts screen for the
+     * specified event.
+     *
+     * @param eventDTO The EventDTO representing the event for which to manage open debts.
+     */
     public void showOpenDebts(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.getName());
         openDebtsCtrl.initialize(eventDTO);
         primaryStage.setScene(openDebts);
     }
 
+    /**
+     * Sets the title of the primary stage and switches to the Add/Edit Expense screen for the
+     * specified event.
+     *
+     * @param eventDTO The EventDTO representing the event for which to add or edit expenses.
+     */
     public void showAddEditExpense(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Add/edit expenses for event " + eventDTO.getName());
         addEditExpenseCtrl.initialize(eventDTO);
         primaryStage.setScene(addEditExpense);
     }
 
+
+    /**
+     * Sets the title of the primary stage and switches to the Administrator Control Panel.
+     */
     public void showAdmin() {
         primaryStage.setTitle("Splitty: Administrator Control Panel");
         adminCtrl.initialize();
         primaryStage.setScene(admin);
     }
 
+    /**
+     * Retrieves the primary stage associated with this MainCtrl instance.
+     *
+     * @return The primary stage.
+     */
     public Stage getPrimaryStage() {
         return primaryStage;
     }

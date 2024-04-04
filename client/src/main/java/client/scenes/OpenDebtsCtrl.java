@@ -47,6 +47,8 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
     /**
      * Generate an ui from the given object instance
+     *
+     * @param event Event instance to populate the UI with
      */
     public void initialize(EventDTO event) {
         this.event = event;
@@ -54,6 +56,10 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         refreshDebtList();
     }
 
+    /**
+     * Refreshes the debt list by clearing it and fetching all open debts from the server for the
+     * current event. Each debt is then added to the layout.
+     */
     public void refreshDebtList(){
         debtList.clear();
         debtList.addAll(serverUtils.getAllOpenDebts(event.getCode()));
@@ -63,6 +69,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
             addDebtToLayout(d, debtVBox);
         }
     }
+
 
     /**
      * Back button action

@@ -17,11 +17,6 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import commons.dto.DebtDTO;
@@ -32,7 +27,6 @@ import commons.response_body.EventResponseBody;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
-import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -142,6 +136,7 @@ public class ServerUtils {
     /**
      * Adds Expense to server
      * @param e Expense to add
+     * @param code Code of event
      * @return True iff add was successful, false otherwise
      */
     public boolean addExpense(ExpenseDTO e, String code) {
@@ -188,13 +183,17 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Restore event from JSON
+     * @param body EventResponseBody
+     * @return True iff successfully created, false otherwise
+     */
     public boolean restoreEvent(EventResponseBody body) {
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(body, APPLICATION_JSON)); {
-        };
+                .post(Entity.entity(body, APPLICATION_JSON));
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 }

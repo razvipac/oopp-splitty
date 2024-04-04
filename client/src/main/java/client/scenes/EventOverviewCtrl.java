@@ -91,6 +91,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         );
     }
 
+    /**
+     * Refreshes the page back to its default values.
+     */
     public void refresh() {
         participants = serverUtils.getParticipants(event.getCode());
         expenses = serverUtils.getExpenses(event.getCode());
@@ -144,7 +147,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         expenseFilterComboBox.setDisable(participants.isEmpty());
 
-        if (selectedParticipant != null) expenseFilterComboBox.getSelectionModel().select(selectedParticipant.getName());
+        if (selectedParticipant != null)
+            expenseFilterComboBox.getSelectionModel().select(selectedParticipant.getName());
     }
 
     /**

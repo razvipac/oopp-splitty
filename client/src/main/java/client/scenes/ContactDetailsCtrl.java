@@ -46,6 +46,10 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         this.serverUtils = serverUtils;
     }
 
+    /**
+     * Initialize the scene
+     * @param event data to populate the scene with
+     */
     public void initialize(EventDTO event) {
         this.event = event;
         errorText.setText("");
