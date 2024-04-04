@@ -1,9 +1,10 @@
-package server.api.entities;
+package server.entities.participant;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import server.entities.event.Event;
 
 import java.io.Serializable;
 import java.util.Objects;

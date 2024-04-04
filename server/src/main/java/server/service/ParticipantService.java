@@ -1,16 +1,16 @@
 package server.service;
 
+import commons.dto.ParticipantDTO;
+import commons.dto.WSAction;
+import commons.dto.WSWrapperResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import server.api.entities.Event;
-import server.api.entities.Expense;
-import server.api.entities.Participant;
-import server.api.entities.ParticipantId;
-import server.api.pojo.request_body.ParticipantRequestBody;
-import server.api.pojo.response_body.ParticipantResponseBody;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
+import server.entities.DTOMapper;
+import server.entities.event.Event;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
+import server.entities.participant.ParticipantId;
 import server.database.EventRepository;
 import server.database.ParticipantRepository;
 import server.service.exceptions.NotFoundInDatabaseException;
@@ -31,6 +31,7 @@ public class ParticipantService {
     private final EventRepository eventRepository;
     private final ExpenseService expenseService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
 
     /**
      * Constructor for ParticipantService
@@ -39,15 +40,19 @@ public class ParticipantService {
      * @param eventRepository The EventRepository instance to interact with the database
      * @param expenseService The ExpenseService instance to interact with the expenses
      * @param simpMessagingTemplate The SimpMessagingService instance to send STOMP messages
+     * @param participantDTOMapper DTO mapper instance
      */
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
                               @Autowired EventRepository eventRepository,
                               @Autowired ExpenseService expenseService,
-                              @Autowired SimpMessagingTemplate simpMessagingTemplate) {
+                              @Autowired SimpMessagingTemplate simpMessagingTemplate,
+                              @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper
+    ) {
         this.participantRepository = participantRepository;
         this.eventRepository = eventRepository;
         this.expenseService = expenseService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.participantDTOMapper = participantDTOMapper;
     }
 
     /**
@@ -91,7 +96,7 @@ public class ParticipantService {
      * @throws NotFoundInDatabaseException if an event with the given eventCode
      *                                     is not present in the database
      */
-    public Participant createOne(String eventCode, ParticipantRequestBody body)
+    public Participant createOne(String eventCode, ParticipantDTO body)
             throws NotFoundInDatabaseException {
         Event event = getOneEvent(eventCode);
 
@@ -123,10 +128,10 @@ public class ParticipantService {
 
         List<Expense> dependantExpenses = expenseService
                 .getAllInEventAndPaidByParticipant(eventCode, found);
+
         dependantExpenses.forEach((Expense expense) -> {
             try {
-                Expense deletedExpense = expenseService
-                        .deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
+                expenseService.deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
             } catch (NotFoundInDatabaseException e) {
                 throw new RuntimeException("Dependant expense not found in db!");
             }
@@ -141,8 +146,9 @@ public class ParticipantService {
                 "/api/websocket/v1/channel/" + eventCode + "/participant",
                 new WSWrapperResponseBody<>(
                         WSAction.DELETED,
-                        ParticipantResponseBody.build(found)
+                        participantDTOMapper.toDTO(found)
                 ));
+
         updateDate(eventCode);
         return found;
     }
@@ -156,8 +162,9 @@ public class ParticipantService {
      * @return The updated participant.
      * @throws NotFoundInDatabaseException If the participant is not found in the database.
      */
-    public Participant updateOne(String eventCode, String name, ParticipantRequestBody body)
+    public Participant updateOne(String eventCode, String name, ParticipantDTO body)
             throws NotFoundInDatabaseException {
+
         Participant found = getOne(eventCode, name);
         // if not found exception will be thrown
         found.setEmail(body.email());

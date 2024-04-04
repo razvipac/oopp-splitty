@@ -1,7 +1,10 @@
-package server.api.entities;
+package server.entities.participant;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import server.entities.expense.Expense;
+import server.entities.debt.Debt;
+import server.entities.event.Event;
 
 import java.util.List;
 import java.util.Objects;

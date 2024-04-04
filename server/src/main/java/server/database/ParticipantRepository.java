@@ -1,7 +1,7 @@
 package server.database;
 
-import server.api.entities.Participant;
-import server.api.entities.ParticipantId;
+import server.entities.participant.Participant;
+import server.entities.participant.ParticipantId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

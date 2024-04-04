@@ -1,6 +1,8 @@
 package server.api.entities;
 
 import org.junit.jupiter.api.Test;
+import server.entities.event.Event;
+import server.entities.participant.Participant;
 
 import java.time.LocalDateTime;
 
