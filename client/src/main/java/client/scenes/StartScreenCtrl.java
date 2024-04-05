@@ -100,7 +100,7 @@ public class StartScreenCtrl implements VoidSceneController {
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
-            recentlyJoinedEvents.removeIf(event -> event.getCode().equals(code));
+            recentlyJoinedEvents.removeIf(event -> event.code().equals(code));
             recentlyJoinedEvents.add(found.get());
             updateRecentEvents();
             mainCtrl.showEventOverview(found.get());
@@ -141,7 +141,7 @@ public class StartScreenCtrl implements VoidSceneController {
         int lastIndex = recentlyJoinedEvents.size() - 1;
         for (int i = lastIndex; i >= 0 && amountOfEvents < 4; i--) {
             EventDTO event = new ArrayList<>(recentlyJoinedEvents).get(i);
-            Label eventName = new Label(event.getName());
+            Label eventName = new Label(event.name());
             Button overviewButton = new Button("\u2192");
             overviewButton.setOnAction(e -> {
                 mainCtrl.showEventOverview(event);
