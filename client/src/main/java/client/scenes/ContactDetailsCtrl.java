@@ -7,12 +7,12 @@ import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import commons.dto.ParticipantDTO;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
+
+import java.util.List;
 
 public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
@@ -22,10 +22,19 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     @Inject
     private ControllerUtils controllerUtils;
 
+    public enum View {
+        ADD, EDIT
+    }
+    private View currentView;
+
     private EventDTO event;
 
     @FXML
+    private ToggleGroup addOrEdit;
+    @FXML
     private TextField boxName;
+    @FXML
+    private ComboBox<String> comboBoxName;
     @FXML
     private TextField boxEmail;
     @FXML
@@ -52,7 +61,78 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void initialize(EventDTO event) {
         this.event = event;
+
+        // IBAN max character limit: 18
+        TextFormatter<String> ibanFormatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            int nonSpaceCount = (int) newText.chars().filter(c -> c != ' ').count();
+            if (nonSpaceCount <= 18) {
+                return change;
+            } else {
+                return null;
+            }
+        });
+        boxIban.setTextFormatter(ibanFormatter);
+
+        // properly format the IBAN
+        boxIban.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue) {
+                formatIban();
+            }
+        } );
+
+        // Name & Email: sets character limit to 255
+        boxName.setTextFormatter(textFormatterCharacterLimit(255));
+        boxEmail.setTextFormatter(textFormatterCharacterLimit(255));
+
+        // BIC: sets character limit to 8, and converts to uppercase
+        boxBic.setTextFormatter(textFormatterCharacterLimit(8));
+        boxBic.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                boxBic.setText(boxBic.getText().toUpperCase());
+            }
+        } );
+
+        addOrEdit.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue != null) {
+                ToggleButton selected = (ToggleButton) newValue;
+                if(selected.getText().equals("Add")) {
+                    setView(View.ADD);
+                }
+                else if(selected.getText().equals("Edit")) {
+                    setView(View.EDIT);
+                }
+            }
+        }));
+
+        refresh();
+    }
+
+    public TextFormatter<String> textFormatterCharacterLimit(int limit) {
+        return new TextFormatter<>(change -> {
+            if(change.getControlNewText().length() > limit) return null;
+            else return change;
+        });
+    }
+
+    /**
+     * Refreshes the page, changes everything to default values.
+     */
+    public void refresh() {
         errorText.setText("");
+        boxName.clear();
+        boxEmail.clear();
+        boxIban.clear();
+        boxBic.clear();
+        setView(View.ADD);  // set to ADD by default
+
+        List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
+        comboBoxName.getItems().setAll(
+                participants
+                        .stream()
+                        .map(ParticipantDTO::name)
+                        .toList()
+        );
     }
 
     /**
@@ -84,6 +164,19 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         if (!boxIban.getText().equals(formattedIban)) {
             boxIban.setText(formattedIban);
         }
+    }
+
+    /**
+     * Changes the currentView and the corresponding elements of the page.
+     * Iff view equals ADD, boxName is visible and comboBoxName is invisible.
+     * Otherwise, the opposite is true.
+     * @param view The view to compare to.
+     */
+    public void setView(View view) {
+        currentView = view;
+
+        boolean b = view == View.EDIT;
+        comboBoxName.setVisible(b);
     }
 
     /**

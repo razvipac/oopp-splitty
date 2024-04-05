@@ -50,7 +50,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="boxName" promptText="John" GridPane.columnIndex="1"/>
+            <TextField fx:id="boxName" promptText="John" GridPane.columnIndex="1" />
             <Label text="Email" GridPane.rowIndex="1">
                <font>
                   <Font size="14.0" />
@@ -69,7 +69,7 @@
                </font>
             </Label>
             <TextField fx:id="boxBic" prefWidth="297.0" promptText="ABCDEFGH" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ComboBox prefHeight="25.0" prefWidth="181.0" promptText="Choose participant..." visible="false" GridPane.columnIndex="1" />
+            <ComboBox fx:id="comboBoxName" prefHeight="25.0" prefWidth="71.0" visible="false" />
          </children>
       </GridPane>
       <Text layoutX="31.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
