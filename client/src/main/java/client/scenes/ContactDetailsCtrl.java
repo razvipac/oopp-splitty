@@ -115,8 +115,9 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public TextFormatter<String> textFormatterCharacterLimit(int limit) {
         if(limit < 0) limit = 0;
+        int finalLimit = limit;
         return new TextFormatter<>(change -> {
-            if(change.getControlNewText().length() > limit) return null;
+            if(change.getControlNewText().length() > finalLimit) return null;
             else return change;
         });
     }
