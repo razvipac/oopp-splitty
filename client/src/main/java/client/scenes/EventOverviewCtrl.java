@@ -295,6 +295,18 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
     }
 
+    /**
+     * Calculate the total sum of expenses.
+     * @return The total sum of expenses
+     */
+    private int calculateTotalExpenseSum() {
+        int totalSum = 0;
+        for (ExpenseDTO expense : expenses) {
+            totalSum += expense.price();
+        }
+        return totalSum;
+    }
+
 
     /**
      * Nested class Expense Item.
