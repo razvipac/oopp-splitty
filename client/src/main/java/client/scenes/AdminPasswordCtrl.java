@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.interfaces.VoidSceneController;
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 
 public class AdminPasswordCtrl implements VoidSceneController {
 
@@ -10,6 +11,7 @@ public class AdminPasswordCtrl implements VoidSceneController {
 
     private boolean passwordIsCorrect;
 
+    @Inject
     public AdminPasswordCtrl(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
