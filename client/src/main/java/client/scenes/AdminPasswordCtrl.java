@@ -3,6 +3,7 @@ package client.scenes;
 import client.interfaces.VoidSceneController;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import jakarta.ws.rs.core.Response;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
@@ -51,6 +52,7 @@ public class AdminPasswordCtrl implements VoidSceneController {
      */
     @FXML
     public void submitPassword() {
+        // TODO: Error handling
         if(serverUtils.matchesPassword(passwordField.getText())) {
             mainCtrl.setPasswordIsCorrect(true);
             mainCtrl.showAdmin();
