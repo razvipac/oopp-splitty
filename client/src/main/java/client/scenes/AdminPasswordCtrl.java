@@ -49,7 +49,9 @@ public class AdminPasswordCtrl implements VoidSceneController {
      */
     @FXML
     public void submitPassword() {
-
+        if(serverUtils.matchesPassword(passwordField.getText())) {
+            mainCtrl.setPasswordIsCorrect(true);
+        }
     }
 
 }

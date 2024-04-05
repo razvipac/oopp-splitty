@@ -227,4 +227,12 @@ public class MainCtrl {
     public LanguageManager getLanguageManager() {
         return this.languageManager;
     }
+
+    /**
+     * Sets whether the password has been entered correctly or not
+     * @param passwordIsCorrect Passes either true or false, depending on if the password is correct.
+     */
+    public void setPasswordIsCorrect(boolean passwordIsCorrect) {
+        this.passwordIsCorrect = passwordIsCorrect;
+    }
 }
