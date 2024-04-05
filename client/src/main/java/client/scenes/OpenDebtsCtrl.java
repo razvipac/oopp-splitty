@@ -62,11 +62,11 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void refreshDebtList(){
         debtList.clear();
-        debtList.addAll(serverUtils.getAllOpenDebts(event.getCode()));
+        debtList.addAll(serverUtils.getAllOpenDebts(event.code()));
 
         // Adding each debt
         for(DebtDTO d : debtList) {
-            addDebtToLayout(d, debtVBox);
+            addDebtToLayout(d);
         }
     }
 
@@ -87,26 +87,24 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     /**
      * Adds the specified debt to the layout
      * @param d Debt to be added
-     * @param layout Layout to add it to
      */
-    private static void addDebtToLayout(DebtDTO d, VBox layout) {
+    private void addDebtToLayout(DebtDTO d) {
         // debtLine: line containing debtString and 'Mark Received' button
         HBox debtLine = new HBox(5);
         // debtItem: the entire debt item, containing the debtLine and debtInfo
         VBox debtItem = new VBox(5);
 
         // debtString & debtStringLabel, contains the debtor, creditor and amount
-        String debtorName = d.getDebtor().getName();
-        String creditorName = d.getCreditor().getName();
-        double amount = d.getAmount();
+        String debtorName = d.debtorName();
+        String creditorName = d.creditorName();
+        double amount = d.amount();
         String debtString = debtorName + " gives " + amount + " Euro to " + creditorName;
         Label debtStringLabel = new Label(debtString);
 
         // 'Mark Received' button. Prints effect to console for testing
         Button receivedButton = new Button("Mark received");
         receivedButton.setOnAction(event -> {
-            d.setReceived(!d.isReceived());
-            if(d.isReceived()) {
+            if(!d.received()) {
                 receivedButton.setText("Undo");
                 System.out.println("The debt (" + debtString + ") is marked as received");
             }
@@ -142,24 +140,25 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
         debtLine.getChildren().addAll(moreInfo, debtStringLabel, receivedButton);
         debtItem.getChildren().addAll(debtLine, debtInfo);
-        layout.getChildren().add(debtItem);
+        debtVBox.getChildren().add(debtItem);
     }
 
-    private static String getBankInfoText(DebtDTO d)
+    private String getBankInfoText(DebtDTO d)
     {
-        ParticipantDTO debtor = d.getDebtor();
-        ParticipantDTO creditor = d.getCreditor();
-        double amount = d.getAmount();
+        List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
+        ParticipantDTO debtor = serverUtils.getParticipant(event.code(), d.debtorName());
+        ParticipantDTO creditor = serverUtils.getParticipant(event.code(), d.creditorName());
+        double amount = d.amount();
 
         String creditorBankInfo =
-                "Bank Information for creditor (" + creditor.getName() + "):\n" +
-                        "Account Holder: " + creditor.getName() + "\n" +
-                        "IBAN: " + creditor.getIban() + "\n" +
-                        "BIC: " + creditor.getBic();
+                "Bank Information for creditor (" + creditor.name() + "):\n" +
+                        "Account Holder: " + creditor.name() + "\n" +
+                        "IBAN: " + creditor.iban() + "\n" +
+                        "BIC: " + creditor.bic();
 
         return "Debt Details:\n" +
-                "Debtor: " + debtor.getName() + "\n" +
-                "Creditor: " + creditor.getName() + "\n" +
+                "Debtor: " + debtor.name() + "\n" +
+                "Creditor: " + creditor.name() + "\n" +
                 "Amount: " + amount + " Euro\n\n" +
                 creditorBankInfo;
     }

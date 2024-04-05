@@ -92,11 +92,11 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private void addParticipantToServer(ParticipantDTO p) {
-        boolean success = serverUtils.addParticipant(p);
+        boolean success = serverUtils.addParticipant(p, event.code());
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Added Successfully",
-                    p.getName() + " has been added to the event");
+                    p.name() + " has been added to the event");
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
@@ -166,7 +166,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void ok(){
         if(formIsValid())
-            addParticipantToServer(new ParticipantDTO(boxName.getText(), event,
+            addParticipantToServer(new ParticipantDTO(boxName.getText(),
                     boxEmail.getText(), boxIban.getText(), boxBic.getText()));
     }
 

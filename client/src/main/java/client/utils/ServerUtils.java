@@ -19,11 +19,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import commons.dto.DebtDTO;
-import commons.dto.EventDTO;
-import commons.dto.ExpenseDTO;
-import commons.dto.ParticipantDTO;
-import commons.response_body.EventResponseBody;
+import commons.dto.*;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -96,14 +92,22 @@ public class ServerUtils {
                 });
     }
 
+    public ParticipantDTO getParticipant(String eventCode, String name){
+        return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/v1/" + eventCode + "/participant?name=" + name)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(List.class)
+                .getFirst();
+    }
+
     /**
      * Adds Participant to server
      * @param p Participant to add
      * @return True iff add was successful, false otherwise
      */
-    public boolean addParticipant(ParticipantDTO p) {
-        String code = p.getEvent().getCode();
-        String endpoint = "api/v1/" + code + "/participant";
+    public boolean addParticipant(ParticipantDTO p, String eventCode) {
+        String endpoint = "api/v1/" + eventCode + "/participant";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path(endpoint)
@@ -174,7 +178,7 @@ public class ServerUtils {
      *
      * @return Gets the Json dump
      */
-    public List<EventResponseBody> getJSON() {
+    public List<JSONDumpEventDTO> getJSON() {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
@@ -188,7 +192,7 @@ public class ServerUtils {
      * @param body EventResponseBody
      * @return True iff successfully created, false otherwise
      */
-    public boolean restoreEvent(EventResponseBody body) {
+    public boolean restoreEvent(List<JSONDumpEventDTO> body) {
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)

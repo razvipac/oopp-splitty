@@ -45,8 +45,8 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void initialize(EventDTO event) {
         this.event = event;
-        this.eventCodeLabel.setText(event.getCode());
-        this.eventTitleLabel.setText(event.getName());
+        this.eventCodeLabel.setText(event.code());
+        this.eventTitleLabel.setText(event.name());
     }
 
     @FXML

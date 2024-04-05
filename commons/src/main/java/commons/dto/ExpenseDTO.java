@@ -6,7 +6,7 @@ import java.time.LocalDate;
  * Data Transfer Object (DTO) representing an expense.
  */
 public record ExpenseDTO (
-        long id,
+        Long id,
         int price,
         String item,
         String paidByName,

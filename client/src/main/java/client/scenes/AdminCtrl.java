@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
-import commons.response_body.EventResponseBody;
+import commons.dto.JSONDumpEventDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -74,17 +74,17 @@ public class AdminCtrl implements VoidSceneController {
         switch (orderByComboBox.getValue()) {
             case "Title" ->
                     events.sort(Comparator.comparing
-                            (EventDTO::getName, String.CASE_INSENSITIVE_ORDER));
+                            (EventDTO::name, String.CASE_INSENSITIVE_ORDER));
             case "Creation Date (Newest)" ->
-                    events.sort(Comparator.comparing(EventDTO::getCreationDate,
+                    events.sort(Comparator.comparing(EventDTO::creationDate,
                             Comparator.reverseOrder()));
             case "Creation Date (Oldest)" ->
-                    events.sort(Comparator.comparing(EventDTO::getCreationDate));
+                    events.sort(Comparator.comparing(EventDTO::creationDate));
             case "Last Activity (Most recent)" ->
-                    events.sort(Comparator.comparing(EventDTO::getLastActivity,
+                    events.sort(Comparator.comparing(EventDTO::lastActivity,
                             Comparator.reverseOrder()));
             case "Last Activity (Least recent)" ->
-                    events.sort(Comparator.comparing(EventDTO::getLastActivity));
+                    events.sort(Comparator.comparing(EventDTO::lastActivity));
         }
         addEventsToEventGrid();
     }
@@ -123,7 +123,7 @@ public class AdminCtrl implements VoidSceneController {
      * @return Button Object.
      */
     private Button createEventNameButton(EventDTO event) {
-        Button openPage = new Button(event.getName());
+        Button openPage = new Button(event.name());
         openPage.setOnAction(e -> mainCtrl.showEventOverview(event));
 
         return openPage;
@@ -139,10 +139,10 @@ public class AdminCtrl implements VoidSceneController {
         delete.setOnAction(e -> {
             boolean confirmed = controllerUtils.createConfirmationAlert(
                     "Confirm Deletion",
-                    "Are you sure you want to delete event '" + event.getName() + "'?\n" +
+                    "Are you sure you want to delete event '" + event.name() + "'?\n" +
                             "This action cannot be undone.");
             if (confirmed) {
-                serverUtils.deleteEvent(event.getCode());
+                serverUtils.deleteEvent(event.code());
                 refresh();
             }
         });
@@ -203,7 +203,7 @@ public class AdminCtrl implements VoidSceneController {
         if (selectedFile != null) {
             try {
                 // Import event from JSON
-                EventResponseBody result = importEventFromJSON(selectedFile.getAbsolutePath());
+                List<JSONDumpEventDTO> result = importEventFromJSON(selectedFile.getAbsolutePath());
 
                 // Throw an exception if result is null
                 if (result == null) {
@@ -230,12 +230,12 @@ public class AdminCtrl implements VoidSceneController {
      * @param jsonPath the path to the file
      * @return returns the response entity with which the event is restored
      */
-    public EventResponseBody importEventFromJSON(String jsonPath) {
+    public List<JSONDumpEventDTO> importEventFromJSON(String jsonPath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             File jsonFile = new File(jsonPath);
-            EventResponseBody event = objectMapper.readValue(jsonFile, EventResponseBody.class);
+            List<JSONDumpEventDTO> event = objectMapper.readValue(jsonFile, List.class);
             serverUtils.restoreEvent(event);
             return event;
         } catch (JsonParseException | JsonMappingException e) {

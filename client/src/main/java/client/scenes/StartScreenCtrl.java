@@ -84,7 +84,7 @@ public class StartScreenCtrl implements VoidSceneController {
      */
     private Optional<EventDTO> getEvent(String code) {
         return events.stream()
-                .filter(event -> event.getCode().equals(code))
+                .filter(event -> event.code().equals(code))
                 .findFirst();
     }
 

@@ -79,7 +79,7 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void initialize(EventDTO event) {
         this.event = event;
-        this.participants = serverUtils.getParticipants(event.getCode());
+        this.participants = serverUtils.getParticipants(event.code());
 
         currencyDropdown.setItems(FXCollections.observableArrayList("EUR", "USD", "GBP"));
         currencyDropdown.getSelectionModel().selectFirst();
@@ -104,10 +104,10 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     private void refreshWhoPaidDropdown() {
         participantMap = new HashMap<>();
         whoPaidDropdown.getItems().clear();
-        this.participants = serverUtils.getParticipants(event.getCode());
+        this.participants = serverUtils.getParticipants(event.code());
 
         for (ParticipantDTO p : participants) {
-            String name = p.getName();
+            String name = p.name();
             whoPaidDropdown.getItems().add(name);
             participantMap.put(name, p);
         }
@@ -115,10 +115,10 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
 
     private void refreshParticipantContainer() {
         checkboxContainer.getChildren().clear();
-        this.participants = serverUtils.getParticipants(event.getCode());
+        this.participants = serverUtils.getParticipants(event.code());
 
         for (ParticipantDTO p : participants) {
-            String name = p.getName();
+            String name = p.name();
             CheckBox participantCheckbox = new CheckBox(name);
             participantCheckbox.setDisable(true);
             checkboxContainer.getChildren().add(participantCheckbox);
@@ -167,7 +167,7 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
      * @param e The (validated) expense to add
      */
     private void addExpenseToServer(ExpenseDTO e) {
-        boolean success = serverUtils.addExpense(e, event.getCode());
+        boolean success = serverUtils.addExpense(e, event.code());
         if (success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Expense Added Successfully",
@@ -200,7 +200,7 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
             String item = whatForField.getText();
             ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
             LocalDate date = whenPicker.getValue();
-            ExpenseDTO expense = new ExpenseDTO(price, item, payer, date);
+            ExpenseDTO expense = new ExpenseDTO(null, price, item, payer.name(), date);
             addExpenseToServer(expense);
         }
     }
