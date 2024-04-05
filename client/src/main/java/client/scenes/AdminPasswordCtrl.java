@@ -45,7 +45,8 @@ public class AdminPasswordCtrl implements VoidSceneController {
     }
 
     /**
-     *
+     * Checks if the entered password is correct. Closes this popup and switches scene to Admin
+     * if it is.
      */
     @FXML
     public void submitPassword() {
