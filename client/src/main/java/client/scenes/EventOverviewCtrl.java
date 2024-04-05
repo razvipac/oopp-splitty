@@ -89,6 +89,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                     refreshExpenseScroller();
                 }
         );
+        // Update total expenses label
+        totalExpensesLabel.setText("Total sum of expenses: " + calculateTotalExpenseSum());
+
     }
 
     /**
