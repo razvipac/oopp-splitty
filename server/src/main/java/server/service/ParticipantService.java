@@ -142,10 +142,12 @@ public class ParticipantService {
 
         Participant found = getOne(eventCode, name);
         // if not found exception will be thrown
-        found.setEmail(body.email());
-        found.setIban(body.iban());
-        found.setBic(body.bic());
-        found.setName(body.name());
+
+        // Check if the corresponding fields in ParticipantDTO are not null before updating
+        if (body.email() != null) found.setEmail(body.email());
+        if (body.iban() != null) found.setIban(body.iban());
+        if (body.bic() != null) found.setBic(body.bic());
+        if (body.name() != null) found.setName(body.name());
 
         participantRepository.save(found);
         updateDate(eventCode);
