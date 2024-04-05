@@ -82,6 +82,7 @@
                         <RadioButton fx:id="expenseFilterIncludingRadio" mnemonicParsing="false" text="Including x" toggleGroup="$expenseFilterToggleGroup" />
                      </children>
                   </HBox>
+                  <Label fx:id="totalExpensesLabel" text="Total sum of expenses: " /> <!-- Label for total sum of expenses -->
                   <ScrollPane prefHeight="200.0" prefWidth="200.0">
                      <content>
                         <VBox fx:id="expenseItemContainer" />

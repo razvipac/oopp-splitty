@@ -40,7 +40,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private RadioButton expenseFilterFromRadio;
     @FXML
     private RadioButton expenseFilterIncludingRadio;
-
+    @FXML
+    private Label totalExpensesLabel;
     @FXML
     private VBox expenseItemContainer;
 
