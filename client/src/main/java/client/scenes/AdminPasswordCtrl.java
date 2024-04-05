@@ -52,6 +52,8 @@ public class AdminPasswordCtrl implements VoidSceneController {
     public void submitPassword() {
         if(serverUtils.matchesPassword(passwordField.getText())) {
             mainCtrl.setPasswordIsCorrect(true);
+            mainCtrl.showAdmin();
+            mainCtrl.closeAdminPasswordPopup();
         }
     }
 
