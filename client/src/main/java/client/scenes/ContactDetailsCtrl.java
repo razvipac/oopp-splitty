@@ -108,7 +108,13 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         refresh();
     }
 
+    /**
+     * Creates a TextFormatter with a character limit
+     * @param limit The limit on the number of characters
+     * @return TextFormatter Object
+     */
     public TextFormatter<String> textFormatterCharacterLimit(int limit) {
+        if(limit < 0) limit = 0;
         return new TextFormatter<>(change -> {
             if(change.getControlNewText().length() > limit) return null;
             else return change;
