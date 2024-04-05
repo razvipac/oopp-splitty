@@ -10,13 +10,14 @@ import java.util.Objects;
 
 public class LanguageManager {
     private String preferencesFilePath;
-
+    private LanguageOption languageOption;
     /**
      *
      * @param preferencesFilePath initialize this to create better injection
      */
     public LanguageManager(String preferencesFilePath) {
         this.preferencesFilePath = preferencesFilePath;
+        this.languageOption = loadLanguage();
     }
 
     /**
@@ -34,7 +35,7 @@ public class LanguageManager {
                 if(rootNode.get("language").asText().equals("Romanian")){
                     return new LanguageOption(LanguageOption.Language.ROMANIAN);
                 }
-                return new LanguageOption();
+                return new LanguageOption(LanguageOption.Language.ENGLISH);
             }
         } catch (IOException e) {
             System.out.println("The system defaulted to english");
@@ -74,6 +75,7 @@ public class LanguageManager {
 
             // Write modified JSON back to file
             objectMapper.writeValue(file, rootNode);
+            setLanguageOption(language);
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception appropriately in your application
         }
@@ -143,7 +145,7 @@ public class LanguageManager {
      * @return the associated value with it in the json config file
      */
     public String get(String key) {
-        return this.get(LanguageButton.getCurrentLanguage(), key);
+        return this.get(this.languageOption, key);
     }
 
     /**
@@ -181,5 +183,21 @@ public class LanguageManager {
     @Override
     public int hashCode() {
         return Objects.hash(this.preferencesFilePath);
+    }
+
+    /**
+     *
+     * @return the selected languageOption
+     */
+    public LanguageOption getLanguageOption() {
+        return this.languageOption;
+    }
+
+    /**
+     * Set the languageOption to the parameter
+     * @param languageOption the new value of the languageOption
+     */
+    public void setLanguageOption(final LanguageOption languageOption) {
+        this.languageOption = languageOption;
     }
 }
