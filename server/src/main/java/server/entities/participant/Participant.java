@@ -8,23 +8,34 @@ import server.entities.event.Event;
 
 import java.util.List;
 import java.util.Objects;
+
 @Entity
 @Table(name = "participant")
 public class Participant {
+
     @EmbeddedId
     private ParticipantId pkey;
     private String email;
     private String iban;
     private String bic;
-    @ManyToMany(mappedBy = "participants")
-    private List<Expense> expenses;
+
+    @OneToMany(
+            mappedBy = "pkey.paidBy",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Expense> paidForExpenses;
+
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "id.debtor")
     private List<Debt> debts;
+
+//    @ManyToMany(mappedBy = "participants")
+//    private List<Expense> expenses;
 
     /**
      * Default constructor needed for the JPA
      */
-    protected Participant() {
+    public Participant() {
     }
 
     /**
@@ -112,8 +123,8 @@ public class Participant {
         this.bic = bic;
     }
 
-    public List<Expense> getExpenses(){
-        return expenses;
+    public List<Expense> getPaidForExpenses(){
+        return paidForExpenses;
     }
 
 

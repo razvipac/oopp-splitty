@@ -20,22 +20,23 @@ public class Expense {
     private Integer price;
     private String item;
     private LocalDate date;
-    @ManyToMany
-    @JoinTable(
-            name = "expense_participant",
-            joinColumns = {
-                @JoinColumn(name = "expense_id", referencedColumnName = "id"),
-                @JoinColumn(name = "paidBy_name", referencedColumnName = "paidBy_name"),
-                @JoinColumn(name = "paidBy_event_code",
-                            referencedColumnName = "paidBy_event_code")
-            },
-            inverseJoinColumns = {
-                @JoinColumn(name = "participant_name", referencedColumnName = "name"),
-                @JoinColumn(name = "participant_event_code",
-                            referencedColumnName = "event_code")
-            }
-    )
-    private List<Participant> participants;
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "expense_participant",
+//            joinColumns = {
+//                @JoinColumn(name = "expense_id", referencedColumnName = "id"),
+//                @JoinColumn(name = "paidBy_name", referencedColumnName = "paidBy_name"),
+//                @JoinColumn(name = "paidBy_event_code",
+//                            referencedColumnName = "paidBy_event_code")
+//            },
+//            inverseJoinColumns = {
+//                @JoinColumn(name = "participant_name", referencedColumnName = "name"),
+//                @JoinColumn(name = "participant_event_code",
+//                            referencedColumnName = "event_code")
+//            }
+//    )
+//    private List<Participant> participants;
 
     /**
      * Default constructor.
@@ -146,14 +147,6 @@ public class Expense {
      */
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    /**
-     * Get the participants of the expense.
-     * @return The participants of the expense.
-     */
-    public List<Participant> getParticipants() {
-        return this.participants;
     }
 
     /**

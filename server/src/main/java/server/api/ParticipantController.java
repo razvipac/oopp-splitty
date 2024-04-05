@@ -97,8 +97,16 @@ public class ParticipantController {
             @RequestBody ParticipantDTO participantDTO) {
         try {
             Participant participant = participantService.createOne(eventCode, participantDTO);
+            ParticipantDTO createdDTO = participantDTOMapper.toDTO(participant);
 
-            return new ResponseEntity<>(participantDTOMapper.toDTO(participant), HttpStatus.CREATED);
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/participant",
+                    new WSWrapperResponseBody<>(
+                            WSAction.CREATED,
+                            createdDTO
+                    ));
+
+            return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -174,7 +182,7 @@ public class ParticipantController {
     }
 
     private void deleteDependants(Participant participant){
-        for (Expense expense : participant.getExpenses()){
+        for (Expense expense : participant.getPaidForExpenses()){
             expenseController.deleteOne(
                     expense.getId(),
                     expense.getPaidBy().getName(),

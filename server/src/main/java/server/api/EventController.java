@@ -106,10 +106,11 @@ public class EventController {
             simpMessagingTemplate.convertAndSend(
                     "/api/websocket/v1/channel/" + eventCode,
                     new WSWrapperResponseBody<>(
-                            WSAction.MODIFIED,
+                            WSAction.DELETED,
                             eventDTO
                     )
             );
+
             return new ResponseEntity<>(eventDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -134,8 +135,17 @@ public class EventController {
     ) {
         try {
             Event event = eventService.updateOne(eventCode, name);
+            EventDTO eventDTO = eventDTOMapper.toDTO(event);
 
-            return new ResponseEntity<>(eventDTOMapper.toDTO(event), HttpStatus.OK);
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode,
+                    new WSWrapperResponseBody<>(
+                            WSAction.MODIFIED,
+                            eventDTO
+                    )
+            );
+
+            return new ResponseEntity<>(eventDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
