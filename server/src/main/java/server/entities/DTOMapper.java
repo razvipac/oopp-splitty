@@ -1,6 +1,5 @@
 package server.entities;
 
-import org.hibernate.type.descriptor.java.ObjectJavaType;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 public interface DTOMapper<ENTITY, DTO> {

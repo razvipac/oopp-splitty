@@ -25,8 +25,9 @@ public class ExpenseController {
     /**
      * Constructor for initializing the ExpenseController.
      *
-     * @param expenseService        The ExpenseService instance to be used.
-     * @param simpMessagingTemplate The SimpMessagingTemplate instance to be used.
+     * @param expenseService        The ExpenseService instance to be injected.
+     * @param simpMessagingTemplate The SimpMessagingTemplate instance to be injected.
+     * @param expenseDTOMapper The ExpenseDTOMapper instance to be injected.
      */
     @Autowired
     public ExpenseController(@Autowired ExpenseService expenseService,

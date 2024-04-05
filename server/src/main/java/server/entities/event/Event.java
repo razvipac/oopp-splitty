@@ -109,6 +109,10 @@ public class Event {
         this.lastActivity = lastActivity;
     }
 
+    /**
+     * Getter for participants
+     * @return list of participants of the event
+     */
     public List<Participant> getParticipants(){
         return participants;
     }

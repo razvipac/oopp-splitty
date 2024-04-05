@@ -49,6 +49,13 @@ public class EventDTOMapper implements DTOMapper<Event, EventDTO> {
         return eventService.getOne(eventDTO.code());
     }
 
+    /**
+     * Transforms eventDTO to corresponding, new, event
+     * @param eventDTO DTO to transform
+     * @param args additional arguments, here eventCode of the event to which the event belongs
+     * @return corresponding entity
+     * @throws NotFoundInDatabaseException if not present in the database
+     */
     @Override
     public Event newEntity(EventDTO eventDTO, Object... args) throws NotFoundInDatabaseException {
         return new Event(eventDTO.name(), eventDTO.code(), LocalDateTime.now());

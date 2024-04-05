@@ -92,6 +92,13 @@ public class ServerUtils {
                 });
     }
 
+
+    /**
+     * Gets a single participant from the server
+     * @param eventCode eventCode of the event to which the participant belongs
+     * @param name name of the participant
+     * @return the ParticipantDTO instance corresponding to that participant
+     */
     public ParticipantDTO getParticipant(String eventCode, String name){
         return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/" + eventCode + "/participant?name=" + name)
@@ -103,7 +110,8 @@ public class ServerUtils {
 
     /**
      * Adds Participant to server
-     * @param p Participant to add
+     * @param p ParticipantDTO corresponding to the Participant to add
+     * @param eventCode event code of the participant to add
      * @return True iff add was successful, false otherwise
      */
     public boolean addParticipant(ParticipantDTO p, String eventCode) {

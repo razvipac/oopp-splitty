@@ -29,6 +29,8 @@ public class EventController {
      *
      * @param eventService          The EventService to be injected into the controller.
      * @param simpMessagingTemplate The SimpMessagingTemplate to be injected into the controller.
+     * @param eventDTOMapper The EventDTOMapper instance to be injected into the controller.
+     * @param participantController The ParticipantController instance to be injected into the controller.
      */
     public EventController(@Autowired EventService eventService,
                            @Autowired SimpMessagingTemplate simpMessagingTemplate,

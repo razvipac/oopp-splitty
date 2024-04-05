@@ -44,6 +44,10 @@ public class JSONDumpService {
      * @param participantRepository The ParticipantRepository instance.
      * @param expenseRepository     The ExpenseRepository instance.
      * @param debtRepository        The DebtRepository instance.
+     * @param eventDTOMapper        The EventDTOMapper instance.
+     * @param participantDTOMapper  The ParticipantDTOMapper instance.
+     * @param expenseDTOMapper      The ExpenseDTOMapper instance.
+     * @param debtDTOMapper         The DebtDTOMapper instance.
      */
     public JSONDumpService(
             @Autowired EventService eventService,
@@ -129,12 +133,12 @@ public class JSONDumpService {
         participantRepository.deleteAll();
         eventRepository.deleteAll();
         try {
-            for (JSONDumpEventDTO JSONDumpEventDTO : jsonDump) {
+            for (JSONDumpEventDTO jsonDumpEventDTO : jsonDump) {
 
-                EventDTO eventDTO = JSONDumpEventDTO.eventDTO();
+                EventDTO eventDTO = jsonDumpEventDTO.eventDTO();
                 eventRepository.save(eventDTOMapper.newEntity(eventDTO));
 
-                for (ParticipantDTO participantDTO : JSONDumpEventDTO.participantDTOs()) {
+                for (ParticipantDTO participantDTO : jsonDumpEventDTO.participantDTOs()) {
                     participantRepository.save(
                             participantDTOMapper.newEntity(
                                     participantDTO,
@@ -143,7 +147,7 @@ public class JSONDumpService {
                     );
                 }
 
-                for (ExpenseDTO expenseDTO : JSONDumpEventDTO.expenseDTOs()) {
+                for (ExpenseDTO expenseDTO : jsonDumpEventDTO.expenseDTOs()) {
                     expenseRepository.save(
                             expenseDTOMapper.newEntity(
                                    expenseDTO,
@@ -152,7 +156,7 @@ public class JSONDumpService {
                     );
                 }
 
-                for (DebtDTO debtDTO : JSONDumpEventDTO.debtDTOs()) {
+                for (DebtDTO debtDTO : jsonDumpEventDTO.debtDTOs()) {
                     debtRepository.save(
                             debtDTOMapper.newEntity(
                                     debtDTO,

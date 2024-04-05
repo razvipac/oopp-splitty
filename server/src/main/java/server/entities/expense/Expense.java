@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import server.entities.participant.Participant;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 /**

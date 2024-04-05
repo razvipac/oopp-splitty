@@ -17,6 +17,7 @@ public class ExpenseDTOMapper implements DTOMapper<Expense, ExpenseDTO> {
     /**
      * Constructor for participantDTOMapper
      * @param expenseService ExpenseService instance to be injected
+     * @param participantService ParticipantService instance to be injected
      */
     public ExpenseDTOMapper (
             @Autowired ExpenseService expenseService,

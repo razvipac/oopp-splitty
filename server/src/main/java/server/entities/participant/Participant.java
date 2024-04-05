@@ -123,6 +123,10 @@ public class Participant {
         this.bic = bic;
     }
 
+    /**
+     * Getter for paidForExpenses
+     * @return reference to paidForExpenses
+     */
     public List<Expense> getPaidForExpenses(){
         return paidForExpenses;
     }

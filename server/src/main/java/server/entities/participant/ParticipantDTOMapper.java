@@ -4,8 +4,6 @@ import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.entities.DTOMapper;
-import server.entities.event.Event;
-import server.entities.event.EventDTOMapper;
 import server.service.EventService;
 import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
@@ -19,6 +17,7 @@ public class ParticipantDTOMapper implements DTOMapper<Participant, ParticipantD
     /**
      * Constructor for participantDTOMapper
      * @param participantService participantService instance to be injected
+     * @param eventService EventService instance to be injected
      */
     public ParticipantDTOMapper (
             @Autowired ParticipantService participantService,

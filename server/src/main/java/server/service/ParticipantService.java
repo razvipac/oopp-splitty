@@ -35,7 +35,6 @@ public class ParticipantService {
      * @param eventRepository The EventRepository instance to interact with the database
      * @param expenseService The ExpenseService instance to interact with the expenses
      * @param simpMessagingTemplate The SimpMessagingService instance to send STOMP messages
-     * @param participantDTOMapper DTO mapper instance
      */
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
                               @Autowired EventRepository eventRepository,
@@ -188,6 +187,7 @@ public class ParticipantService {
      * Updates the Last Activity date on the Event
      *
      * @param eventCode code of the fetched Event object
+     * @return the instance of the event on which the lastActivity date was updated
      * @throws NotFoundInDatabaseException if an object with given code
      *                                     is not present in the database
      */

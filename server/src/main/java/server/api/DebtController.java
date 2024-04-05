@@ -25,6 +25,7 @@ public class DebtController {
      * Constructs a DebtController with the specified DebtService
      *
      * @param debtService The service for managing Debt entities
+     * @param debtDTOMapper mapper for the DebtDTO
      */
     @Autowired
     public DebtController(

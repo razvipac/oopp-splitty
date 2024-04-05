@@ -17,6 +17,7 @@ public class DebtDTOMapper implements DTOMapper<Debt, DebtDTO> {
     /**
      * Constructor for participantDTOMapper
      * @param debtService DebtService instance to be injected
+     * @param participantService participantService instance to be injected
      */
     public DebtDTOMapper (
             @Autowired DebtService debtService,

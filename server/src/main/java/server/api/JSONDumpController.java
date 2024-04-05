@@ -29,6 +29,10 @@ public class JSONDumpController {
      * Constructs a JSONDumpController with the specified JSONDumpService.
      *
      * @param jsonDumpService The JSONDumpService instance to be injected.
+     * @param eventDTOMapper The EventDTOMapper instance to be injected.
+     * @param participantDTOMapper The ParticipantDTOMapper instance to be injected.
+     * @param expenseDTOMapper The ExpenseDTOMapper instance to be injected.
+     * @param debtDTOMapper The DebtDTOMapper instance to be injected.
      */
     public JSONDumpController(
             @Autowired JSONDumpService jsonDumpService,
@@ -36,7 +40,7 @@ public class JSONDumpController {
             @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
             @Autowired DTOMapper<Expense, ExpenseDTO> expenseDTOMapper,
             @Autowired DTOMapper<Debt, DebtDTO> debtDTOMapper
-            ) {
+    ) {
         this.jsonDumpService = jsonDumpService;
         this.eventDTOMapper = eventDTOMapper;
         this.participantDTOMapper = participantDTOMapper;
