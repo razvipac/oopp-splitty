@@ -65,9 +65,11 @@ public class Main extends Application {
                 "client", "scenes", "AddEditExpense.fxml");
         var admin = FXML.load(AdminCtrl.class,
                 "client", "scenes", "Admin.fxml");
+        LanguageManager languageManager = new LanguageManager(
+                "client/src/main/resources/userSettings/userPreferences.json");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, startScreen, eventOverview, contactDetails,
-                invitations, openDebts, addEditExpense, admin);
+                invitations, openDebts, addEditExpense, admin, languageManager);
     }
 }
