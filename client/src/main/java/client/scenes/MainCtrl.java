@@ -19,6 +19,7 @@ import client.LanguageManager;
 import commons.dto.EventDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -49,6 +50,7 @@ public class MainCtrl {
 
     private AdminPasswordCtrl adminPasswordCtrl;
     private Scene adminPassword;
+    private boolean passwordIsCorrect;
 
     private LanguageManager languageManager;
 
@@ -102,6 +104,7 @@ public class MainCtrl {
 
         this.adminPasswordCtrl = adminPasswordPair.getKey();
         this.adminPassword = new Scene(adminPasswordPair.getValue());
+        this.passwordIsCorrect = false;
 
         this.languageManager = languageManager;
 
@@ -185,9 +188,27 @@ public class MainCtrl {
      * Sets the title of the primary stage and switches to the Administrator Control Panel.
      */
     public void showAdmin() {
-        primaryStage.setTitle("Splitty: Administrator Control Panel");
-        adminCtrl.initialize();
-        primaryStage.setScene(admin);
+        if(passwordIsCorrect) {
+            primaryStage.setTitle("Splitty: Administrator Control Panel");
+            adminCtrl.initialize();
+            primaryStage.setScene(admin);
+        }
+        else showAdminPassword();
+    }
+
+    /**
+     * Creates and shows popup where the Admin Password must be entered.
+     */
+    public void showAdminPassword() {
+        Stage popup = new Stage();
+        popup.initOwner(primaryStage);
+        popup.initModality(Modality.APPLICATION_MODAL);
+        popup.setTitle("Administrator Control Panel");
+        popup.setResizable(false);  // popup can't be resized
+
+        adminPasswordCtrl.initialize();
+        popup.setScene(adminPassword);
+        popup.showAndWait();
     }
 
     /**
