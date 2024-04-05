@@ -69,17 +69,20 @@
             <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <Text layoutX="84.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to" textAlignment="RIGHT" wrappingWidth="97.0">
+      <Text layoutX="87.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to" textAlignment="RIGHT" wrappingWidth="97.0">
          <font>
             <Font size="16.0" />
          </font>
       </Text>
-      <Text fill="#0300cf" layoutX="61.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splitty">
+      <Text fill="#0300cf" layoutX="64.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splitty">
          <font>
             <Font name="Dubai Bold" size="42.0" />
          </font>
       </Text>
       <Line endX="-100.0" endY="218.0" layoutX="328.0" layoutY="136.0" startX="-100.0" startY="-90.0" stroke="#b4b4b4" />
-      <ComboBox fx:id="languageButton" layoutX="93.0" layoutY="250.0" onAction="#translate" prefHeight="25.0" prefWidth="79.0" />
+      <ComboBox fx:id="languageButton" layoutX="63.0" layoutY="218.0" onAction="#translate" prefHeight="25.0" prefWidth="119.0" />
+      <Label layoutX="86.0" layoutY="196.0" text="Change language:" />
+      <Button layoutX="94.0" layoutY="275.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Control Panel" />
+      <Label layoutX="106.0" layoutY="253.0" text="Administrator:" />
    </children>
 </AnchorPane>
