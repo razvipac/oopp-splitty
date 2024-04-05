@@ -82,7 +82,7 @@
       <Line endX="-100.0" endY="218.0" layoutX="328.0" layoutY="136.0" startX="-100.0" startY="-90.0" stroke="#b4b4b4" />
       <ComboBox fx:id="languageButton" layoutX="63.0" layoutY="218.0" onAction="#translate" prefHeight="25.0" prefWidth="119.0" />
       <Label layoutX="86.0" layoutY="196.0" text="Change language:" />
-      <Button layoutX="94.0" layoutY="275.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Control Panel" />
+      <Button layoutX="94.0" layoutY="275.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Control Panel" onAction="#openAdminControlPanel"/>
       <Label layoutX="106.0" layoutY="253.0" text="Administrator:" />
    </children>
 </AnchorPane>
