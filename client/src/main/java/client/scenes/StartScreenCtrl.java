@@ -6,13 +6,15 @@ import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 public class StartScreenCtrl implements VoidSceneController {
 
@@ -25,6 +27,10 @@ public class StartScreenCtrl implements VoidSceneController {
     @FXML
     private ComboBox<HBox> languageButton;
 
+    @FXML
+    private GridPane recentViewedEvents;
+
+    private Set<EventDTO> recentlyJoinedEvents = new LinkedHashSet<>();
 
     private List<EventDTO> events;
 
@@ -94,6 +100,9 @@ public class StartScreenCtrl implements VoidSceneController {
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
+            recentlyJoinedEvents.removeIf(event -> event.getCode().equals(code));
+            recentlyJoinedEvents.add(found.get());
+            updateRecentEvents();
             mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
@@ -124,6 +133,36 @@ public class StartScreenCtrl implements VoidSceneController {
     }
 
     /**
+     * Updates the recent events view. Displays the last 4 events that the user has joined.
+     */
+    private void updateRecentEvents() {
+        recentViewedEvents.getChildren().clear();
+        int amountOfEvents = 0;
+        int lastIndex = recentlyJoinedEvents.size() - 1;
+        for (int i = lastIndex; i >= 0 && amountOfEvents < 4; i--) {
+            EventDTO event = new ArrayList<>(recentlyJoinedEvents).get(i);
+            Label eventName = new Label(event.getName());
+            Button overviewButton = new Button("\u2192");
+            overviewButton.setOnAction(e -> {
+                mainCtrl.showEventOverview(event);
+                recentlyJoinedEvents.remove(event);
+                recentlyJoinedEvents.add(event);
+                updateRecentEvents();
+            });
+            Button removeButton = new Button("\u0078");
+            removeButton.setOnAction(e -> {
+                recentlyJoinedEvents.remove(event);
+                refresh();
+            });
+
+            recentViewedEvents.add(eventName, 0, amountOfEvents);
+            recentViewedEvents.add(overviewButton, 1, amountOfEvents);
+            recentViewedEvents.add(removeButton, 2, amountOfEvents);
+            amountOfEvents++;
+        }
+    }
+
+    /**
      * Refreshes the start screen by clearing text fields and updating event data.
      */
     public void refresh(){
@@ -131,8 +170,13 @@ public class StartScreenCtrl implements VoidSceneController {
         joinEventTextField.clear();
         events = server.getAllEvents();
         loadLanguageButton();
+        updateRecentEvents();
     }
 
+    /**
+     * Handles the language translation action.
+     * @param actionEvent The event that triggered the action.
+     */
     public void translate(ActionEvent actionEvent) {
         int option = languageButton.getSelectionModel().getSelectedIndex();
         // Add your custom logic here based on the selected language;
