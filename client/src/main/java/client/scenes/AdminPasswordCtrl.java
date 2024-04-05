@@ -44,4 +44,12 @@ public class AdminPasswordCtrl implements VoidSceneController {
         passwordField.clear();
     }
 
+    /**
+     *
+     */
+    @FXML
+    public void submitPassword() {
+
+    }
+
 }
