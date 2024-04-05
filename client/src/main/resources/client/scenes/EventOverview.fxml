@@ -68,6 +68,7 @@
                            </font>
                         </Label>
                         <Button mnemonicParsing="false" onAction="#openAddEditExpense" text="Add Expense" />
+                        <Label fx:id="totalExpensesLabel" text="Total sum of expenses: " /> <!-- Label for total sum of expenses -->
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="10.0">

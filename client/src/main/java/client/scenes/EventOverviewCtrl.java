@@ -40,7 +40,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private RadioButton expenseFilterFromRadio;
     @FXML
     private RadioButton expenseFilterIncludingRadio;
-
+    @FXML
+    private Label totalExpensesLabel;
     @FXML
     private VBox expenseItemContainer;
 
@@ -88,6 +89,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                     refreshExpenseScroller();
                 }
         );
+        // Update total expenses label
+        totalExpensesLabel.setText("Total sum of expenses: " + calculateTotalExpenseSum());
+
     }
 
     /**
@@ -293,6 +297,18 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private void handleHoverOut(MouseEvent event) {
         Label label = (Label) event.getSource();
         label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
+    }
+
+    /**
+     * Calculate the total sum of expenses.
+     * @return The total sum of expenses
+     */
+    private int calculateTotalExpenseSum() {
+        int totalSum = 0;
+        for (ExpenseDTO expense : expenses) {
+            totalSum += expense.price();
+        }
+        return totalSum;
     }
 
 
