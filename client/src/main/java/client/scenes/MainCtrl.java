@@ -50,6 +50,7 @@ public class MainCtrl {
 
     private AdminPasswordCtrl adminPasswordCtrl;
     private Scene adminPassword;
+    private Stage adminPasswordPopup;
     private boolean passwordIsCorrect;
 
     private LanguageManager languageManager;
@@ -104,6 +105,7 @@ public class MainCtrl {
 
         this.adminPasswordCtrl = adminPasswordPair.getKey();
         this.adminPassword = new Scene(adminPasswordPair.getValue());
+        this.adminPasswordPopup = createAdminPasswordPopup();
         this.passwordIsCorrect = false;
 
         this.languageManager = languageManager;
@@ -193,22 +195,35 @@ public class MainCtrl {
             adminCtrl.initialize();
             primaryStage.setScene(admin);
         }
-        else showAdminPassword();
+        else openAdminPasswordPopup();
     }
 
     /**
-     * Creates and shows popup where the Admin Password must be entered.
+     * Creates the popup where the Admin Password must be entered.
+     * @return Popup with the Admin Password Scene.
      */
-    public void showAdminPassword() {
+    private Stage createAdminPasswordPopup() {
         Stage popup = new Stage();
         popup.initOwner(primaryStage);
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.setTitle("Administrator Control Panel");
         popup.setResizable(false);  // popup can't be resized
-
-        adminPasswordCtrl.initialize();
         popup.setScene(adminPassword);
-        popup.showAndWait();
+        return popup;
+    }
+
+    /**
+     * Opens the popup where the Admin Password must be entered.
+     */
+    public void openAdminPasswordPopup() {
+        adminPasswordPopup.showAndWait();
+    }
+
+    /**
+     * Closes the popup where the Admin Password must be entered.
+     */
+    public void closeAdminPasswordPopup() {
+        adminPasswordPopup.close();
     }
 
     /**
