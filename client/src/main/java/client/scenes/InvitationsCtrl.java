@@ -9,8 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 
 public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     private final MainCtrl mainCtrl; // reference to MainCtrl class
@@ -70,5 +69,49 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+    }
+
+    /**
+     * Handles the copying of the invitation code when the label is double-clicked.
+     *
+     * @param event The MouseEvent representing the double click event.
+     */
+    @FXML
+    private void handleCopyInvitationCode(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+            // Get the source of the event, which should be the invitation code label
+            Label invitationCodeLabel = (Label) event.getSource();
+            String invitationCode = invitationCodeLabel.getText();
+
+            // Create a clipboard and add the invitation code to its content
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(invitationCode);
+            clipboard.setContent(content);
+
+            invitationCodeLabel.setStyle("-fx-background-color: lightblue;");
+        }
+    }
+
+    /**
+     * Handles the hover-in event for a label.
+     *
+     * @param event The MouseEvent representing the hover-in event.
+     */
+    @FXML
+    private void handleHoverIn(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: lightgray; -fx-cursor: hand;");
+    }
+
+    /**
+     * Handles the hover-out event for a label.
+     *
+     * @param event The MouseEvent representing the hover-out event.
+     */
+    @FXML
+    private void handleHoverOut(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
     }
 }
