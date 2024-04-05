@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import client.LanguageManager;
 import commons.dto.EventDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,6 +47,8 @@ public class MainCtrl {
     private AdminCtrl adminCtrl;
     private Scene admin;
 
+    private LanguageManager languageManager;
+
     /**
      * Initializes the MainCtrl with the primary stage and scenes for various controllers.
      *
@@ -57,6 +60,7 @@ public class MainCtrl {
      * @param openDebtsPair the openDebtsPair from MyFXML output
      * @param addEditExpensePair the addEditExpensePair from MyFXML output
      * @param adminPair the adminPair from MyFXML output
+     * @param languageManager the languageManager of the whole app
      */
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
@@ -65,7 +69,8 @@ public class MainCtrl {
                            Pair<InvitationsCtrl, Parent> invitationsPair,
                            Pair<OpenDebtsCtrl, Parent> openDebtsPair,
                            Pair<AddEditExpenseCtrl, Parent> addEditExpensePair,
-                           Pair<AdminCtrl, Parent> adminPair
+                           Pair<AdminCtrl, Parent> adminPair,
+                           LanguageManager languageManager
     ) {
         this.primaryStage = primaryStage;
 
@@ -90,6 +95,8 @@ public class MainCtrl {
         this.adminCtrl = adminPair.getKey();
         this.admin = new Scene(adminPair.getValue());
 
+        this.languageManager = languageManager;
+
         showStartScreen();
         primaryStage.show();
     }
@@ -98,7 +105,9 @@ public class MainCtrl {
      * Sets the title of the primary stage and switches to the Start Screen.
      */
     public void showStartScreen() {
-        primaryStage.setTitle("Splitty: Start Screen");
+        String string = "Splitty: Start Screen";
+        string = languageManager.get("Splitty: Start Screen");
+        primaryStage.setTitle(string);
         startScreenCtrl.initialize();
         primaryStage.setScene(startScreen);
     }
@@ -180,5 +189,13 @@ public class MainCtrl {
      */
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    /**
+     * Retrieves the languageManager associated with this MainCtrl Instance
+     * @return the language manager
+     */
+    public LanguageManager getLanguageManager() {
+        return this.languageManager;
     }
 }

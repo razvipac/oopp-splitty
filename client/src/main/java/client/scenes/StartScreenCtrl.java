@@ -1,31 +1,31 @@
 package client.scenes;
-
+import client.LanguageOption;
 import client.interfaces.VoidSceneController;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
-
-import java.util.*;
+import javafx.scene.layout.HBox;
+import java.util.List;
+import java.util.Optional;
 
 public class StartScreenCtrl implements VoidSceneController {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-
     @FXML
     private TextField createEventTextField;
     @FXML
     private TextField joinEventTextField;
     @FXML
-    private GridPane recentViewedEvents;
+    private ComboBox<HBox> languageButton;
 
-    private Set<EventDTO> recentlyJoinedEvents = new LinkedHashSet<>();
+
     private List<EventDTO> events;
 
     /**
@@ -43,7 +43,7 @@ public class StartScreenCtrl implements VoidSceneController {
      * Initializes the controller.
      * Sets up event listeners and refreshes the scene.
      */
-    public void initialize(){
+    public void initialize() {
         createEventTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) createEvent();
         });
@@ -51,8 +51,38 @@ public class StartScreenCtrl implements VoidSceneController {
         joinEventTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) joinEvent();
         });
-
         refresh();
+    }
+
+
+    private void loadLanguageButton() {
+        HBox hbox1 = new HBox();
+        hbox1.getChildren().addAll(
+                mainCtrl.getLanguageManager().createFlagIcon(
+                        new LanguageOption(LanguageOption.Language.ENGLISH)),
+                new Label("English"));
+        HBox hbox2 = new HBox();
+        hbox2.getChildren().addAll(
+                mainCtrl.getLanguageManager().createFlagIcon(
+                        new LanguageOption(LanguageOption.Language.DUTCH)),
+                new Label("Nederlands"));
+        HBox hbox3 = new HBox();
+        hbox3.getChildren().addAll(
+                mainCtrl.getLanguageManager().createFlagIcon(
+                        new LanguageOption(LanguageOption.Language.ROMANIAN)),
+                new Label("Romana"));
+        languageButton.getItems().clear();
+        languageButton.getItems().addAll(hbox1, hbox2, hbox3);
+
+        HBox hbox4 = new HBox();
+        if(mainCtrl.getLanguageManager() != null){
+            hbox4.getChildren().add(
+                    mainCtrl.getLanguageManager().createFlagIcon(
+                            mainCtrl.getLanguageManager().getLanguageOption())
+            );
+        }else{
+        }
+        languageButton.getSelectionModel().select(hbox4);
     }
 
     /**
@@ -64,9 +94,6 @@ public class StartScreenCtrl implements VoidSceneController {
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
-            recentlyJoinedEvents.removeIf(event -> event.getCode().equals(code));
-            recentlyJoinedEvents.add(found.get());
-            updateRecentEvents();
             mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
@@ -86,34 +113,9 @@ public class StartScreenCtrl implements VoidSceneController {
     }
 
     /**
-     * Updates the recent events view. Displays the last 4 events that the user has joined.
-     */
-    private void updateRecentEvents() {
-        recentViewedEvents.getChildren().clear();
-        int amountOfEvents = 0;
-        int lastIndex = recentlyJoinedEvents.size() - 1;
-        for (int i = lastIndex; i >= 0 && amountOfEvents < 4; i--) {
-            EventDTO event = new ArrayList<>(recentlyJoinedEvents).get(i);
-            Label eventName = new Label(event.getName());
-            Button overviewButton = new Button("\u2192");
-            overviewButton.setOnAction(e -> mainCtrl.showEventOverview(event));
-            Button removeButton = new Button("\u0078");
-            removeButton.setOnAction(e -> {
-                recentlyJoinedEvents.remove(event);
-                refresh();
-            });
-
-            recentViewedEvents.add(eventName, 0, amountOfEvents);
-            recentViewedEvents.add(overviewButton, 1, amountOfEvents);
-            recentViewedEvents.add(removeButton, 2, amountOfEvents);
-            amountOfEvents++;
-        }
-    }
-
-    /**
-     * Retrieves the event with the provided code.
-     * @param code The code of the event to retrieve.
-     * @return The event with the provided code.
+     * Retrieves the event corresponding to the given code.
+     * @param code The code of the event.
+     * @return The event with the provided code, if found.
      */
     private Optional<EventDTO> getEvent(String code) {
         return events.stream()
@@ -128,7 +130,31 @@ public class StartScreenCtrl implements VoidSceneController {
         createEventTextField.clear();
         joinEventTextField.clear();
         events = server.getAllEvents();
-        updateRecentEvents();
+        loadLanguageButton();
+    }
+
+    public void translate(ActionEvent actionEvent) {
+        int option = languageButton.getSelectionModel().getSelectedIndex();
+        // Add your custom logic here based on the selected language;
+        switch (option){
+            case 0:
+                mainCtrl.getLanguageManager().saveLanguage(
+                        new LanguageOption(LanguageOption.Language.ENGLISH));
+                System.out.println("Saved english");
+                //TODO - refresh the page
+                break;
+            case 1:
+                mainCtrl.getLanguageManager().saveLanguage(
+                        new LanguageOption(LanguageOption.Language.DUTCH));
+                System.out.println("Saved dutch");
+                //TODO - refresh the page
+                break;
+            case 2:
+                mainCtrl.getLanguageManager().saveLanguage(
+                        new LanguageOption(LanguageOption.Language.ROMANIAN));
+                System.out.println("Saved romanian");
+                //TODO - refresh the page
+                break;
+        }
     }
 }
-

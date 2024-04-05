@@ -1,1 +1,72 @@
-{"language":"English","English":{"English":"English","Dutch":"Dutch","Romanian":"Romanian","Test":"EnglishTest","StartScreen":"Start Screen","EventOverview":"Event Overview","ContactDetails":"Contact Details","Invitation":"Invitation","OpenDebts":"Open Debts","AddExpense":"Add Expense","Statistics":"Statistics","Admin":"Admin"},"Dutch":{"English":"Engels","Dutch":"Nederlands","Romanian":"Roemeens","Test":"DutchTest","StartScreen":"Start Scherm","EventOverview":"Evenementoverzicht","ContactDetails":"Contact Details","Invitation":"Uitnodiging","OpenDebts":"Openstaande Schulden","AddExpense":"Kosten Toevoegen","Statistics":"Statistics","Admin":"Beheerder"},"Romanian":{"English":"Engleză","Romanian":"Română","Dutch":"Olandeză","Test":"RomanianTest","StartScreen":"Ecranul de pornire","EventOverview":"Prezentarea evenimentului","ContactDetails":"Detalii de contact","Invitation":"Invitații","OpenDebts":"Datorii deschise","AddExpense":"Adaugă cheltuială","Statistics":"Statistici","Admin":"Admin"},"Template":{"English":"","Romanian":"","Dutch":"","Test":"","StartScreen":"","EventOverview":"","ContactDetails":"","Invitation":"","OpenDebts":"","AddExpense":"","Statistics":"","Admin":""}}
+{
+  "language": "Romanian",
+  "English": {
+    "English": "English",
+    "Dutch": "Dutch",
+    "Romanian": "Romanian",
+    "Splitty: Start Screen": "Splitty: Start Screen",
+    "Create": "Create",
+    "Join": "Join",
+    "Create a new event": "Create a new event",
+    "Join an existing event": "Join an existing event",
+    "Enter event name": "Enter event name",
+    "Enter event code": "Enter event code",
+    "Welcome to": "Welcome to",
+    "Recently viewed events:": "Recently viewed events:"
+  },
+  "Dutch": {
+    "English": "Engels",
+    "Dutch": "Nederlands",
+    "Romanian": "Roemeens",
+    "Splitty: Start Screen": "Splitty: startscherm",
+    "Create": "Create",
+    "Join": "Join",
+    "Create a new event": "Create a new event",
+    "Join an existing event": "Join an existing event",
+    "Enter event name": "Enter event name",
+    "Enter event code": "Enter event code",
+    "Welcome to": "Welcome to",
+    "Recently viewed events:": "Recently viewed events:"
+  },
+  "Romanian": {
+    "English": "Engleză",
+    "Romanian": "Română",
+    "Dutch": "Olandeză",
+    "Splitty: Start Screen": "Splitty: Ecran de pornire",
+    "Create": "Create",
+    "Join": "Join",
+    "Create a new event": "Create a new event",
+    "Join an existing event": "Join an existing event",
+    "Enter event name": "Enter event name",
+    "Enter event code": "Enter event code",
+    "Welcome to": "Welcome to",
+    "Recently viewed events:": "Recently viewed events:"
+  },
+  "Template": {
+    "English": "",
+    "Romanian": "",
+    "Dutch": "",
+    "Splitty: Start Screen": "",
+    "Create": "",
+    "Join": "",
+    "Create a new event": "",
+    "Join an existing event": "",
+    "Enter event name": "",
+    "Enter event code": "",
+    "Welcome to": "",
+    "Recently viewed events:": "",
+
+    "Add/Edit Expense": "",
+    "Who paid?": "",
+    "What for?": "",
+    "How much?": "",
+    "Currency" : "",
+    "When?": "",
+    "How to Split?": "",
+    "Equally" : "",
+    "Only some" : "",
+    "Expense tpe" : "",
+    "Abort" :"",
+    "Add" : ""
+  }
+}

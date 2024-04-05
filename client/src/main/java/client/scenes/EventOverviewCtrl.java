@@ -7,8 +7,7 @@ import commons.dto.*;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
@@ -210,6 +209,12 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+    /**
+     * Handles the copying of the invitation code when the label is double-clicked.
+     *
+     * @param event The MouseEvent representing the double click event.
+     */
+
 
     /**
      * Back button action
@@ -245,6 +250,51 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             goBack();
         }
     }
+
+    /**
+     * Handles the copying of the event code when the label is double-clicked.
+     *
+     * @param event The MouseEvent representing the double click event.
+     */
+    @FXML
+    private void handleCopyEventCode(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+            // Get the source of the event, which should be the event code label
+            Label eventCodeLabel = (Label) event.getSource();
+            String eventCode = eventCodeLabel.getText();
+
+            // Create a clipboard and add the event code to its content
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(eventCode);
+            clipboard.setContent(content);
+
+            eventCodeLabel.setStyle("-fx-background-color: lightblue;");
+        }
+    }
+
+    /**
+     * Handles the hover-in event for a label.
+     *
+     * @param event The MouseEvent representing the hover-in event.
+     */
+    @FXML
+    private void handleHoverIn(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: lightgray; -fx-cursor: hand;");
+    }
+
+    /**
+     * Handles the hover-out event for a label.
+     *
+     * @param event The MouseEvent representing the hover-out event.
+     */
+    @FXML
+    private void handleHoverOut(MouseEvent event) {
+        Label label = (Label) event.getSource();
+        label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
+    }
+
 
     /**
      * Nested class Expense Item.

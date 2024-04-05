@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,7 +15,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.StartScreenCtrl">
    <children>
-      <Label layoutX="275.0" layoutY="54.0" text="Create a new event">
+      <Label fx:id="createNewEvent" layoutX="275.0" layoutY="54.0" text="Create a new event">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -22,10 +23,10 @@
       <HBox alignment="CENTER" layoutX="275.0" layoutY="75.0" spacing="10.0">
          <children>
             <TextField fx:id="createEventTextField" prefHeight="25.0" prefWidth="164.0" promptText="Enter event name" />
-            <Button mnemonicParsing="false" onAction="#createEvent" prefWidth="51.0" text="Create" />
+            <Button fx:id="createButton" mnemonicParsing="false" onAction="#createEvent" prefWidth="51.0" text="Create" />
          </children>
       </HBox>
-      <Label layoutX="275.0" layoutY="112.0" text="Join an existing event">
+      <Label fx:id="join" layoutX="275.0" layoutY="112.0" text="Join an existing event">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -33,7 +34,7 @@
       <HBox alignment="CENTER" layoutX="275.0" layoutY="135.0" spacing="10.0">
          <children>
             <TextField fx:id="joinEventTextField" prefHeight="25.0" prefWidth="164.0" promptText="Enter event code" />
-            <Button mnemonicParsing="false" onAction="#joinEvent" prefHeight="25.0" prefWidth="51.0" text="Join" />
+            <Button fx:id="joinButton" mnemonicParsing="false" onAction="#joinEvent" prefHeight="25.0" prefWidth="51.0" text="Join" />
          </children>
       </HBox>
       <Label layoutX="275.0" layoutY="183.0" text="Recently viewed events:">
@@ -79,5 +80,6 @@
          </font>
       </Text>
       <Line endX="-100.0" endY="218.0" layoutX="328.0" layoutY="136.0" startX="-100.0" startY="-90.0" stroke="#b4b4b4" />
+      <ComboBox fx:id="languageButton" layoutX="93.0" layoutY="250.0" onAction="#translate" prefHeight="25.0" prefWidth="79.0" />
    </children>
 </AnchorPane>
