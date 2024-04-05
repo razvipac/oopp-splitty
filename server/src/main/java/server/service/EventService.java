@@ -1,13 +1,10 @@
 package server.service;
 
-import commons.Event;
-import commons.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.EventRepository;
+import server.entities.event.Event;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.time.LocalDateTime;
@@ -19,7 +16,7 @@ import java.util.*;
  */
 @Service
 public class EventService {
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private final ParticipantService participantService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -81,7 +78,6 @@ public class EventService {
         Event newEvent = new Event(name, code, creationDate);
         newEvent.setLastActivity(creationDate);
 
-
         eventRepository.save(newEvent);
         return newEvent;
     }
@@ -97,23 +93,7 @@ public class EventService {
         Event found = getOne(eventCode);
         // if not found exception will be thrown
 
-        List<Participant> dependantParticipant = participantService.getAll(eventCode);
-        dependantParticipant.forEach((Participant participant) -> {
-            try {
-                participantService.deleteOne(eventCode, participant.getName());
-            } catch (NotFoundInDatabaseException e) {
-                throw new RuntimeException("Could not find dependant participant!");
-            }
-        });
-
         eventRepository.deleteById(eventCode);
-
-        simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/" + eventCode,
-                new WSWrapperResponseBody<>(
-                        WSAction.MODIFIED,
-                        found
-                ));
 
         return found;
     }

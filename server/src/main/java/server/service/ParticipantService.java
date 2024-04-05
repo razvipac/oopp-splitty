@@ -1,15 +1,14 @@
 package server.service;
 
-import commons.*;
+import commons.dto.ParticipantDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import server.api.pojo.request_body.ParticipantRequestBody;
-import server.api.pojo.response_body.ParticipantResponseBody;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.EventRepository;
 import server.database.ParticipantRepository;
+import server.entities.event.Event;
+import server.entities.participant.Participant;
+import server.entities.participant.ParticipantId;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.time.LocalDateTime;
@@ -40,7 +39,8 @@ public class ParticipantService {
     public ParticipantService(@Autowired ParticipantRepository participantRepository,
                               @Autowired EventRepository eventRepository,
                               @Autowired ExpenseService expenseService,
-                              @Autowired SimpMessagingTemplate simpMessagingTemplate) {
+                              @Autowired SimpMessagingTemplate simpMessagingTemplate
+    ) {
         this.participantRepository = participantRepository;
         this.eventRepository = eventRepository;
         this.expenseService = expenseService;
@@ -88,7 +88,7 @@ public class ParticipantService {
      * @throws NotFoundInDatabaseException if an event with the given eventCode
      *                                     is not present in the database
      */
-    public Participant createOne(String eventCode, ParticipantRequestBody body)
+    public Participant createOne(String eventCode, ParticipantDTO body)
             throws NotFoundInDatabaseException {
         Event event = getOneEvent(eventCode);
 
@@ -118,28 +118,12 @@ public class ParticipantService {
         Participant found = getOne(eventCode, participantName);
         // if not found, exception will be thrown
 
-        List<Expense> dependantExpenses = expenseService
-                .getAllInEventAndPaidByParticipant(eventCode, found);
-        dependantExpenses.forEach((Expense expense) -> {
-            try {
-                Expense deletedExpense = expenseService
-                        .deleteOne(eventCode, expense.getPaidBy().getName(), expense.getId());
-            } catch (NotFoundInDatabaseException e) {
-                throw new RuntimeException("Dependant expense not found in db!");
-            }
-        });
-
         participantRepository.deleteById(getParticipantId(
                 eventCode,
                 participantName
         ));
 
-        simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/" + eventCode + "/participant",
-                new WSWrapperResponseBody<>(
-                        WSAction.DELETED,
-                        ParticipantResponseBody.build(found)
-                ));
+
         updateDate(eventCode);
         return found;
     }
@@ -153,8 +137,9 @@ public class ParticipantService {
      * @return The updated participant.
      * @throws NotFoundInDatabaseException If the participant is not found in the database.
      */
-    public Participant updateOne(String eventCode, String name, ParticipantRequestBody body)
+    public Participant updateOne(String eventCode, String name, ParticipantDTO body)
             throws NotFoundInDatabaseException {
+
         Participant found = getOne(eventCode, name);
         // if not found exception will be thrown
         found.setEmail(body.email());
@@ -202,6 +187,7 @@ public class ParticipantService {
      * Updates the Last Activity date on the Event
      *
      * @param eventCode code of the fetched Event object
+     * @return the instance of the event on which the lastActivity date was updated
      * @throws NotFoundInDatabaseException if an object with given code
      *                                     is not present in the database
      */

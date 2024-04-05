@@ -1,7 +1,7 @@
 package server.database;
 
-import commons.Debt;
-import commons.DebtId;
+import server.entities.debt.Debt;
+import server.entities.debt.DebtId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

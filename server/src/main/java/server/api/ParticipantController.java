@@ -1,17 +1,16 @@
 package server.api;
 
-import commons.Participant;
 import commons.dto.ParticipantDTO;
-import commons.dto.ParticipantDTOMapper;
+import commons.dto.WSAction;
+import commons.dto.WSWrapperResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import server.api.pojo.request_body.ParticipantRequestBody;
-import server.api.pojo.response_body.ParticipantResponseBody;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
+import server.entities.DTOMapper;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
 import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -22,6 +21,9 @@ import java.util.List;
 public class ParticipantController {
     private final ParticipantService participantService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
+    private final ExpenseController expenseController;
+    private final DebtController debtController;
 
     /**
      * Constructor for ParticipantController
@@ -29,11 +31,21 @@ public class ParticipantController {
      * @param participantService    The ParticipantService instance
      *                              to handle participant-related operations
      * @param simpMessagingTemplate The SimpMessagingTemplate instance to send WebSocket messages
+     * @param participantDTOMapper  The ParticipantDTOMapper instance to be injected
+     * @param expenseController     The ExpenseController instance to be injected
+     * @param debtController        The DebtController instance to be injected
      */
     public ParticipantController(@Autowired ParticipantService participantService,
-                                 @Autowired SimpMessagingTemplate simpMessagingTemplate) {
+                                 @Autowired SimpMessagingTemplate simpMessagingTemplate,
+                                 @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
+                                 @Autowired ExpenseController expenseController,
+                                 @Autowired DebtController debtController
+    ) {
         this.participantService = participantService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.participantDTOMapper = participantDTOMapper;
+        this.expenseController = expenseController;
+        this.debtController = debtController;
     }
 
     /**
@@ -55,14 +67,14 @@ public class ParticipantController {
         if (name == null) {
             List<Participant> participants = participantService.getAll(eventCode);
             List<ParticipantDTO> participantDTOs = participants.stream()
-                    .map(ParticipantDTOMapper::toDTO)
+                    .map(participantDTOMapper::toDTO)
                     .toList();
             return new ResponseEntity<>(participantDTOs, HttpStatus.OK);
         }
 
         try {
             return new ResponseEntity<>(List.of(
-                    ParticipantDTOMapper.toDTO(
+                    participantDTOMapper.toDTO(
                             participantService.getOne(eventCode, name)
                     )), HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
@@ -71,7 +83,7 @@ public class ParticipantController {
     }
 
     /**
-     * POST /api/v1/{eventCode}/participant with body in ParticipantRequestBody format
+     * POST /api/v1/{eventCode}/participant with body in ParticipantDTO format
      * Creates a new Participant populated with the data in body
      * <p>
      * Sends out a WebSocket STOMP message to all listeners
@@ -80,84 +92,106 @@ public class ParticipantController {
      *
      * @param eventCode The event code
      * @param participantDTO The ParticipantDTO instance
-     * @return ResponseEntity with ParticipantResponseBody or HttpStatus.NOT_FOUND if not found
+     * @return ResponseEntity with ParticipantDTO or HttpStatus.NOT_FOUND if not found
      */
     @PostMapping
-    public ResponseEntity<ParticipantResponseBody> createOne(
+    public ResponseEntity<ParticipantDTO> createOne(
             @PathVariable("eventCode") String eventCode,
             @RequestBody ParticipantDTO participantDTO) {
         try {
-            ParticipantRequestBody body = new ParticipantRequestBody(
-                    participantDTO.getName(),
-                    participantDTO.getEmail(),
-                    participantDTO.getIban(),
-                    participantDTO.getBic()
-            );
+            Participant participant = participantService.createOne(eventCode, participantDTO);
+            ParticipantDTO createdDTO = participantDTOMapper.toDTO(participant);
 
-            Participant participant = participantService.createOne(eventCode, body);
-            ParticipantResponseBody responseBody = ParticipantResponseBody.build(participant);
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/participant",
+                    new WSWrapperResponseBody<>(
+                            WSAction.CREATED,
+                            createdDTO
+                    ));
 
-            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     /**
-     * DELETE /api/v1/{eventCode}/participant with parameter participantName
-     * Deletes a Participant specified by the participantName and eventCode
+     * DELETE /api/v1/{eventCode}/participant?name={participant name}
+     * Deletes a Participant specified by the name and eventCode
      *
      * @param participantName The participant's name
      * @param eventCode       The event code
-     * @return ResponseEntity with ParticipantResponseBody or HttpStatus.NOT_FOUND if not found
+     * @return ResponseEntity with ParticipantDTO or HttpStatus.NOT_FOUND if not found
      */
     @DeleteMapping("")
-    public ResponseEntity<ParticipantResponseBody> deleteOne(
+    public ResponseEntity<ParticipantDTO> deleteOne(
             @RequestParam("name") String participantName,
             @PathVariable("eventCode") String eventCode
     ){
         try{
-            Participant participant = participantService.deleteOne(eventCode, participantName);
-            ParticipantResponseBody responseBody = ParticipantResponseBody.build(participant);
+            Participant participant = participantService.getOne(eventCode, participantName);
+            ParticipantDTO participantDTO = participantDTOMapper.toDTO(participant);
 
-            return new ResponseEntity<>(responseBody, HttpStatus.OK);
+            deleteDependants(participant);
+
+            participantService.deleteOne(eventCode, participantName);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/" + eventCode + "/participant",
+                    new WSWrapperResponseBody<>(
+                            WSAction.DELETED,
+                            participantDTO
+                    ));
+
+            return new ResponseEntity<>(participantDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-
-
-
     /**
      * PUT /api/v1/{eventCode}/participant?name={name} with parameter name and body
-     * in ParticipantRequestBody format
+     * in ParticipantDTO format
      * Updates a Participant specified by the eventCode and name with data in the body
      *
      * @param name      The participant's name
      * @param eventCode The event code
-     * @param body      The ParticipantRequestBody that includes the changes that are being made
-     * @return ResponseEntity with ParticipantResponseBody or HttpStatus.NOT_FOUND if not found
+     * @param body      The ParticipantDTO that includes the changes that are being made
+     * @return ResponseEntity with ParticipantDTO or HttpStatus.NOT_FOUND if not found
      */
     @PutMapping("")
-    public ResponseEntity<ParticipantResponseBody> updateOneById(
+    public ResponseEntity<ParticipantDTO> updateOneById(
             @RequestParam("name") String name,
             @PathVariable("eventCode") String eventCode,
-            @RequestBody ParticipantRequestBody body) {
+            @RequestBody ParticipantDTO body) {
         try {
             Participant updated = participantService.updateOne(eventCode, name, body);
-            ParticipantResponseBody response = ParticipantResponseBody.build(updated);
+            ParticipantDTO participantDTO = participantDTOMapper.toDTO(updated);
+
+            //TODO: add modifying the name
 
             simpMessagingTemplate.convertAndSend(
                     "/api/websocket/v1/channel/" + eventCode + "/participant",
                     new WSWrapperResponseBody<>(
                             WSAction.MODIFIED,
-                            response
+                            participantDTO
                     ));
-            return new ResponseEntity<>(response, HttpStatus.OK);
+
+            return new ResponseEntity<>(participantDTO, HttpStatus.OK);
 
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    private void deleteDependants(Participant participant){
+        for (Expense expense : participant.getPaidForExpenses()){
+            expenseController.deleteOne(
+                    expense.getId(),
+                    expense.getPaidBy().getName(),
+                    participant.getEvent().getCode()
+            );
+        }
+        // TODO: Delete debts
     }
 }

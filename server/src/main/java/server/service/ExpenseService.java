@@ -1,19 +1,16 @@
 package server.service;
 
-import commons.Event;
-import commons.Expense;
-import commons.ExpenseId;
-import commons.Participant;
+import commons.dto.ExpenseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import server.api.pojo.request_body.ExpenseRequestBody;
-import server.api.pojo.response_body.ExpenseResponseBody;
-import server.api.pojo.response_body.WSAction;
-import server.api.pojo.response_body.WSWrapperResponseBody;
 import server.database.EventRepository;
 import server.database.ExpenseRepository;
 import server.database.ParticipantRepository;
+import server.entities.event.Event;
+import server.entities.expense.Expense;
+import server.entities.expense.ExpenseId;
+import server.entities.participant.Participant;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.time.LocalDateTime;
@@ -28,10 +25,11 @@ import java.util.Optional;
  */
 @Service
 public class ExpenseService {
-    private ExpenseRepository expenseRepository;
-    private ParticipantRepository participantRepository;
-    private SimpMessagingTemplate simpMessagingTemplate;
-    private EventRepository eventRepository;
+    private final ExpenseRepository expenseRepository;
+    private final ParticipantRepository participantRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final EventRepository eventRepository;
+
 
     /**
      * Constructs an ExpenseService instance with
@@ -46,7 +44,8 @@ public class ExpenseService {
             @Autowired ExpenseRepository expenseRepository,
             @Autowired ParticipantRepository participantRepository,
             @Autowired SimpMessagingTemplate simpMessagingTemplate,
-            @Autowired EventRepository eventRepository) {
+            @Autowired EventRepository eventRepository
+    ) {
         this.expenseRepository = expenseRepository;
         this.participantRepository = participantRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -117,9 +116,9 @@ public class ExpenseService {
      *                                     or the specified Event does not exist
      */
     public Expense createOne(String eventCode,
-                             ExpenseRequestBody body) throws NotFoundInDatabaseException {
+                             ExpenseDTO body) throws NotFoundInDatabaseException {
 
-        Participant paidBy = getOneParticipant(eventCode, body.participantName());
+        Participant paidBy = getOneParticipant(eventCode, body.paidByName());
 
         Expense newExpense = new Expense(body.price(), body.item(), paidBy, body.date());
 
@@ -149,12 +148,6 @@ public class ExpenseService {
                 id
         ));
 
-        simpMessagingTemplate.convertAndSend(
-                "/api/websocket/v1/channel/" + eventCode + "/expense",
-                new WSWrapperResponseBody<>(
-                        WSAction.DELETED,
-                        ExpenseResponseBody.build(found)
-                ));
         updateDate(eventCode);
         return found;
     }
@@ -170,9 +163,9 @@ public class ExpenseService {
      * @throws NotFoundInDatabaseException if an owner of the Expense
      *                                     or the specified Event does not exist
      */
-    public Expense updateOne(String eventCode, Long id, ExpenseRequestBody body)
+    public Expense updateOne(String eventCode, Long id, ExpenseDTO body)
             throws NotFoundInDatabaseException {
-        Expense found = getOne(eventCode, body.participantName(), id);
+        Expense found = getOne(eventCode, body.paidByName(), id);
         // if not found exception will be thrown
 
         found.setItem(body.item());
@@ -180,9 +173,9 @@ public class ExpenseService {
         found.setDate(body.date());
 
         expenseRepository.save(found);
+
         updateDate(eventCode);
         return found;
-
     }
 
     /**
@@ -213,6 +206,7 @@ public class ExpenseService {
             throws NotFoundInDatabaseException {
         Optional<Participant> searchResult = participantRepository
                 .findParticipantByEventCodeAndName(name, eventCode);
+
         if (searchResult.isEmpty()) throw new NotFoundInDatabaseException(
                 "A Participant of event " + eventCode + " with name " + name + "cannot be found!"
         );
@@ -249,6 +243,7 @@ public class ExpenseService {
         LocalDateTime l = new Date().toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
+
         found.setLastActivity(l);
         eventRepository.save(found);
     }

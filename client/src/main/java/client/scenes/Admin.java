@@ -96,7 +96,9 @@
 //            // For now, let's just print the selected option
 //        });
 //        Button importEvent = importJSON();
-//        layout.getChildren().addAll(sortingOptions ,gridPane, eventsField, backButton, importEvent);
+//        layout.getChildren().addAll(
+//              sortingOptions ,gridPane, eventsField, backButton, importEvent
+//        );
 //        // Show events
 //        showEvent(1);
 //

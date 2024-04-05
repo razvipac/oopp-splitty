@@ -1,27 +1,51 @@
 package server.api;
 
+import commons.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.api.pojo.response_body.EventResponseBody;
+import server.entities.DTOMapper;
+import server.entities.debt.Debt;
+import server.entities.event.Event;
+import server.entities.expense.Expense;
+import server.entities.participant.Participant;
 import server.service.JSONDumpService;
 import server.service.exceptions.ImproperDumpFormatException;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("api/v1/admin/jsondump")
 public class JSONDumpController {
     private final JSONDumpService jsonDumpService;
+    private final DTOMapper<Event, EventDTO> eventDTOMapper;
+    private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
+    private final DTOMapper<Expense, ExpenseDTO> expenseDTOMapper;
+    private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
 
     /**
      * Constructs a JSONDumpController with the specified JSONDumpService.
      *
      * @param jsonDumpService The JSONDumpService instance to be injected.
+     * @param eventDTOMapper The EventDTOMapper instance to be injected.
+     * @param participantDTOMapper The ParticipantDTOMapper instance to be injected.
+     * @param expenseDTOMapper The ExpenseDTOMapper instance to be injected.
+     * @param debtDTOMapper The DebtDTOMapper instance to be injected.
      */
-    public JSONDumpController(@Autowired JSONDumpService jsonDumpService) {
+    public JSONDumpController(
+            @Autowired JSONDumpService jsonDumpService,
+            @Autowired DTOMapper<Event, EventDTO> eventDTOMapper,
+            @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
+            @Autowired DTOMapper<Expense, ExpenseDTO> expenseDTOMapper,
+            @Autowired DTOMapper<Debt, DebtDTO> debtDTOMapper
+    ) {
         this.jsonDumpService = jsonDumpService;
+        this.eventDTOMapper = eventDTOMapper;
+        this.participantDTOMapper = participantDTOMapper;
+        this.expenseDTOMapper = expenseDTOMapper;
+        this.debtDTOMapper = debtDTOMapper;
     }
 
     /**
@@ -32,15 +56,15 @@ public class JSONDumpController {
      *         Returns HttpStatus.OK if successful.
      */
     @GetMapping("")
-    public ResponseEntity<List<EventResponseBody>> getJSONDump(){
+    public ResponseEntity<List<JSONDumpEventDTO>> getJSONDump(){
         return new ResponseEntity<>(jsonDumpService.createDump(), HttpStatus.OK);
     }
 
     /**
-     * POST api/v1/admin/jsondump with a request body in List<EventDump> format
+     * POST api/v1/admin/jsondump with a request body in List<JSONDumpEventDTO> format
      * Restores the server to the state in accordance with the passed JSON object
      *
-     * @param body The request body in List<EventResponseBody> format.
+     * @param body The request body in List<JSONDumpEventDTO> format.
      * @return A ResponseEntity with a status message.
      *         Returns "Restored Successfully" if the restoration is successful (HttpStatus.OK).
      *         Returns "Improper JSON dump format!" if the JSON dump format
@@ -48,22 +72,9 @@ public class JSONDumpController {
      *         Returns "Unknown Error!" if an unknown error occurs
      *         (HttpStatus.INTERNAL_SERVER_ERROR).
      */
-//    @PostMapping("")
-//    public ResponseEntity<String> restoreFromJSONDump(
-//            @RequestBody List<EventResponseBody> body
-//    ){
-//        try {
-//            jsonDumpService.restoreFromDump(body);
-//            return new ResponseEntity<>("Restored Successfully", HttpStatus.OK);
-//        } catch (ImproperDumpFormatException e){
-//            return new ResponseEntity<>("Improper JSON dump format!", HttpStatus.NOT_MODIFIED);
-//        } catch (Exception e){
-//            return new ResponseEntity<>("Unknown Error!", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     @PostMapping("")
     public ResponseEntity<String> restoreFromJSONDump(
-            @RequestBody EventResponseBody body
+            @RequestBody List<JSONDumpEventDTO> body
     ){
         try {
             jsonDumpService.restoreFromDump(body);
@@ -74,4 +85,17 @@ public class JSONDumpController {
             return new ResponseEntity<>("Unknown Error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//    @PostMapping("")
+//    public ResponseEntity<String> restoreFromJSONDump(
+//            @RequestBody EventResponseBody body
+//    ){
+//        try {
+//            jsonDumpService.restoreFromDump(body);
+//            return new ResponseEntity<>("Restored Successfully", HttpStatus.OK);
+//        } catch (ImproperDumpFormatException e){
+//            return new ResponseEntity<>("Improper JSON dump format!", HttpStatus.NOT_MODIFIED);
+//        } catch (Exception e){
+//            return new ResponseEntity<>("Unknown Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

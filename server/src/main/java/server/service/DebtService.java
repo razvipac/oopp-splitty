@@ -1,22 +1,22 @@
 package server.service;
 
-import commons.Debt;
-import commons.DebtId;
-import commons.Participant;
+import commons.dto.DebtDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.api.pojo.request_body.DebtRequestBody;
 import server.database.DebtRepository;
+import server.entities.debt.Debt;
+import server.entities.debt.DebtId;
+import server.entities.participant.Participant;
 import server.service.exceptions.NotFoundInDatabaseException;
 
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DebtService {
     private final DebtRepository debtRepository;
-    private ParticipantService participantService;
+    private final ParticipantService participantService;
 
     /**
      * Constructs a DebtService with the specified DebtRepository
@@ -25,7 +25,10 @@ public class DebtService {
      * @param participantService Todo
      */
     @Autowired
-    public DebtService(DebtRepository debtRepository, ParticipantService participantService) {
+    public DebtService(
+            DebtRepository debtRepository,
+            ParticipantService participantService
+    ) {
         this.debtRepository = debtRepository;
         this.participantService = participantService;
     }
@@ -74,9 +77,9 @@ public class DebtService {
      * @return the object
      * @throws NotFoundInDatabaseException
      */
-    public Debt updateOne(String eventCode, DebtRequestBody body)
+    public Debt updateOne(String eventCode, DebtDTO body)
             throws NotFoundInDatabaseException {
-        Debt found = getOne(eventCode, body.debtor_name(), body.creditor_name());
+        Debt found = getOne(eventCode, body.debtorName(), body.creditorName());
         // if not found exception will be thrown
         found.setReceived(!body.received());
         debtRepository.save(found);

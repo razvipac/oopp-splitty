@@ -119,7 +119,7 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event to display.
      */
     public void showEventOverview(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Event " + eventDTO.getName());
+        primaryStage.setTitle("Splitty: Event " + eventDTO.name());
         eventOverviewCtrl.initialize(eventDTO);
         primaryStage.setScene(eventOverview);
     }
@@ -143,7 +143,7 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to manage invitations.
      */
     public void showInvitations(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.getName());
+        primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.name());
         invitationsCtrl.initialize(eventDTO);
         primaryStage.setScene(invitations);
     }
@@ -155,7 +155,7 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to manage open debts.
      */
     public void showOpenDebts(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.getName());
+        primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.name());
         openDebtsCtrl.initialize(eventDTO);
         primaryStage.setScene(openDebts);
     }
@@ -167,7 +167,7 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to add or edit expenses.
      */
     public void showAddEditExpense(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Add/edit expenses for event " + eventDTO.getName());
+        primaryStage.setTitle("Splitty: Add/edit expenses for event " + eventDTO.name());
         addEditExpenseCtrl.initialize(eventDTO);
         primaryStage.setScene(addEditExpense);
     }

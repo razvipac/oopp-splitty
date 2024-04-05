@@ -94,8 +94,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * Refreshes the page back to its default values.
      */
     public void refresh() {
-        participants = serverUtils.getParticipants(event.getCode());
-        expenses = serverUtils.getExpenses(event.getCode());
+        participants = serverUtils.getParticipants(event.code());
+        expenses = serverUtils.getExpenses(event.code());
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {
@@ -116,15 +116,15 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     private void refreshEventInfoLabel() {
-        eventTitleLabel.setText(event.getName());
-        eventCodeLabel.setText(event.getCode());
+        eventTitleLabel.setText(event.name());
+        eventCodeLabel.setText(event.code());
     }
 
     private void refreshParticipantList(){
         ArrayList<Label> participantLabels = new ArrayList<>();
 
         for (ParticipantDTO participant : participants){
-            participantLabels.add(new Label(participant.getName()));
+            participantLabels.add(new Label(participant.name()));
         }
 
         if (participants.isEmpty()) participantLabels.add(new Label("(No participants in event)"));
@@ -140,14 +140,14 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         expenseFilterComboBox.getItems().setAll(
                 participants
                         .stream()
-                        .map(ParticipantDTO::getName)
+                        .map(ParticipantDTO::name)
                         .toList()
         );
 
         expenseFilterComboBox.setDisable(participants.isEmpty());
 
         if (selectedParticipant != null)
-            expenseFilterComboBox.getSelectionModel().select(selectedParticipant.getName());
+            expenseFilterComboBox.getSelectionModel().select(selectedParticipant.name());
     }
 
     /**
@@ -159,7 +159,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         expenseFilterFromRadio.setDisable(expenses.isEmpty());
         expenseFilterIncludingRadio.setDisable(expenses.isEmpty());
 
-        String name = selectedParticipant == null ? "(participant)" : selectedParticipant.getName();
+        String name = selectedParticipant == null ? "(participant)" : selectedParticipant.name();
 
         expenseFilterFromRadio.setText("From " + name);
         expenseFilterIncludingRadio.setText("Including " + name);
@@ -201,7 +201,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
                 case FROM -> {
                     ExpenseItem e = (ExpenseItem) item;
-                    boolean isMatchingParticipant = e.paidBy.equals(selectedParticipant);
+                    boolean isMatchingParticipant = e.paidByName.equals(selectedParticipant.name());
                     item.setVisible(isMatchingParticipant);
                     item.setManaged(isMatchingParticipant);
                 }
@@ -303,7 +303,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         private int price;
         private String item;
-        private ParticipantDTO paidBy;
         private String paidByName;
 
         /**
@@ -312,10 +311,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
          * @param expense the expense to create an item for
          */
         public ExpenseItem(ExpenseDTO expense) {
-            price = expense.getPrice();
-            item = expense.getItem();
-            paidBy = expense.getPaidBy();
-            paidByName = paidBy.getName();
+            price = expense.price();
+            item = expense.item();
+            paidByName = expense.paidByName();
 
             createItemBox();
         }
