@@ -47,6 +47,9 @@ public class MainCtrl {
     private AdminCtrl adminCtrl;
     private Scene admin;
 
+    private AdminPasswordCtrl adminPasswordCtrl;
+    private Scene adminPassword;
+
     private LanguageManager languageManager;
 
     /**
@@ -60,6 +63,7 @@ public class MainCtrl {
      * @param openDebtsPair the openDebtsPair from MyFXML output
      * @param addEditExpensePair the addEditExpensePair from MyFXML output
      * @param adminPair the adminPair from MyFXML output
+     * @param adminPasswordPair the adminPasswordPair from MyFXML output
      * @param languageManager the languageManager of the whole app
      */
     public void initialize(Stage primaryStage,
@@ -70,6 +74,7 @@ public class MainCtrl {
                            Pair<OpenDebtsCtrl, Parent> openDebtsPair,
                            Pair<AddEditExpenseCtrl, Parent> addEditExpensePair,
                            Pair<AdminCtrl, Parent> adminPair,
+                           Pair<AdminPasswordCtrl, Parent> adminPasswordPair,
                            LanguageManager languageManager
     ) {
         this.primaryStage = primaryStage;
@@ -94,6 +99,9 @@ public class MainCtrl {
 
         this.adminCtrl = adminPair.getKey();
         this.admin = new Scene(adminPair.getValue());
+
+        this.adminPasswordCtrl = adminPasswordPair.getKey();
+        this.adminPassword = new Scene(adminPasswordPair.getValue());
 
         this.languageManager = languageManager;
 
