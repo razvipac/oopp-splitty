@@ -9,8 +9,6 @@ public class AdminPasswordCtrl implements VoidSceneController {
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
 
-    private boolean passwordIsCorrect;
-
     @Inject
     public AdminPasswordCtrl(ServerUtils serverUtils, MainCtrl mainCtrl) {
         this.serverUtils = serverUtils;
