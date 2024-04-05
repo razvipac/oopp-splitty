@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
+import javafx.scene.text.Text;
 
 public class AdminPasswordCtrl implements VoidSceneController {
 
@@ -13,6 +14,8 @@ public class AdminPasswordCtrl implements VoidSceneController {
 
     @FXML
     private PasswordField passwordField;
+    @FXML
+    private Text errorText;
 
     /**
      * Constructor for AdminPasswordCtrl.
