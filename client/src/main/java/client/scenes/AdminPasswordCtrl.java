@@ -38,10 +38,11 @@ public class AdminPasswordCtrl implements VoidSceneController {
 
     /**
      * Refreshes the page.
-     * Clears passwordField.
+     * Clears passwordField and hides the error text.
      */
     public void refresh() {
         passwordField.clear();
+        errorText.setVisible(false);
     }
 
     /**
@@ -54,6 +55,9 @@ public class AdminPasswordCtrl implements VoidSceneController {
             mainCtrl.setPasswordIsCorrect(true);
             mainCtrl.showAdmin();
             mainCtrl.closeAdminPasswordPopup();
+        }
+        else {
+            errorText.setVisible(true);
         }
     }
 
