@@ -173,6 +173,10 @@ public class StartScreenCtrl implements VoidSceneController {
         updateRecentEvents();
     }
 
+    /**
+     * Handles the language translation action.
+     * @param actionEvent The event that triggered the action.
+     */
     public void translate(ActionEvent actionEvent) {
         int option = languageButton.getSelectionModel().getSelectedIndex();
         // Add your custom logic here based on the selected language;
