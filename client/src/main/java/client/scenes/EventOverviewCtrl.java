@@ -52,9 +52,12 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private Label totalExpensesLabel;
     @FXML
     private VBox expenseItemContainer;
+    @FXML
+    private Label lastActivityLabel;
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
+    private boolean firstTimeOpened = true;
 
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
