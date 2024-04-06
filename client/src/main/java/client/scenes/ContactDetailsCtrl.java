@@ -302,8 +302,9 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void ok(){
+        // Check if form has been filled in correctly
         if(formIsValid()) {
-
+            // Add participant immediately if view equals ADD
             if(currentView == View.ADD) {
                 addParticipantToServer(
                         new ParticipantDTO(
@@ -314,18 +315,25 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                         )
                 );
             }
-            else {
-                updateParticipantToServer(
-                        new ParticipantDTO(
-                                "",     // name can't be changed
-                                boxEmail.getText(),
-                                boxIban.getText(),
-                                boxBic.getText()
-                        ),
-                        comboBoxName.getSelectionModel().getSelectedItem()
-                );
-            }
+            // Edit participant if view equals EDIT
+            else if(currentView == View.EDIT){
+                // Confirmation box
+                boolean confirmed = controllerUtils.createConfirmationAlert(
+                        "Confirm Edit",
+                        "Are you sure you want to edit this participant?");
 
+                if (confirmed) {
+                    updateParticipantToServer(
+                            new ParticipantDTO(
+                                    "",     // name can't be changed
+                                    boxEmail.getText(),
+                                    boxIban.getText(),
+                                    boxBic.getText()
+                            ),
+                            comboBoxName.getSelectionModel().getSelectedItem()
+                    );
+                }
+            }
         }
     }
 
