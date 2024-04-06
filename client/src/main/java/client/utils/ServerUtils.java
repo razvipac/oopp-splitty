@@ -128,6 +128,20 @@ public class ServerUtils {
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
+    public boolean updateParticipant(ParticipantDTO p, String eventCode, String name) {
+        String endpoint = "api/v1/" + eventCode + "/participant?name=" + name;
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(p, APPLICATION_JSON));
+
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.CREATED.getStatusCode();
+    }
+
     // Expense methods
 
     /**
