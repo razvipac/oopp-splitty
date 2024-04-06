@@ -154,7 +154,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * Sets the text of the radio buttons to match selectedParticipant, and disables
      * them if there are no expenses
      */
-    public void refreshFilterToggleGroupButtonLabels() {
+    private void refreshFilterToggleGroupButtonLabels() {
         expenseFilterAllRadio.setDisable(expenses.isEmpty());
         expenseFilterFromRadio.setDisable(expenses.isEmpty());
         expenseFilterIncludingRadio.setDisable(expenses.isEmpty());
@@ -168,7 +168,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     /**
      * Gets expensesScroller, which includes a VBox container for all ExpenseItem objects.
      */
-    public void refreshExpenseScroller() {
+    private void refreshExpenseScroller() {
         expenseItemContainer.getChildren().clear();
 
         for(ExpenseDTO expense : expenses) {
@@ -296,126 +296,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
     }
 
-    public ServerUtils getServerUtils() {
-        return serverUtils;
-    }
-
-    public MainCtrl getMainCtrl() {
-        return mainCtrl;
-    }
-
-    public EventDTO getEvent() {
-        return event;
-    }
-
-    public void setEvent(EventDTO event) {
-        this.event = event;
-    }
-
-    public List<ParticipantDTO> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<ParticipantDTO> participants) {
-        this.participants = participants;
-    }
-
-    public List<ExpenseDTO> getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(List<ExpenseDTO> expenses) {
-        this.expenses = expenses;
-    }
-
-    public Label getEventTitleLabel() {
-        return eventTitleLabel;
-    }
-
-    public void setEventTitleLabel(Label eventTitleLabel) {
-        this.eventTitleLabel = eventTitleLabel;
-    }
-
-    public Label getEventCodeLabel() {
-        return eventCodeLabel;
-    }
-
-    public void setEventCodeLabel(Label eventCodeLabel) {
-        this.eventCodeLabel = eventCodeLabel;
-    }
-
-    public HBox getParticipantsHBox() {
-        return participantsHBox;
-    }
-
-    public void setParticipantsHBox(HBox participantsHBox) {
-        this.participantsHBox = participantsHBox;
-    }
-
-    public ToggleGroup getExpenseFilterToggleGroup() {
-        return expenseFilterToggleGroup;
-    }
-
-    public void setExpenseFilterToggleGroup(ToggleGroup expenseFilterToggleGroup) {
-        this.expenseFilterToggleGroup = expenseFilterToggleGroup;
-    }
-
-    public ComboBox<String> getExpenseFilterComboBox() {
-        return expenseFilterComboBox;
-    }
-
-    public void setExpenseFilterComboBox(ComboBox<String> expenseFilterComboBox) {
-        this.expenseFilterComboBox = expenseFilterComboBox;
-    }
-
-    public RadioButton getExpenseFilterAllRadio() {
-        return expenseFilterAllRadio;
-    }
-
-    public void setExpenseFilterAllRadio(RadioButton expenseFilterAllRadio) {
-        this.expenseFilterAllRadio = expenseFilterAllRadio;
-    }
-
-    public RadioButton getExpenseFilterFromRadio() {
-        return expenseFilterFromRadio;
-    }
-
-    public void setExpenseFilterFromRadio(RadioButton expenseFilterFromRadio) {
-        this.expenseFilterFromRadio = expenseFilterFromRadio;
-    }
-
-    public RadioButton getExpenseFilterIncludingRadio() {
-        return expenseFilterIncludingRadio;
-    }
-
-    public void setExpenseFilterIncludingRadio(RadioButton expenseFilterIncludingRadio) {
-        this.expenseFilterIncludingRadio = expenseFilterIncludingRadio;
-    }
-
-    public VBox getExpenseItemContainer() {
-        return expenseItemContainer;
-    }
-
-    public void setExpenseItemContainer(VBox expenseItemContainer) {
-        this.expenseItemContainer = expenseItemContainer;
-    }
-
-    public ParticipantDTO getSelectedParticipant() {
-        return selectedParticipant;
-    }
-
-    public void setSelectedParticipant(ParticipantDTO selectedParticipant) {
-        this.selectedParticipant = selectedParticipant;
-    }
-
-    public View getCurrentView() {
-        return currentView;
-    }
-
-    public void setCurrentView(View currentView) {
-        this.currentView = currentView;
-    }
-
     /**
      * Nested class Expense Item.
      */
@@ -456,8 +336,5 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             Button expenseEditButton = new Button("Edit");
             this.add(expenseEditButton, 2, 0, 1, 2);
         }
-
-
-
     }
 }
