@@ -145,22 +145,21 @@ public class StartScreenCtrl implements VoidSceneController {
 
 
     private void setLanguageForAll(){
-            LanguageManager lm = mainCtrl.getLanguageManager();
-            if(lm == null){
-                return;
-            }
-            createEventTextField.setPromptText(lm.get("Enter event name"));
-            joinEventTextField.setPromptText(lm.get("Enter event code"));
-            createNewEvent.setText(lm.get("Create a new event"));
-            createButton.setText(lm.get("Create"));
-            welcome.setText(lm.get("Welcome to"));
-            changeLanguage.setText(lm.get("Change language:"));
-            controlPanel.setText(lm.get("Control Panel"));
-            administrator.setText(lm.get("Administrator"));
-            joinButton.setText(lm.get("Join"));
-            join.setText(lm.get("Join an existing event"));
-            recentlyViewed.setText(lm.get("Recently viewed events:"));
-
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        if(lm == null){
+            return;
+        }
+        createEventTextField.setPromptText(lm.get("Enter event name"));
+        joinEventTextField.setPromptText(lm.get("Enter event code"));
+        createNewEvent.setText(lm.get("Create a new event"));
+        createButton.setText(lm.get("Create"));
+        welcome.setText(lm.get("Welcome to"));
+        changeLanguage.setText(lm.get("Change language:"));
+        controlPanel.setText(lm.get("Control Panel"));
+        administrator.setText(lm.get("Administrator"));
+        joinButton.setText(lm.get("Join"));
+        join.setText(lm.get("Join an existing event"));
+        recentlyViewed.setText(lm.get("Recently viewed events:"));
     }
     /**
      * Opens the admin control panel popup
