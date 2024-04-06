@@ -147,7 +147,8 @@ public class ServerUtils {
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user
-        return response.getStatus() == Response.Status.CREATED.getStatusCode();
+        return response.getStatus() == Response.Status.OK.getStatusCode() ||
+                response.getStatus() == Response.Status.NO_CONTENT.getStatusCode();
     }
 
     // Expense methods
