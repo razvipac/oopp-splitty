@@ -135,7 +135,14 @@ public class ServerUtils {
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
-    public boolean updateParticipant(ParticipantDTO p, String eventCode, String name) {
+    /**
+     * Updates participant in the server
+     * @param body ParticipantDTO containing the updated fields
+     * @param eventCode Event code of participant
+     * @param name (Old) name of participant
+     * @return True iff successful, false otherwise.
+     */
+    public boolean updateParticipant(ParticipantDTO body, String eventCode, String name) {
         String endpoint = "api/v1/" + eventCode + "/participant";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
@@ -143,7 +150,7 @@ public class ServerUtils {
                 .queryParam("name", name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .put(Entity.entity(p, APPLICATION_JSON));
+                .put(Entity.entity(body, APPLICATION_JSON));
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user
