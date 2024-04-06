@@ -58,7 +58,7 @@ public class ServerUtils {
     }
 
     private <T> void registerForWebSocketMessages(String dest,
-                                                 Consumer<WSWrapperResponseBody<T>> consumer){
+                                                  Consumer<WSWrapperResponseBody<T>> consumer){
         wsSession.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -78,7 +78,7 @@ public class ServerUtils {
      * @param consumer consumer for handling changes
      */
     public void registerForWebSocketUpdatesOnParticipant(String eventCode,
-                                                     Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
+                                                         Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
     {
         registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
     }
@@ -201,22 +201,15 @@ public class ServerUtils {
      * Gets a single participant from the HTTP_SERVER
      * @param eventCode eventCode of the event to which the participant belongs
      * @param name name of the participant
-     * @return the ParticipantDTO instance corresponding to that participant, or null if not found
+     * @return the ParticipantDTO instance corresponding to that participant
      */
     public ParticipantDTO getParticipant(String eventCode, String name){
-        List<ParticipantDTO> participants = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/" + eventCode + "/participant")
-                .queryParam("name", name)
+        return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path("api/v1/" + eventCode + "/participant?name=" + name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<List<ParticipantDTO>>() {});
-
-        // Check if participants list is not empty
-        if (!participants.isEmpty()) {
-            return participants.get(0); // Return the first participant
-        } else {
-            return null; // Participant not found
-        }
+                .get(List.class)
+                .getFirst();
     }
 
     /**
@@ -250,7 +243,7 @@ public class ServerUtils {
         String endpoint = "api/v1/" + eventCode + "/participant";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path(endpoint)
+                .target(httpServerUrl).path(endpoint)
                 .queryParam("name", name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -272,7 +265,7 @@ public class ServerUtils {
         String endpoint = "api/v1/" + eventCode + "/participant";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path(endpoint)
+                .target(httpServerUrl).path(endpoint)
                 .queryParam("name", name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -280,6 +273,7 @@ public class ServerUtils {
 
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
+
 
     // Expense methods
 
@@ -328,12 +322,12 @@ public class ServerUtils {
         String endpoint = "api/v1/" + eventCode + "/expense";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-               .target(httpServerUrl).path(endpoint)
-               .queryParam("id", e.id())
-               .queryParam("participantName", e.paidByName())
-               .request(APPLICATION_JSON)
-               .accept(APPLICATION_JSON)
-               .delete();
+                .target(httpServerUrl).path(endpoint)
+                .queryParam("id", e.id())
+                .queryParam("participantName", e.paidByName())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user
