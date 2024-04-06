@@ -158,6 +158,19 @@ public class ServerUtils {
                 response.getStatus() == Response.Status.NO_CONTENT.getStatusCode();
     }
 
+    public boolean deleteParticipant(String eventCode, String name) {
+        String endpoint = "api/v1/" + eventCode + "/participant";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path(endpoint)
+                .queryParam("name", name)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
+
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
     // Expense methods
 
     /**
