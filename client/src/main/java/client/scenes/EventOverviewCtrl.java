@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.interfaces.DataBasedSceneController;
+import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
@@ -23,6 +24,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+    @Inject
+    private ControllerUtils controllerUtils;
 
     // Event attributes
     private EventDTO event;
@@ -78,7 +81,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     public void initialize(EventDTO event) {
         this.event = event;
 
-        refresh();
+        participants = serverUtils.getParticipants(event.code());
+        expenses = serverUtils.getExpenses(event.code());
 
         // If participants isn't empty, select the first participant by default
         if(!(participants.isEmpty())) {
@@ -86,6 +90,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         currentView = View.ALL;
+
+        refresh();
 
         // Show/Hide expense items based on currentView
         expenseFilterToggleGroup.selectedToggleProperty().addListener(
@@ -109,21 +115,33 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Refreshes the page back to its default values.
+     * Refreshes the page to reflect the current state of the server
      */
-    public synchronized void refresh() {
-        participants = serverUtils.getParticipants(event.code());
-        expenses = serverUtils.getExpenses(event.code());
+    public void refresh() {
+        EventDTO syncedEvent = serverUtils.getEvent(event.code());
+        if (syncedEvent == null) {
+            Alert alert = controllerUtils.createAlert(
+                    Alert.AlertType.WARNING,
+                    "This event was deleted!",
+                    "This event got deleted from the server!",
+                    "This may be an error. Try to connect later or contact our customer service desk!");
+            alert.showAndWait();
+            mainCtrl.showStartScreen();
+        } else {
+            event = syncedEvent;
+            participants = serverUtils.getParticipants(event.code());
+            expenses = serverUtils.getExpenses(event.code());
 
-        refreshEventInfoLabel();
+            refreshEventInfoLabel();
 
-        refreshParticipantList();
+            refreshParticipantList();
 
-        refreshParticipantDropdown();
+            refreshParticipantDropdown();
 
-        refreshFilterToggleGroupButtonLabels();
+            refreshFilterToggleGroupButtonLabels();
 
-        refreshExpenseScroller();
+            refreshExpenseScroller();
+        }
     }
 
     private void refreshEventInfoLabel() {

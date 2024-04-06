@@ -95,6 +95,10 @@ public class ServerUtils {
                                                             Consumer<WSWrapperResponseBody<T>> consumer)
     {
         registerForWebSocketMessages(
+                "/api/websocket/v1/channel/event",
+                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+        );
+        registerForWebSocketMessages(
                 "/api/websocket/v1/channel/" + eventCode,
                 q -> consumer.accept((WSWrapperResponseBody<T>) q)
         );
@@ -120,6 +124,15 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
                 });
+    }
+
+    public EventDTO getEvent(String eventCode) {
+        List<EventDTO> matchingEvents = getAllEvents()
+                .stream()
+                .filter(eventDTO -> eventDTO.code().equals(eventCode))
+                .toList();
+
+        return matchingEvents.isEmpty() ? null : matchingEvents.getFirst();
     }
 
     /**
