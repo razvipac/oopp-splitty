@@ -37,16 +37,4 @@ public record EventDTO(
     public EventDTO withLastActivity(LocalDateTime lastActivity) {
         return new EventDTO(name(), code(), creationDate(), lastActivity);
     }
-
-    /**
-     * Updates and prints the custom toString method for the last activity
-     */
-    public void updateAndPrintLastActivity() {
-        LocalDateTime updatedLastActivity = LocalDateTime.now();
-
-        // Create a new EventDTO object with the updated last activity
-        EventDTO updatedEventDTO = this.withLastActivity(updatedLastActivity);
-
-        System.out.println(updatedEventDTO.lastActivityToString());
-    }
 }

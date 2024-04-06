@@ -11,6 +11,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,17 +91,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
         );
 
-        updateLastActivityLabel();
-    }
-
-    // Method to update the last activity label
-    private void updateLastActivityLabel() {
-        if (event != null) {
-            String lastActivityText = event.lastActivityToString();
-            lastActivityLabel.setText("Last Activity: " + lastActivityText);
-        } else {
-            lastActivityLabel.setText("Last Activity: No activity recorded yet");
-        }
+        updateAndPrintLastActivity();
     }
 
     /**
@@ -308,6 +299,18 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
     }
 
+    /**
+     * Updates and prints the custom toString method for the last activity
+     */
+    public void updateAndPrintLastActivity() {
+        LocalDateTime updatedLastActivity = LocalDateTime.now();
+
+        // Create a new EventDTO object with the updated last activity
+        EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
+
+        // Update the last activity label in the UI
+        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
+    }
 
     /**
      * Nested class Expense Item.
