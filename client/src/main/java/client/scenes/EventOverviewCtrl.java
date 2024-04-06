@@ -1,16 +1,23 @@
 package client.scenes;
 
 import client.interfaces.DataBasedSceneController;
+import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.dto.*;
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +25,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+    @Inject
+    private ControllerUtils controllerUtils;
 
     // Event attributes
     private EventDTO event;
@@ -40,12 +49,16 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private RadioButton expenseFilterFromRadio;
     @FXML
     private RadioButton expenseFilterIncludingRadio;
-
+    @FXML
+    private Label totalExpensesLabel;
     @FXML
     private VBox expenseItemContainer;
+    @FXML
+    private Label lastActivityLabel;
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
+    private boolean firstTimeOpened = true;
 
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
@@ -72,6 +85,16 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     public void initialize(EventDTO event) {
         this.event = event;
 
+        participants = serverUtils.getParticipants(event.code());
+        expenses = serverUtils.getExpenses(event.code());
+
+        // If participants isn't empty, select the first participant by default
+        if(!(participants.isEmpty())) {
+            selectedParticipant = participants.getFirst();
+        }
+
+        currentView = View.ALL;
+
         refresh();
 
         // Show/Hide expense items based on currentView
@@ -88,31 +111,48 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                     refreshExpenseScroller();
                 }
         );
+
+        serverUtils.registerForWebSocketUpdatesForTheWholeEvent(event.code(), q -> {
+            Platform.runLater(this::refresh);
+        });
+
+        // The last activity should be updated only the first time the event is ever opened
+        // From then on, whenever somebody visits it, it does not count as the last activity has been changed
+        if(firstTimeOpened)
+        {
+            updateAndPrintLastActivity();
+            firstTimeOpened = false;
+        }
     }
 
     /**
-     * Refreshes the page back to its default values.
+     * Refreshes the page to reflect the current state of the server
      */
     public void refresh() {
-        participants = serverUtils.getParticipants(event.code());
-        expenses = serverUtils.getExpenses(event.code());
+        EventDTO syncedEvent = serverUtils.getEvent(event.code());
+        if (syncedEvent == null) {
+            Alert alert = controllerUtils.createAlert(
+                    Alert.AlertType.WARNING,
+                    "This event was deleted!",
+                    "This event got deleted from the server!",
+                    "This may be an error. Try to connect later or contact our customer service desk!");
+            alert.showAndWait();
+            mainCtrl.showStartScreen();
+        } else {
+            event = syncedEvent;
+            participants = serverUtils.getParticipants(event.code());
+            expenses = serverUtils.getExpenses(event.code());
 
-        // If participants isn't empty, select the first participant by default
-        if(!(participants.isEmpty())) {
-            selectedParticipant = participants.getFirst();
+            refreshEventInfoLabel();
+
+            refreshParticipantList();
+
+            refreshParticipantDropdown();
+
+            refreshFilterToggleGroupButtonLabels();
+
+            refreshExpenseScroller();
         }
-
-        currentView = View.ALL;
-
-        refreshEventInfoLabel();
-
-        refreshParticipantList();
-
-        refreshParticipantDropdown();
-
-        refreshFilterToggleGroupButtonLabels();
-
-        refreshExpenseScroller();
     }
 
     private void refreshEventInfoLabel() {
@@ -176,6 +216,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             expenseItemContainer.getChildren().add(item);
         }
 
+        // Update total expenses label
+        totalExpensesLabel.setText("Total sum of expenses: " + calculateTotalExpenseSum());
+
         setExpenseItemVisibility();
     }
 
@@ -201,7 +244,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
                 case FROM -> {
                     ExpenseItem e = (ExpenseItem) item;
-                    boolean isMatchingParticipant = e.paidByName.equals(selectedParticipant.name());
+                    boolean isMatchingParticipant = e.expenseDTO.paidByName().equals(selectedParticipant.name());
                     item.setVisible(isMatchingParticipant);
                     item.setManaged(isMatchingParticipant);
                 }
@@ -217,36 +260,56 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
 
     /**
-     * Back button action
+     * Back button action.
      */
     @FXML
     private void goBack() {
         mainCtrl.showStartScreen();
     }
 
+    /**
+     * Opens the invitations screen and updates the last activity.
+     */
     @FXML
-    private void openInvitations(){
+    private void openInvitations() {
         mainCtrl.showInvitations(event);
     }
 
+    /**
+     * Opens the open debts screen and updates the last activity.
+     */
     @FXML
-    private void openOpenDebts(){
+    private void openOpenDebts() {
         mainCtrl.showOpenDebts(event);
+        updateAndPrintLastActivity();
     }
 
+    /**
+     * Opens the add/edit participant screen and updates the last activity.
+     */
     @FXML
-    private void openAddEditParticipant(){
+    private void openAddEditParticipant() {
         mainCtrl.showContactDetails(event);
+        updateAndPrintLastActivity();
     }
 
+    /**
+     * Opens the add/edit expense screen and updates the last activity.
+     */
     @FXML
-    private void openAddEditExpense(){
+    private void openAddEditExpense() {
         mainCtrl.showAddEditExpense(event);
+        updateAndPrintLastActivity();
     }
 
+    /**
+     * Handles the global key press event, specifically ESCAPE key to go back.
+     *
+     * @param keyEvent The KeyEvent representing the key press event.
+     */
     @FXML
-    private void onGlobalKeyPress(KeyEvent keyEvent){
-        if (keyEvent.getCode() == KeyCode.ESCAPE){
+    private void onGlobalKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
             goBack();
         }
     }
@@ -297,13 +360,37 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
+<<<<<<< HEAD
+     * Calculate the total sum of expenses.
+     * @return The total sum of expenses
+     */
+    private int calculateTotalExpenseSum() {
+        int totalSum = 0;
+        for (ExpenseDTO expense : expenses) {
+            totalSum += expense.price();
+        }
+        return totalSum;
+    }
+
+     /**
+     * Updates and prints the custom toString method for the last activity
+     */
+    public void updateAndPrintLastActivity() {
+        LocalDateTime updatedLastActivity = LocalDateTime.now();
+
+        // Create a new EventDTO object with the updated last activity
+        EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
+
+        // Update the last activity label in the UI
+        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
+    }
+
+    /**
      * Nested class Expense Item.
      */
-    private static class ExpenseItem extends GridPane {
+    private class ExpenseItem extends GridPane {
 
-        private int price;
-        private String item;
-        private String paidByName;
+        private ExpenseDTO expenseDTO;
 
         /**
          * Creates ExpenseItem, a GridPane containing an Expense's date, participant,
@@ -311,10 +398,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
          * @param expense the expense to create an item for
          */
         public ExpenseItem(ExpenseDTO expense) {
-            price = expense.price();
-            item = expense.item();
-            paidByName = expense.paidByName();
-
+            expenseDTO = expense;
             createItemBox();
         }
 
@@ -326,7 +410,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             Text date = new Text("01-01-2024");
             this.add(date, 0, 0, 1, 2);
 
-            Text expenseInfo = new Text(paidByName + " paid " + price + " Euro for " + item);
+            Text expenseInfo = new Text(
+                    expenseDTO.paidByName() + " paid " + expenseDTO.price() + " Euro for " + expenseDTO.item());
             this.add(expenseInfo, 1, 0);
 
             // TODO: 'paidBy includes ...' is currently hardcoded to 'all'
@@ -335,6 +420,12 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             Button expenseEditButton = new Button("Edit");
             this.add(expenseEditButton, 2, 0, 1, 2);
+
+            Button expenseDeleteButton = new Button("Delete");
+            expenseDeleteButton.setOnAction(eventHandler -> {
+                serverUtils.deleteExpense(expenseDTO, event.code());
+            });
+            this.add(expenseDeleteButton, 3, 0, 2, 3);
         }
     }
 }
