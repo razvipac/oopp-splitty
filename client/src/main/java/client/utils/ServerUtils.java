@@ -158,6 +158,12 @@ public class ServerUtils {
                 response.getStatus() == Response.Status.NO_CONTENT.getStatusCode();
     }
 
+    /**
+     * Deletes participant in the server.
+     * @param eventCode Event code of participant
+     * @param name (Old) name of participant
+     * @return True iff successful, false otherwise.
+     */
     public boolean deleteParticipant(String eventCode, String name) {
         String endpoint = "api/v1/" + eventCode + "/participant";
 
