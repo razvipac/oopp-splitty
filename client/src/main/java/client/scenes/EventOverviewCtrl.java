@@ -228,39 +228,57 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
 
     /**
-     * Back button action
+     * Back button action.
      */
     @FXML
     private void goBack() {
         mainCtrl.showStartScreen();
     }
 
+    /**
+     * Opens the invitations screen and updates the last activity.
+     */
     @FXML
-    private void openInvitations(){
+    private void openInvitations() {
         mainCtrl.showInvitations(event);
+        updateAndPrintLastActivity();
     }
 
+    /**
+     * Opens the open debts screen and updates the last activity.
+     */
     @FXML
-    private void openOpenDebts(){
+    private void openOpenDebts() {
         mainCtrl.showOpenDebts(event);
         updateAndPrintLastActivity();
     }
 
+    /**
+     * Opens the add/edit participant screen and updates the last activity.
+     */
     @FXML
-    private void openAddEditParticipant(){
+    private void openAddEditParticipant() {
         mainCtrl.showContactDetails(event);
         updateAndPrintLastActivity();
     }
 
+    /**
+     * Opens the add/edit expense screen and updates the last activity.
+     */
     @FXML
-    private void openAddEditExpense(){
+    private void openAddEditExpense() {
         mainCtrl.showAddEditExpense(event);
         updateAndPrintLastActivity();
     }
 
+    /**
+     * Handles the global key press event, specifically ESCAPE key to go back.
+     *
+     * @param keyEvent The KeyEvent representing the key press event.
+     */
     @FXML
-    private void onGlobalKeyPress(KeyEvent keyEvent){
-        if (keyEvent.getCode() == KeyCode.ESCAPE){
+    private void onGlobalKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
             goBack();
         }
     }
