@@ -245,6 +245,27 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     @FXML
+    private void deleteParticipantFromServer(String name) {
+        boolean success = serverUtils.deleteParticipant(event.code(), name);
+        if(success) {
+            Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                    "Success", "Participant Deleted Successfully",
+                    name + " has been deleted from this event.");
+            confirmation.getButtonTypes().clear();
+            confirmation.getButtonTypes().add(ButtonType.OK);
+            confirmation.showAndWait();
+        }
+        else {
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error", "Deleting Participant Failed",
+                    name + " has not been deleted due to an error. Please try again.");
+            alert.showAndWait();
+        }
+
+        goBack();
+    }
+
+    @FXML
     private void goBack() {
         mainCtrl.showEventOverview(event);
     }
@@ -312,9 +333,8 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     private void ok(){
         // Check if form has been filled in correctly
         if(formIsValid()) {
-            // Add participant immediately if view equals ADD
-            if(currentView == View.ADD) {
-                addParticipantToServer(
+            switch(currentView) {
+                case ADD -> addParticipantToServer(
                         new ParticipantDTO(
                                 boxName.getText(),
                                 boxEmail.getText(),
@@ -322,26 +342,41 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                                 boxBic.getText()
                         )
                 );
-            }
-            // Edit participant if view equals EDIT
-            else if(currentView == View.EDIT){
-                // Confirmation box
-                boolean confirmed = controllerUtils.createConfirmationAlert(
-                        "Confirm Edit",
-                        "Are you sure you want to edit this participant?");
 
-                if (confirmed) {
-                    updateParticipantToServer(
-                            new ParticipantDTO(
-                                    "",     // name can't be changed
-                                    boxEmail.getText(),
-                                    boxIban.getText(),
-                                    boxBic.getText()
-                            ),
-                            comboBoxName.getSelectionModel().getSelectedItem()
-                    );
+                case EDIT -> {
+                    // Confirmation box
+                    boolean confirmed = controllerUtils.createConfirmationAlert(
+                            "Confirm Edit",
+                            "Are you sure you want to edit this participant?");
+
+                    if (confirmed) {
+                        updateParticipantToServer(
+                                new ParticipantDTO(
+                                        "",     // name can't be changed
+                                        boxEmail.getText(),
+                                        boxIban.getText(),
+                                        boxBic.getText()
+                                ),
+                                comboBoxName.getSelectionModel().getSelectedItem()
+                        );
+                    }
                 }
+
+                case DELETE -> {
+                    // Confirmation box
+                    boolean confirmed = controllerUtils.createConfirmationAlert(
+                            "Confirm Delete",
+                            "Are you sure you want to delete this participant?");
+
+                    if (confirmed) {
+                        deleteParticipantFromServer(
+                                comboBoxName.getSelectionModel().getSelectedItem()
+                        );
+                    }
+                }
+
             }
+
         }
     }
 
