@@ -23,16 +23,17 @@ public interface ParticipantRepository extends CrudRepository<Participant, Parti
     Collection<Participant> findAllParticipantsInEvent(@Param("eventCode") String eventCode);
 
     /**
-     * Fetches a participant given their name and a event's code
+     * Fetches a participant given their name and an event's code
      *
      * @param name participant's name
      * @param eventCode event's code
-     * @return A optional with the fetched Participant
+     * @return An Optional containing the fetched Participant, or empty if not found
      */
     @Query("SELECT p FROM Participant p " +
             "WHERE p.pkey.name = :name " +
-            "AND p.pkey.event.code = :eventcode")
+            "AND p.pkey.event.code = :eventCode")
     Optional<Participant> findParticipantByEventCodeAndName(@Param("name") String name,
-                                                            @Param("eventcode") String eventCode);
+                                                            @Param("eventCode") String eventCode);
+
 
 }

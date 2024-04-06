@@ -97,16 +97,22 @@ public class ServerUtils {
      * Gets a single participant from the server
      * @param eventCode eventCode of the event to which the participant belongs
      * @param name name of the participant
-     * @return the ParticipantDTO instance corresponding to that participant
+     * @return the ParticipantDTO instance corresponding to that participant, or null if not found
      */
     public ParticipantDTO getParticipant(String eventCode, String name){
-        return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
+        List<ParticipantDTO> participants = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/v1/" + eventCode + "/participant")
                 .queryParam("name", name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(List.class)
-                .getFirst();
+                .get(new GenericType<List<ParticipantDTO>>() {});
+
+        // Check if participants list is not empty
+        if (!participants.isEmpty()) {
+            return participants.get(0); // Return the first participant
+        } else {
+            return null; // Participant not found
+        }
     }
 
     /**
