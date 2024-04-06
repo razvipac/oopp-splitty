@@ -40,9 +40,10 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private RadioButton expenseFilterFromRadio;
     @FXML
     private RadioButton expenseFilterIncludingRadio;
-
     @FXML
     private VBox expenseItemContainer;
+    @FXML
+    private Label lastActivityLabel;
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
@@ -88,6 +89,18 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                     refreshExpenseScroller();
                 }
         );
+
+        updateLastActivityLabel();
+    }
+
+    // Method to update the last activity label
+    private void updateLastActivityLabel() {
+        if (event != null) {
+            String lastActivityText = event.lastActivityToString();
+            lastActivityLabel.setText("Last Activity: " + lastActivityText);
+        } else {
+            lastActivityLabel.setText("Last Activity: No activity recorded yet");
+        }
     }
 
     /**
