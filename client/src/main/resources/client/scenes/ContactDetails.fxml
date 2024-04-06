@@ -13,27 +13,32 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="287.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
    <children>
-      <Text layoutX="136.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Participant">
+      <Text layoutX="31.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Participant List:" wrappingWidth="315.30859375">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Text>
-      <ToggleButton layoutX="83.0" layoutY="25.0" mnemonicParsing="false" text="Edit">
+      <ToggleButton layoutX="83.0" layoutY="60.0" mnemonicParsing="false" text="Edit">
          <toggleGroup>
-            <ToggleGroup fx:id="addOrEdit" />
+            <ToggleGroup fx:id="toggleView" />
          </toggleGroup>
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </ToggleButton>
-      <ToggleButton fx:id="addButton" layoutX="31.0" layoutY="25.0" mnemonicParsing="false" text="Add" toggleGroup="$addOrEdit">
+      <ToggleButton fx:id="addButton" layoutX="31.0" layoutY="60.0" mnemonicParsing="false" text="Add" toggleGroup="$toggleView">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </ToggleButton>
-      <GridPane hgap="3.0" layoutX="31.0" layoutY="67.0" vgap="3.0">
+      <ToggleButton layoutX="133.0" layoutY="60.0" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </ToggleButton>
+      <GridPane hgap="3.0" layoutX="31.0" layoutY="102.0" vgap="3.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="68.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="507.0" minWidth="10.0" prefWidth="267.0" />
@@ -72,17 +77,17 @@
             <ComboBox fx:id="comboBoxName" prefHeight="25.0" prefWidth="160.0" promptText="Choose..." visible="false" GridPane.columnIndex="1" />
          </children>
       </GridPane>
-      <Text layoutX="31.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
+      <Text layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>
       </Text>
-      <Button layoutX="277.0" layoutY="207.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
-      <Button layoutX="332.0" layoutY="207.0" mnemonicParsing="false" onAction="#ok" text="OK">
+      <Button layoutX="277.0" layoutY="242.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
+      <Button layoutX="332.0" layoutY="242.0" mnemonicParsing="false" onAction="#ok" text="OK">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" />
+      <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" />
    </children>
 </AnchorPane>

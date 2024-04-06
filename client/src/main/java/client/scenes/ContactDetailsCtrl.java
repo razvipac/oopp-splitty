@@ -23,14 +23,14 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     private ControllerUtils controllerUtils;
 
     public enum View {
-        ADD, EDIT
+        ADD, EDIT, DELETE
     }
     private View currentView;
 
     private EventDTO event;
 
     @FXML
-    private ToggleGroup addOrEdit;
+    private ToggleGroup toggleView;
     @FXML
     private ToggleButton addButton;
     @FXML
@@ -95,7 +95,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
             }
         } );
 
-        addOrEdit.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
+        toggleView.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue != null) {
                 ToggleButton selected = (ToggleButton) newValue;
                 if(selected.getText().equals("Add")) {
@@ -103,6 +103,9 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 }
                 else if(selected.getText().equals("Edit")) {
                     setView(View.EDIT);
+                }
+                else if (selected.getText().equals("Delete")) {
+                    setView(View.DELETE);
                 }
             }
         }));
@@ -119,7 +122,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         boxEmail.clear();
         boxIban.clear();
         boxBic.clear();
-        addOrEdit.selectToggle(addButton);
+        toggleView.selectToggle(addButton);
         setView(View.ADD);  // set to ADD by default
 
         List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
@@ -140,9 +143,14 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     public void setView(View view) {
         currentView = view;
 
-        boolean b = view == View.ADD;
-        comboBoxName.setVisible(!b);    // visible if view = add
-        boxName.setVisible(b);          // visible if view = edit
+        // visible if view equals ADD
+        boxName.setVisible(view == View.ADD);
+        // visible if view equals EDIT or DELETE
+        comboBoxName.setVisible(view != View.ADD);
+        // visible if view equals DELETE
+        boxEmail.setDisable(view == View.DELETE);
+        boxIban.setDisable(view == View.DELETE);
+        boxBic.setDisable(view == View.DELETE);
     }
 
     /**
