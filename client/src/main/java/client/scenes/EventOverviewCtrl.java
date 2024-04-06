@@ -48,6 +48,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
+    private boolean firstTimeOpened = true;
 
     // Currently selected expenses view (all, from or including <selectedParticipant>)
     public enum View {
@@ -91,7 +92,13 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
         );
 
-        updateAndPrintLastActivity();
+        // The last activity should be updated only the first time the event is ever opened
+        // From then on, whenever somebody visits it, it does not count as the last activity has been changed
+        if(firstTimeOpened)
+        {
+            updateAndPrintLastActivity();
+            firstTimeOpened = false;
+        }
     }
 
     /**
@@ -236,16 +243,19 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void openOpenDebts(){
         mainCtrl.showOpenDebts(event);
+        updateAndPrintLastActivity();
     }
 
     @FXML
     private void openAddEditParticipant(){
         mainCtrl.showContactDetails(event);
+        updateAndPrintLastActivity();
     }
 
     @FXML
     private void openAddEditExpense(){
         mainCtrl.showAddEditExpense(event);
+        updateAndPrintLastActivity();
     }
 
     @FXML
