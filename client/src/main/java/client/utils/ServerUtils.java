@@ -72,43 +72,51 @@ public class ServerUtils {
         });
     }
 
-    public void registerForWebSocketUpdatesOnEvent(String eventCode,
-                                                     Consumer<WSWrapperResponseBody<EventDTO>> consumer)
-    {
-        registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode, consumer);
-        registerForWebSocketMessages("/api/websocket/v1/channel/event", consumer);
-    }
-
+    /**
+     * Registers a consumer for handling changes of participant entities in a given event
+     * @param eventCode code of the event on which to listen
+     * @param consumer consumer for handling changes
+     */
     public void registerForWebSocketUpdatesOnParticipant(String eventCode,
                                                      Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
     {
         registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
     }
 
+    /**
+     * Registers a consumer for handling changes of expense entities in a given event
+     * @param eventCode code of the event on which to listen
+     * @param consumer consumer for handling changes
+     */
     public void registerForWebSocketUpdatesOnExpense(String eventCode,
                                                      Consumer<WSWrapperResponseBody<ExpenseDTO>> consumer)
     {
         registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/expense", consumer);
     }
 
-    public <T> void registerForWebSocketUpdatesForTheWholeEvent(String eventCode,
-                                                            Consumer<WSWrapperResponseBody<T>> consumer)
+    /**
+     * Registers a consumer for handling changes of all entities on given as well as event deletions and creations
+     * @param eventCode code of the event on which to listen
+     * @param consumer consumer for handling changes
+     */
+    public void registerForWebSocketUpdatesForTheWholeEvent(String eventCode,
+                                                            Consumer<WSWrapperResponseBody> consumer)
     {
         registerForWebSocketMessages(
                 "/api/websocket/v1/channel/event",
-                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+                consumer::accept
         );
         registerForWebSocketMessages(
                 "/api/websocket/v1/channel/" + eventCode,
-                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+                consumer::accept
         );
         registerForWebSocketMessages(
                 "/api/websocket/v1/channel/" + eventCode + "/participant",
-                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+                consumer::accept
         );
         registerForWebSocketMessages(
                 "/api/websocket/v1/channel/" + eventCode + "/expense",
-                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+                consumer::accept
         );
     }
 
@@ -126,6 +134,12 @@ public class ServerUtils {
                 });
     }
 
+    /**
+     * Gets a specific event or null if it does not exist
+     *
+     * @param eventCode code of the event to get
+     * @return the seeked event's DTO or null if it does not exists
+     */
     public EventDTO getEvent(String eventCode) {
         List<EventDTO> matchingEvents = getAllEvents()
                 .stream()
@@ -255,10 +269,16 @@ public class ServerUtils {
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
-   public boolean deleteExpense(ExpenseDTO e, String eventCode){
-       String endpoint = "api/v1/" + eventCode + "/expense";
+    /**
+     * Deletes a given expense from the server
+     * @param e dto for the expense to be deleted
+     * @param eventCode code of the event on which to delete the given expense
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteExpense(ExpenseDTO e, String eventCode){
+        String endpoint = "api/v1/" + eventCode + "/expense";
 
-       Response response = ClientBuilder.newClient(new ClientConfig())
+        Response response = ClientBuilder.newClient(new ClientConfig())
                .target(HTTP_SERVER).path(endpoint)
                .queryParam("id", e.id())
                .queryParam("participantName", e.paidByName())
@@ -266,10 +286,10 @@ public class ServerUtils {
                .accept(APPLICATION_JSON)
                .delete();
 
-       // Check the response status code
-       // TODO: should check for error types and pass that information on to user
-       return response.getStatus() == Response.Status.OK.getStatusCode();
-   }
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
 
     // Debt methods
 
