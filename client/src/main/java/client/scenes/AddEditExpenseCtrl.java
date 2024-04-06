@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -33,6 +34,12 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     private List<ParticipantDTO> participants;
     private ArrayList<ExpenseDTO> addEditExpenseList;
     private Map<String, ParticipantDTO> participantMap;
+
+    private enum RadioSelection {
+        ALL, SOME
+    }
+
+    private RadioSelection radioSelectionState;
 
     @FXML
     private ComboBox<String> whoPaidDropdown;
@@ -85,19 +92,23 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         currencyDropdown.getSelectionModel().selectFirst();
 
         errorText.setText("");
+        radioSelectionState = RadioSelection.ALL;
+
+        refresh();
 
         radioGroup.selectedToggleProperty().addListener(
                 (v, oldValue, newValue) -> {
-                    boolean somePeopleSelected = newValue == onlySomeButton;
-                    for (Node node : checkboxContainer.getChildren()) {
-                        if (node instanceof CheckBox) {
-                            node.setDisable(!somePeopleSelected);
-                        }
-                    }
+                    radioSelectionState = newValue == onlySomeButton ? RadioSelection.SOME : RadioSelection.ALL;
+                    refreshParticipantContainer();
                 });
 
-        refreshWhoPaidDropdown();
+        serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> Platform.runLater(this::refresh));
+    }
 
+    private void refresh(){
+        this.participants = serverUtils.getParticipants(event.code());
+
+        refreshWhoPaidDropdown();
         refreshParticipantContainer();
     }
 
@@ -122,6 +133,12 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
             CheckBox participantCheckbox = new CheckBox(name);
             participantCheckbox.setDisable(true);
             checkboxContainer.getChildren().add(participantCheckbox);
+        }
+
+        for (Node node : checkboxContainer.getChildren()) {
+            if (node instanceof CheckBox) {
+                node.setDisable(radioSelectionState == RadioSelection.ALL);
+            }
         }
     }
 

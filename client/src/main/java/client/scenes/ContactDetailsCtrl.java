@@ -417,4 +417,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         mainCtrl.showEventOverview(event);
     }
 
+    public void setErrorText(){
+        this.errorText = new Text();
+    }
 }

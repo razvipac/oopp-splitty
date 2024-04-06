@@ -19,6 +19,7 @@ import client.LanguageManager;
 import commons.dto.EventDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -47,6 +48,11 @@ public class MainCtrl {
     private AdminCtrl adminCtrl;
     private Scene admin;
 
+    private AdminPasswordCtrl adminPasswordCtrl;
+    private Scene adminPassword;
+    private Stage adminPasswordPopup;
+    private boolean passwordIsCorrect;
+
     private LanguageManager languageManager;
 
     /**
@@ -60,6 +66,7 @@ public class MainCtrl {
      * @param openDebtsPair the openDebtsPair from MyFXML output
      * @param addEditExpensePair the addEditExpensePair from MyFXML output
      * @param adminPair the adminPair from MyFXML output
+     * @param adminPasswordPair the adminPasswordPair from MyFXML output
      * @param languageManager the languageManager of the whole app
      */
     public void initialize(Stage primaryStage,
@@ -70,8 +77,10 @@ public class MainCtrl {
                            Pair<OpenDebtsCtrl, Parent> openDebtsPair,
                            Pair<AddEditExpenseCtrl, Parent> addEditExpensePair,
                            Pair<AdminCtrl, Parent> adminPair,
+                           Pair<AdminPasswordCtrl, Parent> adminPasswordPair,
                            LanguageManager languageManager
     ) {
+        this.languageManager = languageManager;
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
@@ -95,7 +104,10 @@ public class MainCtrl {
         this.adminCtrl = adminPair.getKey();
         this.admin = new Scene(adminPair.getValue());
 
-        this.languageManager = languageManager;
+        this.adminPasswordCtrl = adminPasswordPair.getKey();
+        this.adminPassword = new Scene(adminPasswordPair.getValue());
+        this.adminPasswordPopup = createAdminPasswordPopup();
+        this.passwordIsCorrect = false;
 
         showStartScreen();
         primaryStage.show();
@@ -106,7 +118,7 @@ public class MainCtrl {
      */
     public void showStartScreen() {
         String string = "Splitty: Start Screen";
-        string = languageManager.get("Splitty: Start Screen");
+        string = languageManager.get(string);
         primaryStage.setTitle(string);
         startScreenCtrl.initialize();
         primaryStage.setScene(startScreen);
@@ -143,7 +155,9 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to manage invitations.
      */
     public void showInvitations(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.name());
+        String string = "Splitty: Send invitations to event ";
+        string = languageManager.get(string);
+        primaryStage.setTitle(string + eventDTO.name());
         invitationsCtrl.initialize(eventDTO);
         primaryStage.setScene(invitations);
     }
@@ -177,9 +191,45 @@ public class MainCtrl {
      * Sets the title of the primary stage and switches to the Administrator Control Panel.
      */
     public void showAdmin() {
-        primaryStage.setTitle("Splitty: Administrator Control Panel");
-        adminCtrl.initialize();
-        primaryStage.setScene(admin);
+        if(passwordIsCorrect) {
+            primaryStage.setTitle("Splitty: Administrator Control Panel");
+            adminCtrl.initialize();
+            primaryStage.setScene(admin);
+        }
+        else openAdminPasswordPopup();
+    }
+
+    /**
+     * Creates the popup where the Admin Password must be entered.
+     * @return Popup with the Admin Password Scene.
+     */
+    private Stage createAdminPasswordPopup() {
+        Stage popup = new Stage();
+        popup.initOwner(primaryStage);
+        popup.initModality(Modality.APPLICATION_MODAL);
+        String string = "Administrator Control Panel";
+        if(languageManager != null){
+            string = languageManager.get(string);
+        }
+        popup.setTitle(string);
+        popup.setResizable(false);  // popup can't be resized
+        popup.setScene(adminPassword);
+        return popup;
+    }
+
+    /**
+     * Opens the popup where the Admin Password must be entered.
+     */
+    public void openAdminPasswordPopup() {
+        adminPasswordCtrl.setLanguageForAllAdminPasswordCtrl();
+        adminPasswordPopup.showAndWait();
+    }
+
+    /**
+     * Closes the popup where the Admin Password must be entered.
+     */
+    public void closeAdminPasswordPopup() {
+        adminPasswordPopup.close();
     }
 
     /**
@@ -197,5 +247,21 @@ public class MainCtrl {
      */
     public LanguageManager getLanguageManager() {
         return this.languageManager;
+    }
+
+    /**
+     * Sets whether the password has been entered correctly or not
+     * @param passwordIsCorrect Passes either true or false, depending on if the password is correct.
+     */
+    public void setPasswordIsCorrect(boolean passwordIsCorrect) {
+        this.passwordIsCorrect = passwordIsCorrect;
+    }
+
+    public void reloadAllLanguages(){
+        startScreenCtrl.setLanguageForAll();
+        adminPasswordCtrl.setLanguageForAllAdminPasswordCtrl();
+        invitationsCtrl.setLanguageForAllInvitationsCtrl();
+        this.adminPasswordPopup = createAdminPasswordPopup();
+
     }
 }
