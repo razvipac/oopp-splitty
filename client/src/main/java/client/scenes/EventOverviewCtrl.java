@@ -3,12 +3,17 @@ package client.scenes;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.dto.*;
+import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
+import commons.dto.ParticipantDTO;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -75,6 +80,13 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         refresh();
 
+        // If participants isn't empty, select the first participant by default
+        if(!(participants.isEmpty())) {
+            selectedParticipant = participants.getFirst();
+        }
+
+        currentView = View.ALL;
+
         // Show/Hide expense items based on currentView
         expenseFilterToggleGroup.selectedToggleProperty().addListener(
                 (v, oldValue, newValue) -> refreshExpenseScroller()
@@ -89,24 +101,19 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                     refreshExpenseScroller();
                 }
         );
-        // Update total expenses label
-        totalExpensesLabel.setText("Total sum of expenses: " + calculateTotalExpenseSum());
+
+        serverUtils.registerForWebSocketUpdatesForTheWholeEvent(event.code(), q -> {
+            Platform.runLater(this::refresh);
+        });
 
     }
 
     /**
      * Refreshes the page back to its default values.
      */
-    public void refresh() {
+    public synchronized void refresh() {
         participants = serverUtils.getParticipants(event.code());
         expenses = serverUtils.getExpenses(event.code());
-
-        // If participants isn't empty, select the first participant by default
-        if(!(participants.isEmpty())) {
-            selectedParticipant = participants.getFirst();
-        }
-
-        currentView = View.ALL;
 
         refreshEventInfoLabel();
 
@@ -180,6 +187,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             expenseItemContainer.getChildren().add(item);
         }
 
+        // Update total expenses label
+        totalExpensesLabel.setText("Total sum of expenses: " + calculateTotalExpenseSum());
+
         setExpenseItemVisibility();
     }
 
@@ -205,7 +215,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
                 case FROM -> {
                     ExpenseItem e = (ExpenseItem) item;
-                    boolean isMatchingParticipant = e.paidByName.equals(selectedParticipant.name());
+                    boolean isMatchingParticipant = e.expenseDTO.paidByName().equals(selectedParticipant.name());
                     item.setVisible(isMatchingParticipant);
                     item.setManaged(isMatchingParticipant);
                 }
@@ -337,7 +347,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             Text date = new Text("01-01-2024");
             this.add(date, 0, 0, 1, 2);
 
-            Text expenseInfo = new Text(paidByName + " paid " + price + " Euro for " + item);
             Text expenseInfo = new Text(
                     expenseDTO.paidByName() + " paid " + expenseDTO.price() + " Euro for " + expenseDTO.item());
             this.add(expenseInfo, 1, 0);
@@ -352,7 +361,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             Button expenseDeleteButton = new Button("Delete");
             expenseDeleteButton.setOnAction(eventHandler -> {
                 serverUtils.deleteExpense(expenseDTO, event.code());
-                refresh();
             });
             this.add(expenseDeleteButton, 3, 0, 2, 3);
         }
