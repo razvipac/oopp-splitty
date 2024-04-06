@@ -147,7 +147,6 @@ public class ParticipantService {
         if (!body.email().isEmpty()) found.setEmail(body.email());
         if (!body.iban().isEmpty()) found.setIban(body.iban());
         if (!body.bic().isEmpty()) found.setBic(body.bic());
-        if (!body.name().isEmpty()) found.setName(body.name());
 
         participantRepository.save(found);
         updateDate(eventCode);

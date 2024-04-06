@@ -32,6 +32,8 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private ToggleGroup addOrEdit;
     @FXML
+    private ToggleButton addButton;
+    @FXML
     private TextField boxName;
     @FXML
     private ComboBox<String> comboBoxName;
@@ -117,6 +119,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         boxEmail.clear();
         boxIban.clear();
         boxBic.clear();
+        addOrEdit.selectToggle(addButton);
         setView(View.ADD);  // set to ADD by default
 
         List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
@@ -137,8 +140,9 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     public void setView(View view) {
         currentView = view;
 
-        boolean b = view == View.EDIT;
-        comboBoxName.setVisible(b);
+        boolean b = view == View.ADD;
+        comboBoxName.setVisible(!b);    // visible if view = add
+        boxName.setVisible(b);          // visible if view = edit
     }
 
     /**
@@ -217,7 +221,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Updated Successfully",
-                    "Participant with (former) name: " + name + " has been updated.");
+                    name + " has been updated.");
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
@@ -225,7 +229,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                     "Error", "Updating Participant Failed",
-                    "The participant has not been updated due to an error. Please try again.");
+                    name + " has not been updated due to an error. Please try again.");
             alert.showAndWait();
         }
 
@@ -242,10 +246,15 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private boolean formIsValid() {
-        if(currentView == View.EDIT
-                && comboBoxName.getSelectionModel().getSelectedItem() == null) {
-            errorText.setText("Please select participant to edit");
-            return false;
+        if(currentView == View.EDIT) {
+            if(comboBoxName.getSelectionModel().getSelectedItem() == null) {
+                errorText.setText("Please select participant to edit");
+                return false;
+            }
+            if(boxEmail.getText().isEmpty() && boxIban.getText().isEmpty()
+                && boxBic.getText().isEmpty()) {
+                errorText.setText("Enter at least one field to edit");
+            }
         }
 
         if(currentView == View.ADD
@@ -308,7 +317,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
             else {
                 updateParticipantToServer(
                         new ParticipantDTO(
-                                boxName.getText(),
+                                "",     // name can't be changed
                                 boxEmail.getText(),
                                 boxIban.getText(),
                                 boxBic.getText()
