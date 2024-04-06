@@ -39,7 +39,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
 
     private final String SERVER = "localhost:8080";
-    private final String HTTP_SERVER = "https://" + SERVER + "/";
+    private final String HTTP_SERVER = "http://" + SERVER + "/";
     private StompSession wsSession = wsConnect("ws://" + SERVER + "/ws-connect");
 
     private StompSession wsConnect(String url){
@@ -72,20 +72,40 @@ public class ServerUtils {
         });
     }
 
-    public void registerForWebSocketMessagesForEvent(String eventCode,
-                                                     Consumer<WSWrapperResponseBody<EventDTO>> consumer){
+    public void registerForWebSocketUpdatesOnEvent(String eventCode,
+                                                     Consumer<WSWrapperResponseBody<EventDTO>> consumer)
+    {
         registerForWebSocketMessages("/api/v1/channel/" + eventCode, consumer);
         registerForWebSocketMessages("/api/v1/channel/event", consumer);
     }
 
-    public void registerForWebSocketMessagesForParticipant(String eventCode,
-                                                     Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer){
+    public void registerForWebSocketUpdatesOnParticipant(String eventCode,
+                                                     Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
+    {
         registerForWebSocketMessages("/api/v1/channel/" + eventCode + "/participant", consumer);
     }
 
-    public void registerForWebSocketMessagesForExpense(String eventCode,
-                                                     Consumer<WSWrapperResponseBody<ExpenseDTO>> consumer){
+    public void registerForWebSocketUpdatesOnExpense(String eventCode,
+                                                     Consumer<WSWrapperResponseBody<ExpenseDTO>> consumer)
+    {
         registerForWebSocketMessages("/api/v1/channel/" + eventCode + "/expense", consumer);
+    }
+
+    public <T> void registerForWebSocketUpdatesForTheWholeEvent(String eventCode,
+                                                            Consumer<WSWrapperResponseBody<T>> consumer)
+    {
+        registerForWebSocketMessages(
+                "/api/v1/channel/" + eventCode,
+                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+        );
+        registerForWebSocketMessages(
+                "/api/v1/channel/" + eventCode + "/participant",
+                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+        );
+        registerForWebSocketMessages(
+                "/api/v1/channel/" + eventCode + "/expense",
+                q -> consumer.accept((WSWrapperResponseBody<T>) q)
+        );
     }
 
     /**
