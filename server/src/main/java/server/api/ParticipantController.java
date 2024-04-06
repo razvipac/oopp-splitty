@@ -168,8 +168,6 @@ public class ParticipantController {
             Participant updated = participantService.updateOne(eventCode, name, body);
             ParticipantDTO participantDTO = participantDTOMapper.toDTO(updated);
 
-            //TODO: add modifying the name
-
             simpMessagingTemplate.convertAndSend(
                     "/api/websocket/v1/channel/" + eventCode + "/participant",
                     new WSWrapperResponseBody<>(
