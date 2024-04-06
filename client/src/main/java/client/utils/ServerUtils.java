@@ -182,6 +182,27 @@ public class ServerUtils {
                 .get(new GenericType<>() {});
     }
 
+    // Password methods
+
+    /**
+     * Checks if the given String matches the server's password
+     *
+     * @param input The entered password
+     * @return True iff input matches password, false otherwise.
+     */
+    public Boolean matchesPassword(String input) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER)
+                .path("api/v1/admin/auth/matches-password")
+                .queryParam("input", input)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {
+                });
+    }
+
+    // JSON Dump methods
+
     /**
      *
      * @return Gets the Json dump

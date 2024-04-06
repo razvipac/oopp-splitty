@@ -122,6 +122,14 @@ public class StartScreenCtrl implements VoidSceneController {
     }
 
     /**
+     * Opens the admin control panel popup
+     */
+    @FXML
+    private void openAdminControlPanel() {
+        mainCtrl.showAdmin();
+    }
+
+    /**
      * Retrieves the event corresponding to the given code.
      * @param code The code of the event.
      * @return The event with the provided code, if found.
