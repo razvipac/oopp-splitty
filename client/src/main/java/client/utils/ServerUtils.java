@@ -38,9 +38,9 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
-    private final String SERVER = "localhost:8080";
-    private final String HTTP_SERVER = "http://" + SERVER + "/";
-    private StompSession wsSession = wsConnect("ws://" + SERVER + "/ws-connect");
+    private final String server = "localhost:8080";
+    private final String httpServerUrl = "http://" + server + "/";
+    private StompSession wsSession = wsConnect("ws://" + server + "/ws-connect");
 
     private StompSession wsConnect(String url){
         var wsClient = new StandardWebSocketClient();
@@ -127,7 +127,7 @@ public class ServerUtils {
      */
     public List<EventDTO> getAllEvents() {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/")
+                .target(httpServerUrl).path("api/v1/")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -158,7 +158,7 @@ public class ServerUtils {
     public EventDTO createEvent(String eventName) {
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/")
+                .target(httpServerUrl).path("api/v1/")
                 .queryParam("name", eventName)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -172,7 +172,7 @@ public class ServerUtils {
     public EventDTO deleteEvent(String eventCode) {
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/")
+                .target(httpServerUrl).path("api/v1/")
                 .queryParam("eventCode", eventCode)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -189,7 +189,7 @@ public class ServerUtils {
      */
     public List<ParticipantDTO> getParticipants(String code) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/" + code + "/participant")
+                .target(httpServerUrl).path("api/v1/" + code + "/participant")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -205,7 +205,7 @@ public class ServerUtils {
      */
     public ParticipantDTO getParticipant(String eventCode, String name){
         return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/" + eventCode + "/participant?name=" + name)
+                .target(httpServerUrl).path("api/v1/" + eventCode + "/participant?name=" + name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(List.class)
@@ -222,7 +222,7 @@ public class ServerUtils {
         String endpoint = "api/v1/" + eventCode + "/participant";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path(endpoint)
+                .target(httpServerUrl).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(p, APPLICATION_JSON));
@@ -242,7 +242,7 @@ public class ServerUtils {
      */
     public List<ExpenseDTO> getExpenses(String code) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/" + code + "/expense")
+                .target(httpServerUrl).path("api/v1/" + code + "/expense")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -259,7 +259,7 @@ public class ServerUtils {
         String endpoint = "api/v1/" + code + "/expense";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path(endpoint)
+                .target(httpServerUrl).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(e, APPLICATION_JSON));
@@ -279,7 +279,7 @@ public class ServerUtils {
         String endpoint = "api/v1/" + eventCode + "/expense";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-               .target(HTTP_SERVER).path(endpoint)
+               .target(httpServerUrl).path(endpoint)
                .queryParam("id", e.id())
                .queryParam("participantName", e.paidByName())
                .request(APPLICATION_JSON)
@@ -301,7 +301,7 @@ public class ServerUtils {
      */
     public List<DebtDTO> getAllOpenDebts(String eventCode) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER)
+                .target(httpServerUrl)
                 .path("api/v1/" + eventCode + "/debts")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -318,7 +318,7 @@ public class ServerUtils {
      */
     public Boolean matchesPassword(String input) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER)
+                .target(httpServerUrl)
                 .path("api/v1/admin/auth/matches-password")
                 .queryParam("input", input)
                 .request(APPLICATION_JSON)
@@ -335,7 +335,7 @@ public class ServerUtils {
      */
     public List<JSONDumpEventDTO> getJSON() {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/admin/jsondump")
+                .target(httpServerUrl).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -349,7 +349,7 @@ public class ServerUtils {
      */
     public boolean restoreEvent(List<JSONDumpEventDTO> body) {
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(HTTP_SERVER).path("api/v1/admin/jsondump")
+                .target(httpServerUrl).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(body, APPLICATION_JSON));
