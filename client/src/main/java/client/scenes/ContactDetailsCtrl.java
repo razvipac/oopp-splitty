@@ -109,20 +109,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Creates a TextFormatter with a character limit
-     * @param limit The limit on the number of characters
-     * @return TextFormatter Object
-     */
-    public TextFormatter<String> textFormatterCharacterLimit(int limit) {
-        if(limit < 0) limit = 0;
-        int finalLimit = limit;
-        return new TextFormatter<>(change -> {
-            if(change.getControlNewText().length() > finalLimit) return null;
-            else return change;
-        });
-    }
-
-    /**
      * Refreshes the page, changes everything to default values.
      */
     public void refresh() {
@@ -140,6 +126,33 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                         .map(ParticipantDTO::name)
                         .toList()
         );
+    }
+
+    /**
+     * Changes the currentView and the corresponding elements of the page.
+     * Iff view equals ADD, boxName is visible and comboBoxName is invisible.
+     * Otherwise, the opposite is true.
+     * @param view The view to compare to.
+     */
+    public void setView(View view) {
+        currentView = view;
+
+        boolean b = view == View.EDIT;
+        comboBoxName.setVisible(b);
+    }
+
+    /**
+     * Creates a TextFormatter with a character limit
+     * @param limit The limit on the number of characters
+     * @return TextFormatter Object
+     */
+    public TextFormatter<String> textFormatterCharacterLimit(int limit) {
+        if(limit < 0) limit = 0;
+        int finalLimit = limit;
+        return new TextFormatter<>(change -> {
+            if(change.getControlNewText().length() > finalLimit) return null;
+            else return change;
+        });
     }
 
     /**
@@ -171,19 +184,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         if (!boxIban.getText().equals(formattedIban)) {
             boxIban.setText(formattedIban);
         }
-    }
-
-    /**
-     * Changes the currentView and the corresponding elements of the page.
-     * Iff view equals ADD, boxName is visible and comboBoxName is invisible.
-     * Otherwise, the opposite is true.
-     * @param view The view to compare to.
-     */
-    public void setView(View view) {
-        currentView = view;
-
-        boolean b = view == View.EDIT;
-        comboBoxName.setVisible(b);
     }
 
     /**
