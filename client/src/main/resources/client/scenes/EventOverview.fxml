@@ -100,6 +100,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
+      <!-- Last Activity Label in top right corner -->
       <Label fx:id="lastActivityLabel" text="Last Activity:" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <font>
             <Font size="12.0" />

@@ -123,7 +123,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             updateAndPrintLastActivity();
             firstTimeOpened = false;
         }
-
     }
 
     /**
@@ -316,19 +315,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Updates and prints the custom toString method for the last activity
-     */
-    public void updateAndPrintLastActivity() {
-        LocalDateTime updatedLastActivity = LocalDateTime.now();
-
-        // Create a new EventDTO object with the updated last activity
-        EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
-
-        // Update the last activity label in the UI
-        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
-    }
-
-    /**
      * Handles the copying of the event code when the label is double-clicked.
      *
      * @param event The MouseEvent representing the double click event.
@@ -373,6 +359,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
+<<<<<<< HEAD
      * Calculate the total sum of expenses.
      * @return The total sum of expenses
      */
@@ -384,6 +371,18 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         return totalSum;
     }
 
+     /**
+     * Updates and prints the custom toString method for the last activity
+     */
+    public void updateAndPrintLastActivity() {
+        LocalDateTime updatedLastActivity = LocalDateTime.now();
+
+        // Create a new EventDTO object with the updated last activity
+        EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
+
+        // Update the last activity label in the UI
+        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
+    }
 
     /**
      * Nested class Expense Item.
