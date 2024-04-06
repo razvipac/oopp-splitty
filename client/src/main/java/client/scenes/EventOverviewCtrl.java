@@ -241,7 +241,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void openInvitations() {
         mainCtrl.showInvitations(event);
-        updateAndPrintLastActivity();
     }
 
     /**
