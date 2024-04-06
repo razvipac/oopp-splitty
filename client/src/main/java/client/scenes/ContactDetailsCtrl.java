@@ -294,11 +294,14 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private boolean formIsValid() {
-        if(currentView == View.EDIT) {
+        if(currentView == View.EDIT || currentView == View.DELETE) {
             if(comboBoxName.getSelectionModel().getSelectedItem() == null) {
-                errorText.setText("Please select participant to edit");
+                errorText.setText("Please select participant");
                 return false;
             }
+        }
+
+        if(currentView == View.EDIT) {
             if(boxEmail.getText().isEmpty() && boxIban.getText().isEmpty()
                 && boxBic.getText().isEmpty()) {
                 errorText.setText("Enter at least one field to edit");
