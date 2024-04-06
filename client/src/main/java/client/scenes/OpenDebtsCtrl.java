@@ -70,17 +70,16 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
-
     /**
      * Back button action
      */
     @FXML
-    private void goBack() {
+    public void goBack() {
         mainCtrl.showEventOverview(event);
     }
 
     @FXML
-    private void onGlobalKeyPress(KeyEvent keyEvent){
+    public void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
     }
 
@@ -88,7 +87,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      * Adds the specified debt to the layout
      * @param d Debt to be added
      */
-    private void addDebtToLayout(DebtDTO d) {
+    public void addDebtToLayout(DebtDTO d) {
         // debtLine: line containing debtString and 'Mark Received' button
         HBox debtLine = new HBox(5);
         // debtItem: the entire debt item, containing the debtLine and debtInfo
@@ -143,7 +142,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         debtVBox.getChildren().add(debtItem);
     }
 
-    private String getBankInfoText(DebtDTO d)
+    public String getBankInfoText(DebtDTO d)
     {
         List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
         ParticipantDTO debtor = serverUtils.getParticipant(event.code(), d.debtorName());
@@ -161,5 +160,9 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
                 "Creditor: " + creditor.name() + "\n" +
                 "Amount: " + amount + " Euro\n\n" +
                 creditorBankInfo;
+    }
+
+    public void setDebtVBox(VBox debtVBox) {
+        this.debtVBox = debtVBox;
     }
 }

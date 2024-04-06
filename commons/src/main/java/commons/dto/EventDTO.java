@@ -28,4 +28,13 @@ public record EventDTO(
             return "Last activity: " + formattedDate + "\n" + formattedTime;
         }
     }
+
+    /**
+     * Setter for last activity.
+     * @param lastActivity The new last activity value.
+     * @return A new EventDTO object with the updated last activity.
+     */
+    public EventDTO withLastActivity(LocalDateTime lastActivity) {
+        return new EventDTO(name(), code(), creationDate(), lastActivity);
+    }
 }

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
@@ -7,6 +8,7 @@ import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.*;
@@ -19,7 +21,14 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     private ControllerUtils controllerUtils;
 
     private EventDTO event;
-
+    @FXML
+    private Label inviteFollowing;
+    @FXML
+    private Button cancel;
+    @FXML
+    private Button sendInvites;
+    @FXML
+    private Label giveInviteCode;
     @FXML
     private Label eventTitleLabel;
     @FXML
@@ -46,6 +55,7 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         this.event = event;
         this.eventCodeLabel.setText(event.code());
         this.eventTitleLabel.setText(event.name());
+        setLanguageForAllInvitationsCtrl();
     }
 
     @FXML
@@ -58,10 +68,19 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     private void sendInvites(){
         System.out.println("Sending invites...");
         // TODO: implement sending emails
+        String title = "Invitations sent successfully";
+        String header = "Invitations were sent successfully!";
+        String content = "The invitations sent successfully to: \n";
+        if(mainCtrl.getLanguageManager() != null){
+            LanguageManager lm = mainCtrl.getLanguageManager();
+            title = lm.get("Invitations sent successfully");
+            header = lm.get("Invitations were sent successfully!");
+            content = lm.get("The invitations sent successfully to: \n");
+        }
         Alert successAlert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                "Invitations sent successfully",
-                "Invitations were sent successfully!",
-                "The invitations sent successfully to: \n" + emailAddressesTextArea.getText());
+                title,
+                header,
+                content + emailAddressesTextArea.getText());
         successAlert.showAndWait();
         goBack();
     }
@@ -113,5 +132,15 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     private void handleHoverOut(MouseEvent event) {
         Label label = (Label) event.getSource();
         label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
+    }
+
+    public void setLanguageForAllInvitationsCtrl(){
+        if(mainCtrl.getLanguageManager() != null){
+            LanguageManager lm = mainCtrl.getLanguageManager();
+            inviteFollowing.setText(lm.get("Invite the following people by email (one address per line)"));
+            cancel.setText(lm.get("Cancel"));
+            giveInviteCode.setText(lm.get("Give people the following Invite Code: "));
+            sendInvites.setText(lm.get("Send Invite"));
+        }
     }
 }

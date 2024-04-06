@@ -256,5 +256,4 @@ public class AdminCtrl implements VoidSceneController {
     private void goBack() {
         mainCtrl.showStartScreen();
     }
-
 }

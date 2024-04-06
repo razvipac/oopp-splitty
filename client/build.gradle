@@ -29,9 +29,22 @@ dependencies {
 	
 	implementation 'com.google.inject:guice:5.0.1'
 
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 
-	implementation 'org.openjfx:javafx-controls:17.0.2'
-	implementation 'org.openjfx:javafx-fxml:17.0.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+	testImplementation 'org.mockito:mockito-core:5.11.0'
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.11.0'
+	testImplementation 'org.hamcrest:hamcrest:2.2'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket:3.2.2'
+
+	testImplementation group: 'org.testfx', name: 'testfx-core', version: '4.0.18'
+	testImplementation group: 'org.testfx', name: 'testfx-junit5', version: '4.0.18'
+	testImplementation group: 'org.testfx', name: 'openjfx-monocle', version:'21.0.2'
+
+	implementation 'org.openjfx:javafx-controls:21.0.2'
+	implementation 'org.openjfx:javafx-fxml:21.0.2'
 	
 }

@@ -80,6 +80,7 @@ public class MainCtrl {
                            Pair<AdminPasswordCtrl, Parent> adminPasswordPair,
                            LanguageManager languageManager
     ) {
+        this.languageManager = languageManager;
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
@@ -108,8 +109,6 @@ public class MainCtrl {
         this.adminPasswordPopup = createAdminPasswordPopup();
         this.passwordIsCorrect = false;
 
-        this.languageManager = languageManager;
-
         showStartScreen();
         primaryStage.show();
     }
@@ -119,7 +118,7 @@ public class MainCtrl {
      */
     public void showStartScreen() {
         String string = "Splitty: Start Screen";
-        string = languageManager.get("Splitty: Start Screen");
+        string = languageManager.get(string);
         primaryStage.setTitle(string);
         startScreenCtrl.initialize();
         primaryStage.setScene(startScreen);
@@ -156,7 +155,9 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to manage invitations.
      */
     public void showInvitations(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Send invitations to event " + eventDTO.name());
+        String string = "Splitty: Send invitations to event ";
+        string = languageManager.get(string);
+        primaryStage.setTitle(string + eventDTO.name());
         invitationsCtrl.initialize(eventDTO);
         primaryStage.setScene(invitations);
     }
@@ -206,7 +207,11 @@ public class MainCtrl {
         Stage popup = new Stage();
         popup.initOwner(primaryStage);
         popup.initModality(Modality.APPLICATION_MODAL);
-        popup.setTitle("Administrator Control Panel");
+        String string = "Administrator Control Panel";
+        if(languageManager != null){
+            string = languageManager.get(string);
+        }
+        popup.setTitle(string);
         popup.setResizable(false);  // popup can't be resized
         popup.setScene(adminPassword);
         return popup;
@@ -252,7 +257,11 @@ public class MainCtrl {
         this.passwordIsCorrect = passwordIsCorrect;
     }
 
-    public AdminPasswordCtrl getadminPasswordCtrl(){
-        return adminPasswordCtrl;
+    public void reloadAllLanguages(){
+        startScreenCtrl.setLanguageForAll();
+        adminPasswordCtrl.setLanguageForAllAdminPasswordCtrl();
+        invitationsCtrl.setLanguageForAllInvitationsCtrl();
+        this.adminPasswordPopup = createAdminPasswordPopup();
+
     }
 }
