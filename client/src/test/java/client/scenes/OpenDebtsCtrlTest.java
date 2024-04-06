@@ -70,7 +70,7 @@ class OpenDebtsCtrlTest extends ApplicationTest {
         openDebtsCtrl.initialize(eventMock);
 
         debtVBox = new VBox();
-        openDebtsCtrl.setDebtVBox(debtVBox); // Set the debtVBox
+        openDebtsCtrl.setDebtVBox(debtVBox);
     }
 
 
