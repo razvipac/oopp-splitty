@@ -118,7 +118,9 @@ public class StartScreenCtrl implements VoidSceneController {
         EventDTO event = server.createEvent(eventName);
         events = server.getAllEvents();
         System.out.println(event.toString());
+        recentlyJoinedEvents.add(event);
         mainCtrl.showEventOverview(event);
+        updateRecentEvents();
     }
 
     /**
