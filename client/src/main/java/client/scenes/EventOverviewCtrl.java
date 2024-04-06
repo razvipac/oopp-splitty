@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,6 +115,14 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         serverUtils.registerForWebSocketUpdatesForTheWholeEvent(event.code(), q -> {
             Platform.runLater(this::refresh);
         });
+
+        // The last activity should be updated only the first time the event is ever opened
+        // From then on, whenever somebody visits it, it does not count as the last activity has been changed
+        if(firstTimeOpened)
+        {
+            updateAndPrintLastActivity();
+            firstTimeOpened = false;
+        }
 
     }
 
@@ -252,38 +261,71 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
 
     /**
-     * Back button action
+     * Back button action.
      */
     @FXML
     private void goBack() {
         mainCtrl.showStartScreen();
     }
 
+    /**
+     * Opens the invitations screen and updates the last activity.
+     */
     @FXML
-    private void openInvitations(){
+    private void openInvitations() {
         mainCtrl.showInvitations(event);
     }
 
+    /**
+     * Opens the open debts screen and updates the last activity.
+     */
     @FXML
-    private void openOpenDebts(){
+    private void openOpenDebts() {
         mainCtrl.showOpenDebts(event);
+        updateAndPrintLastActivity();
     }
 
+    /**
+     * Opens the add/edit participant screen and updates the last activity.
+     */
     @FXML
-    private void openAddEditParticipant(){
+    private void openAddEditParticipant() {
         mainCtrl.showContactDetails(event);
+        updateAndPrintLastActivity();
     }
 
+    /**
+     * Opens the add/edit expense screen and updates the last activity.
+     */
     @FXML
-    private void openAddEditExpense(){
+    private void openAddEditExpense() {
         mainCtrl.showAddEditExpense(event);
+        updateAndPrintLastActivity();
     }
 
+    /**
+     * Handles the global key press event, specifically ESCAPE key to go back.
+     *
+     * @param keyEvent The KeyEvent representing the key press event.
+     */
     @FXML
-    private void onGlobalKeyPress(KeyEvent keyEvent){
-        if (keyEvent.getCode() == KeyCode.ESCAPE){
+    private void onGlobalKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
             goBack();
         }
+    }
+
+    /**
+     * Updates and prints the custom toString method for the last activity
+     */
+    public void updateAndPrintLastActivity() {
+        LocalDateTime updatedLastActivity = LocalDateTime.now();
+
+        // Create a new EventDTO object with the updated last activity
+        EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
+
+        // Update the last activity label in the UI
+        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
     }
 
     /**
