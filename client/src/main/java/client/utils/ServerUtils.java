@@ -242,6 +242,22 @@ public class ServerUtils {
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
+   public boolean deleteExpense(ExpenseDTO e, String eventCode){
+       String endpoint = "api/v1/" + eventCode + "/expense";
+
+       Response response = ClientBuilder.newClient(new ClientConfig())
+               .target(HTTP_SERVER).path(endpoint)
+               .queryParam("id", e.id())
+               .queryParam("participantName", e.paidByName())
+               .request(APPLICATION_JSON)
+               .accept(APPLICATION_JSON)
+               .delete();
+
+       // Check the response status code
+       // TODO: should check for error types and pass that information on to user
+       return response.getStatus() == Response.Status.OK.getStatusCode();
+   }
+
     // Debt methods
 
     /**

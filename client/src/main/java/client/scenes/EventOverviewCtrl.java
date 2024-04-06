@@ -315,11 +315,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     /**
      * Nested class Expense Item.
      */
-    private static class ExpenseItem extends GridPane {
+    private class ExpenseItem extends GridPane {
 
-        private int price;
-        private String item;
-        private String paidByName;
+        private ExpenseDTO expenseDTO;
 
         /**
          * Creates ExpenseItem, a GridPane containing an Expense's date, participant,
@@ -327,10 +325,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
          * @param expense the expense to create an item for
          */
         public ExpenseItem(ExpenseDTO expense) {
-            price = expense.price();
-            item = expense.item();
-            paidByName = expense.paidByName();
-
+            expenseDTO = expense;
             createItemBox();
         }
 
@@ -343,6 +338,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.add(date, 0, 0, 1, 2);
 
             Text expenseInfo = new Text(paidByName + " paid " + price + " Euro for " + item);
+            Text expenseInfo = new Text(
+                    expenseDTO.paidByName() + " paid " + expenseDTO.price() + " Euro for " + expenseDTO.item());
             this.add(expenseInfo, 1, 0);
 
             // TODO: 'paidBy includes ...' is currently hardcoded to 'all'
@@ -351,6 +348,13 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             Button expenseEditButton = new Button("Edit");
             this.add(expenseEditButton, 2, 0, 1, 2);
+
+            Button expenseDeleteButton = new Button("Delete");
+            expenseDeleteButton.setOnAction(eventHandler -> {
+                serverUtils.deleteExpense(expenseDTO, event.code());
+                refresh();
+            });
+            this.add(expenseDeleteButton, 3, 0, 2, 3);
         }
 
     }
