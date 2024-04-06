@@ -1,9 +1,11 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.VoidSceneController;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 
@@ -11,6 +13,14 @@ public class AdminPasswordCtrl implements VoidSceneController {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+    @FXML
+    private Button submitButton;
+
+    @FXML
+    private Text enterPasswordText;
+
+    @FXML
+    private Text authenticationRequired;
 
     @FXML
     private PasswordField passwordField;
@@ -33,7 +43,9 @@ public class AdminPasswordCtrl implements VoidSceneController {
      * Initialized the Scene.
      */
     public void initialize() {
+        setLanguageForAllAdminPasswordCtrl();
         refresh();
+
     }
 
     /**
@@ -60,6 +72,18 @@ public class AdminPasswordCtrl implements VoidSceneController {
         else {
             errorText.setVisible(true);
         }
+    }
+
+    public void setLanguageForAllAdminPasswordCtrl(){
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        if(lm == null){
+            return;
+        }
+        submitButton.setText(lm.get("Submit"));
+        authenticationRequired.setText(lm.get("Authentication Required"));
+        enterPasswordText.setText(lm.get("Please enter the password to access the administrator control panel"));
+        errorText.setText(lm.get("Incorrect password"));
+        passwordField.setPromptText(lm.get("Enter password..."));
     }
 
 }

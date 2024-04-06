@@ -235,6 +235,7 @@ public class StartScreenCtrl implements VoidSceneController {
                         new LanguageOption(LanguageOption.Language.ENGLISH));
                 System.out.println("Saved english");
                 setLanguageForAll();
+                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
                 //TODO - refresh the page
                 break;
             case 1:
@@ -242,6 +243,8 @@ public class StartScreenCtrl implements VoidSceneController {
                         new LanguageOption(LanguageOption.Language.DUTCH));
                 System.out.println("Saved dutch");
                 setLanguageForAll();
+                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
+
                 //refresh();
                 //TODO - refresh the page
                 break;
@@ -250,6 +253,8 @@ public class StartScreenCtrl implements VoidSceneController {
                         new LanguageOption(LanguageOption.Language.ROMANIAN));
                 System.out.println("Saved romanian");
                 setLanguageForAll();
+                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
+
                 //refresh();
                 //TODO - refresh the page
                 break;
