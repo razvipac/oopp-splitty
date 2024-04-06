@@ -15,21 +15,78 @@
  */
 package client.utils;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import java.util.List;
-
 import commons.dto.*;
-import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
-
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientConfig;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private final String SERVER = "localhost:8080";
+    private final String HTTP_SERVER = "https://" + SERVER + "/";
+    private StompSession wsSession = wsConnect("ws://" + SERVER + "/ws-connect");
+
+    private StompSession wsConnect(String url){
+        var wsClient = new StandardWebSocketClient();
+        var stompClient = new WebSocketStompClient(wsClient);
+        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+        try {
+            return stompClient.connect(url, new StompSessionHandlerAdapter() {}).get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        throw new IllegalStateException();
+    }
+
+    private <T> void registerForWebSocketMessages(String dest,
+                                                 Consumer<WSWrapperResponseBody<T>> consumer){
+        wsSession.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return WSWrapperResponseBody.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((WSWrapperResponseBody<T>) payload);
+            }
+        });
+    }
+
+    public void registerForWebSocketMessagesForEvent(String eventCode,
+                                                     Consumer<WSWrapperResponseBody<EventDTO>> consumer){
+        registerForWebSocketMessages("/api/v1/channel/" + eventCode, consumer);
+        registerForWebSocketMessages("/api/v1/channel/event", consumer);
+    }
+
+    public void registerForWebSocketMessagesForParticipant(String eventCode,
+                                                     Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer){
+        registerForWebSocketMessages("/api/v1/channel/" + eventCode + "/participant", consumer);
+    }
+
+    public void registerForWebSocketMessagesForExpense(String eventCode,
+                                                     Consumer<WSWrapperResponseBody<ExpenseDTO>> consumer){
+        registerForWebSocketMessages("/api/v1/channel/" + eventCode + "/expense", consumer);
+    }
 
     /**
      * Gets all events.
@@ -38,7 +95,7 @@ public class ServerUtils {
      */
     public List<EventDTO> getAllEvents() {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/")
+                .target(HTTP_SERVER).path("api/v1/")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -54,7 +111,7 @@ public class ServerUtils {
     public EventDTO createEvent(String eventName) {
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/")
+                .target(HTTP_SERVER).path("api/v1/")
                 .queryParam("name", eventName)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -68,7 +125,7 @@ public class ServerUtils {
     public EventDTO deleteEvent(String eventCode) {
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/")
+                .target(HTTP_SERVER).path("api/v1/")
                 .queryParam("eventCode", eventCode)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -85,7 +142,7 @@ public class ServerUtils {
      */
     public List<ParticipantDTO> getParticipants(String code) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/" + code + "/participant")
+                .target(HTTP_SERVER).path("api/v1/" + code + "/participant")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -94,14 +151,14 @@ public class ServerUtils {
 
 
     /**
-     * Gets a single participant from the server
+     * Gets a single participant from the HTTP_SERVER
      * @param eventCode eventCode of the event to which the participant belongs
      * @param name name of the participant
      * @return the ParticipantDTO instance corresponding to that participant
      */
     public ParticipantDTO getParticipant(String eventCode, String name){
         return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/" + eventCode + "/participant?name=" + name)
+                .target(HTTP_SERVER).path("api/v1/" + eventCode + "/participant?name=" + name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(List.class)
@@ -109,7 +166,7 @@ public class ServerUtils {
     }
 
     /**
-     * Adds Participant to server
+     * Adds Participant to HTTP_SERVER
      * @param p ParticipantDTO corresponding to the Participant to add
      * @param eventCode event code of the participant to add
      * @return True iff add was successful, false otherwise
@@ -118,7 +175,7 @@ public class ServerUtils {
         String endpoint = "api/v1/" + eventCode + "/participant";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path(endpoint)
+                .target(HTTP_SERVER).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(p, APPLICATION_JSON));
@@ -138,7 +195,7 @@ public class ServerUtils {
      */
     public List<ExpenseDTO> getExpenses(String code) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/" + code + "/expense")
+                .target(HTTP_SERVER).path("api/v1/" + code + "/expense")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -146,7 +203,7 @@ public class ServerUtils {
     }
 
     /**
-     * Adds Expense to server
+     * Adds Expense to HTTP_SERVER
      * @param e Expense to add
      * @param code Code of event
      * @return True iff add was successful, false otherwise
@@ -155,7 +212,7 @@ public class ServerUtils {
         String endpoint = "api/v1/" + code + "/expense";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path(endpoint)
+                .target(HTTP_SERVER).path(endpoint)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(e, APPLICATION_JSON));
@@ -175,7 +232,7 @@ public class ServerUtils {
      */
     public List<DebtDTO> getAllOpenDebts(String eventCode) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER)
+                .target(HTTP_SERVER)
                 .path("api/v1/" + eventCode + "/debts")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -185,14 +242,14 @@ public class ServerUtils {
     // Password methods
 
     /**
-     * Checks if the given String matches the server's password
+     * Checks if the given String matches the HTTP_SERVER's password
      *
      * @param input The entered password
      * @return True iff input matches password, false otherwise.
      */
     public Boolean matchesPassword(String input) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER)
+                .target(HTTP_SERVER)
                 .path("api/v1/admin/auth/matches-password")
                 .queryParam("input", input)
                 .request(APPLICATION_JSON)
@@ -209,7 +266,7 @@ public class ServerUtils {
      */
     public List<JSONDumpEventDTO> getJSON() {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/admin/jsondump")
+                .target(HTTP_SERVER).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {
@@ -223,7 +280,7 @@ public class ServerUtils {
      */
     public boolean restoreEvent(List<JSONDumpEventDTO> body) {
         Response response = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/admin/jsondump")
+                .target(HTTP_SERVER).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(body, APPLICATION_JSON));
