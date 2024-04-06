@@ -82,6 +82,7 @@ public class StartScreenCtrl implements VoidSceneController {
 
 
     private void loadLanguageButton() {
+        System.out.println("Loading language button");
         HBox hbox1 = new HBox();
         hbox1.getChildren().addAll(
                 mainCtrl.getLanguageManager().createFlagIcon(
@@ -144,7 +145,7 @@ public class StartScreenCtrl implements VoidSceneController {
     }
 
 
-    private void setLanguageForAll(){
+    public void setLanguageForAll(){
         LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
             return;
@@ -160,6 +161,8 @@ public class StartScreenCtrl implements VoidSceneController {
         joinButton.setText(lm.get("Join"));
         join.setText(lm.get("Join an existing event"));
         recentlyViewed.setText(lm.get("Recently viewed events:"));
+
+
     }
     /**
      * Opens the admin control panel popup
@@ -229,33 +232,30 @@ public class StartScreenCtrl implements VoidSceneController {
     public void translate(ActionEvent actionEvent) {
         int option = languageButton.getSelectionModel().getSelectedIndex();
         // Add your custom logic here based on the selected language;
+        HBox hBox = new HBox();
         switch (option){
             case 0:
                 mainCtrl.getLanguageManager().saveLanguage(
                         new LanguageOption(LanguageOption.Language.ENGLISH));
                 System.out.println("Saved english");
-                setLanguageForAll();
-                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
+                mainCtrl.reloadAllLanguages();
+                mainCtrl.showStartScreen();
                 //TODO - refresh the page
                 break;
             case 1:
                 mainCtrl.getLanguageManager().saveLanguage(
                         new LanguageOption(LanguageOption.Language.DUTCH));
                 System.out.println("Saved dutch");
-                setLanguageForAll();
-                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
-
-                //refresh();
+                mainCtrl.reloadAllLanguages();
+                mainCtrl.showStartScreen();
                 //TODO - refresh the page
                 break;
             case 2:
                 mainCtrl.getLanguageManager().saveLanguage(
                         new LanguageOption(LanguageOption.Language.ROMANIAN));
                 System.out.println("Saved romanian");
-                setLanguageForAll();
-                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
-
-                //refresh();
+                mainCtrl.reloadAllLanguages();
+                mainCtrl.showStartScreen();
                 //TODO - refresh the page
                 break;
         }
