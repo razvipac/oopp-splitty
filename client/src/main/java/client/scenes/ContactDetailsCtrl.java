@@ -204,7 +204,28 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                     "Error", "Adding Participant Failed",
-                    "The participant has not been added due to an error. Please try again");
+                    "The participant has not been added due to an error. Please try again.");
+            alert.showAndWait();
+        }
+
+        goBack();
+    }
+
+    @FXML
+    private void updateParticipantToServer(ParticipantDTO p, String name) {
+        boolean success = serverUtils.updateParticipant(p, event.code(), name);
+        if(success) {
+            Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                    "Success", "Participant Updated Successfully",
+                    "Participant with (former) name: " + name + " has been updated.");
+            confirmation.getButtonTypes().clear();
+            confirmation.getButtonTypes().add(ButtonType.OK);
+            confirmation.showAndWait();
+        }
+        else {
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error", "Updating Participant Failed",
+                    "The participant has not been updated due to an error. Please try again.");
             alert.showAndWait();
         }
 
@@ -221,7 +242,14 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private boolean formIsValid() {
-        if(boxName.getText().isEmpty()) {
+        if(currentView == View.EDIT
+                && comboBoxName.getSelectionModel().getSelectedItem() == null) {
+            errorText.setText("Please select participant to edit");
+            return false;
+        }
+
+        if(currentView == View.ADD
+                && boxName.getText().isEmpty()) {
             errorText.setText("Please fill in the name field");
             return false;
         }
@@ -265,9 +293,31 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void ok(){
-        if(formIsValid())
-            addParticipantToServer(new ParticipantDTO(boxName.getText(),
-                    boxEmail.getText(), boxIban.getText(), boxBic.getText()));
+        if(formIsValid()) {
+
+            if(currentView == View.ADD) {
+                addParticipantToServer(
+                        new ParticipantDTO(
+                                boxName.getText(),
+                                boxEmail.getText(),
+                                boxIban.getText(),
+                                boxBic.getText()
+                        )
+                );
+            }
+            else {
+                updateParticipantToServer(
+                        new ParticipantDTO(
+                                boxName.getText(),
+                                boxEmail.getText(),
+                                boxIban.getText(),
+                                boxBic.getText()
+                        ),
+                        comboBoxName.getSelectionModel().getSelectedItem()
+                );
+            }
+
+        }
     }
 
 }

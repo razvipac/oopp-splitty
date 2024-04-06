@@ -101,7 +101,8 @@ public class ServerUtils {
      */
     public ParticipantDTO getParticipant(String eventCode, String name){
         return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/v1/" + eventCode + "/participant?name=" + name)
+                .target(SERVER).path("api/v1/" + eventCode + "/participant")
+                .queryParam("name", name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(List.class)
@@ -129,10 +130,11 @@ public class ServerUtils {
     }
 
     public boolean updateParticipant(ParticipantDTO p, String eventCode, String name) {
-        String endpoint = "api/v1/" + eventCode + "/participant?name=" + name;
+        String endpoint = "api/v1/" + eventCode + "/participant";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path(endpoint)
+                .queryParam("name", name)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .put(Entity.entity(p, APPLICATION_JSON));
