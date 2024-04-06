@@ -75,35 +75,35 @@ public class ServerUtils {
     public void registerForWebSocketUpdatesOnEvent(String eventCode,
                                                      Consumer<WSWrapperResponseBody<EventDTO>> consumer)
     {
-        registerForWebSocketMessages("/api/v1/channel/" + eventCode, consumer);
-        registerForWebSocketMessages("/api/v1/channel/event", consumer);
+        registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode, consumer);
+        registerForWebSocketMessages("/api/websocket/v1/channel/event", consumer);
     }
 
     public void registerForWebSocketUpdatesOnParticipant(String eventCode,
                                                      Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
     {
-        registerForWebSocketMessages("/api/v1/channel/" + eventCode + "/participant", consumer);
+        registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
     }
 
     public void registerForWebSocketUpdatesOnExpense(String eventCode,
                                                      Consumer<WSWrapperResponseBody<ExpenseDTO>> consumer)
     {
-        registerForWebSocketMessages("/api/v1/channel/" + eventCode + "/expense", consumer);
+        registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/expense", consumer);
     }
 
     public <T> void registerForWebSocketUpdatesForTheWholeEvent(String eventCode,
                                                             Consumer<WSWrapperResponseBody<T>> consumer)
     {
         registerForWebSocketMessages(
-                "/api/v1/channel/" + eventCode,
+                "/api/websocket/v1/channel/" + eventCode,
                 q -> consumer.accept((WSWrapperResponseBody<T>) q)
         );
         registerForWebSocketMessages(
-                "/api/v1/channel/" + eventCode + "/participant",
+                "/api/websocket/v1/channel/" + eventCode + "/participant",
                 q -> consumer.accept((WSWrapperResponseBody<T>) q)
         );
         registerForWebSocketMessages(
-                "/api/v1/channel/" + eventCode + "/expense",
+                "/api/websocket/v1/channel/" + eventCode + "/expense",
                 q -> consumer.accept((WSWrapperResponseBody<T>) q)
         );
     }
