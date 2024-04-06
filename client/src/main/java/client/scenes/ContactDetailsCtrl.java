@@ -7,12 +7,12 @@ import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import commons.dto.ParticipantDTO;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
+
+import java.util.List;
 
 public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
@@ -22,10 +22,21 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     @Inject
     private ControllerUtils controllerUtils;
 
+    public enum View {
+        ADD, EDIT, DELETE
+    }
+    private View currentView;
+
     private EventDTO event;
 
     @FXML
+    private ToggleGroup toggleView;
+    @FXML
+    private ToggleButton addButton;
+    @FXML
     private TextField boxName;
+    @FXML
+    private ComboBox<String> comboBoxName;
     @FXML
     private TextField boxEmail;
     @FXML
@@ -52,7 +63,123 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void initialize(EventDTO event) {
         this.event = event;
+
+        // IBAN: sets character limit to 18
+        boxIban.setTextFormatter(getTextFormatterIBAN());
+        // properly format the IBAN
+        boxIban.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue) {
+                formatIban();
+            }
+        } );
+
+        // Name & Email: sets character limit to 255
+        boxName.setTextFormatter(getTextFormatterCharacterLimit(255));
+        boxEmail.setTextFormatter(getTextFormatterCharacterLimit(255));
+
+        // BIC: sets character limit to 8
+        boxBic.setTextFormatter(getTextFormatterCharacterLimit(8));
+        // convert to uppercase
+        boxBic.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                boxBic.setText(boxBic.getText().toUpperCase());
+            }
+        } );
+
+        // listen to toggleView changes
+        toggleViewListen();
+
+        refresh();
+    }
+
+    /**
+     * Creates and gets TextFormatter with character limit, specifically for IBAN
+     * @return TextFormatter Object
+     */
+    private TextFormatter<String> getTextFormatterIBAN() {
+        return new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            int nonSpaceCount = (int) newText.chars().filter(c -> c != ' ').count();
+            if (nonSpaceCount <= 18) {
+                return change;
+            } else {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Creates a TextFormatter with a character limit
+     * @param limit The limit on the number of characters
+     * @return TextFormatter Object
+     */
+    private TextFormatter<String> getTextFormatterCharacterLimit(int limit) {
+        if(limit < 0) limit = 0;
+        int finalLimit = limit;
+        return new TextFormatter<>(change -> {
+            if(change.getControlNewText().length() > finalLimit) return null;
+            else return change;
+        });
+    }
+
+    /**
+     * Adds listener to toggleView. Sets currentView based on the ToggleGroups selected button.
+     */
+    private void toggleViewListen() {
+        toggleView.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
+            if(newValue != null) {
+                ToggleButton selected = (ToggleButton) newValue;
+                if(selected.getText().equals("Add")) {
+                    setView(View.ADD);
+                }
+                else if(selected.getText().equals("Edit")) {
+                    setView(View.EDIT);
+                }
+                else if (selected.getText().equals("Delete")) {
+                    setView(View.DELETE);
+                }
+            }
+        }));
+    }
+
+    /**
+     * Refreshes the page, changes everything to default values.
+     */
+    public void refresh() {
         errorText.setText("");
+        boxName.clear();
+        boxEmail.clear();
+        boxIban.clear();
+        boxBic.clear();
+        toggleView.selectToggle(addButton);
+        setView(View.ADD);  // set to ADD by default
+
+        List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
+        comboBoxName.getItems().setAll(
+                participants
+                        .stream()
+                        .map(ParticipantDTO::name)
+                        .toList()
+        );
+    }
+
+    /**
+     * Changes the currentView and the corresponding elements of the page.
+     * Iff view equals ADD, boxName is visible and comboBoxName is invisible.
+     * Otherwise, the opposite is true.
+     * @param view The view to compare to.
+     */
+    public void setView(View view) {
+        currentView = view;
+
+        // visible if view equals ADD
+        boxName.setVisible(view == View.ADD);
+        // visible if view equals EDIT or DELETE
+        comboBoxName.setVisible(view != View.ADD);
+        // visible if view equals DELETE
+        boxEmail.setDisable(view == View.DELETE);
+        boxIban.setDisable(view == View.DELETE);
+        boxBic.setDisable(view == View.DELETE);
     }
 
     /**
@@ -87,16 +214,16 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Adds the given Participant to the server, and displays an alert box with the outcome.
-     * @param p The (validated) participant to add
+     * Adds the given participant to the server, and displays an alert box with the outcome.
+     * @param participant The (validated) participant to add
      */
     @FXML
-    private void addParticipantToServer(ParticipantDTO p) {
-        boolean success = serverUtils.addParticipant(p, event.code());
+    private void addParticipantToServer(ParticipantDTO participant) {
+        boolean success = serverUtils.addParticipant(participant, event.code());
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Added Successfully",
-                    p.name() + " has been added to the event");
+                    participant.name() + " has been added to the event");
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
@@ -104,16 +231,62 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                     "Error", "Adding Participant Failed",
-                    "The participant has not been added due to an error. Please try again");
+                    "The participant has not been added due to an error. Please try again.");
             alert.showAndWait();
         }
 
         goBack();
     }
 
+    /**
+     * Updates participant in the server, and displays an alert box with the outcome.
+     * @param body ParticipantDTO containing the values that need to be updated
+     * @param name Name of Participant to be updated
+     */
     @FXML
-    private void goBack() {
-        mainCtrl.showEventOverview(event);
+    private void updateParticipantToServer(ParticipantDTO body, String name) {
+        boolean success = serverUtils.updateParticipant(body, event.code(), name);
+        if(success) {
+            Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                    "Success", "Participant Updated Successfully",
+                    name + " has been updated.");
+            confirmation.getButtonTypes().clear();
+            confirmation.getButtonTypes().add(ButtonType.OK);
+            confirmation.showAndWait();
+        }
+        else {
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error", "Updating Participant Failed",
+                    name + " has not been updated due to an error. Please try again.");
+            alert.showAndWait();
+        }
+
+        goBack();
+    }
+
+    /**
+     * Deletes participant from server, and displays an alert box with the outcome.
+     * @param name Name of participant to delete.
+     */
+    @FXML
+    private void deleteParticipantFromServer(String name) {
+        boolean success = serverUtils.deleteParticipant(event.code(), name);
+        if(success) {
+            Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                    "Success", "Participant Deleted Successfully",
+                    name + " has been deleted from this event.");
+            confirmation.getButtonTypes().clear();
+            confirmation.getButtonTypes().add(ButtonType.OK);
+            confirmation.showAndWait();
+        }
+        else {
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error", "Deleting Participant Failed",
+                    name + " has not been deleted due to an error. Please try again.");
+            alert.showAndWait();
+        }
+
+        goBack();
     }
 
     /**
@@ -121,7 +294,22 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private boolean formIsValid() {
-        if(boxName.getText().isEmpty()) {
+        if(currentView == View.EDIT || currentView == View.DELETE) {
+            if(comboBoxName.getSelectionModel().getSelectedItem() == null) {
+                errorText.setText("Please select participant");
+                return false;
+            }
+        }
+
+        if(currentView == View.EDIT) {
+            if(boxEmail.getText().isEmpty() && boxIban.getText().isEmpty()
+                && boxBic.getText().isEmpty()) {
+                errorText.setText("Enter at least one field to edit");
+            }
+        }
+
+        if(currentView == View.ADD
+                && boxName.getText().isEmpty()) {
             errorText.setText("Please fill in the name field");
             return false;
         }
@@ -158,16 +346,75 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         else return false;
     }
 
+    /**
+     * Keyboard shortcut. Pressing ESC brings you back to the previous page.
+     * @param keyEvent Which keystroke occurred
+     */
     @FXML
     private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
     }
 
+    /**
+     * Handles action based on currentView, only if the entered form is validated.
+     */
     @FXML
     private void ok(){
-        if(formIsValid())
-            addParticipantToServer(new ParticipantDTO(boxName.getText(),
-                    boxEmail.getText(), boxIban.getText(), boxBic.getText()));
+        // Check if form has been filled in correctly
+        if(formIsValid()) {
+            switch(currentView) {
+                case ADD -> addParticipantToServer(
+                        new ParticipantDTO(
+                                boxName.getText(),
+                                boxEmail.getText(),
+                                boxIban.getText(),
+                                boxBic.getText()
+                        )
+                );
+
+                case EDIT -> {
+                    // Confirmation box
+                    boolean confirmed = controllerUtils.createConfirmationAlert(
+                            "Confirm Edit",
+                            "Are you sure you want to edit this participant?");
+
+                    if (confirmed) {
+                        updateParticipantToServer(
+                                new ParticipantDTO(
+                                        "",     // name can't be changed
+                                        boxEmail.getText(),
+                                        boxIban.getText(),
+                                        boxBic.getText()
+                                ),
+                                comboBoxName.getSelectionModel().getSelectedItem()
+                        );
+                    }
+                }
+
+                case DELETE -> {
+                    // Confirmation box
+                    boolean confirmed = controllerUtils.createConfirmationAlert(
+                            "Confirm Delete",
+                            "Are you sure you want to delete this participant?");
+
+                    if (confirmed) {
+                        deleteParticipantFromServer(
+                                comboBoxName.getSelectionModel().getSelectedItem()
+                        );
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    /**
+     * Goes back to EventOverview
+     */
+    @FXML
+    private void goBack() {
+        mainCtrl.showEventOverview(event);
     }
 
     public void setErrorText(){

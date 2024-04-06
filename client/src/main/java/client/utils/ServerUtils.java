@@ -58,7 +58,7 @@ public class ServerUtils {
     }
 
     private <T> void registerForWebSocketMessages(String dest,
-                                                 Consumer<WSWrapperResponseBody<T>> consumer){
+                                                  Consumer<WSWrapperResponseBody<T>> consumer){
         wsSession.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -78,7 +78,7 @@ public class ServerUtils {
      * @param consumer consumer for handling changes
      */
     public void registerForWebSocketUpdatesOnParticipant(String eventCode,
-                                                     Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
+                                                         Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
     {
         registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
     }
@@ -232,6 +232,49 @@ public class ServerUtils {
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
+    /**
+     * Updates participant in the server
+     * @param body ParticipantDTO containing the updated fields
+     * @param eventCode Event code of participant
+     * @param name (Old) name of participant
+     * @return True iff successful, false otherwise.
+     */
+    public boolean updateParticipant(ParticipantDTO body, String eventCode, String name) {
+        String endpoint = "api/v1/" + eventCode + "/participant";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path(endpoint)
+                .queryParam("name", name)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(body, APPLICATION_JSON));
+
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.OK.getStatusCode() ||
+                response.getStatus() == Response.Status.NO_CONTENT.getStatusCode();
+    }
+
+    /**
+     * Deletes participant in the server.
+     * @param eventCode Event code of participant
+     * @param name (Old) name of participant
+     * @return True iff successful, false otherwise.
+     */
+    public boolean deleteParticipant(String eventCode, String name) {
+        String endpoint = "api/v1/" + eventCode + "/participant";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path(endpoint)
+                .queryParam("name", name)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
+
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+
     // Expense methods
 
     /**
@@ -279,12 +322,12 @@ public class ServerUtils {
         String endpoint = "api/v1/" + eventCode + "/expense";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
-               .target(httpServerUrl).path(endpoint)
-               .queryParam("id", e.id())
-               .queryParam("participantName", e.paidByName())
-               .request(APPLICATION_JSON)
-               .accept(APPLICATION_JSON)
-               .delete();
+                .target(httpServerUrl).path(endpoint)
+                .queryParam("id", e.id())
+                .queryParam("participantName", e.paidByName())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
 
         // Check the response status code
         // TODO: should check for error types and pass that information on to user

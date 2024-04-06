@@ -44,7 +44,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" onAction="#openAddEditParticipant" text="Add/Edit Participant" />
+                        <Button mnemonicParsing="false" onAction="#openAddEditParticipant" text="Manage" />
                      </children>
                   </HBox>
                   <HBox fx:id="participantsHBox" alignment="CENTER_LEFT" spacing="10.0">
