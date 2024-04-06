@@ -30,16 +30,10 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     private ControllerUtils controllerUtils;
 
     private EventDTO event;
-
     private List<ParticipantDTO> participants;
     private ArrayList<ExpenseDTO> addEditExpenseList;
     private Map<String, ParticipantDTO> participantMap;
-
-    private enum RadioSelection {
-        ALL, SOME
-    }
-
-    private RadioSelection radioSelectionState;
+    private boolean everyoneSelected;
 
     @FXML
     private ComboBox<String> whoPaidDropdown;
@@ -51,17 +45,10 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     private ComboBox<String> currencyDropdown;
     @FXML
     private DatePicker whenPicker;
-
-    @FXML
-    private ToggleGroup radioGroup;
-    @FXML
-    private RadioButton equallyButton;
-    @FXML
-    private RadioButton onlySomeButton;
-
     @FXML
     private TextField expenseTypeField;
-
+    @FXML
+    private Button everyoneButton;
     @FXML
     private Text errorText;
     @FXML
@@ -92,15 +79,8 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         currencyDropdown.getSelectionModel().selectFirst();
 
         errorText.setText("");
-        radioSelectionState = RadioSelection.ALL;
 
         refresh();
-
-        radioGroup.selectedToggleProperty().addListener(
-                (v, oldValue, newValue) -> {
-                    radioSelectionState = newValue == onlySomeButton ? RadioSelection.SOME : RadioSelection.ALL;
-                    refreshParticipantContainer();
-                });
 
         serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> Platform.runLater(this::refresh));
     }
@@ -131,14 +111,7 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         for (ParticipantDTO p : participants) {
             String name = p.name();
             CheckBox participantCheckbox = new CheckBox(name);
-            participantCheckbox.setDisable(true);
             checkboxContainer.getChildren().add(participantCheckbox);
-        }
-
-        for (Node node : checkboxContainer.getChildren()) {
-            if (node instanceof CheckBox) {
-                node.setDisable(radioSelectionState == RadioSelection.ALL);
-            }
         }
     }
 
@@ -149,17 +122,17 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         // TODO: add validation for the optional fields
 
         if (whoPaidDropdown.getValue() == null || whoPaidDropdown.getValue().isEmpty()) {
-            errorText.setText("Please select the participant who paid for this expense.");
+            errorText.setText("Please select the participant who paid for this expense");
             return false;
         }
 
         if (howMuchField.getText().isEmpty()) {
-            errorText.setText("Please fill in the price of the expense.");
+            errorText.setText("Please fill in the price of the expense");
             return false;
         }
 
         if (whatForField.getText().isEmpty()) {
-            errorText.setText("Please enter what the expense was for.");
+            errorText.setText("Please enter what the expense was for");
             return false;
         }
 
@@ -200,6 +173,13 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         goBack();
+    }
+
+    @FXML private void selectEveryone() {
+        for(Node node : checkboxContainer.getChildren()) {
+            CheckBox checkBox = (CheckBox) node;
+            checkBox.setSelected(true);
+        }
     }
 
     /**
