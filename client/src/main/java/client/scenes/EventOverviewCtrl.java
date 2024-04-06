@@ -336,6 +336,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+
     /**
      * Handles the hover-in event for a label.
      *
@@ -426,6 +427,5 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             });
             this.add(expenseDeleteButton, 3, 0, 2, 3);
         }
-
     }
 }
