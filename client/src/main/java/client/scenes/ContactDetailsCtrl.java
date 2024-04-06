@@ -64,18 +64,8 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     public void initialize(EventDTO event) {
         this.event = event;
 
-        // IBAN max character limit: 18
-        TextFormatter<String> ibanFormatter = new TextFormatter<>(change -> {
-            String newText = change.getControlNewText();
-            int nonSpaceCount = (int) newText.chars().filter(c -> c != ' ').count();
-            if (nonSpaceCount <= 18) {
-                return change;
-            } else {
-                return null;
-            }
-        });
-        boxIban.setTextFormatter(ibanFormatter);
-
+        // IBAN: sets character limit to 18
+        boxIban.setTextFormatter(getTextFormatterIBAN());
         // properly format the IBAN
         boxIban.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue) {
@@ -84,17 +74,58 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         } );
 
         // Name & Email: sets character limit to 255
-        boxName.setTextFormatter(textFormatterCharacterLimit(255));
-        boxEmail.setTextFormatter(textFormatterCharacterLimit(255));
+        boxName.setTextFormatter(getTextFormatterCharacterLimit(255));
+        boxEmail.setTextFormatter(getTextFormatterCharacterLimit(255));
 
-        // BIC: sets character limit to 8, and converts to uppercase
-        boxBic.setTextFormatter(textFormatterCharacterLimit(8));
+        // BIC: sets character limit to 8
+        boxBic.setTextFormatter(getTextFormatterCharacterLimit(8));
+        // convert to uppercase
         boxBic.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 boxBic.setText(boxBic.getText().toUpperCase());
             }
         } );
 
+        // listen to toggleView changes
+        toggleViewListen();
+
+        refresh();
+    }
+
+    /**
+     * Creates and gets TextFormatter with character limit, specifically for IBAN
+     * @return TextFormatter Object
+     */
+    private TextFormatter<String> getTextFormatterIBAN() {
+        return new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            int nonSpaceCount = (int) newText.chars().filter(c -> c != ' ').count();
+            if (nonSpaceCount <= 18) {
+                return change;
+            } else {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Creates a TextFormatter with a character limit
+     * @param limit The limit on the number of characters
+     * @return TextFormatter Object
+     */
+    private TextFormatter<String> getTextFormatterCharacterLimit(int limit) {
+        if(limit < 0) limit = 0;
+        int finalLimit = limit;
+        return new TextFormatter<>(change -> {
+            if(change.getControlNewText().length() > finalLimit) return null;
+            else return change;
+        });
+    }
+
+    /**
+     * Adds listener to toggleView. Sets currentView based on the ToggleGroups selected button.
+     */
+    private void toggleViewListen() {
         toggleView.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue != null) {
                 ToggleButton selected = (ToggleButton) newValue;
@@ -109,8 +140,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 }
             }
         }));
-
-        refresh();
     }
 
     /**
@@ -154,20 +183,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Creates a TextFormatter with a character limit
-     * @param limit The limit on the number of characters
-     * @return TextFormatter Object
-     */
-    public TextFormatter<String> textFormatterCharacterLimit(int limit) {
-        if(limit < 0) limit = 0;
-        int finalLimit = limit;
-        return new TextFormatter<>(change -> {
-            if(change.getControlNewText().length() > finalLimit) return null;
-            else return change;
-        });
-    }
-
-    /**
      * Formats the user-inputted IBAN by:
      *  a) Adding spaces to the right places
      *  b) Converting all letters to uppercase
@@ -199,16 +214,16 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Adds the given Participant to the server, and displays an alert box with the outcome.
-     * @param p The (validated) participant to add
+     * Adds the given participant to the server, and displays an alert box with the outcome.
+     * @param participant The (validated) participant to add
      */
     @FXML
-    private void addParticipantToServer(ParticipantDTO p) {
-        boolean success = serverUtils.addParticipant(p, event.code());
+    private void addParticipantToServer(ParticipantDTO participant) {
+        boolean success = serverUtils.addParticipant(participant, event.code());
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Added Successfully",
-                    p.name() + " has been added to the event");
+                    participant.name() + " has been added to the event");
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
@@ -223,9 +238,14 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         goBack();
     }
 
+    /**
+     * Updates participant in the server, and displays an alert box with the outcome.
+     * @param body ParticipantDTO containing the values that need to be updated
+     * @param name Name of Participant to be updated
+     */
     @FXML
-    private void updateParticipantToServer(ParticipantDTO p, String name) {
-        boolean success = serverUtils.updateParticipant(p, event.code(), name);
+    private void updateParticipantToServer(ParticipantDTO body, String name) {
+        boolean success = serverUtils.updateParticipant(body, event.code(), name);
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     "Success", "Participant Updated Successfully",
@@ -244,6 +264,10 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         goBack();
     }
 
+    /**
+     * Deletes participant from server, and displays an alert box with the outcome.
+     * @param name Name of participant to delete.
+     */
     @FXML
     private void deleteParticipantFromServer(String name) {
         boolean success = serverUtils.deleteParticipant(event.code(), name);
@@ -263,11 +287,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         goBack();
-    }
-
-    @FXML
-    private void goBack() {
-        mainCtrl.showEventOverview(event);
     }
 
     /**
@@ -324,11 +343,18 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         else return false;
     }
 
+    /**
+     * Keyboard shortcut. Pressing ESC brings you back to the previous page.
+     * @param keyEvent Which keystroke occurred
+     */
     @FXML
     private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
     }
 
+    /**
+     * Handles action based on currentView, only if the entered form is validated.
+     */
     @FXML
     private void ok(){
         // Check if form has been filled in correctly
@@ -378,6 +404,14 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
             }
 
         }
+    }
+
+    /**
+     * Goes back to EventOverview
+     */
+    @FXML
+    private void goBack() {
+        mainCtrl.showEventOverview(event);
     }
 
 }
