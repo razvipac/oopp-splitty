@@ -102,15 +102,15 @@ class OpenDebtsCtrlTest extends ApplicationTest {
         assertFalse(debtVBox.getChildren().isEmpty()); // Check that the VBox is not empty
         VBox debtItem = (VBox) debtVBox.getChildren().get(0);
         HBox debtLine = (HBox) debtItem.getChildren().get(0);
-        Button receivedButton = (Button) debtLine.getChildren().get(2); // Get the receivedButton
+        Button receivedButton = (Button) debtLine.getChildren().get(2);
 
-        when(debtDTOMock.received()).thenReturn(false); // Mock behavior for received()
+        when(debtDTOMock.received()).thenReturn(false);
 
         receivedButton.fire(); // Simulate a button click
 
         assertEquals("Undo", receivedButton.getText()); // Check the text of the Button when debt is received
 
-        when(debtDTOMock.received()).thenReturn(true); // Mock behavior for received()
+        when(debtDTOMock.received()).thenReturn(true);
 
         receivedButton.fire(); // Simulate another button click
 
