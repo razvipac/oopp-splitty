@@ -170,4 +170,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                     boxEmail.getText(), boxIban.getText(), boxBic.getText()));
     }
 
+    public void setErrorText(){
+        this.errorText = new Text();
+    }
 }
