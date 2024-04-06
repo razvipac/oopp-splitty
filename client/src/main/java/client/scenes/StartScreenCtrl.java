@@ -1,4 +1,5 @@
 package client.scenes;
+import client.LanguageManager;
 import client.LanguageOption;
 import client.interfaces.VoidSceneController;
 import client.utils.ServerUtils;
@@ -13,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 
 import java.util.*;
 
@@ -21,12 +23,29 @@ public class StartScreenCtrl implements VoidSceneController {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     @FXML
+    private Label recentlyViewed;
+    @FXML
+    private Text welcome;
+    @FXML
+    private Label changeLanguage;
+    @FXML
+    private Button controlPanel;
+    @FXML
+    private Label administrator;
+    @FXML
+    private Button joinButton;
+    @FXML
     private TextField createEventTextField;
     @FXML
     private TextField joinEventTextField;
     @FXML
     private ComboBox<HBox> languageButton;
-
+    @FXML
+    private Label createNewEvent;
+    @FXML
+    private Button createButton;
+    @FXML
+    private Label join;
     @FXML
     private GridPane recentViewedEvents;
 
@@ -57,6 +76,7 @@ public class StartScreenCtrl implements VoidSceneController {
         joinEventTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) joinEvent();
         });
+        setLanguageForAll();
         refresh();
     }
 
@@ -123,6 +143,24 @@ public class StartScreenCtrl implements VoidSceneController {
         updateRecentEvents();
     }
 
+
+    private void setLanguageForAll(){
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        if(lm == null){
+            return;
+        }
+        createEventTextField.setPromptText(lm.get("Enter event name"));
+        joinEventTextField.setPromptText(lm.get("Enter event code"));
+        createNewEvent.setText(lm.get("Create a new event"));
+        createButton.setText(lm.get("Create"));
+        welcome.setText(lm.get("Welcome to"));
+        changeLanguage.setText(lm.get("Change language:"));
+        controlPanel.setText(lm.get("Control Panel"));
+        administrator.setText(lm.get("Administrator"));
+        joinButton.setText(lm.get("Join"));
+        join.setText(lm.get("Join an existing event"));
+        recentlyViewed.setText(lm.get("Recently viewed events:"));
+    }
     /**
      * Opens the admin control panel popup
      */
@@ -181,6 +219,7 @@ public class StartScreenCtrl implements VoidSceneController {
         events = server.getAllEvents();
         loadLanguageButton();
         updateRecentEvents();
+
     }
 
     /**
@@ -195,18 +234,28 @@ public class StartScreenCtrl implements VoidSceneController {
                 mainCtrl.getLanguageManager().saveLanguage(
                         new LanguageOption(LanguageOption.Language.ENGLISH));
                 System.out.println("Saved english");
+                setLanguageForAll();
+                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
                 //TODO - refresh the page
                 break;
             case 1:
                 mainCtrl.getLanguageManager().saveLanguage(
                         new LanguageOption(LanguageOption.Language.DUTCH));
                 System.out.println("Saved dutch");
+                setLanguageForAll();
+                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
+
+                //refresh();
                 //TODO - refresh the page
                 break;
             case 2:
                 mainCtrl.getLanguageManager().saveLanguage(
                         new LanguageOption(LanguageOption.Language.ROMANIAN));
                 System.out.println("Saved romanian");
+                setLanguageForAll();
+                this.mainCtrl.getadminPasswordCtrl().setLanguageForAllAdminPasswordCtrl();
+
+                //refresh();
                 //TODO - refresh the page
                 break;
         }

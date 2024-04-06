@@ -216,6 +216,7 @@ public class MainCtrl {
      * Opens the popup where the Admin Password must be entered.
      */
     public void openAdminPasswordPopup() {
+        adminPasswordCtrl.setLanguageForAllAdminPasswordCtrl();
         adminPasswordPopup.showAndWait();
     }
 
@@ -249,5 +250,9 @@ public class MainCtrl {
      */
     public void setPasswordIsCorrect(boolean passwordIsCorrect) {
         this.passwordIsCorrect = passwordIsCorrect;
+    }
+
+    public AdminPasswordCtrl getadminPasswordCtrl(){
+        return adminPasswordCtrl;
     }
 }
