@@ -34,10 +34,23 @@ public class DebtService {
     }
 
     /**
-     * Retrieves a list of settled debts for a specific event
+     * Retrieves a list of all debts for a specific event
      *
      * @param eventCode The code of the event for which settled debts are to be retrieved
-     * @return A list of settled debts for the specified event.
+     * @return A list of all debts for the specified event.
+     */
+    public List<Debt> getAll(String eventCode) {
+        List<Debt> debts = new LinkedList<>();
+        debtRepository.findAllDebtsInEvent(eventCode)
+                .iterator().
+                forEachRemaining(debts::add);
+        return debts;
+    }
+    /**
+     * Retrieves a list of unsettled debts for a specific event
+     *
+     * @param eventCode The code of the event for which settled debts are to be retrieved
+     * @return A list of unsettled debts for the specified event.
      */
     public List<Debt> getAllUnsettledDebtsForEvent(String eventCode) {
         List<Debt> debts = new LinkedList<>();
