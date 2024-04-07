@@ -86,7 +86,7 @@ public class DebtController {
     }
 
     /**
-     * PUT api/v1/{eventCode}/debt?id={id} with request body in format of ExpenseRequestBody
+     * PUT api/v1/{eventCode}/debts with request body in format of DebtDTO
      * Updates the data of debt object with code {eventCode}
      * Changes if the debt is paid or not: from true to false, and from false to true
      * @param eventCode todo

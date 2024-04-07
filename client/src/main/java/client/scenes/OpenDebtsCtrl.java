@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import commons.dto.DebtDTO;
 import commons.dto.EventDTO;
 import commons.dto.ParticipantDTO;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -54,7 +55,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         this.event = event;
 
         serverUtils.registerForLongPollingDebtUpdates(event.code(), debtDTOs -> {
-            refresh();
+            Platform.runLater(this::refresh);
         });
 
         refresh();
