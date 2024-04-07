@@ -435,7 +435,13 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             Button expenseDeleteButton = new Button("Delete");
             expenseDeleteButton.setOnAction(eventHandler -> {
-                serverUtils.deleteExpense(expenseDTO, event.code());
+                boolean confirmed = controllerUtils.createConfirmationAlert(
+                        "Confirm Delete",
+                        "Are you sure you want to delete this expense?");
+
+                if (confirmed) {
+                    serverUtils.deleteExpense(expenseDTO, event.code());
+                }
             });
             this.add(expenseDeleteButton, 3, 0, 2, 3);
         }
