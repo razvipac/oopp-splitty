@@ -209,7 +209,31 @@ public class AddEditExpenseCtrl {
         } else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                     "Error", "Adding Expense Failed",
-                    "The expense has not been added due to an error. Please try again");
+                    "The expense has not been added due to an error. Please try again.");
+            alert.showAndWait();
+        }
+
+        goBack();
+    }
+
+    /**
+     * Updates the given Expense in the server, and displays an alert box with the outcome.
+     *
+     * @param e DTO with updated values
+     */
+    private void updateExpenseToServer(ExpenseDTO e) {
+        boolean success = serverUtils.updateExpense(e, event.code());
+        if (success) {
+            Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                    "Success", "Expense Edited Successfully",
+                    "Expense has been updated successfully.");
+            confirmation.getButtonTypes().clear();
+            confirmation.getButtonTypes().add(ButtonType.OK);
+            confirmation.showAndWait();
+        } else {
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error", "Editing Expense Failed",
+                    "The expense has not been updated due to an error. Please try again.");
             alert.showAndWait();
         }
 
@@ -240,12 +264,28 @@ public class AddEditExpenseCtrl {
     @FXML
     private void submit() {
         if (formIsValid()) {
-            int price = Integer.parseInt(howMuchField.getText());
-            String item = whatForField.getText();
-            ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
-            LocalDate date = whenPicker.getValue();
-            ExpenseDTO expense = new ExpenseDTO(null, price, item, payer.name(), date);
-            addExpenseToServer(expense);
+            if(expense == null) {
+                int price = Integer.parseInt(howMuchField.getText());
+                String item = whatForField.getText();
+                ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
+                LocalDate date = whenPicker.getValue();
+                ExpenseDTO expenseDTO = new ExpenseDTO(null, price, item, payer.name(), date);
+                addExpenseToServer(expenseDTO);
+            }
+            else {
+                boolean confirmed = controllerUtils.createConfirmationAlert(
+                        "Confirm Edit",
+                        "Are you sure you want to edit this expense?");
+                if (confirmed) {
+                    int price = -1;
+                    if (!howMuchField.getText().isEmpty()) price = Integer.parseInt(howMuchField.getText());
+                    String item = whatForField.getText();
+                    LocalDate date = whenPicker.getValue();
+                    ExpenseDTO expenseDTO = new ExpenseDTO(expense.id(), price, item,
+                            expense.paidByName(), date);
+                    updateExpenseToServer(expenseDTO);
+                }
+            }
         }
     }
 }
