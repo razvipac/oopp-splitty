@@ -182,38 +182,51 @@ class EventTest {
         assertEquals(event1, orderedEvents.get(1));
     }
 
+    @Test
+    void settleDebts() {
+        // Create expenses
+        Expense expense1 = new Expense(100, "Item 1", participant1, LocalDate.now());
+        Expense expense2 = new Expense(200, "Item 2", participant2, LocalDate.now());
+        Expense expense3 = new Expense(300, "Item 3", participant3, LocalDate.now());
+
+        // Associate participants with expenses
+        Map<Expense, List<Participant>> expenses = new HashMap<>();
+        expenses.put(expense1, List.of(participant1, participant2, participant3));
+        expenses.put(expense2, List.of(participant1, participant2, participant3));
+        expenses.put(expense3, List.of(participant1, participant2, participant3));
+
+        // Perform settling
+        Map<String, Map<String, Double>> debts = Event.settleDebts(expenses);
+
+        // Ensure debts are settled correctly
+        assertEquals(3, debts.size());
+
+        // Ensure correct debts for participant 1
+        assertTrue(debts.containsKey("Participant 1"));
+        Map<String, Double> participant1Debts = debts.get("Participant 1");
+        assertEquals(2, participant1Debts.size());
+        assertEquals(66.66, participant1Debts.get("Participant 2"));
+        assertEquals(100.0, participant1Debts.get("Participant 3"));
+
+        // Ensure correct debts for participant 2
+        assertTrue(debts.containsKey("Participant 2"));
+        Map<String, Double> participant2Debts = debts.get("Participant 2");
+        assertEquals(2, participant2Debts.size());
+        assertEquals(33.33, participant2Debts.get("Participant 1"));
+
+        // Ensure correct debts for participant 3
+        assertTrue(debts.containsKey("Participant 3"));
+        Map<String, Double> participant3Debts = debts.get("Participant 3");
+        assertEquals(2, participant3Debts.size());
+        assertEquals(33.33, participant3Debts.get("Participant 1"));
+    }
+
+
+
     /*@Test
     void testHashCode() {
         Event event2 = new Event("Event A", "CODE1", event1.getCreationDate());
         assertEquals(event1.hashCode(), event2.hashCode());
     }*/
 
-    @Test
-    public void testGetDebtorsWithinExpense() {
-        Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
-        Expense expense = new Expense(100, "Test Expense", participant1, LocalDate.now());
-        List<Participant> allParticipants = List.of(participant1, participant2, participant3);
-
-        Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
-
-        assertTrue(debtors.contains(participant2));
-        assertTrue(debtors.contains(participant3));
-        assertFalse(debtors.contains(participant1));
-    }
-
-    @Test
-    void settleDebts() {
-        List<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense(100, "Expense 1", participant1, LocalDate.now()));
-        expenses.add(new Expense(200, "Expense 2", participant2, LocalDate.of(2024, 3, 29)));
-        expenses.add(new Expense(150, "Expense 3", participant3, LocalDate.of(2024, 2, 29)));
-
-        List<Debt> debts = Event.settleDebts(List.of(participant1, participant2, participant3), expenses);
-
-        // Verifying the debts
-        assertEquals(6, debts.size());
-        for (Debt debt : debts) {
-            assertTrue(debt.getAmount() >= 0); // Debt amount should not be negative
-        }
-    }
 }

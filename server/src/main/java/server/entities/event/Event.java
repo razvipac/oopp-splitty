@@ -208,7 +208,7 @@ public class Event {
      * @param expenses A map where each expense is associated with its participants
      * @return A map representing the total debts between participants
      */
-    public Map<String, Map<String, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
+    public static Map<String, Map<String, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
         Map<String, Map<String, Double>> debts = new HashMap<>();
 
         // Now we are analyzing each expense and for each, its participants in that specific expense
