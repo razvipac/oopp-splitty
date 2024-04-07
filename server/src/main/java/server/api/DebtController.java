@@ -46,14 +46,14 @@ public class DebtController {
      * @return A DeferredResult containing the list of unsettled debts
      */
     @GetMapping("/updates")
-    public DeferredResult<ResponseEntity<List<DebtDTO>>> getUnsettledDebtsUpdates(
+    public DeferredResult<ResponseEntity<List<DebtDTO>>> getDebtUpdates(
             @PathVariable String eventCode
     ) {
         DeferredResult<ResponseEntity<List<DebtDTO>>> deferredResult = new DeferredResult<>(5000L);
         var key = new Object();
 
         listeners.put(key, passedDebtDTOs -> {
-            List<DebtDTO> debtDTOs = debtService.getAllUnsettledDebtsForEvent(eventCode)
+            List<DebtDTO> debtDTOs = debtService.getAllDebts(eventCode)
                     .stream()
                     .map(debtDTOMapper::toDTO)
                     .toList();
@@ -73,11 +73,11 @@ public class DebtController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DebtDTO>> getAllUnsettledDebtsForEvent(
+    public ResponseEntity<List<DebtDTO>> getAllDebts(
             @PathVariable("eventCode") String eventCode
     ) {
         ResponseEntity<List<DebtDTO>> res = ResponseEntity.ok(
-                debtService.getAllUnsettledDebtsForEvent(eventCode)
+                debtService.getAllDebts(eventCode)
                 .stream()
                 .map(debtDTOMapper::toDTO)
                 .toList()

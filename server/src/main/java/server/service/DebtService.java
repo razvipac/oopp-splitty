@@ -42,9 +42,9 @@ public class DebtService {
      * @param eventCode The code of the event for which settled debts are to be retrieved
      * @return A list of settled debts for the specified event.
      */
-    public List<Debt> getAllUnsettledDebtsForEvent(String eventCode) {
+    public List<Debt> getAllDebts(String eventCode) {
         List<Debt> debts = new LinkedList<>();
-        debtRepository.findAllUnsettledDebtsForEvent(eventCode)
+        debtRepository.findAllDebts(eventCode)
                 .iterator()
                 .forEachRemaining(debts::add);
         return debts;

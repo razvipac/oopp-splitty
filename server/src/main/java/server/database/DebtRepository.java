@@ -19,9 +19,8 @@ public interface DebtRepository extends CrudRepository<Debt, DebtId> {
      * @return A list of settled debts for the specified event
      */
     @Query("SELECT d FROM Debt d " +
-            "WHERE d.received = false " +
-            "AND d.id.debtor.pkey.event.code = :eventCode")
-    Collection<Debt> findAllUnsettledDebtsForEvent(@Param("eventCode") String eventCode);
+            "WHERE d.id.debtor.pkey.event.code = :eventCode")
+    Collection<Debt> findAllDebts(@Param("eventCode") String eventCode);
 
 //    @Query("SELECT d FROM Debt d WHERE e.pkey.paidBy.pkey.event.code = :eventCode")
 //    Collection<Debt> findAllDebtsInEvent(@Param("eventCode") String eventCode);

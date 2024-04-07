@@ -375,6 +375,27 @@ public class ServerUtils {
                 .get(new GenericType<>() {});
     }
 
+    public boolean toggleDebtReceivedStatus(String eventCode, DebtDTO debtDTO){
+        String endpoint = "api/v1/" + eventCode + "/debts";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(debtDTO, APPLICATION_JSON));
+
+        return response.readEntity(new GenericType<DebtDTO>() {}).received();
+    }
+
+    public void regenerateDebts(String eventCode){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl)
+                .path("api/v1/" + eventCode + "/debts")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(null);
+    }
+
     // Password methods
 
     /**
