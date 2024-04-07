@@ -168,9 +168,9 @@ public class ExpenseService {
         Expense found = getOne(eventCode, body.paidByName(), id);
         // if not found exception will be thrown
 
-        found.setItem(body.item());
-        found.setPrice(body.price());
-        found.setDate(body.date());
+        if(!body.item().isEmpty()) found.setItem(body.item());
+        if(body.price() == -1) found.setPrice(body.price());
+        if(body.date() != null) found.setDate(body.date());
 
         expenseRepository.save(found);
 
