@@ -1,6 +1,5 @@
 package server.api;
 
-import commons.dto.EventDTO;
 import server.entities.DTOMapper;
 import server.entities.debt.Debt;
 import commons.dto.DebtDTO;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
-import server.entities.event.Event;
 import server.service.DebtService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -38,6 +36,12 @@ public class DebtController {
         this.debtDTOMapper = debtDTOMapper;
     }
 
+    /**
+     * Retrieves all debts for a specific event.
+     *
+     * @param eventCode The code of the event for which all debts are to be retrieved
+     * @return all debts
+     */
     @GetMapping
     public ResponseEntity<List<DebtDTO>> getAll(@PathVariable(value = "eventCode") String eventCode) {
         List<Debt> debts = debtService.getAll(eventCode);
