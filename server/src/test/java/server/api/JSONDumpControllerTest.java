@@ -12,15 +12,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import server.database.ExpenseRepository;
 import server.entities.DTOMapper;
 import server.entities.event.Event;
 import server.entities.expense.Expense;
 import server.entities.participant.Participant;
-import server.service.ExpenseService;
 import server.service.JSONDumpService;
 
 import java.time.LocalDate;

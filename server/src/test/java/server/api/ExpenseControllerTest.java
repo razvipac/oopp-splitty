@@ -1,26 +1,20 @@
 package server.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.dto.ExpenseDTO;
 import server.entities.DTOMapper;
 import server.entities.event.Event;
 import server.entities.participant.*;
 import server.entities.expense.*;
-import commons.dto.EventDTO;
-import commons.dto.WSWrapperResponseBody;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import commons.dto.WSAction;
 import server.database.ExpenseRepository;
 import server.service.ExpenseService;
 import server.service.exceptions.NotFoundInDatabaseException;
@@ -33,12 +27,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import static java.lang.reflect.Array.get;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 @ExtendWith(MockitoExtension.class)
