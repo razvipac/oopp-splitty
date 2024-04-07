@@ -96,7 +96,7 @@ public class JSONDumpService {
 
             List<Participant> participants = participantService.getAll(event.getCode());
             List<Expense> expenses = expenseService.getAllInEvent(event.getCode());
-            List<Debt> debts = debtService.getAllUnsettledDebtsForEvent(event.getCode());
+            List<Debt> debts = debtService.getAll(event.getCode());
 
             for (Participant participant : participants) {
                 ParticipantDTO participantDTO = participantDTOMapper.toDTO(participant);
@@ -165,6 +165,46 @@ public class JSONDumpService {
                     );
                 }
             }
+        } catch (Exception e) {
+            throw new ImproperDumpFormatException("Improper dump format");
+        }
+    }
+
+    @Transactional
+    public void restoreEventFromDump(JSONDumpEventDTO jsonDumpEventDTO)
+            throws ImproperDumpFormatException {
+        try {
+
+                EventDTO eventDTO = jsonDumpEventDTO.eventDTO();
+                eventRepository.save(eventDTOMapper.newEntity(eventDTO));
+
+                for (ParticipantDTO participantDTO : jsonDumpEventDTO.participantDTOs()) {
+                    participantRepository.save(
+                            participantDTOMapper.newEntity(
+                                    participantDTO,
+                                    eventDTO.code()
+                            )
+                    );
+                }
+
+                for (ExpenseDTO expenseDTO : jsonDumpEventDTO.expenseDTOs()) {
+                    expenseRepository.save(
+                            expenseDTOMapper.newEntity(
+                                    expenseDTO,
+                                    eventDTO.code()
+                            )
+                    );
+                }
+
+                for (DebtDTO debtDTO : jsonDumpEventDTO.debtDTOs()) {
+                    debtRepository.save(
+                            debtDTOMapper.newEntity(
+                                    debtDTO,
+                                    eventDTO.code()
+                            )
+                    );
+                }
+
         } catch (Exception e) {
             throw new ImproperDumpFormatException("Improper dump format");
         }

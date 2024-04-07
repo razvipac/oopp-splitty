@@ -23,6 +23,6 @@ public interface DebtRepository extends CrudRepository<Debt, DebtId> {
             "AND d.id.debtor.pkey.event.code = :eventCode")
     Collection<Debt> findAllUnsettledDebtsForEvent(@Param("eventCode") String eventCode);
 
-//    @Query("SELECT d FROM Debt d WHERE e.pkey.paidBy.pkey.event.code = :eventCode")
-//    Collection<Debt> findAllDebtsInEvent(@Param("eventCode") String eventCode);
+    @Query("SELECT d FROM Debt d WHERE d.id.debtor.pkey.event.code = :eventCode")
+    Collection<Debt> findAllDebtsInEvent(@Param("eventCode") String eventCode);
 }

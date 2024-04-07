@@ -302,7 +302,7 @@ public class ServerUtils {
     public List<DebtDTO> getAllOpenDebts(String eventCode) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl)
-                .path("api/v1/" + eventCode + "/debts")
+                .path("api/v1/" + eventCode + "/debt/unsettled")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {});

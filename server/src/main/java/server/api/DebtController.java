@@ -1,5 +1,6 @@
 package server.api;
 
+import commons.dto.EventDTO;
 import server.entities.DTOMapper;
 import server.entities.debt.Debt;
 import commons.dto.DebtDTO;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import server.entities.event.Event;
 import server.service.DebtService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
 @RestController
-@RequestMapping("api/v1/{eventCode}/debts")
+@RequestMapping("api/v1/{eventCode}/debt")
 public class DebtController {
 
     private final DebtService debtService;
@@ -36,13 +38,24 @@ public class DebtController {
         this.debtDTOMapper = debtDTOMapper;
     }
 
+    @GetMapping
+    public ResponseEntity<List<DebtDTO>> getAll(@PathVariable(value = "eventCode") String eventCode) {
+        List<Debt> debts = debtService.getAll(eventCode);
+        List<DebtDTO> debtDTOs = debts
+                .stream()
+                .map(debtDTOMapper::toDTO)
+                .toList();
+        return new ResponseEntity<>(debtDTOs, HttpStatus.OK);
+    }
+
+
     /**
      * Retrieves all unsettled debts for a specific event.
      *
      * @param eventCode The code of the event for which unsettled debts are to be retrieved
      * @return A DeferredResult containing the list of unsettled debts
      */
-    @GetMapping
+    @GetMapping("/unsettled")
     public DeferredResult<ResponseEntity<List<DebtDTO>>> getAllUnsettledDebts
     (@PathVariable String eventCode) {
         DeferredResult<ResponseEntity<List<DebtDTO>>> output = new DeferredResult<>(300000L);
