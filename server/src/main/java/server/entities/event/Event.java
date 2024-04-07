@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import server.entities.expense.Expense;
 import server.entities.participant.Participant;
 
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -196,45 +197,45 @@ public class Event {
      * @param expenses The list of present expenses regarding one event
      * @return returns the total cost of these expenses
      */
-    public static int sumOfAllExpenses(List<Expense> expenses) {
+    public static double sumOfAllExpenses(List<Expense> expenses) {
         return expenses.stream()
-                .mapToInt(Expense::getPrice)
+                .mapToDouble(Expense::getPrice)
                 .sum();
     }
 
-    /**
-     * Calculate the open debts among participants within the event based on expenses
-     *
-     * @param expenses A map where each expense is associated with its participants
-     * @return A map representing the total debts between participants
-     */
-    public static Map<Participant, Map<Participant, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
-        Map<Participant, Map<Participant, Double>> debts = new HashMap<>();
-        DecimalFormat df = new DecimalFormat("#.##");
-
-        // Now we are analyzing each expense and for each, its participants in that specific expense
-        for (Map.Entry<Expense, List<Participant>> entry : expenses.entrySet()) {
-            Expense expense = entry.getKey();
-            Participant paidBy = expense.getPaidBy();
-            // People who are participating in that expense
-            List<Participant> participants = entry.getValue();
-
-            // Calculate the share per participant (it is split equally among every participant)
-            double share = (double) expense.getPrice() / participants.size();
-            share = Double.parseDouble(df.format(share));
-
-            for (Participant debtor : participants) {
-                if (!debtor.equals(paidBy)) {
-                    // Update the debt between participants
-
-                    double amount = debts.getOrDefault(debtor, new HashMap<>()).getOrDefault(paidBy, 0.0);
-                    amount += share;
-                    Map<Participant, Double> debtorDebts = debts.computeIfAbsent(debtor, k -> new HashMap<>());
-                    debtorDebts.put(paidBy, amount);
-                }
-            }
-        }
-
-        return debts;
-    }
+//    /**
+//     * Calculate the open debts among participants within the event based on expenses
+//     *
+//     * @param expenses A map where each expense is associated with its participants
+//     * @return A map representing the total debts between participants
+//     */
+//    public static Map<Participant, Map<Participant, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
+//        Map<Participant, Map<Participant, Double>> debts = new HashMap<>();
+//        DecimalFormat df = new DecimalFormat("#.##");
+//
+//        // Now we are analyzing each expense and for each, its participants in that specific expense
+//        for (Map.Entry<Expense, List<Participant>> entry : expenses.entrySet()) {
+//            Expense expense = entry.getKey();
+//            Participant paidBy = expense.getPaidBy();
+//            // People who are participating in that expense
+//            List<Participant> participants = entry.getValue();
+//
+//            // Calculate the share per participant (it is split equally among every participant)
+//            double share = (double) expense.getPrice() / participants.size();
+//            share = Double.parseDouble(df.format(share));
+//
+//            for (Participant debtor : participants) {
+//                if (!debtor.equals(paidBy)) {
+//                    // Update the debt between participants
+//
+//                    double amount = debts.getOrDefault(debtor, new HashMap<>()).getOrDefault(paidBy, 0.0);
+//                    amount += share;
+//                    Map<Participant, Double> debtorDebts = debts.computeIfAbsent(debtor, k -> new HashMap<>());
+//                    debtorDebts.put(paidBy, amount);
+//                }
+//            }
+//        }
+//
+//        return debts;
+//    }
 }

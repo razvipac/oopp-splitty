@@ -213,7 +213,7 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void submit() {
         if (formIsValid()) {
-            int price = Integer.parseInt(howMuchField.getText());
+            double price = Double.parseDouble(howMuchField.getText());
             String item = whatForField.getText();
             ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
             LocalDate date = whenPicker.getValue();

@@ -47,9 +47,9 @@ class EventTest {
         LocalDate specificDate = LocalDate.of(2024, 3, 29);
         LocalDate specificDate2 = LocalDate.of(2024, 3, 28);
 
-        expense1 = new Expense(100, "Item 1", null, date);
-        expense2 = new Expense(200, "Item 2", null, specificDate);
-        expense3 = new Expense(300, "Item 3", null, specificDate2);
+        expense1 = new Expense(100.0, "Item 1", null, date);
+        expense2 = new Expense(200.0, "Item 2", null, specificDate);
+        expense3 = new Expense(300.0, "Item 3", null, specificDate2);
 
         participant1 = new Participant("Participant 1", null, "email1", "iban1", "bic1");
         participant2 = new Participant("Participant 2", null, "email2", "iban2", "bic2");
@@ -162,9 +162,9 @@ class EventTest {
     void sumOfAllExpenses() {
         List<Expense> expenses = List.of(expense1, expense2, expense3);
 
-        int totalExpenses = Event.sumOfAllExpenses(expenses);
+        double totalExpenses = Event.sumOfAllExpenses(expenses);
 
-        assertEquals(600, totalExpenses);
+        assertEquals(600.0, totalExpenses);
     }
 
     @Test
@@ -184,9 +184,9 @@ class EventTest {
     @Test
     void settleDebts() {
         // Create expenses
-        Expense expense1 = new Expense(100, "Item 1", participant1, LocalDate.now());
-        Expense expense2 = new Expense(200, "Item 2", participant2, LocalDate.now());
-        Expense expense3 = new Expense(300, "Item 3", participant3, LocalDate.now());
+        Expense expense1 = new Expense(100.0, "Item 1", participant1, LocalDate.now());
+        Expense expense2 = new Expense(200.0, "Item 2", participant2, LocalDate.now());
+        Expense expense3 = new Expense(300.0, "Item 3", participant3, LocalDate.now());
 
         // Associate participants with expenses
         Map<Expense, List<Participant>> expenses = new HashMap<>();

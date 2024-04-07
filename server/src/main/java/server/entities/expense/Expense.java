@@ -1,10 +1,15 @@
 package server.entities.expense;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import server.entities.participant.Participant;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents an expense entity.
@@ -16,9 +21,12 @@ public class Expense {
     @EmbeddedId
     private ExpenseId pkey;
 
-    private Integer price;
+    private Double price;
     private String item;
     private LocalDate date;
+
+    @ManyToMany
+    private Set<Participant> debtors = new LinkedHashSet<>();
 
 //    @ManyToMany
 //    @JoinTable(
@@ -35,7 +43,9 @@ public class Expense {
 //                            referencedColumnName = "event_code")
 //            }
 //    )
-//    private List<Participant> participants;
+//    private List<Participant> debtors;
+
+
 
     /**
      * Default constructor.
@@ -51,7 +61,7 @@ public class Expense {
      * @param paidBy The participant who paid for the expense.
      * @param date The date of the expense.
      */
-    public Expense(Integer price, String item, Participant paidBy, LocalDate date) {
+    public Expense(Double price, String item, Participant paidBy, LocalDate date) {
         ExpenseId eid = new ExpenseId();
         eid.setPaidBy(paidBy);
         this.pkey = eid;
@@ -83,7 +93,7 @@ public class Expense {
      *
      * @return The price of the expense.
      */
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -92,7 +102,7 @@ public class Expense {
      *
      * @param price The price of the expense to set.
      */
-    public void setPrice(Integer price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -148,6 +158,13 @@ public class Expense {
         this.date = date;
     }
 
+    public Set<Participant> getDebtors() {
+        return debtors;
+    }
+
+    public void setDebtors(Set<Participant> debtors) {
+        this.debtors = debtors;
+    }
     /**
      * Returns a string representation of the expense.
      *

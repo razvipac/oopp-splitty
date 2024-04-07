@@ -49,9 +49,9 @@ class DebtTest {
         LocalDate specificDate = LocalDate.of(2024, 3, 29);
         LocalDate specificDate2 = LocalDate.of(2024, 3, 29);
 
-        expense1 = new Expense(100, "Item 1", null, date);
-        expense2 = new Expense(200, "Item 2", null, specificDate);
-        expense3 = new Expense(300, "Item 3", null, specificDate2);
+        expense1 = new Expense(100.0, "Item 1", null, date);
+        expense2 = new Expense(200.0, "Item 2", null, specificDate);
+        expense3 = new Expense(300.0, "Item 3", null, specificDate2);
 
         participant1 = new Participant("Participant 1", null, "email1", "iban1", "bic1");
         participant2 = new Participant("Participant 2", null, "email2", "iban2", "bic2");

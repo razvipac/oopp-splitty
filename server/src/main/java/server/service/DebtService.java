@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import server.database.DebtRepository;
 import server.entities.debt.Debt;
 import server.entities.debt.DebtId;
-import server.entities.event.Event;
 import server.entities.expense.Expense;
 import server.entities.participant.Participant;
 import server.service.exceptions.NotFoundInDatabaseException;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -106,15 +106,67 @@ public class DebtService {
     public List<Debt> generateDebtsFromExpenses(String eventCode){
         List<Expense> expenseList = expenseService.getAllInEvent(eventCode);
         List<Participant> participantList = participantService.getAll(eventCode);
-        Map<Expense, List<Participant>> inputMap = new HashMap<>();
-        expenseList.forEach(e -> inputMap.put(e, new ArrayList<>(participantList)));
 
-        Map<Participant, Map<Participant, Double>> debtsData = Event.settleDebts(inputMap);
+        return calculateDebts(expenseList, participantList);
+    }
+
+//    private List<Debt> calculateDebts(List<Participant> participants, List<Expense> expenses){
+//        Map<Participant, Double> balances = new HashMap<>();
+//        participants.forEach(p -> balances.put(p, 0.0));
+//
+//        for (Expense expense : expenses){
+//            Participant creditor = expense.getPaidBy();
+//            Double amount = expense.getPrice();
+//            balances.put(creditor, balances.get(creditor) - amount);
+//
+//            List<Participant> debtors = new ArrayList<>(expense.getDebtors());
+//            List<Double> splits = splitWithoutLoss(amount, debtors.size());
+//            Iterator<Double> splitsIterator = splits.iterator();
+//
+//            for (Participant debtor : debtors){
+//                balances.put(debtor, balances.get(debtor) + splitsIterator.next());
+//            }
+//        }
+//
+//
+//
+//    }
+
+    private List<Debt> calculateDebts(List<Expense> expenses, List<Participant> participants){
+        Map<Expense, List<Participant>> inputMap = new HashMap<>();
+        expenses.forEach(e -> inputMap.put(e, new ArrayList<>(participants)));
+
+        Map<Participant, Map<Participant, Double>> debts = new HashMap<>();
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        // Now we are analyzing each expense and for each, its participants in that specific expense
+        for (Map.Entry<Expense, List<Participant>> entry : inputMap.entrySet()) {
+            Expense expense = entry.getKey();
+            Participant paidBy = expense.getPaidBy();
+            // People who are participating in that expense
+            List<Participant> participantList = entry.getValue();
+
+            // Calculate the share per participant (it is split equally among every participant)
+            double share = (double) expense.getPrice() / participantList.size();
+            share = Double.parseDouble(df.format(share));
+
+            for (Participant debtor : participantList) {
+                if (!debtor.equals(paidBy)) {
+                    // Update the debt between participants
+
+                    double amount = debts.getOrDefault(debtor, new HashMap<>()).getOrDefault(paidBy, 0.0);
+                    amount += share;
+                    Map<Participant, Double> debtorDebts = debts.computeIfAbsent(debtor, k -> new HashMap<>());
+                    debtorDebts.put(paidBy, amount);
+                }
+            }
+        }
+
         List<Debt> newDebts = new ArrayList<>();
 
         debtRepository.deleteAll();
-        for (Participant debtor : debtsData.keySet()){
-            Map<Participant, Double> creditors = debtsData.get(debtor);
+        for (Participant debtor : debts.keySet()){
+            Map<Participant, Double> creditors = debts.get(debtor);
             for (Participant creditor : creditors.keySet()){
                 Debt newDebt = new Debt(debtor, creditor, creditors.get(creditor));
                 debtRepository.save(newDebt);
@@ -125,4 +177,14 @@ public class DebtService {
         return newDebts;
     }
 
+//    public static List<Double> splitWithoutLoss(Double numerator, Integer denominator){
+//        List<Double> splits = new ArrayList<>();
+//        while (denominator > 0){
+//            Double split = (double) Math.round((numerator / denominator) * 100) / 100;
+//            numerator -= split;
+//            denominator --;
+//            splits.add(split);
+//        }
+//        return splits;
+//    }
 }

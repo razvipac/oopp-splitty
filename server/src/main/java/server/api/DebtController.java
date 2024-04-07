@@ -83,4 +83,27 @@ public class DebtController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    /**
+     * Generates open debts from the expenses on the given server.
+     * Populates the database with the newly created debts
+     * @param eventCode code of the event to generate debts on
+     * @return a list of created debts
+     */
+    @PostMapping("")
+    public ResponseEntity<List<DebtDTO>> generateDebts(
+            @PathVariable("eventCode") String eventCode
+    ) {
+        List<Debt> generatedDebts = debtService.generateDebtsFromExpenses(eventCode);
+
+        List<DebtDTO> dtos = generatedDebts
+                .stream()
+                .map(debtDTOMapper::toDTO)
+                .toList();
+
+        return new ResponseEntity<>(
+                dtos,
+                HttpStatus.CREATED
+        );
+    }
 }

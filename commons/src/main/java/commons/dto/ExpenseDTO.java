@@ -7,7 +7,7 @@ import java.time.LocalDate;
  */
 public record ExpenseDTO (
         Long id,
-        int price,
+        Double price,
         String item,
         String paidByName,
         LocalDate date

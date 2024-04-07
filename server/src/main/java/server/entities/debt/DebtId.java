@@ -8,14 +8,15 @@ import java.util.Objects;
 
 @Embeddable
 public class DebtId implements Serializable {
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
         @JoinColumn(name = "debtor_name", referencedColumnName = "name"),
         @JoinColumn(name = "debtor_event_code", referencedColumnName = "event_code")
     })
     private Participant debtor;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumns({
         @JoinColumn(name = "creditor_name", referencedColumnName = "name"),
         @JoinColumn(name = "creditor_event_code", referencedColumnName = "event_code")
