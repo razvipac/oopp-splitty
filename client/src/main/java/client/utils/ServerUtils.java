@@ -313,6 +313,27 @@ public class ServerUtils {
     }
 
     /**
+     * Updates a given expense in the server
+     * @param body DTO containing the updated information
+     * @param eventCode code of the event on which to update the given expense
+     * @return true if deleted, false otherwise
+     */
+    public boolean updateExpense(ExpenseDTO body, String eventCode){
+        String endpoint = "api/v1/" + eventCode + "/expense";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path(endpoint)
+                .queryParam("id", body.id())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(body, APPLICATION_JSON));
+
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    /**
      * Deletes a given expense from the server
      * @param e dto for the expense to be deleted
      * @param eventCode code of the event on which to delete the given expense
