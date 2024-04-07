@@ -72,7 +72,7 @@ public class JSONDumpController {
      *         Returns "Unknown Error!" if an unknown error occurs
      *         (HttpStatus.INTERNAL_SERVER_ERROR).
      */
-    @PostMapping("")
+    @PostMapping("/server")
     public ResponseEntity<String> restoreFromJSONDump(
             @RequestBody List<JSONDumpEventDTO> body
     ){
@@ -85,17 +85,23 @@ public class JSONDumpController {
             return new ResponseEntity<>("Unknown Error!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    @PostMapping("")
-//    public ResponseEntity<String> restoreFromJSONDump(
-//            @RequestBody EventResponseBody body
-//    ){
-//        try {
-//            jsonDumpService.restoreFromDump(body);
-//            return new ResponseEntity<>("Restored Successfully", HttpStatus.OK);
-//        } catch (ImproperDumpFormatException e){
-//            return new ResponseEntity<>("Improper JSON dump format!", HttpStatus.NOT_MODIFIED);
-//        } catch (Exception e){
-//            return new ResponseEntity<>("Unknown Error!", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+
+    /**
+     *
+     * @param body of the event
+     * @return an event created from the body
+     */
+    @PostMapping("")
+    public ResponseEntity<String> restoreEventFromJSONDump(
+            @RequestBody JSONDumpEventDTO body
+    ){
+        try {
+            jsonDumpService.restoreEventFromDump(body);
+            return new ResponseEntity<>("Restored Successfully", HttpStatus.OK);
+        } catch (ImproperDumpFormatException e){
+            return new ResponseEntity<>("Improper JSON dump format!", HttpStatus.NOT_MODIFIED);
+        } catch (Exception e){
+            return new ResponseEntity<>("Unknown Error!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
