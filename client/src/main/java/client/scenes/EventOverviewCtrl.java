@@ -416,7 +416,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.setVgap(2);
 
             // TODO: implement this for actual Expense date
-            Text date = new Text("01-01-2024");
+            Text date = new Text("(no date)");
+            if(expenseDTO.date() != null ) date = new Text(expenseDTO.date().toString());
             this.add(date, 0, 0, 1, 2);
 
             Text expenseInfo = new Text(
