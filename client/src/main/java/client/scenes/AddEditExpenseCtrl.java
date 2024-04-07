@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.interfaces.DualDataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddEditExpenseCtrl {
+public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO, ExpenseDTO> {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
