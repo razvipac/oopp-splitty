@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * Controller class handling HTTP requests related to debts in the system.
+ * This controller provides endpoints for managing debts associated with a specific event.
+ */
 @RestController
 @RequestMapping("api/v1/{eventCode}/debts")
 public class DebtController {
@@ -25,10 +29,10 @@ public class DebtController {
     private Map<Object, Consumer<List<DebtDTO>>> listeners = new HashMap<>();
 
     /**
-     * Constructs a DebtController with the specified DebtService
+     * Constructs a DebtController with the specified DebtService and DTOMapper.
      *
-     * @param debtService The service for managing Debt entities
-     * @param debtDTOMapper mapper for the DebtDTO
+     * @param debtService     The service for managing Debt entities.
+     * @param debtDTOMapper   The mapper for converting Debt entities to DebtDTOs.
      */
     @Autowired
     public DebtController(
@@ -40,10 +44,11 @@ public class DebtController {
     }
 
     /**
-     * Retrieves all unsettled debts for a specific event.
+     * Retrieves all unsettled debts for a specific event asynchronously.
+     * This endpoint provides updates on unsettled debts in real-time using long polling.
      *
-     * @param eventCode The code of the event for which unsettled debts are to be retrieved
-     * @return A DeferredResult containing the list of unsettled debts
+     * @param eventCode The code of the event for which unsettled debts are to be retrieved.
+     * @return A DeferredResult containing the list of unsettled debts.
      */
     @GetMapping("/updates")
     public DeferredResult<ResponseEntity<List<DebtDTO>>> getDebtUpdates(
@@ -72,26 +77,31 @@ public class DebtController {
         return deferredResult;
     }
 
+    /**
+     * Retrieves all debts for a specific event.
+     *
+     * @param eventCode The code of the event for which debts are to be retrieved.
+     * @return ResponseEntity containing the list of debts.
+     */
     @GetMapping
     public ResponseEntity<List<DebtDTO>> getAllDebts(
             @PathVariable("eventCode") String eventCode
     ) {
         ResponseEntity<List<DebtDTO>> res = ResponseEntity.ok(
                 debtService.getAllDebts(eventCode)
-                .stream()
-                .map(debtDTOMapper::toDTO)
-                .toList()
+                        .stream()
+                        .map(debtDTOMapper::toDTO)
+                        .toList()
         );
         return res;
     }
 
     /**
-     * PUT api/v1/{eventCode}/debts with request body in format of DebtDTO
-     * Updates the data of debt object with code {eventCode}
-     * Changes if the debt is paid or not: from true to false, and from false to true
-     * @param eventCode todo
-     * @param body todo
-     * @return ResponseEntity with changed received status if it is found
+     * Updates the status of a debt (paid/unpaid) associated with the specified event.
+     *
+     * @param eventCode The code of the event for which the debt belongs.
+     * @param body      The DebtDTO containing the updated information about the debt.
+     * @return ResponseEntity with the updated DebtDTO if successful, or NOT_FOUND if the debt is not found.
      */
     @PutMapping("")
     public ResponseEntity<DebtDTO> updateUnsettledDebt(
@@ -111,10 +121,10 @@ public class DebtController {
     }
 
     /**
-     * Generates open debts from the expenses on the given server.
-     * Populates the database with the newly created debts
-     * @param eventCode code of the event to generate debts on
-     * @return a list of created debts
+     * Generates open debts from the expenses on the given server and populates the database with them.
+     *
+     * @param eventCode The code of the event for which debts are to be generated.
+     * @return ResponseEntity containing the list of created debts.
      */
     @PostMapping("")
     public ResponseEntity<List<DebtDTO>> generateDebts(
@@ -135,3 +145,4 @@ public class DebtController {
         );
     }
 }
+

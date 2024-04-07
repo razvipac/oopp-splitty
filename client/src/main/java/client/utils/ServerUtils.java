@@ -126,6 +126,11 @@ public class ServerUtils {
 
     private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
 
+    /**
+     * Registers a consumer for receiving long polling updates for Debts
+     * @param eventCode eventCode
+     * @param consumer consumer
+     */
     public void registerForLongPollingDebtUpdates(String eventCode, Consumer<List<DebtDTO>> consumer){
         EXEC.submit(() -> {
             while (!Thread.interrupted()) {
@@ -375,6 +380,12 @@ public class ServerUtils {
                 .get(new GenericType<>() {});
     }
 
+    /**
+     * Toggles the received status for a given debt entity
+     * @param eventCode event code of the event to which it belongs
+     * @param debtDTO DTO of a given debt entity
+     * @return state after toggle
+     */
     public boolean toggleDebtReceivedStatus(String eventCode, DebtDTO debtDTO){
         String endpoint = "api/v1/" + eventCode + "/debts";
 
@@ -387,6 +398,10 @@ public class ServerUtils {
         return response.readEntity(new GenericType<DebtDTO>() {}).received();
     }
 
+    /**
+     * Regenerates debts from expenses
+     * @param eventCode code of the event for which to regenerate debts
+     */
     public void regenerateDebts(String eventCode){
         ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl)
@@ -444,6 +459,9 @@ public class ServerUtils {
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
     }
 
+    /**
+     * Stops the execution of threads
+     */
     public void stop(){
         EXEC.shutdownNow();
     }

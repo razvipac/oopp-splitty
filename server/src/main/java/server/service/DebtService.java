@@ -23,7 +23,8 @@ public class DebtService {
      * Constructs a DebtService with the specified DebtRepository
      *
      * @param debtRepository The repository for accessing and managing Debt entities
-     * @param participantService Todo
+     * @param participantService ParticipantService instance
+     * @param expenseService ExpenseService instance
      */
     @Autowired
     public DebtService(

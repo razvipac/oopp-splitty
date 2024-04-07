@@ -158,10 +158,18 @@ public class Expense {
         this.date = date;
     }
 
+    /**
+     * Getter for debtors
+     * @return Set of debtors
+     */
     public Set<Participant> getDebtors() {
         return debtors;
     }
 
+    /**
+     * Setter for debtors
+     * @param debtors set of debtors
+     */
     public void setDebtors(Set<Participant> debtors) {
         this.debtors = debtors;
     }
