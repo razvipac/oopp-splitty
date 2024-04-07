@@ -203,20 +203,22 @@ public class Event {
     }
 
     /**
-     * Calculate total debts among participants within the event based on expenses
+     * Calculate the open debts among participants within the event based on expenses
      *
      * @param expenses A map where each expense is associated with its participants
      * @return A map representing the total debts between participants
      */
-    public Map<String, Map<String, Double>> calculateTotalDebts(Map<Expense, List<Participant>> expenses) {
+    public Map<String, Map<String, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
         Map<String, Map<String, Double>> debts = new HashMap<>();
 
+        // Now we are analyzing each expense and for each, its participants in that specific expense
         for (Map.Entry<Expense, List<Participant>> entry : expenses.entrySet()) {
             Expense expense = entry.getKey();
             Participant paidBy = expense.getPaidBy();
+            // People who are participating in that expense
             List<Participant> participants = entry.getValue();
 
-            // Calculate the share per participant
+            // Calculate the share per participant (it is split equally among every participant)
             double share = (double) expense.getPrice() / participants.size();
 
             for (Participant participant : participants) {
