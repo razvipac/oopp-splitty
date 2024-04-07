@@ -297,8 +297,17 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * Opens the add/edit expense screen and updates the last activity.
      */
     @FXML
-    private void openAddEditExpense() {
-        mainCtrl.showAddEditExpense(event);
+    private void openAddExpense() {
+        mainCtrl.showAddExpense(event);
+        updateAndPrintLastActivity();
+    }
+
+    /**
+     * Opens the edit expense screen and updates the last activity.
+     */
+    @FXML
+    private void openEditExpense(ExpenseDTO expense) {
+        mainCtrl.showEditExpense(event, expense);
         updateAndPrintLastActivity();
     }
 
@@ -419,6 +428,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.add(expenseIncludes, 1, 1);
 
             Button expenseEditButton = new Button("Edit");
+            expenseEditButton.setOnAction(eventHandler -> {
+                openEditExpense(expenseDTO);
+            });
             this.add(expenseEditButton, 2, 0, 1, 2);
 
             Button expenseDeleteButton = new Button("Delete");

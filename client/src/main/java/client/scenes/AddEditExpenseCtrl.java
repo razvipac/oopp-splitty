@@ -8,7 +8,6 @@ import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -30,11 +29,14 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
     private ControllerUtils controllerUtils;
 
     private EventDTO event;
+    private ExpenseDTO expense;
     private List<ParticipantDTO> participants;
     private ArrayList<ExpenseDTO> addEditExpenseList;
     private Map<String, ParticipantDTO> participantMap;
     private boolean everyoneSelected;
 
+    @FXML
+    private Text header;
     @FXML
     private ComboBox<String> whoPaidDropdown;
     @FXML
@@ -68,28 +70,41 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
 
     /**
      * Generate an ui from the given object instance
-     *
-     * @param event event
+     * @param event Event instance to populate the UI with
      */
     public void initialize(EventDTO event) {
         this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
-
-        currencyDropdown.setItems(FXCollections.observableArrayList("EUR", "USD", "GBP"));
-        currencyDropdown.getSelectionModel().selectFirst();
-
-        errorText.setText("");
 
         refresh();
 
         serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> Platform.runLater(this::refresh));
     }
 
+    /**
+     * Generate UI specifically for Editing Expense.
+     *
+     * @param event event
+     * @param expense Expense to edit.
+     */
+    public void initializeEdit(EventDTO event, ExpenseDTO expense) {
+        this.expense = expense;
+        initialize(event);
+    }
+
     private void refresh(){
         this.participants = serverUtils.getParticipants(event.code());
 
+        errorText.setText("");
         refreshWhoPaidDropdown();
         refreshParticipantContainer();
+
+        if(expense == null) {
+            header.setText("Add Expense");
+        }
+        else {
+            header.setText("Edit Expense");
+        }
     }
 
     private void refreshWhoPaidDropdown() {
@@ -102,6 +117,9 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
             whoPaidDropdown.getItems().add(name);
             participantMap.put(name, p);
         }
+
+        if(expense != null) whoPaidDropdown.getSelectionModel().select(expense.paidByName());
+        whoPaidDropdown.setDisable(expense != null);
     }
 
     private void refreshParticipantContainer() {
@@ -126,25 +144,42 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
             return false;
         }
 
-        if (howMuchField.getText().isEmpty()) {
-            errorText.setText("Please fill in the price of the expense");
-            return false;
-        }
-
-        if (whatForField.getText().isEmpty()) {
-            errorText.setText("Please enter what the expense was for");
-            return false;
-        }
-
-        // check if price is a number
-        try {
-            int price = Integer.parseInt(howMuchField.getText());
-            if (price < 0) {
-                errorText.setText("Price cannot be negative.");
+        // Only for Adding Expense
+        if(expense == null) {
+            if (howMuchField.getText().isEmpty()) {
+                errorText.setText("Please fill in the price of the expense");
                 return false;
             }
-        } catch (NumberFormatException e) {
-            errorText.setText("Price must be a valid integer with no decimals.");
+
+            if (whatForField.getText().isEmpty()) {
+                errorText.setText("Please enter what the expense was for");
+                return false;
+            }
+        }
+        // Only for Editing Expense
+        else {
+            if(howMuchField.getText().isEmpty() && whatForField.getText().isEmpty()
+                && whenPicker.getValue() == null) {
+                errorText.setText("Enter at least one field to edit");
+                return false;
+            }
+        }
+
+        // check if price is entered and a valid number (not negative and no decimals)
+        if(!howMuchField.getText().isEmpty()) {
+            try {
+                int price = Integer.parseInt(howMuchField.getText());
+                if (price < 0) {
+                    errorText.setText("Price cannot be negative");
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                errorText.setText("Price must be a valid positive integer with no decimals");
+                return false;
+            }
+        }
+        else if(expense == null) {
+            errorText.setText("Please enter a price");
             return false;
         }
 
