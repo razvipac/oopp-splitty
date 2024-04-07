@@ -11,11 +11,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExpenseTest {
-    Participant participant1;
-    Participant participant2;
-    Expense expense1;
-    Expense expense2;
-    Expense expense3;
+    private Participant participant1;
+    private Participant participant2;
+    private Expense expense1;
+    private Expense expense2;
+    private Expense expense3;
 
     @BeforeEach
     void setUp() {
