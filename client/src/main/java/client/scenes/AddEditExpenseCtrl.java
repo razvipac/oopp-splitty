@@ -14,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,7 @@ public class AddEditExpenseCtrl {
     private EventDTO event;
     private ExpenseDTO expense;
     private List<ParticipantDTO> participants;
-    private ArrayList<ExpenseDTO> addEditExpenseList;
     private Map<String, ParticipantDTO> participantMap;
-    private boolean everyoneSelected;
 
     @FXML
     private Text header;
@@ -48,8 +45,6 @@ public class AddEditExpenseCtrl {
     private DatePicker whenPicker;
     @FXML
     private TextField expenseTypeField;
-    @FXML
-    private Button everyoneButton;
     @FXML
     private Text errorText;
     @FXML
@@ -73,6 +68,7 @@ public class AddEditExpenseCtrl {
      * @param expense Expense to edit. If user wants to add, this can be null.
      */
     public void initialize(EventDTO event, ExpenseDTO expense) {
+        // If user is adding, expense is null
         this.expense = expense;
         this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
@@ -95,9 +91,11 @@ public class AddEditExpenseCtrl {
         howMuchField.clear();
         currencyDropdown.getSelectionModel().selectFirst();
         expenseTypeField.clear();
+
         refreshWhoPaidDropdown();
         refreshParticipantContainer();
 
+        // Sets header based on if user is adding/editing
         if(expense == null) {
             header.setText("Add Expense");
         }
@@ -143,8 +141,6 @@ public class AddEditExpenseCtrl {
      * Checks if the user-inputted form is valid.
      */
     private boolean formIsValid() {
-        // TODO: add validation for the optional fields
-
         if (whoPaidDropdown.getValue() == null || whoPaidDropdown.getValue().isEmpty()) {
             errorText.setText("Please select the participant who paid for this expense");
             return false;
