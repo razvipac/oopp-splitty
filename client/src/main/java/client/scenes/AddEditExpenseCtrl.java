@@ -13,8 +13,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
+import javafx.util.converter.LocalDateStringConverter;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,10 +96,19 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         initialize(event);
     }
 
+    /**
+     * Refresh the page. Clears text fields and adjusts title based on if the user is
+     * adding or editing.
+     */
     private void refresh(){
         this.participants = serverUtils.getParticipants(event.code());
 
         errorText.setText("");
+        whatForField.clear();
+        whenPicker.setValue(null);
+        howMuchField.clear();
+        currencyDropdown.getSelectionModel().selectFirst();
+        expenseTypeField.clear();
         refreshWhoPaidDropdown();
         refreshParticipantContainer();
 
@@ -107,6 +120,10 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+    /**
+     * Refreshes the whoPaidDropdown ComboBox. Adds all participants. If the user is editing,
+     * it auto selects the expense's participant and disables the box.
+     */
     private void refreshWhoPaidDropdown() {
         participantMap = new HashMap<>();
         whoPaidDropdown.getItems().clear();
@@ -122,6 +139,9 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         whoPaidDropdown.setDisable(expense != null);
     }
 
+    /**
+     * Refreshes the container for participants. Adds all participants.
+     */
     private void refreshParticipantContainer() {
         checkboxContainer.getChildren().clear();
         this.participants = serverUtils.getParticipants(event.code());
@@ -210,6 +230,9 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         goBack();
     }
 
+    /**
+     * Selects all participants if the Select Everyone button is clicked.
+     */
     @FXML private void selectEveryone() {
         for(Node node : checkboxContainer.getChildren()) {
             CheckBox checkBox = (CheckBox) node;
@@ -225,6 +248,9 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
         mainCtrl.showEventOverview(event);
     }
 
+    /**
+     * Submits the form
+     */
     @FXML
     private void submit() {
         if (formIsValid()) {

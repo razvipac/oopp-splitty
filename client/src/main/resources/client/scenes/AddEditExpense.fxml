@@ -41,7 +41,7 @@
             <ComboBox fx:id="whoPaidDropdown" layoutX="135.0" layoutY="74.0" prefHeight="25.0" prefWidth="141.0" promptText="Choose..." />
             <TextField fx:id="whatForField" layoutX="135.0" layoutY="111.5" prefHeight="25.0" prefWidth="190.0" promptText="Drinks" />
             <TextField fx:id="howMuchField" layoutX="192.0" layoutY="149.0" prefHeight="25.0" prefWidth="63.0" />
-            <DatePicker fx:id="whenPicker" layoutX="135.0" layoutY="187.0" prefHeight="25.0" prefWidth="120.0" promptText="01/01/2024" />
+            <DatePicker fx:id="whenPicker" layoutX="135.0" layoutY="187.0" prefHeight="25.0" prefWidth="120.0" promptText="01/01/2024" editable="false" />
             <ComboBox fx:id="currencyDropdown" disable="true" layoutX="135.0" layoutY="149.0" prefHeight="25.0" prefWidth="47.0" promptText="€">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
