@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -20,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
+public class AddEditExpenseCtrl {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
@@ -72,24 +71,14 @@ public class AddEditExpenseCtrl implements DataBasedSceneController<EventDTO> {
      * Generate an ui from the given object instance
      * @param event Event instance to populate the UI with
      */
-    public void initialize(EventDTO event) {
+    public void initialize(EventDTO event, ExpenseDTO expense) {
+        this.expense = expense;
         this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
 
         refresh();
 
         serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> Platform.runLater(this::refresh));
-    }
-
-    /**
-     * Generate UI specifically for Editing Expense.
-     *
-     * @param event event
-     * @param expense Expense to edit.
-     */
-    public void initializeEdit(EventDTO event, ExpenseDTO expense) {
-        this.expense = expense;
-        initialize(event);
     }
 
     /**

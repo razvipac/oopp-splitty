@@ -183,7 +183,7 @@ public class MainCtrl {
      */
     public void showAddExpense(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Add expense for event " + eventDTO.name());
-        addEditExpenseCtrl.initialize(eventDTO);
+        addEditExpenseCtrl.initialize(eventDTO, null);
         primaryStage.setScene(addEditExpense);
     }
 
@@ -196,7 +196,7 @@ public class MainCtrl {
      */
     public void showEditExpense(EventDTO eventDTO, ExpenseDTO expense){
         primaryStage.setTitle("Splitty: Edit expense for event " + eventDTO.name());
-        addEditExpenseCtrl.initializeEdit(eventDTO, expense);
+        addEditExpenseCtrl.initialize(eventDTO, expense);
         primaryStage.setScene(addEditExpense);
     }
 
