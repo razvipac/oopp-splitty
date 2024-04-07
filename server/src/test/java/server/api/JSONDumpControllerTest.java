@@ -55,14 +55,14 @@ public class JSONDumpControllerTest {
         Event event = new Event(name, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food", newName = "New Name";
         Participant participant = new Participant(name, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024 - 01 - 01);
         Expense expense = new Expense(price, item, participant, date);
         long id = 1L;
         expense.setId(id);
         ParticipantDTO participantDTO = new ParticipantDTO(name, email, iban, bic);
-        ExpenseDTO expenseDTO = new ExpenseDTO(id,price, item, participant.getName(), LocalDate.now());
+        ExpenseDTO expenseDTO = new ExpenseDTO(id, price, item, participant.getName(), LocalDate.now());
         List<JSONDumpEventDTO> list = new ArrayList<>();
         JSONDumpEventDTO jsonDumpEventDTO =
                 new JSONDumpEventDTO(eventDTOMapper.toDTO(event), new ArrayList<>(),
