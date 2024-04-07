@@ -6,17 +6,18 @@ import org.springframework.stereotype.Service;
 import server.database.DebtRepository;
 import server.entities.debt.Debt;
 import server.entities.debt.DebtId;
+import server.entities.event.Event;
+import server.entities.expense.Expense;
 import server.entities.participant.Participant;
 import server.service.exceptions.NotFoundInDatabaseException;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DebtService {
     private final DebtRepository debtRepository;
     private final ParticipantService participantService;
+    private final ExpenseService expenseService;
 
     /**
      * Constructs a DebtService with the specified DebtRepository
@@ -27,10 +28,12 @@ public class DebtService {
     @Autowired
     public DebtService(
             DebtRepository debtRepository,
-            ParticipantService participantService
+            ParticipantService participantService,
+            ExpenseService expenseService
     ) {
         this.debtRepository = debtRepository;
         this.participantService = participantService;
+        this.expenseService = expenseService;
     }
 
     /**
@@ -86,11 +89,40 @@ public class DebtService {
         return found;
 
     }
+
     private DebtId getDebtId(String eventCode, String debtorName, String creditorName)
             throws NotFoundInDatabaseException {
         Participant debtor = participantService.getOne(eventCode, debtorName);
         Participant creditor = participantService.getOne(eventCode, creditorName);
         return new DebtId(debtor, creditor);
+    }
+
+    /**
+     * Generates and populates the database with new debt entities generated from the expense instances on that event
+     * (currently does not support selective expenses)
+     * @param eventCode code of the event to generate debts on
+     * @return list of the newly generated debts
+     */
+    public List<Debt> generateDebtsFromExpenses(String eventCode){
+        List<Expense> expenseList = expenseService.getAllInEvent(eventCode);
+        List<Participant> participantList = participantService.getAll(eventCode);
+        Map<Expense, List<Participant>> inputMap = new HashMap<>();
+        expenseList.forEach(e -> inputMap.put(e, new ArrayList<>(participantList)));
+
+        Map<Participant, Map<Participant, Double>> debtsData = Event.settleDebts(inputMap);
+        List<Debt> newDebts = new ArrayList<>();
+
+        debtRepository.deleteAll();
+        for (Participant debtor : debtsData.keySet()){
+            Map<Participant, Double> creditors = debtsData.get(debtor);
+            for (Participant creditor : creditors.keySet()){
+                Debt newDebt = new Debt(debtor, creditor, creditors.get(creditor));
+                debtRepository.save(newDebt);
+                newDebts.add(newDebt);
+            }
+        }
+
+        return newDebts;
     }
 
 }
