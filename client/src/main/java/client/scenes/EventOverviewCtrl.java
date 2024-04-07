@@ -115,9 +115,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
         );
 
-        serverUtils.registerForWebSocketUpdatesForTheWholeEvent(event.code(), q -> {
-            Platform.runLater(this::refresh);
-        });
+        serverUtils.registerForWebSocketUpdatesForTheWholeEvent(
+                event.code(), q-> Platform.runLater(this::refresh));
 
         // The last activity should be updated only the first time the event is ever opened
         // From then on, whenever somebody visits it, it does not count as the last activity has been changed
@@ -158,11 +157,17 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+    /**
+     * Refreshes Event's name and code
+     */
     private void refreshEventInfoLabel() {
         eventTitleLabel.setText(event.name());
         eventCodeLabel.setText(event.code());
     }
 
+    /**
+     * Refreshes the participant list
+     */
     private void refreshParticipantList(){
         ArrayList<Label> participantLabels = new ArrayList<>();
 
@@ -254,13 +259,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             }
         }
     }
-
-    /**
-     * Handles the copying of the invitation code when the label is double-clicked.
-     *
-     * @param event The MouseEvent representing the double click event.
-     */
-
 
     /**
      * Back button action.
@@ -491,9 +489,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             // TODO: includesText is currently hardcoded to '(everyone)'
 
-            editButton.setOnAction(eventHandler -> {
-                openEditExpense(expenseDTO);
-            });
+            editButton.setOnAction(eventHandler -> openEditExpense(expenseDTO));
 
             deleteButton.setOnAction(eventHandler -> {
                 boolean confirmed = controllerUtils.createConfirmationAlert(
