@@ -134,6 +134,13 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         label.setStyle("-fx-background-color: transparent; -fx-cursor: default;");
     }
 
+    /**
+     * Sets the language for all elements in the invitations control panel.
+     * This method retrieves translations for various UI elements
+     * from the LanguageManager and updates the corresponding
+     * text accordingly.
+     * If LanguageManager is not available, no action is taken.
+     */
     public void setLanguageForAllInvitationsCtrl(){
         if(mainCtrl.getLanguageManager() != null){
             LanguageManager lm = mainCtrl.getLanguageManager();

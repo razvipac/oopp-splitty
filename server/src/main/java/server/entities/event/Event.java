@@ -3,7 +3,6 @@ package server.entities.event;
 import jakarta.persistence.*;
 import server.entities.expense.Expense;
 import server.entities.participant.Participant;
-import server.entities.debt.Debt;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;

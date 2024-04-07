@@ -257,6 +257,12 @@ public class MainCtrl {
         this.passwordIsCorrect = passwordIsCorrect;
     }
 
+    /**
+     * Reloads all language settings across different components of the application.
+     * This method updates the language settings for the start screen, admin password control panel,
+     * and invitations control panel by invoking their respective setLanguage methods.
+     * Additionally, it recreates the admin password popup window to ensure its language is updated.
+     */
     public void reloadAllLanguages(){
         startScreenCtrl.setLanguageForAll();
         adminPasswordCtrl.setLanguageForAllAdminPasswordCtrl();
