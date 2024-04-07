@@ -38,7 +38,7 @@ public class ExpenseService {
      * @param expenseRepository     The ExpenseRepository to be injected into the service.
      * @param participantRepository The ParticipantRepository to be injected into the service.
      * @param simpMessagingTemplate The SimpMessagingTemplate to be injected into the service.
-     * @param eventRepository
+     * @param eventRepository       The EventRepository to be injected into the service.
      */
     public ExpenseService(
             @Autowired ExpenseRepository expenseRepository,
