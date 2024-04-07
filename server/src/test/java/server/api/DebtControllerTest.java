@@ -1,4 +1,4 @@
-// checkstyle:off
+// CHECKSTYLE:OFF
 package server.api;
 
 import commons.dto.DebtDTO;
@@ -72,7 +72,6 @@ public class DebtControllerTest {
         List<Debt> debts = new ArrayList<>();
         debts.add(debt);
 
-        when(debtService.getAll(anyString())).thenReturn(debts);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/{eventCode}/debt", eventCode)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

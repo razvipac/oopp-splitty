@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 package server.api;
 
 import commons.dto.ExpenseDTO;
