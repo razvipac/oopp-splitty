@@ -12,7 +12,7 @@ import java.lang.reflect.*;
 import static org.mockito.Mockito.*;
 
 class ContactDetailsCtrlTest {
-    ContactDetailsCtrl contactDetailsCtrl;
+    private ContactDetailsCtrl contactDetailsCtrl;
     @BeforeEach
     void setUp(){
         MainCtrl mainCtrl = mock(MainCtrl.class);
