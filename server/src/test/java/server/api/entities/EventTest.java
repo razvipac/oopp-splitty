@@ -205,7 +205,7 @@ class EventTest {
         assertTrue(debts.containsKey("Participant 1"));
         Map<String, Double> participant1Debts = debts.get("Participant 1");
         assertEquals(2, participant1Debts.size());
-        assertEquals(66.66, participant1Debts.get("Participant 2"));
+        assertEquals(66.67, participant1Debts.get("Participant 2"));
         assertEquals(100.0, participant1Debts.get("Participant 3"));
 
         // Ensure correct debts for participant 2

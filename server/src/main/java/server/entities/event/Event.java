@@ -5,6 +5,7 @@ import server.entities.expense.Expense;
 import server.entities.participant.Participant;
 import server.entities.debt.Debt;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -210,6 +211,7 @@ public class Event {
      */
     public static Map<String, Map<String, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
         Map<String, Map<String, Double>> debts = new HashMap<>();
+        DecimalFormat df = new DecimalFormat("#.##");
 
         // Now we are analyzing each expense and for each, its participants in that specific expense
         for (Map.Entry<Expense, List<Participant>> entry : expenses.entrySet()) {
@@ -220,6 +222,7 @@ public class Event {
 
             // Calculate the share per participant (it is split equally among every participant)
             double share = (double) expense.getPrice() / participants.size();
+            share = Double.parseDouble(df.format(share));
 
             for (Participant participant : participants) {
                 if (!participant.equals(paidBy)) {
