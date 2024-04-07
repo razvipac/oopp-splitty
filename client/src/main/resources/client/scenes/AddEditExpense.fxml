@@ -70,7 +70,7 @@
          </font></Label>
             <TextField fx:id="expenseTypeField" disable="true" layoutX="135.0" layoutY="226.0" promptText="food, restaurant" />
             <Button fx:id="abortButton" layoutX="466.0" layoutY="292.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
-            <Button fx:id="addButton" layoutX="524.0" layoutY="292.0" mnemonicParsing="false" onAction="#submit" text="Add">
+            <Button fx:id="addButton" layoutX="524.0" layoutY="292.0" mnemonicParsing="false" onAction="#submit" text="OK">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
