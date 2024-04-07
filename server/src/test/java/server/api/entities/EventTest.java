@@ -1,5 +1,6 @@
 package server.api.entities;
 
+import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.entities.debt.Debt;
@@ -196,29 +197,29 @@ class EventTest {
         expenses.put(expense3, List.of(participant1, participant2, participant3));
 
         // Perform settling
-        Map<String, Map<String, Double>> debts = Event.settleDebts(expenses);
+        Map<Participant, Map<Participant, Double>> debts = Event.settleDebts(expenses);
 
         // Ensure debts are settled correctly
         assertEquals(3, debts.size());
 
         // Ensure correct debts for participant 1
-        assertTrue(debts.containsKey("Participant 1"));
-        Map<String, Double> participant1Debts = debts.get("Participant 1");
+        assertTrue(debts.containsKey(participant1));
+        Map<Participant, Double> participant1Debts = debts.get(participant1);
         assertEquals(2, participant1Debts.size());
-        assertEquals(66.67, participant1Debts.get("Participant 2"));
-        assertEquals(100.0, participant1Debts.get("Participant 3"));
+        assertEquals(66.67, participant1Debts.get(participant2));
+        assertEquals(100.0, participant1Debts.get(participant3));
 
         // Ensure correct debts for participant 2
-        assertTrue(debts.containsKey("Participant 2"));
-        Map<String, Double> participant2Debts = debts.get("Participant 2");
+        assertTrue(debts.containsKey(participant2));
+        Map<Participant, Double> participant2Debts = debts.get(participant2);
         assertEquals(2, participant2Debts.size());
-        assertEquals(33.33, participant2Debts.get("Participant 1"));
+        assertEquals(33.33, participant2Debts.get(participant1));
 
         // Ensure correct debts for participant 3
-        assertTrue(debts.containsKey("Participant 3"));
-        Map<String, Double> participant3Debts = debts.get("Participant 3");
+        assertTrue(debts.containsKey(participant3));
+        Map<Participant, Double> participant3Debts = debts.get(participant3);
         assertEquals(2, participant3Debts.size());
-        assertEquals(33.33, participant3Debts.get("Participant 1"));
+        assertEquals(33.33, participant3Debts.get(participant1));
     }
 
 

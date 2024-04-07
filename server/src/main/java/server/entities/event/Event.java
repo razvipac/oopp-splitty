@@ -209,8 +209,8 @@ public class Event {
      * @param expenses A map where each expense is associated with its participants
      * @return A map representing the total debts between participants
      */
-    public static Map<String, Map<String, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
-        Map<String, Map<String, Double>> debts = new HashMap<>();
+    public static Map<Participant, Map<Participant, Double>> settleDebts(Map<Expense, List<Participant>> expenses) {
+        Map<Participant, Map<Participant, Double>> debts = new HashMap<>();
         DecimalFormat df = new DecimalFormat("#.##");
 
         // Now we are analyzing each expense and for each, its participants in that specific expense
@@ -224,15 +224,14 @@ public class Event {
             double share = (double) expense.getPrice() / participants.size();
             share = Double.parseDouble(df.format(share));
 
-            for (Participant participant : participants) {
-                if (!participant.equals(paidBy)) {
+            for (Participant debtor : participants) {
+                if (!debtor.equals(paidBy)) {
                     // Update the debt between participants
-                    String debtorName = participant.getName();
-                    String creditorName = paidBy.getName();
-                    double amount = debts.getOrDefault(debtorName, new HashMap<>()).getOrDefault(creditorName, 0.0);
+
+                    double amount = debts.getOrDefault(debtor, new HashMap<>()).getOrDefault(paidBy, 0.0);
                     amount += share;
-                    Map<String, Double> debtorDebts = debts.computeIfAbsent(debtorName, k -> new HashMap<>());
-                    debtorDebts.put(creditorName, amount);
+                    Map<Participant, Double> debtorDebts = debts.computeIfAbsent(debtor, k -> new HashMap<>());
+                    debtorDebts.put(paidBy, amount);
                 }
             }
         }
