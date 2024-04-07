@@ -53,6 +53,18 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     public void initialize(EventDTO event) {
         this.event = event;
 
+        serverUtils.registerForLongPollingDebtUpdates(event.code(), debtDTOs -> {
+            refresh();
+        });
+
+        refresh();
+    }
+
+    public void refresh(){
+        List<DebtDTO> debtDTOs = serverUtils.getAllOpenDebts(event.code());
+        debtList.clear();
+        debtList.addAll(debtDTOs);
+
         refreshDebtList();
     }
 
@@ -61,9 +73,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      * current event. Each debt is then added to the layout.
      */
     public void refreshDebtList(){
-        debtList.clear();
-        debtList.addAll(serverUtils.getAllOpenDebts(event.code()));
-
+        debtVBox.getChildren().clear();
         // Adding each debt
         for(DebtDTO d : debtList) {
             addDebtToLayout(d);

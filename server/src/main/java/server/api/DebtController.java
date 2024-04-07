@@ -1,18 +1,20 @@
 package server.api;
 
-import server.entities.DTOMapper;
-import server.entities.debt.Debt;
 import commons.dto.DebtDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import server.entities.DTOMapper;
+import server.entities.debt.Debt;
 import server.service.DebtService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
+import java.util.Map;
+import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("api/v1/{eventCode}/debts")
@@ -20,6 +22,7 @@ public class DebtController {
 
     private final DebtService debtService;
     private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
+    private Map<Object, Consumer<List<DebtDTO>>> listeners = new HashMap<>();
 
     /**
      * Constructs a DebtController with the specified DebtService
@@ -42,23 +45,44 @@ public class DebtController {
      * @param eventCode The code of the event for which unsettled debts are to be retrieved
      * @return A DeferredResult containing the list of unsettled debts
      */
-    @GetMapping
-    public DeferredResult<ResponseEntity<List<DebtDTO>>> getAllUnsettledDebts
-    (@PathVariable String eventCode) {
-        DeferredResult<ResponseEntity<List<DebtDTO>>> output = new DeferredResult<>(300000L);
-        output.onTimeout(() -> output.setErrorResult(
-                ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
-                        .body("Request timed out. Please try again.")));
+    @GetMapping("/updates")
+    public DeferredResult<ResponseEntity<List<DebtDTO>>> getUnsettledDebtsUpdates(
+            @PathVariable String eventCode
+    ) {
+        DeferredResult<ResponseEntity<List<DebtDTO>>> deferredResult = new DeferredResult<>(5000L);
+        var key = new Object();
 
-        ForkJoinPool.commonPool().submit(() -> {
-            List<Debt> unsettledDebts = debtService.getAllUnsettledDebtsForEvent(eventCode);
-            List<DebtDTO> unsettledDebtDTOs = unsettledDebts.stream()
+        listeners.put(key, passedDebtDTOs -> {
+            List<DebtDTO> debtDTOs = debtService.getAllUnsettledDebtsForEvent(eventCode)
+                    .stream()
                     .map(debtDTOMapper::toDTO)
                     .toList();
-            output.setResult(new ResponseEntity<>(unsettledDebtDTOs, HttpStatus.OK));
+
+            deferredResult.setResult(ResponseEntity.ok(debtDTOs));
         });
 
-        return output;
+        deferredResult.onTimeout(() -> {
+            deferredResult.setErrorResult(
+                    ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("Request timed out. Please try again.")
+            );
+        });
+
+        deferredResult.onCompletion(() -> listeners.remove(key));
+
+        return deferredResult;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DebtDTO>> getAllUnsettledDebtsForEvent(
+            @PathVariable("eventCode") String eventCode
+    ) {
+        ResponseEntity<List<DebtDTO>> res = ResponseEntity.ok(
+                debtService.getAllUnsettledDebtsForEvent(eventCode)
+                .stream()
+                .map(debtDTOMapper::toDTO)
+                .toList()
+        );
+        return res;
     }
 
     /**
@@ -77,6 +101,8 @@ public class DebtController {
         try {
             Debt updated = debtService.updateOne(eventCode, body);
             DebtDTO debtDTO = debtDTOMapper.toDTO(updated);
+
+            listeners.forEach((k, v) -> v.accept(List.of(debtDTO)));
 
             return new ResponseEntity<>(debtDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
@@ -100,6 +126,8 @@ public class DebtController {
                 .stream()
                 .map(debtDTOMapper::toDTO)
                 .toList();
+
+        listeners.forEach((k, v) -> v.accept(dtos));
 
         return new ResponseEntity<>(
                 dtos,

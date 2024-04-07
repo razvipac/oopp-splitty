@@ -16,6 +16,7 @@
 package client.utils;
 
 import commons.dto.*;
+import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -30,8 +31,11 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -120,6 +124,26 @@ public class ServerUtils {
         );
     }
 
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+    public void registerForLongPollingDebtUpdates(String eventCode, Consumer<List<DebtDTO>> consumer){
+        EXEC.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig())
+                        .target(httpServerUrl).path("api/v1/" + eventCode + "/debts/updates")
+                        .request(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .get(Response.class);
+
+                if (res.getStatus() == 408) {
+                    continue;
+                }
+
+                consumer.accept(res.readEntity(List.class));
+            }
+        });
+    }
+
     /**
      * Gets all events.
      *
@@ -204,12 +228,12 @@ public class ServerUtils {
      * @return the ParticipantDTO instance corresponding to that participant
      */
     public ParticipantDTO getParticipant(String eventCode, String name){
-        return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
-                .target(httpServerUrl).path("api/v1/" + eventCode + "/participant?name=" + name)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(List.class)
-                .getFirst();
+        Client client = ClientBuilder.newClient(new ClientConfig());
+        URI uri = URI.create(httpServerUrl + "api/v1/" + eventCode + "/participant?name=" + name);
+        Response response = client.target(uri).request(APPLICATION_JSON).get();
+        List<ParticipantDTO> participantDTOs = response.readEntity(new GenericType<List<ParticipantDTO>>() {});
+        if (participantDTOs.isEmpty()) return null;
+        return participantDTOs.getFirst();
     }
 
     /**
@@ -397,5 +421,9 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(body, APPLICATION_JSON));
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
+    }
+
+    public void stop(){
+        EXEC.shutdownNow();
     }
 }

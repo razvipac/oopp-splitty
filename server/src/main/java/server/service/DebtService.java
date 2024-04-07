@@ -45,8 +45,8 @@ public class DebtService {
     public List<Debt> getAllUnsettledDebtsForEvent(String eventCode) {
         List<Debt> debts = new LinkedList<>();
         debtRepository.findAllUnsettledDebtsForEvent(eventCode)
-                .iterator().
-                forEachRemaining(debts::add);
+                .iterator()
+                .forEachRemaining(debts::add);
         return debts;
 
     }
