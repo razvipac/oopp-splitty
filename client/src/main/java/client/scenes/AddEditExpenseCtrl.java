@@ -70,6 +70,7 @@ public class AddEditExpenseCtrl {
     /**
      * Generate an ui from the given object instance
      * @param event Event instance to populate the UI with
+     * @param expense Expense to edit. If user wants to add, this can be null.
      */
     public void initialize(EventDTO event, ExpenseDTO expense) {
         this.expense = expense;
