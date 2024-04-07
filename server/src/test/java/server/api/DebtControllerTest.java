@@ -1,3 +1,4 @@
+//checkstyle:off
 package server.api;
 
 import commons.dto.DebtDTO;

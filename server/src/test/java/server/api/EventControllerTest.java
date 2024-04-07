@@ -27,18 +27,12 @@ import server.service.exceptions.NotFoundInDatabaseException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static java.lang.reflect.Array.get;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.ExpectedCount.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -133,7 +127,7 @@ public class EventControllerTest {
     }
 
     @Test
-    public void testUpdateEvent_Success() throws Exception {
+    public void testUpdateEventSuccess() throws Exception {
         Event event = new Event();
         String eventCode = "1234";
         String newName = "New Name";
@@ -152,7 +146,7 @@ public class EventControllerTest {
     }
 
     @Test
-    public void testUpdateEvent_NotFound() throws Exception {
+    public void testUpdateEventNotFound() throws Exception {
         Event event = new Event();
         String eventCode = "1234";
         String newName = "New Name";
@@ -170,7 +164,7 @@ public class EventControllerTest {
     }
 
     @Test
-    public void testDeleteEvent_Success() throws Exception {
+    public void testDeleteEventSuccess() throws Exception {
 
         Event event = new Event();
         String eventCode = "1234";
@@ -211,7 +205,7 @@ public class EventControllerTest {
     }
 
     @Test
-    public void testDeleteEvent_NotFound() throws Exception {
+    public void testDeleteEventNotFound() throws Exception {
         String eventCode = "1234";
 
         when(eventService.getOne(eventCode)).thenThrow(NotFoundInDatabaseException.class);
