@@ -9,12 +9,15 @@ import commons.dto.ExpenseDTO;
 import commons.dto.ParticipantDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.time.LocalDateTime;
@@ -112,9 +115,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
         );
 
-        serverUtils.registerForWebSocketUpdatesForTheWholeEvent(event.code(), q -> {
-            Platform.runLater(this::refresh);
-        });
+        serverUtils.registerForWebSocketUpdatesForTheWholeEvent(
+                event.code(), q-> Platform.runLater(this::refresh));
 
         // The last activity should be updated only the first time the event is ever opened
         // From then on, whenever somebody visits it, it does not count as the last activity has been changed
@@ -155,11 +157,17 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
     }
 
+    /**
+     * Refreshes Event's name and code
+     */
     private void refreshEventInfoLabel() {
         eventTitleLabel.setText(event.name());
         eventCodeLabel.setText(event.code());
     }
 
+    /**
+     * Refreshes the participant list
+     */
     private void refreshParticipantList(){
         ArrayList<Label> participantLabels = new ArrayList<>();
 
@@ -253,13 +261,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Handles the copying of the invitation code when the label is double-clicked.
-     *
-     * @param event The MouseEvent representing the double click event.
-     */
-
-
-    /**
      * Back button action.
      */
     @FXML
@@ -297,8 +298,17 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * Opens the add/edit expense screen and updates the last activity.
      */
     @FXML
-    private void openAddEditExpense() {
-        mainCtrl.showAddEditExpense(event);
+    private void openAddExpense() {
+        mainCtrl.showAddExpense(event);
+        updateAndPrintLastActivity();
+    }
+
+    /**
+     * Opens the edit expense screen and updates the last activity.
+     */
+    @FXML
+    private void openEditExpense(ExpenseDTO expense) {
+        mainCtrl.showEditExpense(event, expense);
         updateAndPrintLastActivity();
     }
 
@@ -360,7 +370,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-<<<<<<< HEAD
      * Calculate the total sum of expenses.
      * @return The total sum of expenses
      */
@@ -390,7 +399,12 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      */
     private class ExpenseItem extends GridPane {
 
-        private ExpenseDTO expenseDTO;
+        private final ExpenseDTO expenseDTO;
+        private Text dateText;
+        private Text expenseInfoText;
+        private Text includesText;
+        private Button editButton;
+        private Button deleteButton;
 
         /**
          * Creates ExpenseItem, a GridPane containing an Expense's date, participant,
@@ -399,33 +413,93 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
          */
         public ExpenseItem(ExpenseDTO expense) {
             expenseDTO = expense;
-            createItemBox();
+            createGridPaneBasis();
+            addExpenseInformation();
         }
 
-        private void createItemBox() {
-            this.setHgap(12);
-            this.setVgap(2);
+        /**
+         * Creates basis for this GridPane
+         */
+        private void createGridPaneBasis() {
+            this.setAlignment(Pos.CENTER_LEFT);
+            this.setPrefSize(557, 42);
 
-            // TODO: implement this for actual Expense date
-            Text date = new Text("01-01-2024");
-            this.add(date, 0, 0, 1, 2);
+            ColumnConstraints col1 = new ColumnConstraints();
+            col1.setHalignment(HPos.CENTER);
+            col1.setMaxWidth(102.5);
+            col1.setPrefWidth(84.5);
 
-            Text expenseInfo = new Text(
-                    expenseDTO.paidByName() + " paid " + expenseDTO.price() + " Euro for " + expenseDTO.item());
-            this.add(expenseInfo, 1, 0);
+            ColumnConstraints col2 = new ColumnConstraints();
+            col2.setMaxWidth(378.5);
+            col2.setPrefWidth(364.0);
 
-            // TODO: 'paidBy includes ...' is currently hardcoded to 'all'
-            Text expenseIncludes = new Text("(all)");
-            this.add(expenseIncludes, 1, 1);
+            ColumnConstraints col3 = new ColumnConstraints();
+            col3.setMaxWidth(202.5);
+            col3.setPrefWidth(57.0);
 
-            Button expenseEditButton = new Button("Edit");
-            this.add(expenseEditButton, 2, 0, 1, 2);
+            ColumnConstraints col4 = new ColumnConstraints();
+            col4.setMaxWidth(147.0);
+            col4.setPrefWidth(51.5);
 
-            Button expenseDeleteButton = new Button("Delete");
-            expenseDeleteButton.setOnAction(eventHandler -> {
-                serverUtils.deleteExpense(expenseDTO, event.code());
+            RowConstraints row1 = new RowConstraints();
+            row1.setMaxHeight(21.0);
+            row1.setPrefHeight(21.0);
+
+            RowConstraints row2 = new RowConstraints();
+            row2.setMaxHeight(21.0);
+            row2.setPrefHeight(21.0);
+
+            this.getColumnConstraints().addAll(col1, col2, col3, col4);
+            this.getRowConstraints().addAll(row1, row2);
+
+            dateText = new Text("(no date)");
+            dateText.setFill(Color.web("#6f6f6f"));
+            GridPane.setHalignment(dateText, HPos.LEFT);
+            GridPane.setMargin(dateText, new Insets(0, 0, 0, 10));
+            this.add(dateText, 0, 0, 1, 2);
+
+            expenseInfoText = new Text();
+            this.add(expenseInfoText, 1, 0);
+
+            includesText = new Text("(everyone)");
+            includesText.setFill(Color.web("#6f6f6f"));
+            this.add(includesText, 1, 1);
+
+            editButton = new Button("Edit");
+            editButton.setPrefSize(45, 14);
+            editButton.setFont(Font.font(10));
+            GridPane.setHalignment(editButton, HPos.RIGHT);
+            this.add(editButton, 2, 0, 1, 2);
+
+            deleteButton = new Button("Delete");
+            deleteButton.setPrefSize(45, 14);
+            deleteButton.setFont(Font.font(10));
+            GridPane.setHalignment(deleteButton, HPos.RIGHT);
+            this.add(deleteButton, 3, 0, 1, 2);
+        }
+
+        /**
+         * Adds the information of the expense to this GridPane
+         */
+        private void addExpenseInformation() {
+            if(expenseDTO.date() != null ) dateText.setText(expenseDTO.date().toString());
+
+            expenseInfoText.setText(expenseDTO.paidByName() + " paid \u20AC"
+                    + expenseDTO.price() + " for " + expenseDTO.item());
+
+            // TODO: includesText is currently hardcoded to '(everyone)'
+
+            editButton.setOnAction(eventHandler -> openEditExpense(expenseDTO));
+
+            deleteButton.setOnAction(eventHandler -> {
+                boolean confirmed = controllerUtils.createConfirmationAlert(
+                        "Confirm Delete",
+                        "Are you sure you want to delete this expense?");
+
+                if (confirmed) {
+                    serverUtils.deleteExpense(expenseDTO, event.code());
+                }
             });
-            this.add(expenseDeleteButton, 3, 0, 2, 3);
         }
     }
 }

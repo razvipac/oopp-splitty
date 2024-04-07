@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  * This controller provides endpoints for managing debts associated with a specific event.
  */
 @RestController
-@RequestMapping("api/v1/{eventCode}/debts")
+@RequestMapping("api/v1/{eventCode}/debt")
 public class DebtController {
 
     private final DebtService debtService;
@@ -29,10 +29,10 @@ public class DebtController {
     private Map<Object, Consumer<List<DebtDTO>>> listeners = new HashMap<>();
 
     /**
-     * Constructs a DebtController with the specified DebtService and DTOMapper.
+     * Constructs a DebtController with the specified DebtService
      *
-     * @param debtService     The service for managing Debt entities.
-     * @param debtDTOMapper   The mapper for converting Debt entities to DebtDTOs.
+     * @param debtService The service for managing Debt entities
+     * @param debtDTOMapper mapper for the DebtDTO
      */
     @Autowired
     public DebtController(
@@ -104,7 +104,7 @@ public class DebtController {
      * @return ResponseEntity with the updated DebtDTO if successful, or NOT_FOUND if the debt is not found.
      */
     @PutMapping("")
-    public ResponseEntity<DebtDTO> updateUnsettledDebt(
+    public ResponseEntity<DebtDTO> updateDebt(
             @PathVariable("eventCode") String eventCode,
             @RequestBody DebtDTO body
     ) {
@@ -145,4 +145,3 @@ public class DebtController {
         );
     }
 }
-

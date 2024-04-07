@@ -169,4 +169,49 @@ public class JSONDumpService {
             throw new ImproperDumpFormatException("Improper dump format");
         }
     }
+
+    /**
+     * Restores the state of an event to that stored inside the passed DTO
+     * @param jsonDumpEventDTO EventDump containing the desired event
+     * @throws ImproperDumpFormatException if the passed jsonDump is formatted improperly
+     */
+    @Transactional
+    public void restoreEventFromDump(JSONDumpEventDTO jsonDumpEventDTO)
+            throws ImproperDumpFormatException {
+        try {
+
+            EventDTO eventDTO = jsonDumpEventDTO.eventDTO();
+            eventRepository.save(eventDTOMapper.newEntity(eventDTO));
+
+            for (ParticipantDTO participantDTO : jsonDumpEventDTO.participantDTOs()) {
+                participantRepository.save(
+                        participantDTOMapper.newEntity(
+                                participantDTO,
+                                eventDTO.code()
+                        )
+                );
+            }
+
+            for (ExpenseDTO expenseDTO : jsonDumpEventDTO.expenseDTOs()) {
+                expenseRepository.save(
+                        expenseDTOMapper.newEntity(
+                                expenseDTO,
+                                eventDTO.code()
+                        )
+                );
+            }
+
+            for (DebtDTO debtDTO : jsonDumpEventDTO.debtDTOs()) {
+                debtRepository.save(
+                    debtDTOMapper.newEntity(
+                            debtDTO,
+                            eventDTO.code()
+                    )
+                );
+            }
+
+        } catch (Exception e) {
+            throw new ImproperDumpFormatException("Improper dump format");
+        }
+    }
 }

@@ -68,7 +68,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      * Refreshes the scene with data from the server
      */
     public void refresh(){
-        List<DebtDTO> debtDTOs = serverUtils.getAllOpenDebts(event.code());
+        List<DebtDTO> debtDTOs = serverUtils.getAllDebts(event.code());
         debtList.clear();
         debtList.addAll(debtDTOs);
 

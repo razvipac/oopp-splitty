@@ -13,15 +13,21 @@ import java.util.Collection;
 public interface DebtRepository extends CrudRepository<Debt, DebtId> {
 
     /**
-     * Retrieves a list of settled debts for a specific event
+     * Retrieves a list of unsettled debts for a specific event
      *
      * @param eventCode The code of the event for which settled debts are to be retrieved
-     * @return A list of settled debts for the specified event
+     * @return A list of unsettled debts for the specified event
      */
     @Query("SELECT d FROM Debt d " +
             "WHERE d.id.debtor.pkey.event.code = :eventCode")
     Collection<Debt> findAllDebts(@Param("eventCode") String eventCode);
 
-//    @Query("SELECT d FROM Debt d WHERE e.pkey.paidBy.pkey.event.code = :eventCode")
-//    Collection<Debt> findAllDebtsInEvent(@Param("eventCode") String eventCode);
+    /**
+     * Retrieves a list of all debts for a specific event
+     *
+     * @param eventCode The code of the event for which settled debts are to be retrieved
+     * @return A list of all debts for the specified event
+     */
+    @Query("SELECT d FROM Debt d WHERE d.id.debtor.pkey.event.code = :eventCode")
+    Collection<Debt> findAllDebtsInEvent(@Param("eventCode") String eventCode);
 }

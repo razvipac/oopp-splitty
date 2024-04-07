@@ -135,7 +135,7 @@ public class ServerUtils {
         EXEC.submit(() -> {
             while (!Thread.interrupted()) {
                 var res = ClientBuilder.newClient(new ClientConfig())
-                        .target(httpServerUrl).path("api/v1/" + eventCode + "/debts/updates")
+                        .target(httpServerUrl).path("api/v1/" + eventCode + "/debt/updates")
                         .request(APPLICATION_JSON)
                         .accept(APPLICATION_JSON)
                         .get(Response.class);
@@ -342,6 +342,27 @@ public class ServerUtils {
     }
 
     /**
+     * Updates a given expense in the server
+     * @param body DTO containing the updated information
+     * @param eventCode code of the event on which to update the given expense
+     * @return true if deleted, false otherwise
+     */
+    public boolean updateExpense(ExpenseDTO body, String eventCode){
+        String endpoint = "api/v1/" + eventCode + "/expense";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path(endpoint)
+                .queryParam("id", body.id())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(body, APPLICATION_JSON));
+
+        // Check the response status code
+        // TODO: should check for error types and pass that information on to user
+        return response.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    /**
      * Deletes a given expense from the server
      * @param e dto for the expense to be deleted
      * @param eventCode code of the event on which to delete the given expense
@@ -371,10 +392,10 @@ public class ServerUtils {
      * @param eventCode The code of the event for which debts are to be retrieved
      * @return A List containing all open debts for the specified event
      */
-    public List<DebtDTO> getAllOpenDebts(String eventCode) {
+    public List<DebtDTO> getAllDebts(String eventCode) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl)
-                .path("api/v1/" + eventCode + "/debts")
+                .path("api/v1/" + eventCode + "/debt")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {});
@@ -387,7 +408,7 @@ public class ServerUtils {
      * @return state after toggle
      */
     public boolean toggleDebtReceivedStatus(String eventCode, DebtDTO debtDTO){
-        String endpoint = "api/v1/" + eventCode + "/debts";
+        String endpoint = "api/v1/" + eventCode + "/debt";
 
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl).path(endpoint)
@@ -405,7 +426,7 @@ public class ServerUtils {
     public void regenerateDebts(String eventCode){
         ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl)
-                .path("api/v1/" + eventCode + "/debts")
+                .path("api/v1/" + eventCode + "/debt")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(null);

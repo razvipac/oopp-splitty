@@ -153,7 +153,12 @@ public class EventController {
         }
     }
 
-    private void deleteDependants(Event event){
+    /**
+     * Deletes all of the dependats of an event
+     * @param event that is deleted
+     */
+    public void deleteDependants(Event event){
+        if(event.getParticipants()==null) return;
         for (Participant participant : event.getParticipants()){
             participantController.deleteOne(
                     participant.getName(),

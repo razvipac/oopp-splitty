@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.LanguageManager;
 import commons.dto.EventDTO;
+import commons.dto.ExpenseDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -175,14 +176,27 @@ public class MainCtrl {
     }
 
     /**
-     * Sets the title of the primary stage and switches to the Add/Edit Expense screen for the
+     * Sets the title of the primary stage and switches to the Add Expense screen for the
      * specified event.
      *
-     * @param eventDTO The EventDTO representing the event for which to add or edit expenses.
+     * @param eventDTO The EventDTO representing the event for which to add expenses.
      */
-    public void showAddEditExpense(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Add/edit expenses for event " + eventDTO.name());
-        addEditExpenseCtrl.initialize(eventDTO);
+    public void showAddExpense(EventDTO eventDTO){
+        primaryStage.setTitle("Splitty: Add expense for event " + eventDTO.name());
+        addEditExpenseCtrl.initialize(eventDTO, null);
+        primaryStage.setScene(addEditExpense);
+    }
+
+    /**
+     * Sets the title of the primary stage and switches to the Add Expense screen for the
+     * specified event.
+     *
+     * @param eventDTO The EventDTO representing the event for which to edit expenses.
+     * @param expense The expense to edit.
+     */
+    public void showEditExpense(EventDTO eventDTO, ExpenseDTO expense){
+        primaryStage.setTitle("Splitty: Edit expense for event " + eventDTO.name());
+        addEditExpenseCtrl.initialize(eventDTO, expense);
         primaryStage.setScene(addEditExpense);
     }
 
