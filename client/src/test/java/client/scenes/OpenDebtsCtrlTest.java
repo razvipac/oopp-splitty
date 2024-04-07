@@ -77,7 +77,8 @@ class OpenDebtsCtrlTest extends ApplicationTest {
     @Test
     public void testGoBack() {
         openDebtsCtrl.goBack();
-        verify(mainCtrlMock, times(1)).showEventOverview(eventMock); // Check that showEventOverview was called with eventMock
+        verify(mainCtrlMock, times(1)).showEventOverview(eventMock);
+        // Check that showEventOverview was called with eventMock
     }
 
     @Test
@@ -87,12 +88,14 @@ class OpenDebtsCtrlTest extends ApplicationTest {
         // Case 1: KeyCode is ESCAPE
         when(keyEventMock.getCode()).thenReturn(KeyCode.ESCAPE);
         openDebtsCtrl.onGlobalKeyPress(keyEventMock);
-        verify(mainCtrlMock, times(1)).showEventOverview(eventMock); // Check that showEventOverview was called with eventMock
+        verify(mainCtrlMock, times(1)).showEventOverview(eventMock);
+        // Check that showEventOverview was called with eventMock
 
         // Case 2: KeyCode is not ESCAPE
         when(keyEventMock.getCode()).thenReturn(KeyCode.A);
         openDebtsCtrl.onGlobalKeyPress(keyEventMock);
-        verify(mainCtrlMock, times(1)).showEventOverview(eventMock); // Check that showEventOverview was not called again
+        verify(mainCtrlMock, times(1)).showEventOverview(eventMock);
+        // Check that showEventOverview was not called again
     }
 
     @Test
@@ -114,7 +117,8 @@ class OpenDebtsCtrlTest extends ApplicationTest {
 
         receivedButton.fire(); // Simulate another button click
 
-        assertEquals("Mark received", receivedButton.getText()); // Check the text of the Button when debt is not received
+        assertEquals("Mark received", receivedButton.getText());
+        // Check the text of the Button when debt is not received
 
         ToggleButton moreInfoButton = (ToggleButton) debtLine.getChildren().get(0);
 

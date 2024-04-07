@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParticipantTest {
-    Event event = new Event(
+    private Event event = new Event(
             "test",
             "codecode",
             LocalDateTime.of(1900, 1, 1, 0, 0, 0)
     );
 
-    Participant p1 = new Participant(
+    private Participant p1 = new Participant(
             "A",
             event,
             "a@mail.com",
@@ -23,7 +23,7 @@ class ParticipantTest {
             "1234"
     );
 
-    Participant p2 = new Participant(
+    private Participant p2 = new Participant(
             "A",
             event,
             "a@mail.com",
@@ -31,7 +31,7 @@ class ParticipantTest {
             "1234"
     );
 
-    Participant p3 = new Participant(
+    private Participant p3 = new Participant(
             "V",
             event,
             "a@mail.com",
@@ -129,7 +129,8 @@ class ParticipantTest {
 
     @Test
     void testToString() {
-        String expected = "Participant{name='A', event=Event@<event_hashcode>, email='a@mail.com', iban='1234', bic='1234'}";
+        String expected = "Participant{name='A', event=Event@<event_hashcode>, email='a@mail.com'," +
+                "iban='1234', bic='1234'}";
         assertNotEquals(expected, p1.toString());
     }
 

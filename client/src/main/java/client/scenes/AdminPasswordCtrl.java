@@ -74,6 +74,12 @@ public class AdminPasswordCtrl implements VoidSceneController {
         }
     }
 
+    /**
+     * Sets the language for all elements in the administrator password control panel.
+     * This method retrieves translations for various UI elements
+     * from the LanguageManager and updates the corresponding
+     * text or prompt text accordingly.
+     */
     public void setLanguageForAllAdminPasswordCtrl(){
         LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){

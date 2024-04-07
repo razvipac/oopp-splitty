@@ -145,6 +145,12 @@ public class StartScreenCtrl implements VoidSceneController {
     }
 
 
+    /**
+     * Sets the language for all elements in the user interface.
+     * This method retrieves translations for various UI elements
+     * from the LanguageManager and updates the corresponding
+     * text or prompt text accordingly.
+     */
     public void setLanguageForAll(){
         LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){

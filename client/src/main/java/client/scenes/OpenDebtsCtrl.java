@@ -78,6 +78,13 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         mainCtrl.showEventOverview(event);
     }
 
+    /**
+     * Handles global key presses within the application.
+     * This method is annotated with @FXML to indicate it's a handler for JavaFX FXML-defined events.
+     * It listens for key presses and if the pressed key is the Escape key, it invokes the goBack() method.
+     *
+     * @param keyEvent The KeyEvent representing the key press event.
+     */
     @FXML
     public void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
@@ -142,6 +149,12 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         debtVBox.getChildren().add(debtItem);
     }
 
+    /**
+     * Generates a string containing bank information for a creditor and debt details.
+     *
+     * @param d The DebtDTO object representing the debt details.
+     * @return A string containing debt details and bank information for the creditor.
+     */
     public String getBankInfoText(DebtDTO d)
     {
         List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
@@ -162,6 +175,11 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
                 creditorBankInfo;
     }
 
+    /**
+     * Sets the VBox for displaying debt-related information.
+     *
+     * @param debtVBox The VBox to be set for displaying debt-related information.
+     */
     public void setDebtVBox(VBox debtVBox) {
         this.debtVBox = debtVBox;
     }

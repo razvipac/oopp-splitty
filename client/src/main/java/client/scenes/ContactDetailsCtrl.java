@@ -417,6 +417,10 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         mainCtrl.showEventOverview(event);
     }
 
+    /**
+     * Initializes the errorText instance variable by creating a new Text object.
+     * This method is typically called to reset or clear the errorText.
+     */
     public void setErrorText(){
         this.errorText = new Text();
     }

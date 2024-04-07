@@ -12,7 +12,7 @@ import java.lang.reflect.*;
 import static org.mockito.Mockito.*;
 
 class ContactDetailsCtrlTest {
-    ContactDetailsCtrl contactDetailsCtrl;
+    private ContactDetailsCtrl contactDetailsCtrl;
     @BeforeEach
     void setUp(){
         MainCtrl mainCtrl = mock(MainCtrl.class);
@@ -27,7 +27,8 @@ class ContactDetailsCtrlTest {
         String errorMessage = "Please enter a valid BIC";
 
         // Use reflection to get the private method
-        Method method = ContactDetailsCtrl.class.getDeclaredMethod("inputIsInvalid", String.class, String.class, String.class);
+        Method method = ContactDetailsCtrl.class.getDeclaredMethod("inputIsInvalid", String.class, String.class,
+                String.class);
         method.setAccessible(true); // Allow invoking private method
         boolean result = (boolean) method.invoke(contactDetailsCtrl, input, regex, errorMessage);
         assertTrue(result); // Assert the result
@@ -40,7 +41,8 @@ class ContactDetailsCtrlTest {
         String errorMessage = "Please enter a valid BIC";
 
         // Use reflection to get the private method
-        Method method = ContactDetailsCtrl.class.getDeclaredMethod("inputIsInvalid", String.class, String.class, String.class);
+        Method method = ContactDetailsCtrl.class.getDeclaredMethod("inputIsInvalid", String.class, String.class,
+                String.class);
         method.setAccessible(true); // Allow invoking private method
         boolean result = (boolean) method.invoke(contactDetailsCtrl, input, regex, errorMessage);
         assertFalse(result); // Assert the result

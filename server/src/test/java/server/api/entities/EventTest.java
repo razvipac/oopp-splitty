@@ -2,7 +2,6 @@ package server.api.entities;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.entities.debt.Debt;
 import server.entities.event.Event;
 import server.entities.expense.Expense;
 import server.entities.participant.Participant;
@@ -182,119 +181,51 @@ class EventTest {
         assertEquals(event1, orderedEvents.get(1));
     }
 
+    @Test
+    void settleDebts() {
+        // Create expenses
+        Expense expense1 = new Expense(100, "Item 1", participant1, LocalDate.now());
+        Expense expense2 = new Expense(200, "Item 2", participant2, LocalDate.now());
+        Expense expense3 = new Expense(300, "Item 3", participant3, LocalDate.now());
+
+        // Associate participants with expenses
+        Map<Expense, List<Participant>> expenses = new HashMap<>();
+        expenses.put(expense1, List.of(participant1, participant2, participant3));
+        expenses.put(expense2, List.of(participant1, participant2, participant3));
+        expenses.put(expense3, List.of(participant1, participant2, participant3));
+
+        // Perform settling
+        Map<Participant, Map<Participant, Double>> debts = Event.settleDebts(expenses);
+
+        // Ensure debts are settled correctly
+        assertEquals(3, debts.size());
+
+        // Ensure correct debts for participant 1
+        assertTrue(debts.containsKey(participant1));
+        Map<Participant, Double> participant1Debts = debts.get(participant1);
+        assertEquals(2, participant1Debts.size());
+        assertEquals(66.67, participant1Debts.get(participant2));
+        assertEquals(100.0, participant1Debts.get(participant3));
+
+        // Ensure correct debts for participant 2
+        assertTrue(debts.containsKey(participant2));
+        Map<Participant, Double> participant2Debts = debts.get(participant2);
+        assertEquals(2, participant2Debts.size());
+        assertEquals(33.33, participant2Debts.get(participant1));
+
+        // Ensure correct debts for participant 3
+        assertTrue(debts.containsKey(participant3));
+        Map<Participant, Double> participant3Debts = debts.get(participant3);
+        assertEquals(2, participant3Debts.size());
+        assertEquals(33.33, participant3Debts.get(participant1));
+    }
+
+
+
     /*@Test
     void testHashCode() {
         Event event2 = new Event("Event A", "CODE1", event1.getCreationDate());
         assertEquals(event1.hashCode(), event2.hashCode());
     }*/
-
-    @Test
-    public void testGetDebtorsWithinExpense() {
-        Event event = new Event("Test Event", "TEST123", LocalDateTime.now());
-        Expense expense = new Expense(100, "Test Expense", participant1, LocalDate.now());
-        List<Participant> allParticipants = List.of(participant1, participant2, participant3);
-
-        Set<Participant> debtors = event.getDebtorsWithinExpense(allParticipants, expense);
-
-        assertTrue(debtors.contains(participant2));
-        assertTrue(debtors.contains(participant3));
-        assertFalse(debtors.contains(participant1));
-    }
-
-    @Test
-    public void testCalculateTotalExpenses() {
-        List<Expense> expenses = new ArrayList<>();
-        Participant participant1 = new Participant("Alice", null, "email1", "iban1", "bic1");
-        Participant participant2 = new Participant("Bob", null, "email2", "iban2", "bic2");
-
-        expenses.add(new Expense(100, "Test Expense 1", participant1, LocalDate.now()));
-        expenses.add(new Expense(200, "Test Expense 2", participant2, LocalDate.of(2024, 3, 29)));
-        expenses.add(new Expense(150, "Test Expense 3", participant1, LocalDate.of(2024, 2, 29)));
-
-        // Calculate total expenses by participant
-        Map<Participant, Double> totalExpenses = Event.calculateTotalExpenses(expenses);
-
-        // Verify total expenses
-        assertEquals(250.0, totalExpenses.get(participant1));
-        assertEquals(200.0, totalExpenses.get(participant2));
-    }
-
-    @Test
-    public void testCalculateIndividualShare() {
-        Participant participant1 = new Participant("Alice", null, "email1", "iban1", "bic1");
-        Participant participant2 = new Participant("Bob", null, "email2", "iban2", "bic2");
-        List<Participant> participants = List.of(participant1, participant2);
-
-        List<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense(100, "Test Expense 1", participant1, LocalDate.now()));
-        expenses.add(new Expense(200, "Test Expense 2", participant2, LocalDate.of(2024, 3, 29)));
-
-        // Calculate individual share of expenses
-        Map<Participant, Double> individualShare = Event.calculateIndividualShare(participants, expenses);
-
-        // Verify individual share of expenses
-        assertEquals(100.0, individualShare.get(participant1));
-        assertEquals(50.0, individualShare.get(participant2));
-    }
-
-    @Test
-    public void testCalculateDebtAmount() {
-        Participant debtor = new Participant("Alice", null, "email1", "iban1", "bic1");
-        Participant creditor = new Participant("Bob", null, "email2", "iban2", "bic2");
-
-        // Create total expenses and individual share maps
-        Map<Participant, Double> totalExpenses = Map.of(creditor, 300.0, debtor, 200.0);
-        Map<Participant, Double> individualShare = Map.of(creditor, 150.0, debtor, 100.0);
-
-        // Calculate debt amount
-        double debtAmount = Event.calculateDebtAmount(debtor, creditor, totalExpenses, individualShare);
-
-        // Verify debt amount
-        assertEquals(150.0, debtAmount);
-    }
-
-    @Test
-    void settleDebts() {
-        List<Expense> expenses = new ArrayList<>();
-        expenses.add(new Expense(100, "Expense 1", participant1, LocalDate.now()));
-        expenses.add(new Expense(200, "Expense 2", participant2, LocalDate.of(2024, 3, 29)));
-        expenses.add(new Expense(150, "Expense 3", participant3, LocalDate.of(2024, 2, 29)));
-
-        List<Debt> debts = Event.settleDebts(List.of(participant1, participant2, participant3), expenses);
-
-        // Verifying the debts
-        assertEquals(6, debts.size());
-        for (Debt debt : debts) {
-            assertTrue(debt.getAmount() >= 0); // Debt amount should not be negative
-        }
-    }
-
-    @Test
-    void calculateTotalExpenses() {
-        List<Expense> expenses = new ArrayList<>();
-
-        expenses.add(new Expense(100, "Test Expense 1", participant1, LocalDate.now()));
-        expenses.add(new Expense(200, "Test Expense 2", participant2, LocalDate.of(2024, 3, 29)));
-        expenses.add(new Expense(150, "Test Expense 3", participant1, LocalDate.of(2024, 2, 29)));
-
-        Map<Participant, Double> totalExpenses = Event.calculateTotalExpenses(expenses);
-
-        assertEquals(250.0, totalExpenses.get(participant1));
-        assertEquals(200.0, totalExpenses.get(participant2));
-    }
-
-    @Test
-    void calculateDebtAmount() {
-        Participant debtor = new Participant("Alice", null, "email1", "iban1", "bic1");
-        Participant creditor = new Participant("Bob", null, "email2", "iban2", "bic2");
-
-        Map<Participant, Double> totalExpenses = Map.of(creditor, 300.0, debtor, 200.0);
-        Map<Participant, Double> individualShare = Map.of(creditor, 150.0, debtor, 100.0);
-
-        double debtAmount = Event.calculateDebtAmount(debtor, creditor, totalExpenses, individualShare);
-
-        assertEquals(150.0, debtAmount);
-    }
-
 
 }
