@@ -349,6 +349,15 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 goBack();
             }
         }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.P) {
+            openAddEditParticipant();
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.E) {
+            openAddExpense();
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.D) {
+            openOpenDebts();
+        }
     }
 
     /**

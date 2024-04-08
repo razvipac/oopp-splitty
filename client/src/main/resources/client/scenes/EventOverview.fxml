@@ -55,7 +55,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Button onAction="#openAddEditParticipant" text="Manage _Participants">
+                        <Button mnemonicParsing="false" onAction="#openAddEditParticipant" text="Manage Participants">
                            <graphic>
                               <FontAwesomeIconView glyphName="USER" />
                            </graphic></Button>
@@ -81,7 +81,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Button onAction="#openAddExpense" text="Add _Expense">
+                        <Button mnemonicParsing="false" onAction="#openAddExpense" text="Add Expense">
                            <graphic>
                               <FontAwesomeIconView glyphName="PLUS" />
                            </graphic></Button>
@@ -108,7 +108,7 @@
                         <VBox fx:id="expenseItemContainer" spacing="5.0" />
                      </content>
                   </ScrollPane>
-                  <Button onAction="#openOpenDebts" text="Settle _Debts">
+                  <Button mnemonicParsing="false" onAction="#openOpenDebts" text="Settle Debts">
                      <graphic>
                         <FontAwesomeIconView glyphName="MONEY" />
                      </graphic></Button>
