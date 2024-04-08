@@ -6,8 +6,10 @@ import server.entities.expense.Expense;
 import server.entities.debt.Debt;
 import server.entities.event.Event;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "participant")
@@ -26,11 +28,11 @@ public class Participant {
     )
     private List<Expense> paidForExpenses;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "id.debtor")
-    private List<Debt> debts;
+    @OneToMany(mappedBy = "id.debtor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Debt> debtsWhereDebtor = new LinkedHashSet<>();
 
-//    @ManyToMany(mappedBy = "participants")
-//    private List<Expense> expenses;
+    @OneToMany(mappedBy = "id.creditor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Debt> debtsWhereCreditor = new LinkedHashSet<>();
 
     /**
      * Default constructor needed for the JPA
@@ -121,6 +123,22 @@ public class Participant {
      */
     public void setBic(String bic) {
         this.bic = bic;
+    }
+
+    public Set<Debt> getDebtsWhereCreditor() {
+        return debtsWhereCreditor;
+    }
+
+    public void setDebtsWhereCreditor(Set<Debt> debtsWhereCreditor) {
+        this.debtsWhereCreditor = debtsWhereCreditor;
+    }
+
+    public Set<Debt> getDebtsWhereDebtor() {
+        return debtsWhereDebtor;
+    }
+
+    public void setDebtsWhereDebtor(Set<Debt> debtsWhereDebtor) {
+        this.debtsWhereDebtor = debtsWhereDebtor;
     }
 
     /**

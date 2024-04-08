@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import server.database.DebtRepository;
 import server.entities.DTOMapper;
 import server.entities.expense.Expense;
 import server.entities.participant.Participant;
@@ -24,6 +25,7 @@ public class ParticipantController {
     private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
     private final ExpenseController expenseController;
     private final DebtController debtController;
+    private final DebtRepository debtRepository;
 
     /**
      * Constructor for ParticipantController
@@ -39,13 +41,14 @@ public class ParticipantController {
                                  @Autowired SimpMessagingTemplate simpMessagingTemplate,
                                  @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
                                  @Autowired ExpenseController expenseController,
-                                 @Autowired DebtController debtController
-    ) {
+                                 @Autowired DebtController debtController,
+                                 DebtRepository debtRepository) {
         this.participantService = participantService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.participantDTOMapper = participantDTOMapper;
         this.expenseController = expenseController;
         this.debtController = debtController;
+        this.debtRepository = debtRepository;
     }
 
     /**
@@ -190,6 +193,7 @@ public class ParticipantController {
                     participant.getEvent().getCode()
             );
         }
-        // TODO: Delete debts
+
+        debtController.generateDebts(participant.getEvent().getCode());
     }
 }
