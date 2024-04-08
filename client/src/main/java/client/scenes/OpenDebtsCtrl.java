@@ -6,10 +6,10 @@ import com.google.inject.Inject;
 import commons.dto.DebtDTO;
 import commons.dto.EventDTO;
 import commons.dto.ParticipantDTO;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,6 +27,8 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
     private EventDTO event;
     private final List<DebtDTO> debtList;
+    private final List<DebtDTO> unsettledDebts;
+    private final List<DebtDTO> settledDebts;
 
     @FXML
     private VBox debtVBox;
@@ -43,6 +45,8 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
         // TODO: Functionality to be tested when debts are available on the server
         debtList = new ArrayList<>();
+        unsettledDebts = new ArrayList<>();
+        settledDebts = new ArrayList<>();
     }
 
     /**
@@ -53,6 +57,21 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     public void initialize(EventDTO event) {
         this.event = event;
 
+        serverUtils.registerForLongPollingDebtUpdates(event.code(), debtDTOs -> {
+            Platform.runLater(this::refresh);
+        });
+
+        refresh();
+    }
+
+    /**
+     * Refreshes the scene with data from the server
+     */
+    public void refresh(){
+        List<DebtDTO> debtDTOs = serverUtils.getAllDebts(event.code());
+        debtList.clear();
+        debtList.addAll(debtDTOs);
+
         refreshDebtList();
     }
 
@@ -61,11 +80,28 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      * current event. Each debt is then added to the layout.
      */
     public void refreshDebtList(){
-        debtList.clear();
-        debtList.addAll(serverUtils.getAllOpenDebts(event.code()));
+        unsettledDebts.clear();
+        unsettledDebts.addAll(
+                debtList.stream()
+                        .filter(debtDTO -> !debtDTO.received())
+                        .toList()
+        );
+
+        settledDebts.clear();
+        settledDebts.addAll(
+                debtList.stream()
+                        .filter(debtDTO -> debtDTO.received())
+                        .toList()
+        );
+
+        debtVBox.getChildren().clear();
 
         // Adding each debt
-        for(DebtDTO d : debtList) {
+        for(DebtDTO d : unsettledDebts) {
+            addDebtToLayout(d);
+        }
+
+        for(DebtDTO d : settledDebts){
             addDebtToLayout(d);
         }
     }
@@ -105,21 +141,16 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         String creditorName = d.creditorName();
         double amount = d.amount();
         String debtString = debtorName + " gives " + amount + " Euro to " + creditorName;
-        Label debtStringLabel = new Label(debtString);
+        Text debtStringLabel = new Text(debtString);
+
+        debtStringLabel.setStrikethrough(d.received());
 
         // 'Mark Received' button. Prints effect to console for testing
-        Button receivedButton = new Button("Mark received");
-        receivedButton.setOnAction(event -> {
-            if(!d.received()) {
-                receivedButton.setText("Undo");
-                System.out.println("The debt (" + debtString + ") is marked as received");
-            }
-            else {
-                receivedButton.setText("Mark received");
-                System.out.println("The debt (" + debtString + ") is marked as not received");
-            }
+        String buttonText = d.received() ? "Undo" : "Mark received";
+        Button receivedButton = new Button(buttonText);
+        receivedButton.setOnAction(e -> {
+            serverUtils.toggleDebtReceivedStatus(event.code(), d);
         });
-
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);
@@ -182,5 +213,10 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void setDebtVBox(VBox debtVBox) {
         this.debtVBox = debtVBox;
+    }
+
+    @FXML
+    private void regenerateDebts(){
+        serverUtils.regenerateDebts(event.code());
     }
 }

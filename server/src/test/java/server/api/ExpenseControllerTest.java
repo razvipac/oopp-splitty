@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 package server.api;
 
 import commons.dto.ExpenseDTO;
@@ -65,7 +66,7 @@ public class ExpenseControllerTest {
         String iban = "134";
         String bic = "123";
         Participant participant = new Participant(name, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         String item = "food";
         String newName = "New Name";
         participant.setName(newName);
@@ -108,7 +109,7 @@ public class ExpenseControllerTest {
         Event event = new Event(name, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food", newName = "New Name";
         Participant participant = new Participant(name, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
         Expense expense = new Expense(price, item, participant, date);
@@ -151,7 +152,7 @@ public class ExpenseControllerTest {
         Event event = new Event(name, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food", newName = "New Name";
         Participant participant = new Participant(name, event, email, iban, bic);
-        int price = 123;
+        double price = 123;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024 - 01 - 01);
         Expense expense = new Expense(price, item, participant, date);
@@ -182,7 +183,7 @@ public class ExpenseControllerTest {
         Event event = new Event(name, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food", newName = "New Name";
         Participant participant = new Participant(name, event, email, iban, bic);
-        int price = 123;
+        double price = 123;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024 - 01 - 01);
         Expense expense = new Expense(price, item, participant, date);

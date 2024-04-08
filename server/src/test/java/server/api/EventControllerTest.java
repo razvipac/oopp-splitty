@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 package server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -114,7 +115,8 @@ public class EventControllerTest {
                 .andExpect(status().isCreated());
 
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<WSWrapperResponseBody<Event>> payloadCaptor = ArgumentCaptor.forClass(WSWrapperResponseBody.class);
+        ArgumentCaptor<WSWrapperResponseBody<Event>> payloadCaptor = ArgumentCaptor
+                .forClass(WSWrapperResponseBody.class);
         verify(simpMessagingTemplate).convertAndSend(destinationCaptor.capture(), payloadCaptor.capture());
 
         String actualDestination = destinationCaptor.getValue();
@@ -192,15 +194,18 @@ public class EventControllerTest {
                 .andExpect(status().isOk());
 
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<WSWrapperResponseBody<EventDTO>> payloadCaptor = ArgumentCaptor.forClass(WSWrapperResponseBody.class);
+        ArgumentCaptor<WSWrapperResponseBody<EventDTO>> payloadCaptor = ArgumentCaptor
+                .forClass(WSWrapperResponseBody.class);
         verify(simpMessagingTemplate).convertAndSend(destinationCaptor.capture(), payloadCaptor.capture());
 
         String actualDestination = destinationCaptor.getValue();
         WSWrapperResponseBody<EventDTO> actualPayload = payloadCaptor.getValue();
 
         // Assert that the destination and payload are correct
-        assertEquals("/api/websocket/v1/channel/1234", actualDestination); // Adjusted the eventCode to match the code variable
-        assertEquals(WSAction.DELETED, actualPayload.action()); // Corrected to expect DELETED for a successful deletion
+        // Adjusted the eventCode to match the code variable
+        assertEquals("/api/websocket/v1/channel/1234", actualDestination);
+        // Corrected to expect DELETED for a successful deletion
+        assertEquals(WSAction.DELETED, actualPayload.action());
         assertEquals(eventDTO, actualPayload.object()); // Changed to match the eventDTO
     }
 

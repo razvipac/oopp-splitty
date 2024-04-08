@@ -96,7 +96,7 @@ public class JSONDumpService {
 
             List<Participant> participants = participantService.getAll(event.getCode());
             List<Expense> expenses = expenseService.getAllInEvent(event.getCode());
-            List<Debt> debts = debtService.getAll(event.getCode());
+            List<Debt> debts = debtService.getAllDebts(event.getCode());
 
             for (Participant participant : participants) {
                 ParticipantDTO participantDTO = participantDTOMapper.toDTO(participant);

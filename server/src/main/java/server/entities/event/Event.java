@@ -196,9 +196,9 @@ public class Event {
      * @param expenses The list of present expenses regarding one event
      * @return returns the total cost of these expenses
      */
-    public static int sumOfAllExpenses(List<Expense> expenses) {
+    public static double sumOfAllExpenses(List<Expense> expenses) {
         return expenses.stream()
-                .mapToInt(Expense::getPrice)
+                .mapToDouble(Expense::getPrice)
                 .sum();
     }
 

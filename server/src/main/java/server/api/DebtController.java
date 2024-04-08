@@ -1,25 +1,32 @@
 package server.api;
 
-import server.entities.DTOMapper;
-import server.entities.debt.Debt;
 import commons.dto.DebtDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import server.entities.DTOMapper;
+import server.entities.debt.Debt;
 import server.service.DebtService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
+import java.util.Map;
+import java.util.function.Consumer;
 
+/**
+ * Controller class handling HTTP requests related to debts in the system.
+ * This controller provides endpoints for managing debts associated with a specific event.
+ */
 @RestController
 @RequestMapping("api/v1/{eventCode}/debt")
 public class DebtController {
 
     private final DebtService debtService;
     private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
+    private Map<Object, Consumer<List<DebtDTO>>> listeners = new HashMap<>();
 
     /**
      * Constructs a DebtController with the specified DebtService
@@ -37,57 +44,67 @@ public class DebtController {
     }
 
     /**
-     * Retrieves all debts for a specific event.
+     * Retrieves all unsettled debts for a specific event asynchronously.
+     * This endpoint provides updates on unsettled debts in real-time using long polling.
      *
-     * @param eventCode The code of the event for which all debts are to be retrieved
-     * @return all debts
+     * @param eventCode The code of the event for which unsettled debts are to be retrieved.
+     * @return A DeferredResult containing the list of unsettled debts.
      */
-    @GetMapping
-    public ResponseEntity<List<DebtDTO>> getAll(@PathVariable(value = "eventCode") String eventCode) {
-        List<Debt> debts = debtService.getAll(eventCode);
-        List<DebtDTO> debtDTOs = debts
-                .stream()
-                .map(debtDTOMapper::toDTO)
-                .toList();
-        return new ResponseEntity<>(debtDTOs, HttpStatus.OK);
-    }
+    @GetMapping("/updates")
+    public DeferredResult<ResponseEntity<List<DebtDTO>>> getDebtUpdates(
+            @PathVariable String eventCode
+    ) {
+        DeferredResult<ResponseEntity<List<DebtDTO>>> deferredResult = new DeferredResult<>(5000L);
+        var key = new Object();
 
-
-    /**
-     * Retrieves all unsettled debts for a specific event.
-     *
-     * @param eventCode The code of the event for which unsettled debts are to be retrieved
-     * @return A DeferredResult containing the list of unsettled debts
-     */
-    @GetMapping("/unsettled")
-    public DeferredResult<ResponseEntity<List<DebtDTO>>> getAllUnsettledDebts
-    (@PathVariable String eventCode) {
-        DeferredResult<ResponseEntity<List<DebtDTO>>> output = new DeferredResult<>(300000L);
-        output.onTimeout(() -> output.setErrorResult(
-                ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
-                        .body("Request timed out. Please try again.")));
-
-        ForkJoinPool.commonPool().submit(() -> {
-            List<Debt> unsettledDebts = debtService.getAllUnsettledDebtsForEvent(eventCode);
-            List<DebtDTO> unsettledDebtDTOs = unsettledDebts.stream()
+        listeners.put(key, passedDebtDTOs -> {
+            List<DebtDTO> debtDTOs = debtService.getAllDebts(eventCode)
+                    .stream()
                     .map(debtDTOMapper::toDTO)
                     .toList();
-            output.setResult(new ResponseEntity<>(unsettledDebtDTOs, HttpStatus.OK));
+
+            deferredResult.setResult(ResponseEntity.ok(debtDTOs));
         });
 
-        return output;
+        deferredResult.onTimeout(() -> {
+            deferredResult.setErrorResult(
+                    ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("Request timed out. Please try again.")
+            );
+        });
+
+        deferredResult.onCompletion(() -> listeners.remove(key));
+
+        return deferredResult;
     }
 
     /**
-     * PUT api/v1/{eventCode}/debt?id={id} with request body in format of ExpenseRequestBody
-     * Updates the data of debt object with code {eventCode}
-     * Changes if the debt is paid or not: from true to false, and from false to true
-     * @param eventCode todo
-     * @param body todo
-     * @return ResponseEntity with changed received status if it is found
+     * Retrieves all debts for a specific event.
+     *
+     * @param eventCode The code of the event for which debts are to be retrieved.
+     * @return ResponseEntity containing the list of debts.
+     */
+    @GetMapping
+    public ResponseEntity<List<DebtDTO>> getAllDebts(
+            @PathVariable("eventCode") String eventCode
+    ) {
+        ResponseEntity<List<DebtDTO>> res = ResponseEntity.ok(
+                debtService.getAllDebts(eventCode)
+                        .stream()
+                        .map(debtDTOMapper::toDTO)
+                        .toList()
+        );
+        return res;
+    }
+
+    /**
+     * Updates the status of a debt (paid/unpaid) associated with the specified event.
+     *
+     * @param eventCode The code of the event for which the debt belongs.
+     * @param body      The DebtDTO containing the updated information about the debt.
+     * @return ResponseEntity with the updated DebtDTO if successful, or NOT_FOUND if the debt is not found.
      */
     @PutMapping("")
-    public ResponseEntity<DebtDTO> updateUnsettledDebt(
+    public ResponseEntity<DebtDTO> updateDebt(
             @PathVariable("eventCode") String eventCode,
             @RequestBody DebtDTO body
     ) {
@@ -95,9 +112,36 @@ public class DebtController {
             Debt updated = debtService.updateOne(eventCode, body);
             DebtDTO debtDTO = debtDTOMapper.toDTO(updated);
 
+            listeners.forEach((k, v) -> v.accept(List.of(debtDTO)));
+
             return new ResponseEntity<>(debtDTO, HttpStatus.OK);
         } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    /**
+     * Generates open debts from the expenses on the given server and populates the database with them.
+     *
+     * @param eventCode The code of the event for which debts are to be generated.
+     * @return ResponseEntity containing the list of created debts.
+     */
+    @PostMapping("")
+    public ResponseEntity<List<DebtDTO>> generateDebts(
+            @PathVariable("eventCode") String eventCode
+    ) {
+        List<Debt> generatedDebts = debtService.generateDebtsFromExpenses(eventCode);
+
+        List<DebtDTO> dtos = generatedDebts
+                .stream()
+                .map(debtDTOMapper::toDTO)
+                .toList();
+
+        listeners.forEach((k, v) -> v.accept(dtos));
+
+        return new ResponseEntity<>(
+                dtos,
+                HttpStatus.CREATED
+        );
     }
 }

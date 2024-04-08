@@ -16,6 +16,7 @@
 package client.utils;
 
 import commons.dto.*;
+import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
@@ -30,8 +31,11 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -120,6 +124,31 @@ public class ServerUtils {
         );
     }
 
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+
+    /**
+     * Registers a consumer for receiving long polling updates for Debts
+     * @param eventCode eventCode
+     * @param consumer consumer
+     */
+    public void registerForLongPollingDebtUpdates(String eventCode, Consumer<List<DebtDTO>> consumer){
+        EXEC.submit(() -> {
+            while (!Thread.interrupted()) {
+                var res = ClientBuilder.newClient(new ClientConfig())
+                        .target(httpServerUrl).path("api/v1/" + eventCode + "/debt/updates")
+                        .request(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .get(Response.class);
+
+                if (res.getStatus() == 408) {
+                    continue;
+                }
+
+                consumer.accept(res.readEntity(List.class));
+            }
+        });
+    }
+
     /**
      * Gets all events.
      *
@@ -204,12 +233,12 @@ public class ServerUtils {
      * @return the ParticipantDTO instance corresponding to that participant
      */
     public ParticipantDTO getParticipant(String eventCode, String name){
-        return (ParticipantDTO) ClientBuilder.newClient(new ClientConfig())
-                .target(httpServerUrl).path("api/v1/" + eventCode + "/participant?name=" + name)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(List.class)
-                .getFirst();
+        Client client = ClientBuilder.newClient(new ClientConfig());
+        URI uri = URI.create(httpServerUrl + "api/v1/" + eventCode + "/participant?name=" + name);
+        Response response = client.target(uri).request(APPLICATION_JSON).get();
+        List<ParticipantDTO> participantDTOs = response.readEntity(new GenericType<List<ParticipantDTO>>() {});
+        if (participantDTOs.isEmpty()) return null;
+        return participantDTOs.getFirst();
     }
 
     /**
@@ -363,13 +392,44 @@ public class ServerUtils {
      * @param eventCode The code of the event for which debts are to be retrieved
      * @return A List containing all open debts for the specified event
      */
-    public List<DebtDTO> getAllOpenDebts(String eventCode) {
+    public List<DebtDTO> getAllDebts(String eventCode) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl)
-                .path("api/v1/" + eventCode + "/debt/unsettled")
+                .path("api/v1/" + eventCode + "/debt")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<>() {});
+    }
+
+    /**
+     * Toggles the received status for a given debt entity
+     * @param eventCode event code of the event to which it belongs
+     * @param debtDTO DTO of a given debt entity
+     * @return state after toggle
+     */
+    public boolean toggleDebtReceivedStatus(String eventCode, DebtDTO debtDTO){
+        String endpoint = "api/v1/" + eventCode + "/debt";
+
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(debtDTO, APPLICATION_JSON));
+
+        return response.readEntity(new GenericType<DebtDTO>() {}).received();
+    }
+
+    /**
+     * Regenerates debts from expenses
+     * @param eventCode code of the event for which to regenerate debts
+     */
+    public void regenerateDebts(String eventCode){
+        ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl)
+                .path("api/v1/" + eventCode + "/debt")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(null);
     }
 
     // Password methods
@@ -418,5 +478,12 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(body, APPLICATION_JSON));
         return response.getStatus() == Response.Status.CREATED.getStatusCode();
+    }
+
+    /**
+     * Stops the execution of threads
+     */
+    public void stop(){
+        EXEC.shutdownNow();
     }
 }

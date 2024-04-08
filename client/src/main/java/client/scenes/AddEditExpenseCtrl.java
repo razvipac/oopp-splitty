@@ -262,7 +262,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
     private void submit() {
         if (formIsValid()) {
             if(expense == null) {
-                int price = Integer.parseInt(howMuchField.getText());
+                double price = Double.parseDouble(howMuchField.getText());
                 String item = whatForField.getText();
                 ParticipantDTO payer = participantMap.get(whoPaidDropdown.getValue());
                 LocalDate date = whenPicker.getValue();
@@ -274,8 +274,8 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
                         "Confirm Edit",
                         "Are you sure you want to edit this expense?");
                 if (confirmed) {
-                    int price = -1;
-                    if (!howMuchField.getText().isEmpty()) price = Integer.parseInt(howMuchField.getText());
+                    double price = -1.0;
+                    if (!howMuchField.getText().isEmpty()) price = Double.parseDouble(howMuchField.getText());
                     String item = whatForField.getText();
                     LocalDate date = whenPicker.getValue();
                     ExpenseDTO expenseDTO = new ExpenseDTO(expense.id(), price, item,

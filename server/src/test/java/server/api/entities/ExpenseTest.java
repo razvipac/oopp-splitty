@@ -21,9 +21,9 @@ class ExpenseTest {
     void setUp() {
         participant1 = new Participant("A", null, "a@mail.com", "1234", "1234");
         participant2 = new Participant("B", null, "b@mail.com", "5678", "5678");
-        expense1 = new Expense(100, "Item", participant1, LocalDate.now());
-        expense2 = new Expense(100, "Item", participant1, LocalDate.of(2024, 3, 29));
-        expense3 = new Expense(200, "Another Item", participant2, LocalDate.of(2024, 3, 29));
+        expense1 = new Expense(100.0, "Item", participant1, LocalDate.now());
+        expense2 = new Expense(100.0, "Item", participant1, LocalDate.of(2024, 3, 29));
+        expense3 = new Expense(200.0, "Another Item", participant2, LocalDate.of(2024, 3, 29));
     }
 
     @Test
@@ -48,7 +48,7 @@ class ExpenseTest {
 
     @Test
     void testGetAndSetPrice() {
-        expense1.setPrice(200);
+        expense1.setPrice(200.0);
         assertEquals(200, expense1.getPrice());
     }
 
