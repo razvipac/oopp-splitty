@@ -17,7 +17,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class StartScreenCtrl implements VoidSceneController {
 
@@ -197,7 +199,10 @@ public class StartScreenCtrl implements VoidSceneController {
         recentViewedEvents.getChildren().clear();
 
         List<EventDTO> recentlyJoinedEventDTOs = new ArrayList<>();
-        recentlyJoinedEventCodes.forEach(code -> recentlyJoinedEventDTOs.add(server.getEvent(code)));
+        recentlyJoinedEventCodes.forEach(code -> {
+            EventDTO found = server.getEvent(code);
+            if (found != null) recentlyJoinedEventDTOs.add(found);
+        });
 
         int amountOfEvents = 0;
         int lastIndex = recentlyJoinedEventDTOs.size() - 1;
