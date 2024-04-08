@@ -15,6 +15,8 @@
  */
 package client.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.dto.*;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -30,6 +32,8 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
@@ -42,9 +46,28 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class ServerUtils {
 
-    private final String server = "localhost:8080";
-    private final String httpServerUrl = "http://" + server + "/";
-    private StompSession wsSession = wsConnect("ws://" + server + "/ws-connect");
+    private final String httpServerUrl;
+    private final StompSession wsSession;
+
+    /**
+     * Constructor for ServerUtils
+     */
+    public ServerUtils() {
+        try {
+            File file = new File("client/src/main/resources/userSettings/config.json");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(file);
+            if (rootNode.has("serverURL")) {
+                String server = rootNode.get("serverURL").asText();
+                httpServerUrl = "http://" + server + "/";
+                wsSession = wsConnect("ws://" + server + "/ws-connect");
+            } else {
+                throw new RuntimeException("Server URL not found");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private StompSession wsConnect(String url){
         var wsClient = new StandardWebSocketClient();

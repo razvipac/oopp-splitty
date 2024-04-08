@@ -30,7 +30,8 @@ public class StartScreenCtrl implements VoidSceneController {
     @Inject
     private ControllerUtils controllerUtils;
 
-    private static final String STORAGE_PATH = "client/src/main/resources/userSettings/recently_joined_events_code.ser";
+    private static final String STORAGE_PATH =
+            "client/src/main/resources/userSettings/savedData/recently_joined_events_code.ser";
 
     @FXML
     private Label recentlyViewed;
