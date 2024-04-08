@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -9,80 +10,127 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.StartScreenCtrl">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.StartScreenCtrl">
    <children>
-      <Label fx:id="createNewEvent" layoutX="275.0" layoutY="54.0" text="Create a new event">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
-      <HBox alignment="CENTER" layoutX="275.0" layoutY="75.0" spacing="10.0">
+      <HBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <TextField fx:id="createEventTextField" prefHeight="25.0" prefWidth="164.0" promptText="Enter event name" />
-            <Button fx:id="createButton" mnemonicParsing="false" onAction="#createEvent" prefWidth="51.0" text="Create" />
+            <VBox alignment="CENTER">
+               <children>
+                  <VBox>
+                     <children>
+                        <Text fx:id="welcome" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to" textAlignment="RIGHT" wrappingWidth="97.0">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Text>
+                        <Text fill="#0300cf" strokeType="OUTSIDE" strokeWidth="0.0" text="Splitty">
+                           <font>
+                              <Font name="Dubai Bold" size="42.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" spacing="10.0">
+                           <children>
+                              <Label fx:id="changeLanguage" text="Change language:" />
+                              <ComboBox fx:id="languageButton" onAction="#translate" prefWidth="120.0" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="TOP_CENTER" spacing="10.0">
+                           <children>
+                              <Label fx:id="administrator" text="Administrator:" />
+                              <Button fx:id="controlPanel" mnemonicParsing="false" onAction="#openAdminControlPanel" prefWidth="120.0" text="Control Panel" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="50.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+            </VBox>
+            <Line endX="-100.0" endY="218.0" startX="-100.0" startY="-90.0" stroke="#b4b4b4">
+               <HBox.margin>
+                  <Insets left="40.0" right="40.0" />
+               </HBox.margin>
+            </Line>
+            <VBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <VBox alignment="TOP_CENTER" spacing="10.0">
+                     <children>
+                        <Label fx:id="createNewEvent" text="Create a new event">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <TextField fx:id="createEventTextField" prefHeight="25.0" prefWidth="164.0" promptText="Enter event name" />
+                              <Button fx:id="createButton" mnemonicParsing="false" onAction="#createEvent" prefWidth="80.0" text="Create" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" spacing="10.0">
+                     <children>
+                        <Label fx:id="join" text="Join an existing event">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <TextField fx:id="joinEventTextField" prefHeight="25.0" prefWidth="164.0" promptText="Enter event code" />
+                              <Button fx:id="joinButton" mnemonicParsing="false" onAction="#joinEvent" prefWidth="80.0" text="Join" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Label fx:id="recentlyViewed" text="Recently viewed events:">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </Label>
+                  <GridPane fx:id="recentViewedEvents" prefHeight="139.0" prefWidth="264.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.5" minWidth="10.0" prefWidth="199.5" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.5" minWidth="10.0" prefWidth="25.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="47.5" minWidth="10.0" prefWidth="26.5" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Button mnemonicParsing="false" text="Ski Trip" />
+                        <Button mnemonicParsing="false" text="Museum Visit" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" text="Gift for John's Birthday" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" text="New Year Party" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
          </children>
       </HBox>
-      <Label fx:id="join" layoutX="275.0" layoutY="112.0" text="Join an existing event">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
-      <HBox alignment="CENTER" layoutX="275.0" layoutY="135.0" spacing="10.0">
-         <children>
-            <TextField fx:id="joinEventTextField" prefHeight="25.0" prefWidth="164.0" promptText="Enter event code" />
-            <Button fx:id="joinButton" mnemonicParsing="false" onAction="#joinEvent" prefHeight="25.0" prefWidth="51.0" text="Join" />
-         </children>
-      </HBox>
-      <Label fx:id="recentlyViewed" layoutX="275.0" layoutY="183.0" text="Recently viewed events:">
-         <font>
-            <Font name="System Italic" size="12.0" />
-         </font>
-      </Label>
-      <GridPane fx:id="recentViewedEvents" layoutX="275.0" layoutY="206.0" prefHeight="139.0" prefWidth="264.0">
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.5" minWidth="10.0" prefWidth="199.5" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.5" minWidth="10.0" prefWidth="25.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="47.5" minWidth="10.0" prefWidth="26.5" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-         <children>
-            <Button mnemonicParsing="false" text="Ski Trip" />
-            <Button mnemonicParsing="false" text="Museum Visit" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" text="Gift for John's Birthday" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" text="New Year Party" GridPane.rowIndex="3" />
-            <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" />
-            <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" />
-            <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-         </children>
-      </GridPane>
-      <Text fx:id="welcome" layoutX="87.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to" textAlignment="RIGHT" wrappingWidth="97.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Text>
-      <Text fill="#0300cf" layoutX="64.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splitty">
-         <font>
-            <Font name="Dubai Bold" size="42.0" />
-         </font>
-      </Text>
-      <Line endX="-100.0" endY="218.0" layoutX="328.0" layoutY="136.0" startX="-100.0" startY="-90.0" stroke="#b4b4b4" />
-      <ComboBox fx:id="languageButton" layoutX="63.0" layoutY="218.0" onAction="#translate" prefHeight="25.0" prefWidth="119.0" />
-      <Label fx:id="changeLanguage" layoutX="86.0" layoutY="196.0" text="Change language:" />
-      <Button fx:id="controlPanel" layoutX="94.0" layoutY="275.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Control Panel" onAction="#openAdminControlPanel"/>
-      <Label fx:id="administrator" layoutX="106.0" layoutY="253.0" text="Administrator:" />
    </children>
 </AnchorPane>
