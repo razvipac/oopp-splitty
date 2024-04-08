@@ -193,6 +193,21 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(eventName, APPLICATION_JSON), EventDTO.class);
     }
+
+    /**
+     * Creates an event with the given event name.
+     *
+     * @param eventName the name of the event
+     * @return the created Event
+     */
+    public EventDTO updateEvent(EventDTO eventDTO, String eventName) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(httpServerUrl).path("api/v1/" + eventDTO.code())
+                .queryParam("name", eventName)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(eventName, APPLICATION_JSON), EventDTO.class);
+    }
     /**
      * Creates an event with the given event name.
      * @param eventCode the name of the event
