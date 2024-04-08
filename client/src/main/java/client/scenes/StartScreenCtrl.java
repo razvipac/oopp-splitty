@@ -1,4 +1,5 @@
 package client.scenes;
+
 import client.LanguageManager;
 import client.LanguageOption;
 import client.interfaces.VoidSceneController;
@@ -194,6 +195,12 @@ public class StartScreenCtrl implements VoidSceneController {
      */
     private void updateRecentEvents() {
         recentViewedEvents.getChildren().clear();
+        List<String> recentlyJoinedEventsCodes = (new ArrayList<>(recentlyJoinedEvents))
+                .stream().map(EventDTO::code).toList();
+
+        recentlyJoinedEvents.clear();
+        recentlyJoinedEventsCodes.forEach(code -> recentlyJoinedEvents.add(server.getEvent(code)));
+
         int amountOfEvents = 0;
         int lastIndex = recentlyJoinedEvents.size() - 1;
         for (int i = lastIndex; i >= 0 && amountOfEvents < 4; i--) {
@@ -228,7 +235,6 @@ public class StartScreenCtrl implements VoidSceneController {
         events = server.getAllEvents();
         loadLanguageButton();
         updateRecentEvents();
-
     }
 
     /**
