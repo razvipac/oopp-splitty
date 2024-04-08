@@ -125,22 +125,6 @@ public class Participant {
         this.bic = bic;
     }
 
-    public Set<Debt> getDebtsWhereCreditor() {
-        return debtsWhereCreditor;
-    }
-
-    public void setDebtsWhereCreditor(Set<Debt> debtsWhereCreditor) {
-        this.debtsWhereCreditor = debtsWhereCreditor;
-    }
-
-    public Set<Debt> getDebtsWhereDebtor() {
-        return debtsWhereDebtor;
-    }
-
-    public void setDebtsWhereDebtor(Set<Debt> debtsWhereDebtor) {
-        this.debtsWhereDebtor = debtsWhereDebtor;
-    }
-
     /**
      * Getter for paidForExpenses
      * @return reference to paidForExpenses

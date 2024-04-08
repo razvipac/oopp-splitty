@@ -195,8 +195,9 @@ public class ServerUtils {
     }
 
     /**
-     * Creates an event with the given event name.
+     * Updates an event with the given event name.
      *
+     * @param eventDTO the eventDTO of the event to update
      * @param eventName the name of the event
      * @return the created Event
      */

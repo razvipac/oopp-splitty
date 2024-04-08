@@ -39,6 +39,12 @@ public class ControllerUtils {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    /**
+     * Saves a serializable object to a given path, creates the object if it does not exist
+     * @param path path to save
+     * @param object object to save
+     * @return true iff successful
+     */
     public boolean saveObject(String path, Object object) {
         try {
             File f = new File(path);
@@ -57,6 +63,12 @@ public class ControllerUtils {
         }
     }
 
+    /**
+     * Reads a object from path
+     * @param path path to read from
+     * @param <T> type of the read object
+     * @return the read object instance
+     */
     public <T> T readObject(String path) {
         try {
             FileInputStream fileInputStream = new FileInputStream(path);

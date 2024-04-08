@@ -36,13 +36,14 @@ public class ParticipantController {
      * @param participantDTOMapper  The ParticipantDTOMapper instance to be injected
      * @param expenseController     The ExpenseController instance to be injected
      * @param debtController        The DebtController instance to be injected
+     * @param debtRepository        The DebtRepository instance to be injected
      */
     public ParticipantController(@Autowired ParticipantService participantService,
                                  @Autowired SimpMessagingTemplate simpMessagingTemplate,
                                  @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
                                  @Autowired ExpenseController expenseController,
                                  @Autowired DebtController debtController,
-                                 DebtRepository debtRepository) {
+                                 @Autowired DebtRepository debtRepository) {
         this.participantService = participantService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.participantDTOMapper = participantDTOMapper;
