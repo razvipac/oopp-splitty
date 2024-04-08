@@ -2,18 +2,21 @@ package client.scenes;
 
 import client.LanguageManager;
 import client.LanguageOption;
-import client.interfaces.VoidSceneController;
+import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class StartScreenCtrl implements VoidSceneController {
+public class StartScreenCtrl implements DataBasedSceneController<Scene> {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -60,6 +63,8 @@ public class StartScreenCtrl implements VoidSceneController {
     @FXML
     private GridPane recentViewedEvents;
 
+    private Scene scene;
+
     private List<String> recentlyJoinedEventCodes = new ArrayList<>();
 
     private List<EventDTO> events;
@@ -78,8 +83,11 @@ public class StartScreenCtrl implements VoidSceneController {
     /**
      * Initializes the controller.
      * Sets up event listeners and refreshes the scene.
+     * @param scene scene of the controller
      */
-    public void initialize() {
+    public void initialize(Scene scene) {
+        this.scene = scene;
+
         createEventTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) createEvent();
         });
@@ -95,6 +103,16 @@ public class StartScreenCtrl implements VoidSceneController {
         }
 
         recentlyJoinedEventCodes = controllerUtils.readObject(STORAGE_PATH);
+
+        KeyCombination altC = new KeyCodeCombination(KeyCode.C, KeyCombination.ALT_DOWN);
+        scene.getAccelerators().put(altC, () -> {
+            createEventTextField.requestFocus();
+        });
+
+        KeyCombination altJ = new KeyCodeCombination(KeyCode.J, KeyCombination.ALT_DOWN);
+        scene.getAccelerators().put(altJ, () -> {
+            joinEventTextField.requestFocus();
+        });
 
         setLanguageForAll();
         refresh();
