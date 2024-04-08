@@ -3,6 +3,7 @@ package client.scenes;
 import client.LanguageManager;
 import client.LanguageOption;
 import client.interfaces.VoidSceneController;
+import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
@@ -17,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,11 @@ public class StartScreenCtrl implements VoidSceneController {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    @Inject
+    private ControllerUtils controllerUtils;
+
+    private static final String STORAGE_PATH = "client/src/main/resources/userSettings/recently_joined_events_code.ser";
+
     @FXML
     private Label recentlyViewed;
     @FXML
@@ -79,6 +86,15 @@ public class StartScreenCtrl implements VoidSceneController {
         joinEventTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) joinEvent();
         });
+
+        // check if storage file exists
+        File f = new File(STORAGE_PATH);
+        if (!f.exists()) {
+            controllerUtils.saveObject(STORAGE_PATH, new ArrayList<>());
+        }
+
+        recentlyJoinedEventCodes = controllerUtils.readObject(STORAGE_PATH);
+
         setLanguageForAll();
         refresh();
     }
@@ -127,6 +143,8 @@ public class StartScreenCtrl implements VoidSceneController {
             recentlyJoinedEventCodes.removeIf(eventCode -> eventCode.equals(code));
             recentlyJoinedEventCodes.add(found.get().code());
             updateRecentEvents();
+            controllerUtils.saveObject(STORAGE_PATH, recentlyJoinedEventCodes);
+
             mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
@@ -143,8 +161,10 @@ public class StartScreenCtrl implements VoidSceneController {
         events = server.getAllEvents();
         System.out.println(event.toString());
         recentlyJoinedEventCodes.add(event.code());
-        mainCtrl.showEventOverview(event);
+        controllerUtils.saveObject(STORAGE_PATH, recentlyJoinedEventCodes);
         updateRecentEvents();
+
+        mainCtrl.showEventOverview(event);
     }
 
 
@@ -198,6 +218,7 @@ public class StartScreenCtrl implements VoidSceneController {
     private void updateRecentEvents() {
         recentViewedEvents.getChildren().clear();
 
+
         List<EventDTO> recentlyJoinedEventDTOs = new ArrayList<>();
         recentlyJoinedEventCodes.forEach(code -> {
             EventDTO found = server.getEvent(code);
@@ -217,6 +238,7 @@ public class StartScreenCtrl implements VoidSceneController {
             Button removeButton = new Button("\u0078");
             removeButton.setOnAction(e -> {
                 recentlyJoinedEventCodes.remove(event.code());
+                controllerUtils.saveObject(STORAGE_PATH, recentlyJoinedEventCodes);
                 refresh();
             });
 

@@ -3,6 +3,7 @@ package client.utils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import java.io.*;
 import java.util.Optional;
 
 public class ControllerUtils {
@@ -38,4 +39,32 @@ public class ControllerUtils {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    public boolean saveObject(String path, Object object) {
+        try {
+            File f = new File(path);
+            if (!f.exists()){
+                f.createNewFile();
+            }
+
+            FileOutputStream fileOutputStream = new FileOutputStream(path);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(object);
+            objectOutputStream.close();
+            return true;
+        } catch (IOException e){
+            return false;
+        }
+    }
+
+    public <T> T readObject(String path) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(path);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            return (T) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e){
+            return null;
+        }
+    }
 }
