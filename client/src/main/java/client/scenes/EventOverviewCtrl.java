@@ -119,6 +119,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 }
         );
 
+        controllerUtils.bindComboBoxForKeyboardInput(expenseFilterComboBox);
+
         eventTitleTextField.textProperty().addListener((ov, prevText, currText) -> {
             Platform.runLater(() -> {
                 resizeEventTitleTextField(currText);

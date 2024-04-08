@@ -13,22 +13,25 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
    <children>
       <Text layoutX="31.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Participants:" wrappingWidth="315.30859375">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Text>
-      <ToggleButton layoutX="83.0" layoutY="60.0" mnemonicParsing="false" text="Edit">
-         <toggleGroup>
-            <ToggleGroup fx:id="toggleView" />
-         </toggleGroup>
+      <ToggleButton fx:id="addButton" layoutX="31.0" layoutY="60.0" mnemonicParsing="false" text="Add">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
+         <graphic>
+            <FontAwesomeIconView glyphName="PLUS" />
+         </graphic>
+         <toggleGroup>
+            <ToggleGroup fx:id="toggleView" />
+         </toggleGroup>
       </ToggleButton>
-      <ToggleButton fx:id="addButton" layoutX="31.0" layoutY="60.0" mnemonicParsing="false" text="Add" toggleGroup="$toggleView">
+      <ToggleButton layoutX="109.0" layoutY="60.0" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -55,6 +58,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
+            <ComboBox fx:id="comboBoxName" prefHeight="25.0" prefWidth="160.0" promptText="Choose..." visible="false" GridPane.columnIndex="1" />
             <TextField fx:id="boxName" promptText="John" GridPane.columnIndex="1" />
             <Label text="Email" GridPane.rowIndex="1">
                <font>
@@ -74,7 +78,6 @@
                </font>
             </Label>
             <TextField fx:id="boxBic" prefWidth="297.0" promptText="ABCDEFGH" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ComboBox fx:id="comboBoxName" prefHeight="25.0" prefWidth="160.0" promptText="Choose..." visible="false" GridPane.columnIndex="1" />
          </children>
       </GridPane>
       <Text layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">

@@ -74,6 +74,9 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
 
+        controllerUtils.bindComboBoxForKeyboardInput(whoPaidDropdown);
+        controllerUtils.bindComboBoxForKeyboardInput(currencyDropdown);
+
         refresh();
 
         serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> Platform.runLater(this::refresh));
@@ -284,5 +287,11 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
                 }
             }
         }
+    }
+
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.ENTER) submit();
     }
 }

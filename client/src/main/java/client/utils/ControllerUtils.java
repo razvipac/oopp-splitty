@@ -2,6 +2,8 @@ package client.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.input.KeyCode;
 
 import java.io.*;
 import java.util.Optional;
@@ -78,5 +80,20 @@ public class ControllerUtils {
         } catch (IOException | ClassNotFoundException e){
             return null;
         }
+    }
+
+    /**
+     * Creates a binding for allowing keyboard only users to use a given combo box
+     * @param comboBox comboBox to bind
+     * @param <T> generic type, not relevant for the functionality
+     */
+    public <T> void bindComboBoxForKeyboardInput(ComboBox<T> comboBox) {
+        comboBox.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                int size = comboBox.getItems().size();
+                int index = comboBox.getSelectionModel().getSelectedIndex();
+                comboBox.getSelectionModel().select((index + 1) % size);
+            }
+        });
     }
 }

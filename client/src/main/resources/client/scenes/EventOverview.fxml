@@ -36,7 +36,7 @@
                         </Label>
                      </children>
                   </VBox>
-                  <Button mnemonicParsing="false" onAction="#openInvitations" text="Send Invite">
+                  <Button onAction="#openInvitations" text="Send _Invite">
                      <font>
                         <Font size="10.0" />
                      </font>

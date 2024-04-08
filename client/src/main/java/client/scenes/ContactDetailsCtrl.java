@@ -64,6 +64,8 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     public void initialize(EventDTO event) {
         this.event = event;
 
+        controllerUtils.bindComboBoxForKeyboardInput(comboBoxName);
+
         // IBAN: sets character limit to 18
         boxIban.setTextFormatter(getTextFormatterIBAN());
         // properly format the IBAN
@@ -353,6 +355,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        if (keyEvent.isAltDown() && keyEvent.getCode() ==  KeyCode.ENTER) ok();
     }
 
     /**

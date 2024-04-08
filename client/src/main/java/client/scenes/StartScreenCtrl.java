@@ -96,6 +96,8 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
             if (keyEvent.getCode() == KeyCode.ENTER) joinEvent();
         });
 
+        controllerUtils.bindComboBoxForKeyboardInput(languageButton);
+
         // check if storage file exists
         File f = new File(STORAGE_PATH);
         if (!f.exists()) {
