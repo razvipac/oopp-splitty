@@ -50,7 +50,7 @@ public class StartScreenCtrl implements VoidSceneController {
     @FXML
     private GridPane recentViewedEvents;
 
-    private Set<EventDTO> recentlyJoinedEvents = new LinkedHashSet<>();
+    private List<String> recentlyJoinedEventCodes = new ArrayList<>();
 
     private List<EventDTO> events;
 
@@ -122,8 +122,8 @@ public class StartScreenCtrl implements VoidSceneController {
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
-            recentlyJoinedEvents.removeIf(event -> event.code().equals(code));
-            recentlyJoinedEvents.add(found.get());
+            recentlyJoinedEventCodes.removeIf(eventCode -> eventCode.equals(code));
+            recentlyJoinedEventCodes.add(found.get().code());
             updateRecentEvents();
             mainCtrl.showEventOverview(found.get());
         }
@@ -140,7 +140,7 @@ public class StartScreenCtrl implements VoidSceneController {
         EventDTO event = server.createEvent(eventName);
         events = server.getAllEvents();
         System.out.println(event.toString());
-        recentlyJoinedEvents.add(event);
+        recentlyJoinedEventCodes.add(event.code());
         mainCtrl.showEventOverview(event);
         updateRecentEvents();
     }
@@ -195,27 +195,23 @@ public class StartScreenCtrl implements VoidSceneController {
      */
     private void updateRecentEvents() {
         recentViewedEvents.getChildren().clear();
-        List<String> recentlyJoinedEventsCodes = (new ArrayList<>(recentlyJoinedEvents))
-                .stream().map(EventDTO::code).toList();
 
-        recentlyJoinedEvents.clear();
-        recentlyJoinedEventsCodes.forEach(code -> recentlyJoinedEvents.add(server.getEvent(code)));
+        List<EventDTO> recentlyJoinedEventDTOs = new ArrayList<>();
+        recentlyJoinedEventCodes.forEach(code -> recentlyJoinedEventDTOs.add(server.getEvent(code)));
 
         int amountOfEvents = 0;
-        int lastIndex = recentlyJoinedEvents.size() - 1;
+        int lastIndex = recentlyJoinedEventDTOs.size() - 1;
         for (int i = lastIndex; i >= 0 && amountOfEvents < 4; i--) {
-            EventDTO event = new ArrayList<>(recentlyJoinedEvents).get(i);
+            EventDTO event = new ArrayList<>(recentlyJoinedEventDTOs).get(i);
             Label eventName = new Label(event.name());
             Button overviewButton = new Button("\u2192");
             overviewButton.setOnAction(e -> {
                 mainCtrl.showEventOverview(event);
-                recentlyJoinedEvents.remove(event);
-                recentlyJoinedEvents.add(event);
                 updateRecentEvents();
             });
             Button removeButton = new Button("\u0078");
             removeButton.setOnAction(e -> {
-                recentlyJoinedEvents.remove(event);
+                recentlyJoinedEventCodes.remove(event.code());
                 refresh();
             });
 
