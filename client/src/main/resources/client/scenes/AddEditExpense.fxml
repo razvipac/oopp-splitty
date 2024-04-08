@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -62,13 +65,11 @@
                 </VBox>
          </content>
       </ScrollPane>
-            <Label layoutX="31.0" layoutY="229.0" text="Expense Type">
-         <font>
-            <Font size="14.0" />
-         </font></Label>
-            <TextField fx:id="expenseTypeField" disable="true" layoutX="135.0" layoutY="226.0" promptText="food, restaurant" />
-            <Button fx:id="abortButton" layoutX="466.0" layoutY="292.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
-            <Button fx:id="addButton" layoutX="524.0" layoutY="292.0" mnemonicParsing="false" onAction="#submit" text="OK">
+            <Button fx:id="abortButton" layoutX="425.0" layoutY="293.0" mnemonicParsing="false" onAction="#goBack" text="Abort">
+         <graphic>
+            <FontAwesomeIconView glyphName="TIMES" />
+         </graphic></Button>
+            <Button fx:id="addButton" layoutX="510.0" layoutY="293.0" mnemonicParsing="false" onAction="#submit" text="OK">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
@@ -76,7 +77,9 @@
          <font>
             <Font size="10.0" />
          </font>
-      </Button>
+         <graphic>
+            <FontAwesomeIconView glyphName="CHECK" />
+         </graphic></Button>
       <Text layoutX="31.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
          <font>
             <Font name="System Italic" size="12.0" />
