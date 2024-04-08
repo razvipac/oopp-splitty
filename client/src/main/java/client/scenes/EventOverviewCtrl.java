@@ -97,6 +97,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             selectedParticipant = participants.getFirst();
         }
 
+        KeyCombination altE = new KeyCodeCombination(KeyCode.E, KeyCombination.ALT_DOWN);
+
+
         currentView = View.ALL;
 
         refresh();

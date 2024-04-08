@@ -77,7 +77,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" onAction="#openAddExpense" prefHeight="25.0" prefWidth="46.0" text="Add " />
+                        <Button onAction="#openAddExpense" text="Add _Expense" />
                         <Label fx:id="totalExpensesLabel" text="Total sum of expenses: ">
                            <HBox.margin>
                               <Insets left="29.0" />
