@@ -72,6 +72,8 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         debtList.clear();
         debtList.addAll(debtDTOs);
 
+        if (debtDTOs.isEmpty()) serverUtils.regenerateDebts(event.code());
+
         refreshDebtList();
     }
 
