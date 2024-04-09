@@ -1,9 +1,10 @@
 package client.interfaces;
 
-public interface VoidSceneController {
+import javafx.fxml.Initializable;
 
+public interface VoidSceneController extends Initializable {
     /**
-     * Generates a scene
+     * Refreshes the scene with fresh data
      */
-    void initialize();
+    void refresh();
 }

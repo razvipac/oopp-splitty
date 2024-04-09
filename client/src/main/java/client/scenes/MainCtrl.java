@@ -18,6 +18,7 @@ package client.scenes;
 import client.LanguageManager;
 import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
+import jakarta.ws.rs.ProcessingException;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -121,7 +122,11 @@ public class MainCtrl {
         this.adminPasswordPopup = createAdminPasswordPopup();
         this.passwordIsCorrect = false;
 
-        showStartScreen();
+        try {
+            showStartScreen();
+        } catch (ProcessingException e) {
+            System.out.println(e.getMessage());
+        }
         primaryStage.show();
     }
 
@@ -132,7 +137,7 @@ public class MainCtrl {
         String string = "Splitty: Start Screen";
         string = languageManager.get(string);
         primaryStage.setTitle(string);
-        startScreenCtrl.initialize(startScreen);
+        startScreenCtrl.refresh();
         primaryStage.setScene(startScreen);
     }
 
@@ -144,7 +149,7 @@ public class MainCtrl {
      */
     public void showEventOverview(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Event " + eventDTO.name());
-        eventOverviewCtrl.initialize(eventDTO);
+        eventOverviewCtrl.refresh(eventDTO);
         primaryStage.setScene(eventOverview);
     }
 
@@ -156,7 +161,7 @@ public class MainCtrl {
      */
     public void showContactDetails(EventDTO eventDTO) {
         primaryStage.setTitle("Splitty: Add/Edit Participant");
-        contactDetailsCtrl.initialize(eventDTO);
+        contactDetailsCtrl.refresh(eventDTO);
         primaryStage.setScene(contactDetails);
     }
 
@@ -170,7 +175,7 @@ public class MainCtrl {
         String string = "Splitty: Send invitations to event ";
         string = languageManager.get(string);
         primaryStage.setTitle(string + eventDTO.name());
-        invitationsCtrl.initialize(eventDTO);
+        invitationsCtrl.refresh(eventDTO);
         primaryStage.setScene(invitations);
     }
 
@@ -182,7 +187,7 @@ public class MainCtrl {
      */
     public void showOpenDebts(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.name());
-        openDebtsCtrl.initialize(eventDTO);
+        openDebtsCtrl.refresh(eventDTO);
         primaryStage.setScene(openDebts);
     }
 
@@ -194,7 +199,7 @@ public class MainCtrl {
      */
     public void showAddExpense(EventDTO eventDTO){
         primaryStage.setTitle("Splitty: Add expense for event " + eventDTO.name());
-        addEditExpenseCtrl.initialize(eventDTO, null);
+        addEditExpenseCtrl.refresh(eventDTO, null);
         primaryStage.setScene(addEditExpense);
     }
 
@@ -207,7 +212,7 @@ public class MainCtrl {
      */
     public void showEditExpense(EventDTO eventDTO, ExpenseDTO expense){
         primaryStage.setTitle("Splitty: Edit expense for event " + eventDTO.name());
-        addEditExpenseCtrl.initialize(eventDTO, expense);
+        addEditExpenseCtrl.refresh(eventDTO, expense);
         primaryStage.setScene(addEditExpense);
     }
 
@@ -218,7 +223,7 @@ public class MainCtrl {
     public void showAdmin() {
         if(passwordIsCorrect) {
             primaryStage.setTitle("Splitty: Administrator Control Panel");
-            adminCtrl.initialize();
+            adminCtrl.refresh();
             primaryStage.setScene(admin);
         }
         else openAdminPasswordPopup();

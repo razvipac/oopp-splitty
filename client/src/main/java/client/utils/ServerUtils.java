@@ -47,7 +47,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 public class ServerUtils {
 
     private final String httpServerUrl;
-    private final StompSession wsSession;
+    private final String serverUrl;
+    private StompSession wsSession;
 
     /**
      * Constructor for ServerUtils
@@ -58,9 +59,8 @@ public class ServerUtils {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
             if (rootNode.has("serverURL")) {
-                String server = rootNode.get("serverURL").asText();
-                httpServerUrl = "http://" + server + "/";
-                wsSession = wsConnect("ws://" + server + "/ws-connect");
+                serverUrl = rootNode.get("serverURL").asText();
+                httpServerUrl = "http://" + serverUrl + "/";
             } else {
                 throw new RuntimeException("Server URL not found");
             }
@@ -86,6 +86,10 @@ public class ServerUtils {
 
     private <T> void registerForWebSocketMessages(String dest,
                                                   Consumer<WSWrapperResponseBody<T>> consumer){
+
+        if (wsSession == null){
+            wsSession = wsConnect("ws://" + serverUrl + "/ws-connect");
+        }
         wsSession.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
