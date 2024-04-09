@@ -11,6 +11,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -73,6 +75,9 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         this.expense = expense;
         this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
+
+        controllerUtils.bindComboBoxForKeyboardInput(whoPaidDropdown);
+        controllerUtils.bindComboBoxForKeyboardInput(currencyDropdown);
 
         refresh();
 
@@ -284,5 +289,11 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
                 }
             }
         }
+    }
+
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.ENTER) submit();
     }
 }

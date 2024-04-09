@@ -20,6 +20,9 @@ import commons.dto.EventDTO;
 import commons.dto.ExpenseDTO;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -56,6 +59,8 @@ public class MainCtrl {
 
     private LanguageManager languageManager;
 
+    private KeyCombination globalBackToStartScreen = new KeyCodeCombination(KeyCode.X, KeyCombination.ALT_DOWN);
+
     /**
      * Initializes the MainCtrl with the primary stage and scenes for various controllers.
      *
@@ -89,21 +94,27 @@ public class MainCtrl {
 
         this.eventOverviewCtrl = eventOverviewPair.getKey();
         this.eventOverview = new Scene(eventOverviewPair.getValue());
+        this.eventOverview.getAccelerators().put(globalBackToStartScreen, this::showStartScreen);
 
         this.contactDetailsCtrl = contactDetailsPair.getKey();
         this.contactDetails = new Scene(contactDetailsPair.getValue());
+        this.contactDetails.getAccelerators().put(globalBackToStartScreen, this::showStartScreen);
 
         this.invitationsCtrl = invitationsPair.getKey();
         this.invitations = new Scene(invitationsPair.getValue());
+        this.invitations.getAccelerators().put(globalBackToStartScreen, this::showStartScreen);
 
         this.openDebtsCtrl = openDebtsPair.getKey();
         this.openDebts = new Scene(openDebtsPair.getValue());
+        this.openDebts.getAccelerators().put(globalBackToStartScreen, this::showStartScreen);
 
         this.addEditExpenseCtrl = addEditExpensePair.getKey();
         this.addEditExpense = new Scene(addEditExpensePair.getValue());
+        this.addEditExpense.getAccelerators().put(globalBackToStartScreen, this::showStartScreen);
 
         this.adminCtrl = adminPair.getKey();
         this.admin = new Scene(adminPair.getValue());
+        this.admin.getAccelerators().put(globalBackToStartScreen, this::showStartScreen);
 
         this.adminPasswordCtrl = adminPasswordPair.getKey();
         this.adminPassword = new Scene(adminPasswordPair.getValue());
@@ -121,7 +132,7 @@ public class MainCtrl {
         String string = "Splitty: Start Screen";
         string = languageManager.get(string);
         primaryStage.setTitle(string);
-        startScreenCtrl.initialize();
+        startScreenCtrl.initialize(startScreen);
         primaryStage.setScene(startScreen);
     }
 

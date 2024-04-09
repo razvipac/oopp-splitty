@@ -26,6 +26,7 @@ dependencies {
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1'
 	
 	implementation group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.0.1'
+	implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
 	
 	implementation 'com.google.inject:guice:5.0.1'
 

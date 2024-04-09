@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -37,7 +38,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private List<ExpenseDTO> expenses;
 
     @FXML
-    private Label eventTitleLabel;
+    private TextField eventTitleTextField;
     @FXML
     private Label eventCodeLabel;
     @FXML
@@ -96,6 +97,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             selectedParticipant = participants.getFirst();
         }
 
+        KeyCombination altE = new KeyCodeCombination(KeyCode.E, KeyCombination.ALT_DOWN);
+
+
         currentView = View.ALL;
 
         refresh();
@@ -114,6 +118,21 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                     refreshExpenseScroller();
                 }
         );
+
+        controllerUtils.bindComboBoxForKeyboardInput(expenseFilterComboBox);
+
+        eventTitleTextField.textProperty().addListener((ov, prevText, currText) -> {
+            Platform.runLater(() -> {
+                resizeEventTitleTextField(currText);
+                eventTitleTextField.positionCaret(eventTitleTextField.getCaretPosition());
+            });
+        });
+
+        eventTitleTextField.focusedProperty().addListener((ov, oldValue, newValue) -> {
+            if (oldValue && !newValue) {
+                revertEventTitle();
+            }
+        });
 
         serverUtils.registerForWebSocketUpdatesForTheWholeEvent(
                 event.code(), q-> Platform.runLater(this::refresh));
@@ -147,6 +166,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             refreshEventInfoLabel();
 
+            // resizes event title text field to the size of the current text
+            Platform.runLater(() -> resizeEventTitleTextField(eventTitleTextField.getText()));
+
             refreshParticipantList();
 
             refreshParticipantDropdown();
@@ -161,8 +183,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * Refreshes Event's name and code
      */
     private void refreshEventInfoLabel() {
-        eventTitleLabel.setText(event.name());
         eventCodeLabel.setText(event.code());
+        eventTitleTextField.setText(event.name());
     }
 
     /**
@@ -320,7 +342,21 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void onGlobalKeyPress(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ESCAPE) {
-            goBack();
+            if (eventTitleTextField.isFocused()) {
+                handleEventTitleKeyboardEvent(keyEvent);
+            }
+            else{
+                goBack();
+            }
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.P) {
+            openAddEditParticipant();
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.E) {
+            openAddExpense();
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.D) {
+            openOpenDebts();
         }
     }
 
@@ -392,6 +428,41 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         // Update the last activity label in the UI
         lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
+    }
+
+    private void resizeEventTitleTextField(String currText) {
+        Text text = new Text(currText);
+        text.setFont(eventTitleTextField.getFont());
+
+        double width = text.getLayoutBounds().getWidth()
+                + eventTitleTextField.getPadding().getLeft() + eventTitleTextField.getPadding().getRight();
+        eventTitleTextField.setMinWidth(width);
+    }
+
+    @FXML
+    private void handleEventTitleKeyboardEvent(KeyEvent keyEvent){
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            String curText = eventTitleTextField.getText();
+            boolean confirmed = controllerUtils.createConfirmationAlert("Changing the name of the event",
+                    "Are you sure you want to change the name of the event to \""
+                            + curText
+                            + "\"?");
+            if (confirmed) {
+                serverUtils.updateEvent(event, curText);
+            } else {
+                revertEventTitle();
+            }
+        }
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
+            revertEventTitle();
+        }
+    }
+
+    private void revertEventTitle() {
+        resizeEventTitleTextField(event.name());
+        eventTitleTextField.setText(event.name());
+        Robot robot = new Robot();
+        robot.keyType(KeyCode.TAB);
     }
 
     /**
