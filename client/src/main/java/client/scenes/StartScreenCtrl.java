@@ -34,7 +34,7 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
     private ControllerUtils controllerUtils;
 
     private static final String STORAGE_PATH =
-            "client/src/main/resources/userSettings/savedData/recently_joined_events_code.ser";
+            "client/src/main/resources/userSettings/savedData/recently_joined_event_codes.ser";
 
     @FXML
     private Label recentlyViewed;
@@ -99,7 +99,10 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
         controllerUtils.bindComboBoxForKeyboardInput(languageButton);
 
         // check if storage file exists
-        controllerUtils.saveObject(STORAGE_PATH, new ArrayList<>());
+        File f = new File(STORAGE_PATH);
+        if (!f.exists()) {
+            controllerUtils.saveObject(STORAGE_PATH, new ArrayList<>());
+        }
 
         recentlyJoinedEventCodes = controllerUtils.readObject(STORAGE_PATH);
 
