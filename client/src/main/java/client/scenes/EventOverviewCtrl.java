@@ -99,7 +99,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         KeyCombination altE = new KeyCodeCombination(KeyCode.E, KeyCombination.ALT_DOWN);
 
-
         currentView = View.ALL;
 
         refresh();

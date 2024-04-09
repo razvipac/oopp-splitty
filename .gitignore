@@ -40,3 +40,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+/client/src/main/resources/userSettings/savedData/recently_joined_event_codes.ser

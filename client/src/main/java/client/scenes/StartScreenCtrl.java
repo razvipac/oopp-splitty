@@ -34,7 +34,7 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
     private ControllerUtils controllerUtils;
 
     private static final String STORAGE_PATH =
-            "client/src/main/resources/userSettings/savedData/recently_joined_events_code.ser";
+            "client/src/main/resources/userSettings/savedData/recently_joined_event_codes.ser";
 
     @FXML
     private Label recentlyViewed;
