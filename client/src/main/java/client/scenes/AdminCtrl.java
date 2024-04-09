@@ -140,6 +140,11 @@ public class AdminCtrl implements VoidSceneController {
                             "This action cannot be undone.");
             if (confirmed) {
                 serverUtils.deleteEvent(event.code());
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                        "Success",
+                        "Deleted successfully",
+                        "Event '" + event.name() + "' has been deleted.");
+                alert.showAndWait();
                 refresh();
             }
         });
@@ -160,6 +165,7 @@ public class AdminCtrl implements VoidSceneController {
         }
 
         get.setOnAction(p -> {
+            refresh();  // refresh events
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
 
@@ -176,9 +182,21 @@ public class AdminCtrl implements VoidSceneController {
                 try {
                     // Write the JSON to the file using the objectMapper instance
                     objectMapper.writeValue(selectedFile, event);
-                    System.out.println("(SUCCESS) Event downloaded");
+                    refresh();  // refresh events
+                    Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                            "Success",
+                            "Event has been downloaded successfully",
+                            selectedFile.toString());
+                    alert.showAndWait();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    refresh();  // refresh events
+                    Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                            "Error",
+                            "Downloading event has failed",
+                            "Please check that the program has permissions to download the event" +
+                                    "to the specified location.\n\n" +
+                                    "Exception details:\n" + ex.getMessage());
+                    alert.showAndWait();
                 }
             }
         });
@@ -204,24 +222,27 @@ public class AdminCtrl implements VoidSceneController {
             try {
                 // Import event from JSON
                 JSONDumpEventDTO result = importEventFromJSON(selectedFile.getAbsolutePath());
-
                 // Throw an exception if result is null
-                if (result == null) {
-                    throw new IllegalArgumentException();
-                }
-
-                // Do something with the result if needed
+                if (result == null) throw new IllegalArgumentException();
+                // Else show success message
+                refresh();  // refresh events
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                        "Success",
+                        "Event has been imported and restored successfully",
+                        "");
+                alert.showAndWait();
             } catch (Exception e) {
                 // Display an error message
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Failed to import event");
-                alert.setContentText("An error occurred while importing the event from JSON: "
-                        + e.getMessage());
+                refresh();  // refresh events
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                        "Error",
+                        "Failed to import event",
+                        "An error occurred while importing the event from JSON.\n\n" +
+                                "Exception details: \n" + e.getMessage());
                 alert.showAndWait();
             }
-
         }
+
     }
 
     /**
@@ -239,12 +260,17 @@ public class AdminCtrl implements VoidSceneController {
             System.out.println(serverUtils.restoreEvent(event));
             return event;
         } catch (JsonParseException | JsonMappingException e) {
-            System.err.println("Error while parsing JSON: " + e.getMessage());
-            System.err.println("Please ensure that the JSON content is correctly formatted.");
-            e.printStackTrace();
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error",
+                    "Error while parsing JSON.",
+                    "Please ensure the JSON content is properly formatted.");
+            alert.showAndWait();
         } catch (IOException e) {
-            System.err.println("File not found");
-            e.printStackTrace();
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error",
+                    "File not found",
+                    "Check the file name and try again.");
+            alert.showAndWait();
         }
         return null;
     }
