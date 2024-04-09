@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -149,12 +148,12 @@ public class AdminCtrl implements VoidSceneController {
 
     /**
      * Creates the download button for the given event.
-     *
      * @param event puts the JSON of an event in a file that is downloaded
      * @return the button
      */
     public Button createDownloadEventButton(JSONDumpEventDTO event) {
         Button get = new Button("Download");
+        // If the given event is null for any reason, the button is disabled.
         if(event == null) {
             get.setDisable(true);
             return get;
@@ -174,8 +173,6 @@ public class AdminCtrl implements VoidSceneController {
             File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
 
             if (selectedFile != null) {
-                // Make a separate file for each event
-                String filename = selectedFile.getAbsolutePath();
                 try {
                     // Write the JSON to the file using the objectMapper instance
                     objectMapper.writeValue(selectedFile, event);
@@ -189,7 +186,7 @@ public class AdminCtrl implements VoidSceneController {
     }
 
     /**
-     * Opens fileChooser when clicked
+     * Prompts user to select JSON file to import from with a FileChooser.
      */
     @FXML
     public void importEvent() {
