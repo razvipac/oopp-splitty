@@ -18,6 +18,7 @@ package client.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.dto.*;
+import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -77,7 +78,7 @@ public class ServerUtils {
         try {
             return stompClient.connect(url, new StompSessionHandlerAdapter() {}).get();
         } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new ProcessingException(e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -87,7 +88,7 @@ public class ServerUtils {
     private <T> void registerForWebSocketMessages(String dest,
                                                   Consumer<WSWrapperResponseBody<T>> consumer){
 
-        if (wsSession == null){
+        if (wsSession == null || !wsSession.isConnected()){
             wsSession = wsConnect("ws://" + serverUrl + "/ws-connect");
         }
         wsSession.subscribe(dest, new StompFrameHandler() {
