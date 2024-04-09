@@ -99,10 +99,7 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
         controllerUtils.bindComboBoxForKeyboardInput(languageButton);
 
         // check if storage file exists
-        File f = new File(STORAGE_PATH);
-        if (!f.exists()) {
-            controllerUtils.saveObject(STORAGE_PATH, new ArrayList<>());
-        }
+        controllerUtils.saveObject(STORAGE_PATH, new ArrayList<>());
 
         recentlyJoinedEventCodes = controllerUtils.readObject(STORAGE_PATH);
 
