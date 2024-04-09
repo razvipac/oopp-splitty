@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -99,17 +100,14 @@ public class AdminCtrl implements VoidSceneController {
             Button eventNameButton = createEventNameButton(e);
             Button deleteButton = createDeleteEventButton(e);
 
-            // TODO: Reimplement download functionality
-//            List<EventResponseBody> dump = serverUtils.getJSON();
-//            EventResponseBody op=null;
-//            for(EventResponseBody body : dump){
-//                if(body.event().getCode().equals(e.getCode()))
-//                    op = body;
-//            }
-//            if(op == null)
-//                throw new IllegalArgumentException();
-//            Button downloadButton = createDownloadEventButton(op);
-            Button downloadButton = new Button("Download");
+            // Download Button
+            List<JSONDumpEventDTO> allDumps = serverUtils.getJSON();
+            JSONDumpEventDTO thisDump = null;
+            for(JSONDumpEventDTO body : allDumps){
+                if(body.eventDTO().code().equals(e.code()))
+                    thisDump = body;
+            }
+            Button downloadButton = createDownloadEventButton(thisDump);
 
             eventGrid.add(eventNameButton, 0, i);
             eventGrid.add(deleteButton, 1, i);
@@ -149,41 +147,46 @@ public class AdminCtrl implements VoidSceneController {
         return delete;
     }
 
-    // TODO Reimplement download functionality
-//    /**
-//     *
-//     * @param event puts the JSON of an event in a file that is downloaded
-//     * @return the button
-//     */
-//    public Button createDownloadEventButton(EventResponseBody event) {
-//        Button get = new Button("Download");
-//        get.setOnAction(p -> {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.registerModule(new JavaTimeModule());
-//
-//            // Create a file chooser
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("Choose Download Location");
-//            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-//            fileChooser.getExtensionFilters()
-//                    .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
-//
-//            File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
-//
-//            if (selectedFile != null) {
-//                // Make a separate file for each event
-//                String filename = selectedFile.getAbsolutePath();
-//                try {
-//                    // Write the JSON to the file using the objectMapper instance
-//                    objectMapper.writeValue(selectedFile, event);
-//                    System.out.println("(SUCCESS) Event downloaded");
-//                } catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        });
-//        return get;
-//    }
+    /**
+     * Creates the download button for the given event.
+     *
+     * @param event puts the JSON of an event in a file that is downloaded
+     * @return the button
+     */
+    public Button createDownloadEventButton(JSONDumpEventDTO event) {
+        Button get = new Button("Download");
+        if(event == null) {
+            get.setDisable(true);
+            return get;
+        }
+
+        get.setOnAction(p -> {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            // Create a file chooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose Download Location");
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.getExtensionFilters()
+                    .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+
+            File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
+
+            if (selectedFile != null) {
+                // Make a separate file for each event
+                String filename = selectedFile.getAbsolutePath();
+                try {
+                    // Write the JSON to the file using the objectMapper instance
+                    objectMapper.writeValue(selectedFile, event);
+                    System.out.println("(SUCCESS) Event downloaded");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        return get;
+    }
 
     /**
      * Opens fileChooser when clicked
@@ -203,7 +206,7 @@ public class AdminCtrl implements VoidSceneController {
         if (selectedFile != null) {
             try {
                 // Import event from JSON
-                List<JSONDumpEventDTO> result = importEventFromJSON(selectedFile.getAbsolutePath());
+                JSONDumpEventDTO result = importEventFromJSON(selectedFile.getAbsolutePath());
 
                 // Throw an exception if result is null
                 if (result == null) {
@@ -230,13 +233,13 @@ public class AdminCtrl implements VoidSceneController {
      * @param jsonPath the path to the file
      * @return returns the response entity with which the event is restored
      */
-    public List<JSONDumpEventDTO> importEventFromJSON(String jsonPath) {
+    public JSONDumpEventDTO importEventFromJSON(String jsonPath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             File jsonFile = new File(jsonPath);
-            List<JSONDumpEventDTO> event = objectMapper.readValue(jsonFile, List.class);
-            serverUtils.restoreEvent(event);
+            JSONDumpEventDTO event = objectMapper.readValue(jsonFile, JSONDumpEventDTO.class);
+            System.out.println(serverUtils.restoreEvent(event));
             return event;
         } catch (JsonParseException | JsonMappingException e) {
             System.err.println("Error while parsing JSON: " + e.getMessage());
