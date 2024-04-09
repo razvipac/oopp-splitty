@@ -42,6 +42,12 @@ public class ControllerUtils {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    /**
+     * Creates a Alert for notifying of the unavailability of the server
+     * @param title title of the alert
+     * @param content content of the alert
+     * @return boolean value true iff reconnect requested false otherwise
+     */
     public boolean createServerUnavailableAlert(String title, String content) {
         ButtonType reconnect = new ButtonType("Reconnect", ButtonBar.ButtonData.OK_DONE);
         ButtonType exit = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
