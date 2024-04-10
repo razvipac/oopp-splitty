@@ -12,7 +12,6 @@ import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -73,7 +72,7 @@ public class DebtService {
      * @param debtorName todo
      * @param creditorName todo
      * @return the Debt object if it is found
-     * @throws NotFoundInDatabaseException
+     * @throws NotFoundInDatabaseException If not found in database
      */
     public Debt getOne(String eventCode, String debtorName,
                        String creditorName) throws NotFoundInDatabaseException {
@@ -94,7 +93,7 @@ public class DebtService {
      * @param eventCode of the object
      * @param body of the object
      * @return the object
-     * @throws NotFoundInDatabaseException
+     * @throws NotFoundInDatabaseException If not found in database
      */
     public Debt updateOne(String eventCode, DebtDTO body)
             throws NotFoundInDatabaseException {
@@ -170,7 +169,8 @@ public class DebtService {
             for (Participant debtor : participantList) {
                 if (!debtor.equals(paidBy)) {
                     // Update the debt between participants
-                    BigDecimal amount = debts.getOrDefault(debtor, new HashMap<>()).getOrDefault(paidBy, BigDecimal.ZERO);
+                    BigDecimal amount = debts.getOrDefault(debtor, new HashMap<>()).getOrDefault(
+                            paidBy, BigDecimal.ZERO);
                     amount = amount.add(share);
                     if (remaining.compareTo(BigDecimal.ZERO) > 0) {
                         amount = amount.add(BigDecimal.valueOf(0.01));
