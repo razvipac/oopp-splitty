@@ -1,6 +1,7 @@
 package client.utils;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
@@ -39,6 +40,27 @@ public class ControllerUtils {
 
         Optional<ButtonType> result = confirmationAlert.showAndWait();
         return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    /**
+     * Creates a Alert for notifying of the unavailability of the server
+     * @param title title of the alert
+     * @param content content of the alert
+     * @return boolean value true iff reconnect requested false otherwise
+     */
+    public boolean createServerUnavailableAlert(String title, String content) {
+        ButtonType reconnect = new ButtonType("Reconnect", ButtonBar.ButtonData.OK_DONE);
+        ButtonType exit = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alert = new Alert(
+                Alert.AlertType.WARNING,
+                content,
+                reconnect,
+                exit
+        );
+
+        alert.setTitle(title);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == reconnect;
     }
 
     /**

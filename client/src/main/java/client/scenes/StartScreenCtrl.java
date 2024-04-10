@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.LanguageManager;
 import client.LanguageOption;
-import client.interfaces.DataBasedSceneController;
+import client.interfaces.VoidSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -15,18 +15,19 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class StartScreenCtrl implements DataBasedSceneController<Scene> {
+public class StartScreenCtrl implements VoidSceneController{
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -81,13 +82,11 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
     }
 
     /**
-     * Initializes the controller.
-     * Sets up event listeners and refreshes the scene.
-     * @param scene scene of the controller
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
      */
-    public void initialize(Scene scene) {
-        this.scene = scene;
-
+    public void initialize(URL location, ResourceBundle resources) {
         createEventTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) createEvent();
         });
@@ -106,20 +105,30 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
 
         recentlyJoinedEventCodes = controllerUtils.readObject(STORAGE_PATH);
 
-        KeyCombination altC = new KeyCodeCombination(KeyCode.C, KeyCombination.ALT_DOWN);
-        scene.getAccelerators().put(altC, () -> {
-            createEventTextField.requestFocus();
-        });
-
-        KeyCombination altJ = new KeyCodeCombination(KeyCode.J, KeyCombination.ALT_DOWN);
-        scene.getAccelerators().put(altJ, () -> {
-            joinEventTextField.requestFocus();
-        });
+//        KeyCombination altC = new KeyCodeCombination(KeyCode.C, KeyCombination.ALT_DOWN);
+//        scene.getAccelerators().put(altC, () -> {
+//            createEventTextField.requestFocus();
+//        });
+//
+//        KeyCombination altJ = new KeyCodeCombination(KeyCode.J, KeyCombination.ALT_DOWN);
+//        scene.getAccelerators().put(altJ, () -> {
+//            joinEventTextField.requestFocus();
+//        });
 
         setLanguageForAll();
-        refresh();
     }
 
+    /**
+     * Refreshes the scene with fresh data from the server
+     */
+    public void refresh(){
+        scene = joinButton.getScene();
+        createEventTextField.clear();
+        joinEventTextField.clear();
+        events = server.getAllEvents();
+        loadLanguageButton();
+        updateRecentEvents();
+    }
 
     private void loadLanguageButton() {
         System.out.println("Loading language button");
@@ -271,17 +280,6 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
     }
 
     /**
-     * Refreshes the start screen by clearing text fields and updating event data.
-     */
-    public void refresh(){
-        createEventTextField.clear();
-        joinEventTextField.clear();
-        events = server.getAllEvents();
-        loadLanguageButton();
-        updateRecentEvents();
-    }
-
-    /**
      * Handles the language translation action.
      * @param actionEvent The event that triggered the action.
      */
@@ -314,6 +312,16 @@ public class StartScreenCtrl implements DataBasedSceneController<Scene> {
                 mainCtrl.showStartScreen();
                 //TODO - refresh the page
                 break;
+        }
+    }
+
+    @FXML
+    private void onGlobalKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.J) {
+            joinEventTextField.requestFocus();
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.C) {
+            createEventTextField.requestFocus();
         }
     }
 }

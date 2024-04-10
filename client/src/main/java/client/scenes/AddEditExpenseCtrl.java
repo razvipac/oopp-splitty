@@ -16,10 +16,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO, ExpenseDTO> {
 
@@ -66,30 +68,29 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
     }
 
     /**
-     * Generate an ui from the given object instance
-     * @param event Event instance to populate the UI with
-     * @param expense Expense to edit. If user wants to add, this can be null.
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
      */
-    public void initialize(EventDTO event, ExpenseDTO expense) {
-        // If user is adding, expense is null
-        this.expense = expense;
-        this.event = event;
-        this.participants = serverUtils.getParticipants(event.code());
-
+    public void initialize(URL location, ResourceBundle resources) {
         controllerUtils.bindComboBoxForKeyboardInput(whoPaidDropdown);
         controllerUtils.bindComboBoxForKeyboardInput(currencyDropdown);
-
-        refresh();
-
-        serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> Platform.runLater(this::refresh));
     }
 
     /**
      * Refresh the page. Clears text fields and adjusts title based on if the user is
      * adding or editing.
+     * @param event event corresponding to this scene
+     * @param expense expense to modify/delete or null otherwise
      */
-    private void refresh(){
+    public void refresh(EventDTO event, ExpenseDTO expense){
+        this.expense = expense;
+        this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
+
+        serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> {
+            Platform.runLater(() -> refresh(this.event, this.expense));
+        });
 
         errorText.setText("");
         whatForField.clear();

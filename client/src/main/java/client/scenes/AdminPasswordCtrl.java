@@ -9,6 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class AdminPasswordCtrl implements VoidSceneController {
 
     private final ServerUtils serverUtils;
@@ -39,13 +42,14 @@ public class AdminPasswordCtrl implements VoidSceneController {
         this.mainCtrl = mainCtrl;
     }
 
-    /**
-     * Initialized the Scene.
-     */
-    public void initialize() {
-        setLanguageForAllAdminPasswordCtrl();
-        refresh();
 
+    /**
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
+     */
+    public void initialize(URL location, ResourceBundle resources) {
+        setLanguageForAllAdminPasswordCtrl();
     }
 
     /**
