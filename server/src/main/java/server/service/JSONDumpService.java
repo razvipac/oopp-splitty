@@ -118,6 +118,10 @@ public class JSONDumpService {
 
         return response;
     }
+//
+//    public JSONDumpEventDTO createDumpForEvent(EventDTO eventDTO){
+//        Event eventToDump = eventService.getOne(eventDTO.code());
+//    }
 
     /**
      * Restores the state of the server to that stored inside the passed List<EventDump>

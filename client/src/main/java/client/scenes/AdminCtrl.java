@@ -102,17 +102,14 @@ public class AdminCtrl implements VoidSceneController {
             Button eventNameButton = createEventNameButton(e);
             Button deleteButton = createDeleteEventButton(e);
 
-            // TODO: Reimplement download functionality
-//            List<EventResponseBody> dump = serverUtils.getJSON();
-//            EventResponseBody op=null;
-//            for(EventResponseBody body : dump){
-//                if(body.event().getCode().equals(e.getCode()))
-//                    op = body;
-//            }
-//            if(op == null)
-//                throw new IllegalArgumentException();
-//            Button downloadButton = createDownloadEventButton(op);
-            Button downloadButton = new Button("Download");
+            // Download Button
+            List<JSONDumpEventDTO> allDumps = serverUtils.getJSON();
+            JSONDumpEventDTO thisDump = null;
+            for(JSONDumpEventDTO body : allDumps){
+                if(body.eventDTO().code().equals(e.code()))
+                    thisDump = body;
+            }
+            Button downloadButton = createDownloadEventButton(thisDump);
 
             eventGrid.add(eventNameButton, 0, i);
             eventGrid.add(deleteButton, 1, i);
@@ -146,50 +143,71 @@ public class AdminCtrl implements VoidSceneController {
                             "This action cannot be undone.");
             if (confirmed) {
                 serverUtils.deleteEvent(event.code());
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                        "Success",
+                        "Deleted successfully",
+                        "Event '" + event.name() + "' has been deleted.");
+                alert.showAndWait();
                 refresh();
             }
         });
         return delete;
     }
 
-    // TODO Reimplement download functionality
-//    /**
-//     *
-//     * @param event puts the JSON of an event in a file that is downloaded
-//     * @return the button
-//     */
-//    public Button createDownloadEventButton(EventResponseBody event) {
-//        Button get = new Button("Download");
-//        get.setOnAction(p -> {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.registerModule(new JavaTimeModule());
-//
-//            // Create a file chooser
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("Choose Download Location");
-//            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-//            fileChooser.getExtensionFilters()
-//                    .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
-//
-//            File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
-//
-//            if (selectedFile != null) {
-//                // Make a separate file for each event
-//                String filename = selectedFile.getAbsolutePath();
-//                try {
-//                    // Write the JSON to the file using the objectMapper instance
-//                    objectMapper.writeValue(selectedFile, event);
-//                    System.out.println("(SUCCESS) Event downloaded");
-//                } catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        });
-//        return get;
-//    }
+    /**
+     * Creates the download button for the given event.
+     * @param event puts the JSON of an event in a file that is downloaded
+     * @return the button
+     */
+    public Button createDownloadEventButton(JSONDumpEventDTO event) {
+        Button get = new Button("Download");
+        // If the given event is null for any reason, the button is disabled.
+        if(event == null) {
+            get.setDisable(true);
+            return get;
+        }
+
+        get.setOnAction(p -> {
+            refresh();  // refresh events
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            // Create a file chooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose Download Location");
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+            fileChooser.getExtensionFilters()
+                    .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+
+            File selectedFile = fileChooser.showSaveDialog(mainCtrl.getPrimaryStage());
+
+            if (selectedFile != null) {
+                try {
+                    // Write the JSON to the file using the objectMapper instance
+                    objectMapper.writeValue(selectedFile, event);
+                    refresh();  // refresh events
+                    Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                            "Success",
+                            "Event has been downloaded successfully",
+                            selectedFile.toString());
+                    alert.showAndWait();
+                } catch (IOException ex) {
+                    refresh();  // refresh events
+                    Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                            "Error",
+                            "Downloading event has failed",
+                            "Please check that the program has permissions to download the event" +
+                                    "to the specified location.\n\n" +
+                                    "Exception details:\n" + ex.getMessage());
+                    alert.showAndWait();
+                }
+            }
+        });
+        return get;
+    }
 
     /**
-     * Opens fileChooser when clicked
+     * Prompts user to select JSON file to import from with a FileChooser.
      */
     @FXML
     public void importEvent() {
@@ -206,25 +224,28 @@ public class AdminCtrl implements VoidSceneController {
         if (selectedFile != null) {
             try {
                 // Import event from JSON
-                List<JSONDumpEventDTO> result = importEventFromJSON(selectedFile.getAbsolutePath());
-
+                JSONDumpEventDTO result = importEventFromJSON(selectedFile.getAbsolutePath());
                 // Throw an exception if result is null
-                if (result == null) {
-                    throw new IllegalArgumentException();
-                }
-
-                // Do something with the result if needed
+                if (result == null) throw new IllegalArgumentException();
+                // Else show success message
+                refresh();  // refresh events
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                        "Success",
+                        "Event has been imported and restored successfully",
+                        "");
+                alert.showAndWait();
             } catch (Exception e) {
                 // Display an error message
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Failed to import event");
-                alert.setContentText("An error occurred while importing the event from JSON: "
-                        + e.getMessage());
+                refresh();  // refresh events
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                        "Error",
+                        "Failed to import event",
+                        "An error occurred while importing the event from JSON.\n\n" +
+                                "Exception details: \n" + e.getMessage());
                 alert.showAndWait();
             }
-
         }
+
     }
 
     /**
@@ -233,21 +254,26 @@ public class AdminCtrl implements VoidSceneController {
      * @param jsonPath the path to the file
      * @return returns the response entity with which the event is restored
      */
-    public List<JSONDumpEventDTO> importEventFromJSON(String jsonPath) {
+    public JSONDumpEventDTO importEventFromJSON(String jsonPath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             File jsonFile = new File(jsonPath);
-            List<JSONDumpEventDTO> event = objectMapper.readValue(jsonFile, List.class);
+            JSONDumpEventDTO event = objectMapper.readValue(jsonFile, JSONDumpEventDTO.class);
             serverUtils.restoreEvent(event);
             return event;
         } catch (JsonParseException | JsonMappingException e) {
-            System.err.println("Error while parsing JSON: " + e.getMessage());
-            System.err.println("Please ensure that the JSON content is correctly formatted.");
-            e.printStackTrace();
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error",
+                    "Error while parsing JSON.",
+                    "Please ensure the JSON content is properly formatted.");
+            alert.showAndWait();
         } catch (IOException e) {
-            System.err.println("File not found");
-            e.printStackTrace();
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error",
+                    "File not found",
+                    "Check the file name and try again.");
+            alert.showAndWait();
         }
         return null;
     }

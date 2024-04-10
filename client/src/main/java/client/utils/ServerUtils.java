@@ -515,7 +515,7 @@ public class ServerUtils {
      * @param body EventResponseBody
      * @return True iff successfully created, false otherwise
      */
-    public boolean restoreEvent(List<JSONDumpEventDTO> body) {
+    public boolean restoreEvent(JSONDumpEventDTO body) {
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl).path("api/v1/admin/jsondump")
                 .request(APPLICATION_JSON)
