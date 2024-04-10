@@ -71,6 +71,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
     private View currentView;
 
+    private boolean eventWasDeleted = false;
+
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
      * @param mainCtrl scene of the mainCtrl class
@@ -88,6 +90,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void initialize(EventDTO event) {
         this.event = event;
+        this.eventWasDeleted = false;
 
         participants = serverUtils.getParticipants(event.code());
         expenses = serverUtils.getExpenses(event.code());
@@ -150,7 +153,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void refresh() {
         EventDTO syncedEvent = serverUtils.getEvent(event.code());
-        if (syncedEvent == null) {
+        if (syncedEvent == null && eventWasDeleted) {
+            this.eventWasDeleted = true;
             Alert alert = controllerUtils.createAlert(
                     Alert.AlertType.WARNING,
                     "This event was deleted!",

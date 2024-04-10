@@ -14,6 +14,7 @@ import server.entities.participant.Participant;
 import server.service.EventService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -159,7 +160,8 @@ public class EventController {
      */
     public void deleteDependants(Event event){
         if(event.getParticipants()==null) return;
-        for (Participant participant : event.getParticipants()){
+        List<Participant> toBeDeleted = new ArrayList<>(event.getParticipants());
+        for (Participant participant : toBeDeleted){
             participantController.deleteOne(
                     participant.getName(),
                     event.getCode()

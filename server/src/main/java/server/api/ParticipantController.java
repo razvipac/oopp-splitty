@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.database.DebtRepository;
 import server.entities.DTOMapper;
+import server.entities.debt.DebtDTOMapper;
 import server.entities.expense.Expense;
 import server.entities.participant.Participant;
 import server.service.ParticipantService;
@@ -26,6 +27,7 @@ public class ParticipantController {
     private final ExpenseController expenseController;
     private final DebtController debtController;
     private final DebtRepository debtRepository;
+    private final DebtDTOMapper debtDTOMapper;
 
     /**
      * Constructor for ParticipantController
@@ -43,13 +45,15 @@ public class ParticipantController {
                                  @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
                                  @Autowired ExpenseController expenseController,
                                  @Autowired DebtController debtController,
-                                 @Autowired DebtRepository debtRepository) {
+                                 @Autowired DebtRepository debtRepository,
+                                 @Autowired DebtDTOMapper debtDTOMapper) {
         this.participantService = participantService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.participantDTOMapper = participantDTOMapper;
         this.expenseController = expenseController;
         this.debtController = debtController;
         this.debtRepository = debtRepository;
+        this.debtDTOMapper = debtDTOMapper;
     }
 
     /**
