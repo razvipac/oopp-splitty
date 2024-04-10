@@ -125,28 +125,6 @@ public class DebtService {
         return calculateDebts(expenseList, participantList);
     }
 
-//    private List<Debt> calculateDebts(List<Participant> participants, List<Expense> expenses){
-//        Map<Participant, Double> balances = new HashMap<>();
-//        participants.forEach(p -> balances.put(p, 0.0));
-//
-//        for (Expense expense : expenses){
-//            Participant creditor = expense.getPaidBy();
-//            Double amount = expense.getPrice();
-//            balances.put(creditor, balances.get(creditor) - amount);
-//
-//            List<Participant> debtors = new ArrayList<>(expense.getDebtors());
-//            List<Double> splits = splitWithoutLoss(amount, debtors.size());
-//            Iterator<Double> splitsIterator = splits.iterator();
-//
-//            for (Participant debtor : debtors){
-//                balances.put(debtor, balances.get(debtor) + splitsIterator.next());
-//            }
-//        }
-//
-//
-//
-//    }
-
     private List<Debt> calculateDebts(List<Expense> expenses, List<Participant> participants){
         Map<Expense, List<Participant>> inputMap = new HashMap<>();
         expenses.forEach(e -> inputMap.put(e, new ArrayList<>(participants)));
@@ -162,7 +140,8 @@ public class DebtService {
 
             // Calculate the share per participant (it is split equally among every participant)
             BigDecimal total = BigDecimal.valueOf(expense.getPrice());
-            BigDecimal share = total.divide(BigDecimal.valueOf(participantList.size()), 2, RoundingMode.HALF_UP);
+            BigDecimal share = total.divide(BigDecimal.valueOf(participantList.size()),
+                    2, RoundingMode.HALF_UP);
 
             BigDecimal remaining = total.subtract(share.multiply(BigDecimal.valueOf(participantList.size())));
 
@@ -172,6 +151,7 @@ public class DebtService {
                     BigDecimal amount = debts.getOrDefault(debtor, new HashMap<>()).getOrDefault(
                             paidBy, BigDecimal.ZERO);
                     amount = amount.add(share);
+                    // Split without loss
                     if (remaining.compareTo(BigDecimal.ZERO) > 0) {
                         amount = amount.add(BigDecimal.valueOf(0.01));
                         remaining = remaining.subtract(BigDecimal.valueOf(0.01));
@@ -196,16 +176,4 @@ public class DebtService {
 
         return newDebts;
     }
-
-
-//    public static List<Double> splitWithoutLoss(Double numerator, Integer denominator){
-//        List<Double> splits = new ArrayList<>();
-//        while (denominator > 0){
-//            Double split = (double) Math.round((numerator / denominator) * 100) / 100;
-//            numerator -= split;
-//            denominator --;
-//            splits.add(split);
-//        }
-//        return splits;
-//    }
 }
