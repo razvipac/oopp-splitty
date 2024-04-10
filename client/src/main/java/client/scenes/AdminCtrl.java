@@ -257,7 +257,7 @@ public class AdminCtrl implements VoidSceneController {
             objectMapper.registerModule(new JavaTimeModule());
             File jsonFile = new File(jsonPath);
             JSONDumpEventDTO event = objectMapper.readValue(jsonFile, JSONDumpEventDTO.class);
-            System.out.println(serverUtils.restoreEvent(event));
+            serverUtils.restoreEvent(event);
             return event;
         } catch (JsonParseException | JsonMappingException e) {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
