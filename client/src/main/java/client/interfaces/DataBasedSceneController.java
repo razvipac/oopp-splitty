@@ -1,11 +1,11 @@
 package client.interfaces;
 
-public interface DataBasedSceneController<T> {
+import javafx.fxml.Initializable;
 
+public interface DataBasedSceneController<T> extends Initializable {
     /**
-     * Populates the scene with data of given type
-     * @param data data to populate the scene with
+     * Refreshes the scene with fresh data
+     * @param data additional data to refresh the scene
      */
-    void initialize(T data);
-
+    void refresh(T data);
 }

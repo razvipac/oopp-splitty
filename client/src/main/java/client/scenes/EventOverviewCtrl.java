@@ -21,9 +21,11 @@ import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
@@ -85,26 +87,12 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Generate an ui from the given object instance
-     * @param event Event instance to populate the UI with
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
      */
-    public void initialize(EventDTO event) {
-        this.event = event;
-        this.eventWasDeleted = false;
-
-        participants = serverUtils.getParticipants(event.code());
-        expenses = serverUtils.getExpenses(event.code());
-
-        // If participants isn't empty, select the first participant by default
-        if(!(participants.isEmpty())) {
-            selectedParticipant = participants.getFirst();
-        }
-
-        KeyCombination altE = new KeyCodeCombination(KeyCode.E, KeyCombination.ALT_DOWN);
-
+    public void initialize(URL location, ResourceBundle resources) {
         currentView = View.ALL;
-
-        refresh();
 
         // Show/Hide expense items based on currentView
         expenseFilterToggleGroup.selectedToggleProperty().addListener(
@@ -135,23 +123,35 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
                 revertEventTitle();
             }
         });
+    }
+
+    /**
+     * Refreshes the page to reflect the current state of the server
+     * @param event event to which the overview corresponds
+     */
+    public void refresh(EventDTO event) {
+        this.event = event;
+        this.eventWasDeleted = false;
 
         serverUtils.registerForWebSocketUpdatesForTheWholeEvent(
-                event.code(), q-> Platform.runLater(this::refresh));
+                event.code(), q-> Platform.runLater(() -> refresh(this.event)));
 
-        // The last activity should be updated only the first time the event is ever opened
-        // From then on, whenever somebody visits it, it does not count as the last activity has been changed
+        participants = serverUtils.getParticipants(event.code());
+        expenses = serverUtils.getExpenses(event.code());
+
+        // If participants isn't empty, select the first participant by default
+        if(!(participants.isEmpty())) {
+            selectedParticipant = participants.getFirst();
+        }
+
+        KeyCombination altE = new KeyCodeCombination(KeyCode.E, KeyCombination.ALT_DOWN);
+
         if(firstTimeOpened)
         {
             updateAndPrintLastActivity();
             firstTimeOpened = false;
         }
-    }
 
-    /**
-     * Refreshes the page to reflect the current state of the server
-     */
-    public void refresh() {
         EventDTO syncedEvent = serverUtils.getEvent(event.code());
         if (syncedEvent == null && eventWasDeleted) {
             this.eventWasDeleted = true;

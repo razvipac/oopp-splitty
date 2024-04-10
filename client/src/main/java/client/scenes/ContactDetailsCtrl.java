@@ -12,7 +12,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
@@ -58,12 +60,11 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Initialize the scene
-     * @param event data to populate the scene with
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
      */
-    public void initialize(EventDTO event) {
-        this.event = event;
-
+    public void initialize(URL location, ResourceBundle resources) {
         controllerUtils.bindComboBoxForKeyboardInput(comboBoxName);
 
         // IBAN: sets character limit to 18
@@ -90,8 +91,30 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
         // listen to toggleView changes
         toggleViewListen();
+    }
 
-        refresh();
+    /**
+     * Refreshes the page, changes everything to current values.
+     * @param event event to which the scene corresponds
+     */
+    public void refresh(EventDTO event) {
+        this.event = event;
+
+        errorText.setText("");
+        boxName.clear();
+        boxEmail.clear();
+        boxIban.clear();
+        boxBic.clear();
+        toggleView.selectToggle(addButton);
+        setView(View.ADD);  // set to ADD by default
+
+        List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
+        comboBoxName.getItems().setAll(
+                participants
+                        .stream()
+                        .map(ParticipantDTO::name)
+                        .toList()
+        );
     }
 
     /**
@@ -142,27 +165,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 }
             }
         }));
-    }
-
-    /**
-     * Refreshes the page, changes everything to default values.
-     */
-    public void refresh() {
-        errorText.setText("");
-        boxName.clear();
-        boxEmail.clear();
-        boxIban.clear();
-        boxBic.clear();
-        toggleView.selectToggle(addButton);
-        setView(View.ADD);  // set to ADD by default
-
-        List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
-        comboBoxName.getItems().setAll(
-                participants
-                        .stream()
-                        .map(ParticipantDTO::name)
-                        .toList()
-        );
     }
 
     /**

@@ -13,6 +13,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.*;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     private final MainCtrl mainCtrl; // reference to MainCtrl class
     private final ServerUtils serverUtils;
@@ -48,14 +51,23 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Populate the scene from the given event DTO
-     * @param event Event instance to populate the UI with
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
      */
-    public void initialize(EventDTO event) {
+    public void initialize(URL location, ResourceBundle resources) {
+        setLanguageForAllInvitationsCtrl();
+    }
+
+
+    /**
+     * Refreshes the scene with fresh data
+     * @param event event to which the scene corresponds
+     */
+    public void refresh(EventDTO event){
         this.event = event;
         this.eventCodeLabel.setText(event.code());
         this.eventTitleLabel.setText(event.name());
-        setLanguageForAllInvitationsCtrl();
     }
 
     @FXML

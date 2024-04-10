@@ -17,8 +17,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
@@ -49,25 +51,25 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         settledDebts = new ArrayList<>();
     }
 
-    /**
-     * Generate an ui from the given object instance
-     *
-     * @param event Event instance to populate the UI with
+   /**
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
      */
-    public void initialize(EventDTO event) {
-        this.event = event;
-
-        serverUtils.registerForLongPollingDebtUpdates(event.code(), debtDTOs -> {
-            Platform.runLater(this::refresh);
-        });
-
-        refresh();
+    public void initialize(URL location, ResourceBundle resources) {
     }
 
     /**
-     * Refreshes the scene with data from the server
+     * Refreshes the scene with fresh data from the server
+     * @param event event to which the scene corresponds
      */
-    public void refresh(){
+    public void refresh(EventDTO event){
+        this.event = event;
+
+        serverUtils.registerForLongPollingDebtUpdates(event.code(), debtDTOs -> {
+            Platform.runLater(() -> refresh(this.event));
+        });
+
         List<DebtDTO> debtDTOs = serverUtils.getAllDebts(event.code());
         debtList.clear();
         debtList.addAll(debtDTOs);

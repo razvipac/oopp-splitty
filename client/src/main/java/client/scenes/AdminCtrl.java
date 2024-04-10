@@ -20,8 +20,10 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class AdminCtrl implements VoidSceneController {
 
@@ -49,11 +51,12 @@ public class AdminCtrl implements VoidSceneController {
     }
 
     /**
-     * Initializes the Scene
+     * Initializes the scene
+     * @param location passed URL location
+     * @param resources passed ResourceBundle
      */
-    public void initialize() {
+    public void initialize(URL location, ResourceBundle resources) {
         orderByComboBox.getSelectionModel().selectFirst();    // default selection
-        refresh();
     }
 
     /**
