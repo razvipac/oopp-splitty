@@ -68,6 +68,7 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         this.event = event;
         this.eventCodeLabel.setText(event.code());
         this.eventTitleLabel.setText(event.name());
+        setLanguageForAllInvitationsCtrl();
     }
 
     @FXML
