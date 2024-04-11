@@ -1,5 +1,6 @@
 package client.utils;
 
+import client.LanguageManager;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -48,9 +49,9 @@ public class ControllerUtils {
      * @param content content of the alert
      * @return boolean value true iff reconnect requested false otherwise
      */
-    public boolean createServerUnavailableAlert(String title, String content) {
-        ButtonType reconnect = new ButtonType("Reconnect", ButtonBar.ButtonData.OK_DONE);
-        ButtonType exit = new ButtonType("Exit", ButtonBar.ButtonData.CANCEL_CLOSE);
+    public boolean createServerUnavailableAlert(String title, String content, LanguageManager lm) {
+        ButtonType reconnect = new ButtonType(lm.get("Reconnect"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType exit = new ButtonType(lm.get("Exit"), ButtonBar.ButtonData.CANCEL_CLOSE);
         Alert alert = new Alert(
                 Alert.AlertType.WARNING,
                 content,
