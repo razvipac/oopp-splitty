@@ -159,10 +159,12 @@ public class MainCtrl {
                 startScreenCtrl.refresh();
                 break;
             } catch (ProcessingException e) {
+                LanguageManager lm = getLanguageManager();
                 boolean reconnect = controllerUtils.createServerUnavailableAlert(
-                        "Server unavailable!",
-                        "The server is unavailable!\n" +
-                                "Check if the server address is correct and try reconnecting."
+                        lm.get("Server unavailable!"),
+                        lm.get("The server is unavailable!\n") +
+                                lm.get("Check if the server address is correct and try reconnecting."),
+                        lm
                 );
                 if (!reconnect) {
                     Platform.exit();
