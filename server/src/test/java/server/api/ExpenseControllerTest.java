@@ -205,7 +205,8 @@ public class ExpenseControllerTest {
                                 "    }"))
                 .andExpect(status().isOk());
 
-        when(expenseService.updateOne(anyString(), anyLong(), any(ExpenseDTO.class))).thenThrow(NotFoundInDatabaseException.class);
+        when(expenseService.updateOne(anyString(), anyLong(), any(ExpenseDTO.class)))
+                .thenThrow(NotFoundInDatabaseException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/{eventCode}/expense", eventCode)
                         .param("id", String.valueOf(id))

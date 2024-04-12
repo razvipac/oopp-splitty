@@ -30,15 +30,15 @@ public class ParticipantController {
     private final DebtDTOMapper debtDTOMapper;
 
     /**
-     * Constructor for ParticipantController
+     * Constructs a new instance of ParticipantController.
      *
-     * @param participantService    The ParticipantService instance
-     *                              to handle participant-related operations
+     * @param participantService    The ParticipantService instance to handle participant-related operations
      * @param simpMessagingTemplate The SimpMessagingTemplate instance to send WebSocket messages
      * @param participantDTOMapper  The ParticipantDTOMapper instance to be injected
      * @param expenseController     The ExpenseController instance to be injected
      * @param debtController        The DebtController instance to be injected
      * @param debtRepository        The DebtRepository instance to be injected
+     * @param debtDTOMapper         The DebtDTOMapper instance to be injected
      */
     public ParticipantController(@Autowired ParticipantService participantService,
                                  @Autowired SimpMessagingTemplate simpMessagingTemplate,

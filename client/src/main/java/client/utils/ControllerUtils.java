@@ -44,10 +44,14 @@ public class ControllerUtils {
     }
 
     /**
-     * Creates a Alert for notifying of the unavailability of the server
-     * @param title title of the alert
-     * @param content content of the alert
-     * @return boolean value true iff reconnect requested false otherwise
+     * Creates an alert for notifying the user about the unavailability of the server.
+     * This method displays a warning dialog with customizable title and content,
+     * providing options to reconnect or exit the application.
+     *
+     * @param title the title of the alert
+     * @param content the content message of the alert
+     * @param lm the language manager for retrieving localized strings
+     * @return true if the user requests a reconnect, false otherwise
      */
     public boolean createServerUnavailableAlert(String title, String content, LanguageManager lm) {
         ButtonType reconnect = new ButtonType(lm.get("Reconnect"), ButtonBar.ButtonData.OK_DONE);

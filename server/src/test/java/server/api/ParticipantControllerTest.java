@@ -21,10 +21,8 @@ import server.service.exceptions.NotFoundInDatabaseException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -58,10 +56,11 @@ public class ParticipantControllerTest {
     }
 
     @Test
-    public void testGetAllParticipants_Success() throws Exception {
+    public void testGetAllParticipantsSuccess() throws Exception {
         String eventCode = "1234";
         Event event = new Event("Event Name", eventCode, LocalDateTime.now());
-        Participant participant = new Participant("Participant Name", event, "participant@example.com", "1234", "5678");
+        Participant participant = new Participant("Participant Name", event,
+                "participant@example.com", "1234", "5678");
         List<Participant> participants = Collections.singletonList(participant);
         when(participantService.getAll(eventCode)).thenReturn(participants);
 
@@ -75,10 +74,11 @@ public class ParticipantControllerTest {
     }
 
     @Test
-    public void testCreateParticipant_Success() throws Exception {
+    public void testCreateParticipantSuccess() throws Exception {
         // Prepare test data
         String eventCode = "1234";
-        ParticipantDTO participantDTO = new ParticipantDTO("Participant Name", "participant@example.com", "1234", "5678");
+        ParticipantDTO participantDTO = new ParticipantDTO("Participant Name",
+                "participant@example.com", "1234", "5678");
 
         // Mock service method
         when(participantService.createOne(anyString(), any(ParticipantDTO.class))).thenReturn(new Participant());
@@ -99,12 +99,13 @@ public class ParticipantControllerTest {
     }
 
     @Test
-    public void testDeleteParticipant_Success() throws Exception {
+    public void testDeleteParticipantSuccess() throws Exception {
         String eventCode = "1234";
         String participantName = "Participant Name";
 
         // Mock service method
-        when(participantService.deleteOne(eventCode, participantName)).thenThrow(new NotFoundInDatabaseException("Participant not found"));
+        when(participantService.deleteOne(eventCode, participantName))
+                .thenThrow(new NotFoundInDatabaseException("Participant not found"));
 
         // Perform DELETE request and validate response
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/{eventCode}/participant", eventCode)
@@ -116,13 +117,15 @@ public class ParticipantControllerTest {
     }
 
     @Test
-    public void testUpdateParticipant_Success() throws Exception {
+    public void testUpdateParticipantSuccess() throws Exception {
         String eventCode = "1234";
         String participantName = "Participant Name";
-        ParticipantDTO participantDTO = new ParticipantDTO(participantName, "updated@example.com", "NL42 4242 4242 4242 42", "ABCEDFGH");
+        ParticipantDTO participantDTO = new ParticipantDTO(participantName, "updated@example.com",
+                "NL42 4242 4242 4242 42", "ABCEDFGH");
 
         // Mock service method
-        when(participantService.updateOne(anyString(), anyString(), any(ParticipantDTO.class))).thenReturn(new Participant());
+        when(participantService.updateOne(anyString(), anyString(), any(ParticipantDTO.class)))
+                .thenReturn(new Participant());
 
         // Perform PUT request and validate response
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/{eventCode}/participant", eventCode)
