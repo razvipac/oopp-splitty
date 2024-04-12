@@ -48,6 +48,19 @@ public class Debt {
     }
 
     /**
+     * Instantiate a new Debt using the id as a parameter
+     * @param debtor The current debtor of the debt
+     * @param creditor The current creditor of the debt
+     * @param amount The amount to be paid
+     * @param received Whether the debt has been received (true) or not (false)
+     */
+    public Debt(Participant debtor, Participant creditor, double amount, boolean received) {
+        this.id = new DebtId(debtor, creditor);
+        this.amount = amount;
+        this.received = received;
+    }
+
+    /**
      *
      * @return Returns the current id of a Debt object
      */
