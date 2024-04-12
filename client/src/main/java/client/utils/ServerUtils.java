@@ -521,7 +521,7 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(body, APPLICATION_JSON));
-        return response.getStatus() == Response.Status.CREATED.getStatusCode();
+        return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
     /**
