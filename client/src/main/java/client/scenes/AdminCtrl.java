@@ -74,7 +74,8 @@ public class AdminCtrl implements VoidSceneController {
 
     /**
      * Initializes the scene
-     * @param location passed URL location
+     *
+     * @param location  passed URL location
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,19 +99,14 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     public void orderEvents() {
         switch (orderByComboBox.getValue()) {
-            case "Title" ->
-                    events.sort(Comparator.comparing
-                            (EventDTO::name, String.CASE_INSENSITIVE_ORDER));
-            case "Creation Date (Newest)" ->
-                    events.sort(Comparator.comparing(EventDTO::creationDate,
-                            Comparator.reverseOrder()));
-            case "Creation Date (Oldest)" ->
-                    events.sort(Comparator.comparing(EventDTO::creationDate));
-            case "Last Activity (Most recent)" ->
-                    events.sort(Comparator.comparing(EventDTO::lastActivity,
-                            Comparator.reverseOrder()));
-            case "Last Activity (Least recent)" ->
-                    events.sort(Comparator.comparing(EventDTO::lastActivity));
+            case "Title" -> events.sort(Comparator.comparing
+                    (EventDTO::name, String.CASE_INSENSITIVE_ORDER));
+            case "Creation Date (Newest)" -> events.sort(Comparator.comparing(EventDTO::creationDate,
+                    Comparator.reverseOrder()));
+            case "Creation Date (Oldest)" -> events.sort(Comparator.comparing(EventDTO::creationDate));
+            case "Last Activity (Most recent)" -> events.sort(Comparator.comparing(EventDTO::lastActivity,
+                    Comparator.reverseOrder()));
+            case "Last Activity (Least recent)" -> events.sort(Comparator.comparing(EventDTO::lastActivity));
         }
         addEventsToEventGrid();
     }
@@ -128,8 +124,8 @@ public class AdminCtrl implements VoidSceneController {
             // Download Button
             List<JSONDumpEventDTO> allDumps = serverUtils.getJSON();
             JSONDumpEventDTO thisDump = null;
-            for(JSONDumpEventDTO body : allDumps){
-                if(body.eventDTO().code().equals(e.code()))
+            for (JSONDumpEventDTO body : allDumps) {
+                if (body.eventDTO().code().equals(e.code()))
                     thisDump = body;
             }
             Button downloadButton = createDownloadEventButton(thisDump);
@@ -142,6 +138,7 @@ public class AdminCtrl implements VoidSceneController {
 
     /**
      * Creates button with the event's name, that takes the user to the event's page.
+     *
      * @param event The event to link to.
      * @return Button Object.
      */
@@ -154,6 +151,7 @@ public class AdminCtrl implements VoidSceneController {
 
     /**
      * Creates button that deletes the event.
+     *
      * @param event Event to link to.
      * @return Button Object.
      */
@@ -180,6 +178,7 @@ public class AdminCtrl implements VoidSceneController {
 
     /**
      * Creates the download button for the given event.
+     *
      * @param event puts the JSON of an event in a file that is downloaded
      * @return the button
      */
@@ -187,7 +186,7 @@ public class AdminCtrl implements VoidSceneController {
         LanguageManager lm = mainCtrl.getLanguageManager();
         Button get = new Button(lm.get("Download"));
         // If the given event is null for any reason, the button is disabled.
-        if(event == null) {
+        if (event == null) {
             get.setDisable(true);
             return get;
         }
@@ -248,47 +247,53 @@ public class AdminCtrl implements VoidSceneController {
 
         // Check if file is selected
         if (selectedFile != null) {
-            try {
-                // Import event from JSON
-                JSONDumpEventDTO result = importEventFromJSON(selectedFile.getAbsolutePath());
-                // Throw an exception if result is null
-                if (result == null) throw new IllegalArgumentException();
-                // Else show success message
-                refresh();  // refresh events
-                Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                        lm.get("Success"),
-                        lm.get("Event has been imported and restored successfully"),
-                        "");
-                alert.showAndWait();
-            } catch (Exception e) {
-                // Display an error message
-                refresh();  // refresh events
-                Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                        lm.get("Error"),
-                        lm.get("Failed to import event"),
-                        lm.get("An error occurred while importing the event from JSON.\n\n") +
-                                lm.get("Exception details: \n") + e.getMessage());
-                alert.showAndWait();
-            }
+            importEventFromJSON(selectedFile.getAbsolutePath());
+            refresh();
         }
-
     }
 
     /**
-     * Copies the contents of the file, and transforms them into entities
+     * Copies the contents of the file, and transforms them into entities.
+     * If the operation fails, this method throws the error corresponding to the exception.
      *
      * @param jsonPath the path to the file
-     * @return returns the response entity with which the event is restored
      */
-    public JSONDumpEventDTO importEventFromJSON(String jsonPath) {
+    public void importEventFromJSON(String jsonPath) {
         LanguageManager lm = mainCtrl.getLanguageManager();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             File jsonFile = new File(jsonPath);
             JSONDumpEventDTO event = objectMapper.readValue(jsonFile, JSONDumpEventDTO.class);
-            serverUtils.restoreEvent(event);
-            return event;
+
+            for (EventDTO ev : events) {
+                if (event.eventDTO().code().equals(ev.name())) {
+                    // Event with same code already exists
+                    throw new IllegalArgumentException(ev.name() + " (" + ev.code() + ")");
+                }
+            }
+
+            if (serverUtils.restoreEvent(event)) {
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                        lm.get("Success"),
+                        lm.get("Event has been imported and restored successfully"),
+                        "");
+                alert.showAndWait();
+            } else {
+                // Internal server error
+                Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                        lm.get("Error"),
+                        lm.get("Error while importing event."),
+                        lm.get("Event has not been imported due to an internal server error. " +
+                                "Please try again."));
+                alert.showAndWait();
+            }
+        } catch (IllegalArgumentException e) {
+            Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    lm.get("Error"),
+                    lm.get("Event with the same code already exists:"),
+                    e.getMessage());
+            alert.showAndWait();
         } catch (JsonParseException | JsonMappingException e) {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                     lm.get("Error"),
@@ -302,7 +307,6 @@ public class AdminCtrl implements VoidSceneController {
                     lm.get("Check the file name and try again."));
             alert.showAndWait();
         }
-        return null;
     }
 
     /**
@@ -313,7 +317,7 @@ public class AdminCtrl implements VoidSceneController {
         mainCtrl.showStartScreen();
     }
 
-    public void setLanguageForAllAdminCtrl(){
+    public void setLanguageForAllAdminCtrl() {
         LanguageManager lm = mainCtrl.getLanguageManager();
         adminPanel.setText(lm.get("Administrator Control Panel"));
         allEvents.setText(lm.get("All Events"));
