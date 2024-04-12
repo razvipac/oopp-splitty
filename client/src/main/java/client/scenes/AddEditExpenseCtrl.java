@@ -174,10 +174,10 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
             }
         }
 
-        // check if price is entered and a valid number (not negative and no decimals)
+        // check if price is entered and a valid number (not negative)
         if(!howMuchField.getText().isEmpty()) {
             try {
-                int price = Integer.parseInt(howMuchField.getText());
+                double price = Double.parseDouble(howMuchField.getText());
                 if (price < 0) {
                     errorText.setText("Price cannot be negative");
                     return false;
