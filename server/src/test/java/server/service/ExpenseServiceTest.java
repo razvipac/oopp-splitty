@@ -74,7 +74,7 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
         Expense expense = new Expense(price, item, participant, date);
@@ -98,7 +98,7 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
         Expense expense = new Expense(price, item, participant, date);
@@ -119,10 +119,9 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
-        ExpenseDTO body = new ExpenseDTO(100L, 123, "Test item","testParticipant", LocalDate.now());
+        ExpenseDTO body = new ExpenseDTO(100L, 123.0, "Test item","testParticipant", LocalDate.now());
         Expense expense = new Expense(body.price(), body.item(), participant, body.date());
         when(participantRepository.findParticipantByEventCodeAndName(anyString(),anyString()))
                 .thenReturn(Optional.of(participant));
@@ -144,7 +143,7 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
         Expense expense = new Expense(price, item, participant, date);
@@ -170,7 +169,7 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
         Expense expense = new Expense(price, item, participant, date);
@@ -192,10 +191,10 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
+        double price = 123.0;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
-        ExpenseDTO body = new ExpenseDTO(100L, 123, "Test item","testParticipant", LocalDate.now());
+        ExpenseDTO body = new ExpenseDTO(100L, 123.0, "Test item","testParticipant", LocalDate.now());
         Expense expense = new Expense(body.price(), body.item(), participant, body.date());
         when(participantRepository.findParticipantByEventCodeAndName(anyString(),anyString()))
                 .thenReturn(Optional.of(participant));
@@ -216,10 +215,9 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
-        ExpenseDTO body = new ExpenseDTO(100L, 123, "Test item","testParticipant", LocalDate.now());
+        ExpenseDTO body = new ExpenseDTO(100L, 123.0, "Test item","testParticipant", LocalDate.now());
         Expense expense = new Expense(body.price(), body.item(), participant, body.date());
         assertThrows(NotFoundInDatabaseException.class, () -> expenseService.updateOne(eventCode, 100L, body));
         verify(expenseRepository, never()).save(any());
@@ -233,7 +231,6 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
         when(participantRepository.findParticipantByEventCodeAndName(anyString(), anyString())).thenReturn(Optional.of(participant));
@@ -249,7 +246,6 @@ public class ExpenseServiceTest {
         Event event = new Event(newName, eventCode, LocalDateTime.now());
         String email = "123", iban = "134", bic = "123", item = "food";
         Participant participant = new Participant(participantName, event, email, iban, bic);
-        int price = 123;
         participant.setName(newName);
         LocalDate date = LocalDate.ofEpochDay(2024-01-01);
         when(participantRepository.findParticipantByEventCodeAndName(anyString(), anyString())).thenReturn(Optional.empty());
