@@ -191,7 +191,7 @@ public class AdminCtrl implements VoidSceneController {
                 else {
                     Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                             lm.get("Error"),
-                            lm.get("Deletion unsuccessful."),
+                            lm.get("Deletion unsuccessful"),
                             lm.get("Event has not been deleted due to an error. Please try again later."));
                     alert.showAndWait();
                 }
@@ -237,7 +237,7 @@ public class AdminCtrl implements VoidSceneController {
                     refresh();  // refresh events
                     Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                             lm.get("Success"),
-                            lm.get("Event has been downloaded successfully"),
+                            lm.get("Event downloaded successfully"),
                             selectedFile.toString());
                     alert.showAndWait();
                 } catch (IOException ex) {
@@ -300,8 +300,8 @@ public class AdminCtrl implements VoidSceneController {
 
             if (serverUtils.restoreEvent(event)) {
                 Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                        "Success",
-                        "Event has been imported and restored successfully",
+                        lm.get("Success"),
+                        lm.get("Event has been imported and restored successfully"),
                         "");
                 alert.showAndWait();
             }
@@ -309,7 +309,7 @@ public class AdminCtrl implements VoidSceneController {
                 // Internal server error
                 Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                         lm.get("Error"),
-                        lm.get("Error while importing event."),
+                        lm.get("Error while importing event"),
                         lm.get("Event has not been imported due to an error. The event's code in the " +
                                 "JSON file may be invalid."));
                 alert.showAndWait();
@@ -323,7 +323,7 @@ public class AdminCtrl implements VoidSceneController {
         } catch (JsonParseException | JsonMappingException e) {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                     lm.get("Error"),
-                    lm.get("Error while parsing JSON."),
+                    lm.get("Error while parsing JSON"),
                     lm.get("Please ensure the JSON content is properly formatted."));
             alert.showAndWait();
         } catch (IOException e) {
