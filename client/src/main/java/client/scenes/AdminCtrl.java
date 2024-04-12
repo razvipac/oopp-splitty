@@ -317,6 +317,9 @@ public class AdminCtrl implements VoidSceneController {
         mainCtrl.showStartScreen();
     }
 
+    /**
+     * Sets various Strings to the currently selected language
+     */
     public void setLanguageForAllAdminCtrl() {
         LanguageManager lm = mainCtrl.getLanguageManager();
         adminPanel.setText(lm.get("Administrator Control Panel"));
