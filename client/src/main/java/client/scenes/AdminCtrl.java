@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.VoidSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
@@ -14,7 +15,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -32,7 +35,26 @@ public class AdminCtrl implements VoidSceneController {
     @Inject
     private ControllerUtils controllerUtils;
     private List<EventDTO> events;
-
+    @FXML
+    private Text adminPanel;
+    @FXML
+    private Text allEvents;
+    @FXML
+    private Button backButton;
+    @FXML
+    private Label orderBy;
+    @FXML
+    private Button importEventButton;
+    @FXML
+    private String lastActivity;
+    @FXML
+    private String recentActivity;
+    @FXML
+    private String oldDate;
+    @FXML
+    private String newDate;
+    @FXML
+    private String title;
     @FXML
     private GridPane eventGrid;
     @FXML
@@ -66,6 +88,7 @@ public class AdminCtrl implements VoidSceneController {
     public void refresh() {
         events = serverUtils.getAllEvents();
         orderEvents();
+        setLanguageForAllAdminCtrl();
     }
 
     /**
@@ -135,18 +158,19 @@ public class AdminCtrl implements VoidSceneController {
      * @return Button Object.
      */
     private Button createDeleteEventButton(EventDTO event) {
-        Button delete = new Button("Delete");
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        Button delete = new Button(lm.get("Delete"));
         delete.setOnAction(e -> {
             boolean confirmed = controllerUtils.createConfirmationAlert(
-                    "Confirm Deletion",
-                    "Are you sure you want to delete event '" + event.name() + "'?\n" +
-                            "This action cannot be undone.");
+                    lm.get("Confirm Deletion"),
+                    lm.get("Are you sure you want to delete event '") + event.name() + "'?\n" +
+                            lm.get("This action cannot be undone."));
             if (confirmed) {
                 serverUtils.deleteEvent(event.code());
                 Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                        "Success",
-                        "Deleted successfully",
-                        "Event '" + event.name() + "' has been deleted.");
+                        lm.get("Success"),
+                        lm.get("Deleted successfully"),
+                        lm.get("Event '") + event.name() + lm.get("' has been deleted."));
                 alert.showAndWait();
                 refresh();
             }
@@ -160,7 +184,8 @@ public class AdminCtrl implements VoidSceneController {
      * @return the button
      */
     public Button createDownloadEventButton(JSONDumpEventDTO event) {
-        Button get = new Button("Download");
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        Button get = new Button(lm.get("Download"));
         // If the given event is null for any reason, the button is disabled.
         if(event == null) {
             get.setDisable(true);
@@ -174,7 +199,7 @@ public class AdminCtrl implements VoidSceneController {
 
             // Create a file chooser
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Choose Download Location");
+            fileChooser.setTitle(lm.get("Choose Download Location"));
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
             fileChooser.getExtensionFilters()
                     .add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
@@ -187,18 +212,18 @@ public class AdminCtrl implements VoidSceneController {
                     objectMapper.writeValue(selectedFile, event);
                     refresh();  // refresh events
                     Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                            "Success",
-                            "Event has been downloaded successfully",
+                            lm.get("Success"),
+                            lm.get("Event has been downloaded successfully"),
                             selectedFile.toString());
                     alert.showAndWait();
                 } catch (IOException ex) {
                     refresh();  // refresh events
                     Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                            "Error",
-                            "Downloading event has failed",
-                            "Please check that the program has permissions to download the event" +
-                                    "to the specified location.\n\n" +
-                                    "Exception details:\n" + ex.getMessage());
+                            lm.get("Error"),
+                            lm.get("Downloading event has failed"),
+                            lm.get("Please check that the program has permissions to download the event") +
+                                    lm.get("to the specified location.\n\n") +
+                                    lm.get("Exception details:\n") + ex.getMessage());
                     alert.showAndWait();
                 }
             }
@@ -212,7 +237,8 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     public void importEvent() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose JSON File");
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        fileChooser.setTitle(lm.get("Choose JSON File"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
 
@@ -230,18 +256,18 @@ public class AdminCtrl implements VoidSceneController {
                 // Else show success message
                 refresh();  // refresh events
                 Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                        "Success",
-                        "Event has been imported and restored successfully",
+                        lm.get("Success"),
+                        lm.get("Event has been imported and restored successfully"),
                         "");
                 alert.showAndWait();
             } catch (Exception e) {
                 // Display an error message
                 refresh();  // refresh events
                 Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                        "Error",
-                        "Failed to import event",
-                        "An error occurred while importing the event from JSON.\n\n" +
-                                "Exception details: \n" + e.getMessage());
+                        lm.get("Error"),
+                        lm.get("Failed to import event"),
+                        lm.get("An error occurred while importing the event from JSON.\n\n") +
+                                lm.get("Exception details: \n") + e.getMessage());
                 alert.showAndWait();
             }
         }
@@ -255,6 +281,7 @@ public class AdminCtrl implements VoidSceneController {
      * @return returns the response entity with which the event is restored
      */
     public JSONDumpEventDTO importEventFromJSON(String jsonPath) {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
@@ -264,15 +291,15 @@ public class AdminCtrl implements VoidSceneController {
             return event;
         } catch (JsonParseException | JsonMappingException e) {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error",
-                    "Error while parsing JSON.",
-                    "Please ensure the JSON content is properly formatted.");
+                    lm.get("Error"),
+                    lm.get("Error while parsing JSON."),
+                    lm.get("Please ensure the JSON content is properly formatted."));
             alert.showAndWait();
         } catch (IOException e) {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error",
-                    "File not found",
-                    "Check the file name and try again.");
+                    lm.get("Error"),
+                    lm.get("File not found"),
+                    lm.get("Check the file name and try again."));
             alert.showAndWait();
         }
         return null;
@@ -284,5 +311,19 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     private void goBack() {
         mainCtrl.showStartScreen();
+    }
+
+    public void setLanguageForAllAdminCtrl(){
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        adminPanel.setText(lm.get("Administrator Control Panel"));
+        allEvents.setText(lm.get("All Events"));
+        backButton.setText(lm.get("Back"));
+        orderBy.setText(lm.get("Order by:"));
+        importEventButton.setText(lm.get("Import Event"));
+        lastActivity = lm.get("Last Activity (Least recent)");
+        recentActivity = lm.get("Last Activity (Most recent)");
+        oldDate = lm.get("Creation Date (Oldest)");
+        newDate = lm.get("Creation Date (Newest)");
+        title = lm.get("Title");
     }
 }

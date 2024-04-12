@@ -105,6 +105,8 @@ public class StartScreenCtrl implements VoidSceneController{
 
         recentlyJoinedEventCodes = controllerUtils.readObject(STORAGE_PATH);
 
+        setLanguageForAll();
+
 //        KeyCombination altC = new KeyCodeCombination(KeyCode.C, KeyCombination.ALT_DOWN);
 //        scene.getAccelerators().put(altC, () -> {
 //            createEventTextField.requestFocus();
@@ -115,7 +117,6 @@ public class StartScreenCtrl implements VoidSceneController{
 //            joinEventTextField.requestFocus();
 //        });
 
-        setLanguageForAll();
     }
 
     /**
@@ -128,6 +129,7 @@ public class StartScreenCtrl implements VoidSceneController{
         events = server.getAllEvents();
         loadLanguageButton();
         updateRecentEvents();
+        setLanguageForAll();
     }
 
     private void loadLanguageButton() {
@@ -205,6 +207,7 @@ public class StartScreenCtrl implements VoidSceneController{
      * text or prompt text accordingly.
      */
     public void setLanguageForAll(){
+        System.out.println("Setting language for start screen");
         LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
             return;
