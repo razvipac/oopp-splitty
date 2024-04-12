@@ -181,7 +181,8 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event to display.
      */
     public void showEventOverview(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Event " + eventDTO.name());
+        LanguageManager lm = languageManager;
+        primaryStage.setTitle(lm.get("Splitty: Event ") + eventDTO.name());
         primaryStage.setScene(eventOverview);
         eventOverviewCtrl.refresh(eventDTO);
     }
@@ -193,7 +194,8 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to display contact details.
      */
     public void showContactDetails(EventDTO eventDTO) {
-        primaryStage.setTitle("Splitty: Add/Edit Participant");
+        LanguageManager lm = languageManager;
+        primaryStage.setTitle(lm.get("Splitty: Add/Edit Participant"));
         primaryStage.setScene(contactDetails);
         contactDetailsCtrl.refresh(eventDTO);
     }
@@ -219,7 +221,8 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to manage open debts.
      */
     public void showOpenDebts(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Settle debts of event " + eventDTO.name());
+        LanguageManager lm = languageManager;
+        primaryStage.setTitle(lm.get("Splitty: Settle debts of event ") + eventDTO.name());
         primaryStage.setScene(openDebts);
         openDebtsCtrl.refresh(eventDTO);
     }
@@ -231,7 +234,8 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to add expenses.
      */
     public void showAddExpense(EventDTO eventDTO){
-        primaryStage.setTitle("Splitty: Add expense for event " + eventDTO.name());
+        LanguageManager lm = languageManager;
+        primaryStage.setTitle(lm.get("Splitty: Add expense for event ") + eventDTO.name());
         primaryStage.setScene(addEditExpense);
         addEditExpenseCtrl.refresh(eventDTO, null);
     }
@@ -244,7 +248,8 @@ public class MainCtrl {
      * @param expense The expense to edit.
      */
     public void showEditExpense(EventDTO eventDTO, ExpenseDTO expense){
-        primaryStage.setTitle("Splitty: Edit expense for event " + eventDTO.name());
+        LanguageManager lm = languageManager;
+        primaryStage.setTitle(lm.get("Splitty: Edit expense for event ") + eventDTO.name());
         primaryStage.setScene(addEditExpense);
         addEditExpenseCtrl.refresh(eventDTO, expense);
     }
@@ -255,7 +260,8 @@ public class MainCtrl {
      */
     public void showAdmin() {
         if(passwordIsCorrect) {
-            primaryStage.setTitle("Splitty: Administrator Control Panel");
+            LanguageManager lm = languageManager;
+            primaryStage.setTitle(lm.get("Splitty: Administrator Control Panel"));
             primaryStage.setScene(admin);
             adminCtrl.refresh();
         }
@@ -332,6 +338,6 @@ public class MainCtrl {
         invitationsCtrl.setLanguageForAllInvitationsCtrl();
         this.adminPasswordPopup = createAdminPasswordPopup();
         this.adminCtrl.setLanguageForAllAdminCtrl();
-
+        openDebtsCtrl.setLanguageForAllOpenDebtsCtrl();
     }
 }
