@@ -66,22 +66,6 @@ public class DebtDTOMapper implements DTOMapper<Debt, DebtDTO> {
         return new Debt(
                 participantService.getOne((String) args[0], debtDTO.debtorName()),
                 participantService.getOne((String) args[0], debtDTO.creditorName()),
-                debtDTO.amount()
-        );
-    }
-
-    /**
-     * Transforms DebtDTO to corresponding, new, Debt
-     * @param debtDTO DTO to transform
-     * @param args additional arguments, here eventCode of the event to which the debt belongs
-     * @return corresponding entity
-     * @throws NotFoundInDatabaseException if not present in the database
-     */
-    @Override
-    public Debt newEntityWithReceived(DebtDTO debtDTO, Object... args) throws NotFoundInDatabaseException {
-        return new Debt(
-                participantService.getOne((String) args[0], debtDTO.debtorName()),
-                participantService.getOne((String) args[0], debtDTO.creditorName()),
                 debtDTO.amount(),
                 debtDTO.received()
         );

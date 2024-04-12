@@ -207,7 +207,7 @@ public class JSONDumpService {
 
             for (DebtDTO debtDTO : jsonDumpEventDTO.debtDTOs()) {
                 debtRepository.save(
-                    debtDTOMapper.newEntityWithReceived(
+                    debtDTOMapper.newEntity(
                             debtDTO,
                             eventDTO.code()
                     )

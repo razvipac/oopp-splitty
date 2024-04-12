@@ -28,13 +28,4 @@ public interface DTOMapper<ENTITY, DTO> {
      * @throws NotFoundInDatabaseException if some dependant object is not present in the database
      */
     ENTITY newEntity(DTO dto, Object ...args) throws NotFoundInDatabaseException;
-
-    /**
-     * Transforms DebtDTO to corresponding, new, Debt
-     * @param dto DTO to transform
-     * @param args additional context arguments
-     * @return corresponding entity
-     * @throws NotFoundInDatabaseException if some dependant object is not present in the database
-     */
-    ENTITY newEntityWithReceived(DTO dto, Object ...args) throws NotFoundInDatabaseException;
 }
