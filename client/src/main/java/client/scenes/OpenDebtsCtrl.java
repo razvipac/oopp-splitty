@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
@@ -10,6 +11,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -26,7 +28,6 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
-
     private EventDTO event;
     private final List<DebtDTO> debtList;
     private final List<DebtDTO> unsettledDebts;
@@ -34,7 +35,12 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private VBox debtVBox;
-
+    @FXML
+    private Label openDebts;
+    @FXML
+    private Button backButton;
+    @FXML
+    private Button regenerateButton;
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
      * @param mainCtrl scene of the mainCtrl class
@@ -77,6 +83,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         if (debtDTOs.isEmpty()) serverUtils.regenerateDebts(event.code());
 
         refreshDebtList();
+        setLanguageForAllOpenDebtsCtrl();
     }
 
     /**
@@ -135,6 +142,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      * @param d Debt to be added
      */
     public void addDebtToLayout(DebtDTO d) {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         // debtLine: line containing debtString and 'Mark Received' button
         HBox debtLine = new HBox(5);
         // debtItem: the entire debt item, containing the debtLine and debtInfo
@@ -144,13 +152,13 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         String debtorName = d.debtorName();
         String creditorName = d.creditorName();
         double amount = d.amount();
-        String debtString = debtorName + " gives " + amount + " Euro to " + creditorName;
+        String debtString = debtorName + lm.get(" gives ") + amount + " Euro "+lm.get("to")+" " + creditorName;
         Text debtStringLabel = new Text(debtString);
 
         debtStringLabel.setStrikethrough(d.received());
 
         // 'Mark Received' button. Prints effect to console for testing
-        String buttonText = d.received() ? "Undo" : "Mark received";
+        String buttonText = d.received() ? lm.get("Undo") : lm.get("Mark received");
         Button receivedButton = new Button(buttonText);
         receivedButton.setOnAction(e -> {
             serverUtils.toggleDebtReceivedStatus(event.code(), d);
@@ -197,16 +205,17 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         ParticipantDTO creditor = serverUtils.getParticipant(event.code(), d.creditorName());
         double amount = d.amount();
 
+        LanguageManager lm = mainCtrl.getLanguageManager();
         String creditorBankInfo =
-                "Bank Information for creditor (" + creditor.name() + "):\n" +
-                        "Account Holder: " + creditor.name() + "\n" +
+                lm.get("Bank Information for creditor (") + creditor.name() + "):\n" +
+                        lm.get("Account Holder: ") + creditor.name() + "\n" +
                         "IBAN: " + creditor.iban() + "\n" +
                         "BIC: " + creditor.bic();
 
-        return "Debt Details:\n" +
-                "Debtor: " + debtor.name() + "\n" +
-                "Creditor: " + creditor.name() + "\n" +
-                "Amount: " + amount + " Euro\n\n" +
+        return lm.get("Debt Details:") + "\n" +
+                lm.get("Debtor: ") + debtor.name() + "\n" +
+                lm.get("Creditor: ") + creditor.name() + "\n" +
+                lm.get("Amount: ") + amount + " Euro\n\n" +
                 creditorBankInfo;
     }
 
@@ -222,5 +231,16 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void regenerateDebts(){
         serverUtils.regenerateDebts(event.code());
+    }
+
+    public void setLanguageForAllOpenDebtsCtrl() {
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        if(lm == null){
+            System.out.println("lm is null when setting the languages in OpenDebtsCtrl");
+            return;
+        }
+        openDebts.setText(lm.get("Open Debts"));
+        backButton.setText(lm.get("Back"));
+        regenerateButton.setText(lm.get("_Regenerate Debts"));
     }
 }

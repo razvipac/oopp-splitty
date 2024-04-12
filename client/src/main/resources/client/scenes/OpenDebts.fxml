@@ -14,7 +14,7 @@
    <children>
       <VBox layoutX="123.0" layoutY="45.0" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label text="Open Debts">
+            <Label fx:id="openDebts" text="Open Debts">
                <font>
                   <Font size="20.0" />
                </font>
@@ -26,8 +26,8 @@
             </ScrollPane>
             <HBox spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#goBack" text="Back" />
-                  <Button onAction="#regenerateDebts" text="_Regenerate Debts">
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#goBack" text="Back" />
+                  <Button fx:id="regenerateButton" onAction="#regenerateDebts" text="_Regenerate Debts">
                      <graphic>
                         <FontAwesomeIconView glyphName="REFRESH" />
                      </graphic></Button>
