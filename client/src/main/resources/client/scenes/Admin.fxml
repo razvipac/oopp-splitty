@@ -18,12 +18,12 @@
             prefWidth="391.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
     <children>
-        <Text layoutX="23.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Administrator Control Panel">
+        <Text fx:id="adminPanel" layoutX="23.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Administrator Control Panel">
             <font>
                 <Font name="System Bold" size="20.0"/>
             </font>
         </Text>
-        <Text layoutX="23.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All Events">
+        <Text fx:id="allEvents" layoutX="23.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All Events">
             <font>
                 <Font size="14.0"/>
             </font>
@@ -44,7 +44,7 @@
                 </GridPane>
             </content>
         </ScrollPane>
-        <Button layoutX="293.0" layoutY="384.0" mnemonicParsing="false" text="Import Event" onAction="#importEvent">
+        <Button fx:id="importEventButton" layoutX="293.0" layoutY="384.0" mnemonicParsing="false" text="Import Event" onAction="#importEvent">
             <font>
                 <Font size="10.0"/>
             </font>
@@ -53,19 +53,19 @@
                   style="-fx-font-size: 10;" onAction="#orderEvents">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Title"/>
-                    <String fx:value="Creation Date (Newest)"/>
-                    <String fx:value="Creation Date (Oldest)"/>
-                    <String fx:value="Last Activity (Most recent)"/>
-                    <String fx:value="Last Activity (Least recent)"/>
+                    <String fx:id="title" fx:value="Title"/>
+                    <String fx:id="newDate" fx:value="Creation Date (Newest)"/>
+                    <String fx:id="oldDate" fx:value="Creation Date (Oldest)"/>
+                    <String fx:id="recentActivity" fx:value="Last Activity (Most recent)"/>
+                    <String fx:id="lastActivity" fx:value="Last Activity (Least recent)"/>
                 </FXCollections>
             </items>
         </ComboBox>
-        <Label layoutX="172.0" layoutY="59.0" text="Order by:">
+        <Label fx:id="orderBy" layoutX="172.0" layoutY="59.0" text="Order by:">
             <font>
                 <Font size="10.0"/>
             </font>
         </Label>
-        <Button layoutX="23.0" layoutY="421.0" mnemonicParsing="false" text="Back" onAction="#goBack"/>
+        <Button fx:id="backButton" layoutX="23.0" layoutY="421.0" mnemonicParsing="false" text="Back" onAction="#goBack"/>
     </children>
 </AnchorPane>
