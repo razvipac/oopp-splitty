@@ -11,6 +11,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import commons.dto.JSONDumpEventDTO;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -79,7 +81,6 @@ public class AdminCtrl implements VoidSceneController {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
-        orderByComboBox.getSelectionModel().selectFirst();    // default selection
     }
 
     /**
@@ -88,8 +89,9 @@ public class AdminCtrl implements VoidSceneController {
      */
     public void refresh() {
         events = serverUtils.getAllEvents();
-        orderEvents();
         setLanguageForAllAdminCtrl();
+        orderByComboBox.getSelectionModel().selectFirst();    // default selection
+        orderEvents();
     }
 
     /**
@@ -98,16 +100,24 @@ public class AdminCtrl implements VoidSceneController {
      */
     @FXML
     public void orderEvents() {
-        switch (orderByComboBox.getValue()) {
-            case "Title" -> events.sort(Comparator.comparing
-                    (EventDTO::name, String.CASE_INSENSITIVE_ORDER));
-            case "Creation Date (Newest)" -> events.sort(Comparator.comparing(EventDTO::creationDate,
-                    Comparator.reverseOrder()));
-            case "Creation Date (Oldest)" -> events.sort(Comparator.comparing(EventDTO::creationDate));
-            case "Last Activity (Most recent)" -> events.sort(Comparator.comparing(EventDTO::lastActivity,
-                    Comparator.reverseOrder()));
-            case "Last Activity (Least recent)" -> events.sort(Comparator.comparing(EventDTO::lastActivity));
+        String selected = orderByComboBox.getValue();
+
+        if(selected.equals(title)) {
+            events.sort(Comparator.comparing(EventDTO::name, String.CASE_INSENSITIVE_ORDER));
         }
+        else if(selected.equals(newDate)) {
+            events.sort(Comparator.comparing(EventDTO::creationDate, Comparator.reverseOrder()));
+        }
+        else if(selected.equals(oldDate)) {
+            events.sort(Comparator.comparing(EventDTO::creationDate));
+        }
+        else if(selected.equals(recentActivity)) {
+            events.sort(Comparator.comparing(EventDTO::lastActivity, Comparator.reverseOrder()));
+        }
+        else if(selected.equals(lastActivity)) {
+            events.sort(Comparator.comparing(EventDTO::lastActivity));
+        }
+
         addEventsToEventGrid();
     }
 
@@ -333,5 +343,22 @@ public class AdminCtrl implements VoidSceneController {
         oldDate = lm.get("Creation Date (Oldest)");
         newDate = lm.get("Creation Date (Newest)");
         title = lm.get("Title");
+
+        setOrderOptions();
+    }
+
+    /**
+     * Adds the ordering options to orderByComboBox, with the Strings of the currently selected
+     * language.
+     */
+    private void setOrderOptions() {
+        ObservableList<String> list = FXCollections.observableArrayList(
+                title,
+                newDate,
+                oldDate,
+                recentActivity,
+                lastActivity
+        );
+        orderByComboBox.setItems(list);
     }
 }
