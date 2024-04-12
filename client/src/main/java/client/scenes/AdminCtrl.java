@@ -131,14 +131,21 @@ public class AdminCtrl implements VoidSceneController {
             Button eventNameButton = createEventNameButton(e);
             Button deleteButton = createDeleteEventButton(e);
 
+            Button downloadButton = new Button("Download");
             // Download Button
-            List<JSONDumpEventDTO> allDumps = serverUtils.getJSON();
-            JSONDumpEventDTO thisDump = null;
-            for (JSONDumpEventDTO body : allDumps) {
-                if (body.eventDTO().code().equals(e.code()))
-                    thisDump = body;
+            try {
+                List<JSONDumpEventDTO> allDumps = serverUtils.getJSON();
+                JSONDumpEventDTO thisDump = null;
+                for (JSONDumpEventDTO body : allDumps) {
+                    if (body.eventDTO().code().equals(e.code()))
+                        thisDump = body;
+                }
+                downloadButton = createDownloadEventButton(thisDump);
             }
-            Button downloadButton = createDownloadEventButton(thisDump);
+            catch (Exception ex) {
+                // If server returns an error, disable the download button
+                downloadButton.setDisable(true);
+            }
 
             eventGrid.add(eventNameButton, 0, i);
             eventGrid.add(deleteButton, 1, i);
@@ -174,12 +181,20 @@ public class AdminCtrl implements VoidSceneController {
                     lm.get("Are you sure you want to delete event '") + event.name() + "'?\n" +
                             lm.get("This action cannot be undone."));
             if (confirmed) {
-                serverUtils.deleteEvent(event.code());
-                Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                        lm.get("Success"),
-                        lm.get("Deleted successfully"),
-                        lm.get("Event '") + event.name() + lm.get("' has been deleted."));
-                alert.showAndWait();
+                if(serverUtils.deleteEvent(event.code())) {
+                    Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                            lm.get("Success"),
+                            lm.get("Deleted successfully"),
+                            lm.get("Event '") + event.name() + lm.get("' has been deleted."));
+                    alert.showAndWait();
+                }
+                else {
+                    Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                            lm.get("Error"),
+                            lm.get("Deletion unsuccessful."),
+                            lm.get("Event has not been deleted due to an error. Please try again later."));
+                    alert.showAndWait();
+                }
                 refresh();
             }
         });
