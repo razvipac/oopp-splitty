@@ -191,7 +191,7 @@ public class ParticipantController {
     }
 
     private void deleteDependants(Participant participant) {
-        if (participant != null)
+        if (participant != null) {
             for (Expense expense : participant.getPaidForExpenses()) {
                 expenseController.deleteOne(
                         expense.getId(),
@@ -199,7 +199,7 @@ public class ParticipantController {
                         participant.getEvent().getCode()
                 );
             }
-
-        debtController.generateDebts(participant.getEvent().getCode());
+            debtController.generateDebts(participant.getEvent().getCode());
+        }
     }
 }
