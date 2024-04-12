@@ -127,7 +127,7 @@ public class EventService {
      *
      * @return a unique 8 character code to be used as a Event code
      */
-    private String generateCode() {
+    public String generateCode() {
         // Creates a list of characters [[0-9], [A-Z], [a-z]]
         List<Character> possibleCharacters = new ArrayList<>();
         for (int i = 48; i <= 57; i++) {
