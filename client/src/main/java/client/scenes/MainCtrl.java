@@ -331,6 +331,7 @@ public class MainCtrl {
         adminPasswordCtrl.setLanguageForAllAdminPasswordCtrl();
         invitationsCtrl.setLanguageForAllInvitationsCtrl();
         this.adminPasswordPopup = createAdminPasswordPopup();
+        this.adminCtrl.setLanguageForAllAdminCtrl();
 
     }
 }
