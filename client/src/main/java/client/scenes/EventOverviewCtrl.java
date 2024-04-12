@@ -412,8 +412,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * Calculate the total sum of expenses.
      * @return The total sum of expenses
      */
-    private int calculateTotalExpenseSum() {
-        int totalSum = 0;
+    private double calculateTotalExpenseSum() {
+        double totalSum = 0;
         for (ExpenseDTO expense : expenses) {
             totalSum += expense.price();
         }
