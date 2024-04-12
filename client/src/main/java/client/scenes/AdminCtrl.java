@@ -267,7 +267,7 @@ public class AdminCtrl implements VoidSceneController {
             JSONDumpEventDTO event = objectMapper.readValue(jsonFile, JSONDumpEventDTO.class);
 
             for (EventDTO ev : events) {
-                if (event.eventDTO().code().equals(ev.name())) {
+                if (event.eventDTO().code().equals(ev.code())) {
                     // Event with same code already exists
                     throw new IllegalArgumentException(ev.name() + " (" + ev.code() + ")");
                 }
@@ -275,17 +275,18 @@ public class AdminCtrl implements VoidSceneController {
 
             if (serverUtils.restoreEvent(event)) {
                 Alert alert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                        lm.get("Success"),
-                        lm.get("Event has been imported and restored successfully"),
+                        "Success",
+                        "Event has been imported and restored successfully",
                         "");
                 alert.showAndWait();
-            } else {
+            }
+            else {
                 // Internal server error
                 Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
                         lm.get("Error"),
                         lm.get("Error while importing event."),
-                        lm.get("Event has not been imported due to an internal server error. " +
-                                "Please try again."));
+                        lm.get("Event has not been imported due to an error. The event's code in the " +
+                                "JSON file may be invalid."));
                 alert.showAndWait();
             }
         } catch (IllegalArgumentException e) {
