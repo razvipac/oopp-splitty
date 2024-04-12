@@ -30,15 +30,15 @@ public class ParticipantController {
     private final DebtDTOMapper debtDTOMapper;
 
     /**
-     * Constructor for ParticipantController
+     * Constructs a new instance of ParticipantController.
      *
-     * @param participantService    The ParticipantService instance
-     *                              to handle participant-related operations
+     * @param participantService    The ParticipantService instance to handle participant-related operations
      * @param simpMessagingTemplate The SimpMessagingTemplate instance to send WebSocket messages
      * @param participantDTOMapper  The ParticipantDTOMapper instance to be injected
      * @param expenseController     The ExpenseController instance to be injected
      * @param debtController        The DebtController instance to be injected
      * @param debtRepository        The DebtRepository instance to be injected
+     * @param debtDTOMapper         The DebtDTOMapper instance to be injected
      */
     public ParticipantController(@Autowired ParticipantService participantService,
                                  @Autowired SimpMessagingTemplate simpMessagingTemplate,
@@ -98,7 +98,7 @@ public class ParticipantController {
      * on "/api/websocket/v1/channel/{eventCode}/participant
      * with WSAction CREATED
      *
-     * @param eventCode The event code
+     * @param eventCode      The event code
      * @param participantDTO The ParticipantDTO instance
      * @return ResponseEntity with ParticipantDTO or HttpStatus.NOT_FOUND if not found
      */
@@ -135,8 +135,8 @@ public class ParticipantController {
     public ResponseEntity<ParticipantDTO> deleteOne(
             @RequestParam("name") String participantName,
             @PathVariable("eventCode") String eventCode
-    ){
-        try{
+    ) {
+        try {
             Participant participant = participantService.getOne(eventCode, participantName);
             ParticipantDTO participantDTO = participantDTOMapper.toDTO(participant);
 
@@ -152,7 +152,7 @@ public class ParticipantController {
                     ));
 
             return new ResponseEntity<>(participantDTO, HttpStatus.OK);
-        } catch (NotFoundInDatabaseException e){
+        } catch (NotFoundInDatabaseException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -190,15 +190,16 @@ public class ParticipantController {
         }
     }
 
-    private void deleteDependants(Participant participant){
-        for (Expense expense : participant.getPaidForExpenses()){
-            expenseController.deleteOne(
-                    expense.getId(),
-                    expense.getPaidBy().getName(),
-                    participant.getEvent().getCode()
-            );
+    private void deleteDependants(Participant participant) {
+        if (participant != null) {
+            for (Expense expense : participant.getPaidForExpenses()) {
+                expenseController.deleteOne(
+                        expense.getId(),
+                        expense.getPaidBy().getName(),
+                        participant.getEvent().getCode()
+                );
+            }
+            debtController.generateDebts(participant.getEvent().getCode());
         }
-
-        debtController.generateDebts(participant.getEvent().getCode());
     }
 }
