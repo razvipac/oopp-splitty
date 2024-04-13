@@ -341,5 +341,6 @@ public class MainCtrl {
         openDebtsCtrl.setLanguageForAllOpenDebtsCtrl();
         addEditExpenseCtrl.setLanguageForAllAddEditExpenseCtrl();
         eventOverviewCtrl.setLanguageForAllEventOverviewCtrl();
+        contactDetailsCtrl.setLanguageForAllContactDetailsCtrl();
     }
 }
