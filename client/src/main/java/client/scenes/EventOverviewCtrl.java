@@ -21,6 +21,7 @@ import javafx.scene.robot.Robot;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -412,12 +413,12 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * Calculate the total sum of expenses.
      * @return The total sum of expenses
      */
-    private int calculateTotalExpenseSum() {
-        int totalSum = 0;
+    private BigDecimal calculateTotalExpenseSum() {
+        BigDecimal totalSum = BigDecimal.ZERO;
         for (ExpenseDTO expense : expenses) {
-            totalSum += expense.price();
+            totalSum = totalSum.add(BigDecimal.valueOf(expense.price()));
         }
-        return totalSum;
+        return totalSum.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
      /**

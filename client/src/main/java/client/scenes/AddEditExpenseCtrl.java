@@ -196,14 +196,24 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
             }
         }
 
-        // check if price is entered and a valid number (not negative and no decimals)
-        if(!howMuchField.getText().isEmpty()) {
+        // check if price is entered and a valid number (not negative and maximum of 2 decimal places)
+        if (!howMuchField.getText().isEmpty()) {
             try {
-                int price = Integer.parseInt(howMuchField.getText());
+                double price = Double.parseDouble(howMuchField.getText());
+
+                // Check if the price is negative
                 if (price < 0) {
                     errorText.setText(lm.get("Price cannot be negative"));
                     return false;
                 }
+
+                // Check if the price has more than 2 decimal places
+                String[] priceParts = howMuchField.getText().split("\\.");
+                if (priceParts.length > 1 && priceParts[1].length() > 2) {
+                    errorText.setText("Price must have a maximum of 2 decimal places");
+                    return false;
+                }
+
             } catch (NumberFormatException e) {
                 errorText.setText(lm.get("Price must be a valid positive integer with no decimals"));
                 return false;
