@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.DualDataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
@@ -27,7 +28,6 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
 
     private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
-
     @Inject
     private ControllerUtils controllerUtils;
 
@@ -54,7 +54,26 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
     private Text errorText;
     @FXML
     private VBox checkboxContainer;
-
+    @FXML
+    private Label whoPaid;
+    @FXML
+    private Label whatFor;
+    @FXML
+    private Label when;
+    @FXML
+    private Label howMuch;
+    @FXML
+    private Label expenseType;
+    @FXML
+    private Label splitBetween;
+    @FXML
+    private Button everyoneButton;
+    @FXML
+    private Text required;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button abortButton;
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
      *
@@ -102,13 +121,15 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         refreshWhoPaidDropdown();
         refreshParticipantContainer();
 
+        LanguageManager lm = mainCtrl.getLanguageManager();
         // Sets header based on if user is adding/editing
         if(expense == null) {
-            header.setText("Add Expense");
+            header.setText(lm.get("Add Expense"));
         }
         else {
-            header.setText("Edit Expense");
+            header.setText(lm.get("Edit Expense"));
         }
+        setLanguageForAllAddEditExpenseCtrl();
     }
 
     /**
@@ -148,20 +169,21 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      * Checks if the user-inputted form is valid.
      */
     private boolean formIsValid() {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         if (whoPaidDropdown.getValue() == null || whoPaidDropdown.getValue().isEmpty()) {
-            errorText.setText("Please select the participant who paid for this expense");
+            errorText.setText(lm.get("Please select the participant who paid for this expense"));
             return false;
         }
 
         // Only for Adding Expense
         if(expense == null) {
             if (howMuchField.getText().isEmpty()) {
-                errorText.setText("Please fill in the price of the expense");
+                errorText.setText(lm.get("Please fill in the price of the expense"));
                 return false;
             }
 
             if (whatForField.getText().isEmpty()) {
-                errorText.setText("Please enter what the expense was for");
+                errorText.setText(lm.get("Please enter what the expense was for"));
                 return false;
             }
         }
@@ -169,7 +191,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         else {
             if(howMuchField.getText().isEmpty() && whatForField.getText().isEmpty()
                 && whenPicker.getValue() == null) {
-                errorText.setText("Enter at least one field to edit");
+                errorText.setText(lm.get("Enter at least one field to edit"));
                 return false;
             }
         }
@@ -181,7 +203,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
 
                 // Check if the price is negative
                 if (price < 0) {
-                    errorText.setText("Price cannot be negative");
+                    errorText.setText(lm.get("Price cannot be negative"));
                     return false;
                 }
 
@@ -193,12 +215,12 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
                 }
 
             } catch (NumberFormatException e) {
-                errorText.setText("Price must be a valid positive number with up to 2 decimal places");
+                errorText.setText(lm.get("Price must be a valid positive integer with no decimals"));
                 return false;
             }
         }
         else if(expense == null) {
-            errorText.setText("Please enter a price");
+            errorText.setText(lm.get("Please enter a price"));
             return false;
         }
 
@@ -211,18 +233,19 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      * @param e The (validated) expense to add
      */
     private void addExpenseToServer(ExpenseDTO e) {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         boolean success = serverUtils.addExpense(e, event.code());
         if (success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                    "Success", "Expense Added Successfully",
-                    "Expense has been added to the event");
+                    lm.get("Success"), lm.get("Expense Added Successfully"),
+                    lm.get("Expense has been added to the event"));
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
         } else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error", "Adding Expense Failed",
-                    "The expense has not been added due to an error. Please try again.");
+                    lm.get("Error"), lm.get("Adding Expense Failed"),
+                    lm.get("The expense has not been added due to an error. Please try again."));
             alert.showAndWait();
         }
 
@@ -235,18 +258,19 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      * @param e DTO with updated values
      */
     private void updateExpenseToServer(ExpenseDTO e) {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         boolean success = serverUtils.updateExpense(e, event.code());
         if (success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                    "Success", "Expense Edited Successfully",
-                    "Expense has been updated successfully.");
+                    lm.get("Success"), lm.get("Expense Edited Successfully"),
+                    lm.get("Expense has been updated successfully."));
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
         } else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error", "Editing Expense Failed",
-                    "The expense has not been updated due to an error. Please try again.");
+                    lm.get("Error"), lm.get("Editing Expense Failed"),
+                    lm.get("The expense has not been updated due to an error. Please try again."));
             alert.showAndWait();
         }
 
@@ -276,6 +300,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      */
     @FXML
     private void submit() {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         if (formIsValid()) {
             if(expense == null) {
                 double price = Double.parseDouble(howMuchField.getText());
@@ -287,8 +312,8 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
             }
             else {
                 boolean confirmed = controllerUtils.createConfirmationAlert(
-                        "Confirm Edit",
-                        "Are you sure you want to edit this expense?");
+                        lm.get("Confirm Edit"),
+                        lm.get("Are you sure you want to edit this expense?"));
                 if (confirmed) {
                     double price = -1.0;
                     if (!howMuchField.getText().isEmpty()) price = Double.parseDouble(howMuchField.getText());
@@ -306,5 +331,22 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
     private void onGlobalKeyPress(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
         if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.ENTER) submit();
+    }
+
+    public void setLanguageForAllAddEditExpenseCtrl(){
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        whoPaid.setText(lm.get("Who paid?*"));
+        whatFor.setText(lm.get( "What for?*"));
+        whoPaidDropdown.setPromptText(lm.get("Choose..."));
+        howMuch.setText(lm.get("How much?*"));
+        when.setText(lm.get("When?"));
+        expenseType.setText(lm.get("Expense Type"));
+        whatForField.setPromptText(lm.get("Drinks"));
+        expenseTypeField.setPromptText(lm.get("food, restaurant"));
+        required.setText(lm.get( "*required"));
+        splitBetween.setText(lm.get("Split between:"));
+        everyoneButton.setText(lm.get("Select Everyone"));
+        abortButton.setText(lm.get("Abort"));
+        addButton.setText(lm.get("OK"));
     }
 }

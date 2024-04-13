@@ -339,5 +339,6 @@ public class MainCtrl {
         this.adminPasswordPopup = createAdminPasswordPopup();
         this.adminCtrl.setLanguageForAllAdminCtrl();
         openDebtsCtrl.setLanguageForAllOpenDebtsCtrl();
+        addEditExpenseCtrl.setLanguageForAllAddEditExpenseCtrl();
     }
 }

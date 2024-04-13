@@ -66,7 +66,8 @@ public class DebtDTOMapper implements DTOMapper<Debt, DebtDTO> {
         return new Debt(
                 participantService.getOne((String) args[0], debtDTO.debtorName()),
                 participantService.getOne((String) args[0], debtDTO.creditorName()),
-                debtDTO.amount()
+                debtDTO.amount(),
+                debtDTO.received()
         );
     }
 }
