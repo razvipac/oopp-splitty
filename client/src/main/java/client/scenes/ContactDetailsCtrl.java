@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
@@ -47,6 +48,26 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     private TextField boxBic;
     @FXML
     private Text errorText;
+    @FXML
+    private Text manageParticipants;
+    @FXML
+    private ToggleButton deleteButton;
+    @FXML
+    private ToggleButton editButton;
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button abortButton;
+    @FXML
+    private Text requiredFields;
+    @FXML
+    private Label labelName;
+    @FXML
+    private Label labelEmail;
+    @FXML
+    private Label labelIBAN;
+    @FXML
+    private Label labelBIC;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
