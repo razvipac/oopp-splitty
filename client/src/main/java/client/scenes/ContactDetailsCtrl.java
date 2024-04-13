@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
@@ -23,7 +24,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
     @Inject
     private ControllerUtils controllerUtils;
-
     public enum View {
         ADD, EDIT, DELETE
     }
@@ -47,6 +47,26 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
     private TextField boxBic;
     @FXML
     private Text errorText;
+    @FXML
+    private Text manageParticipants;
+    @FXML
+    private ToggleButton deleteButton;
+    @FXML
+    private ToggleButton editButton;
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button abortButton;
+    @FXML
+    private Text required;
+    @FXML
+    private Label labelName;
+    @FXML
+    private Label labelEmail;
+    @FXML
+    private Label labelIBAN;
+    @FXML
+    private Label labelBIC;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
@@ -115,6 +135,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                         .map(ParticipantDTO::name)
                         .toList()
         );
+        setLanguageForAllContactDetailsCtrl();
     }
 
     /**
@@ -151,16 +172,20 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      * Adds listener to toggleView. Sets currentView based on the ToggleGroups selected button.
      */
     private void toggleViewListen() {
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        System.out.print("lm is null: ");
+        System.out.println(lm == null);
         toggleView.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue != null) {
-                ToggleButton selected = (ToggleButton) newValue;
-                if(selected.getText().equals("Add")) {
+                ToggleButton selected = (ToggleButton) newValue; // idk if this is correct for in the if check to add the languagemanager, let's see if it brings bugs or not
+                String selectedText = selected.getText();
+                if(selectedText.equals("Add") || selectedText.equals("Adauga") || selectedText.equals("Toevoegen")) {
                     setView(View.ADD);
                 }
-                else if(selected.getText().equals("Edit")) {
+                else if(selectedText.equals("Edit") || selectedText.equals("Bewerk")) {
                     setView(View.EDIT);
                 }
-                else if (selected.getText().equals("Delete")) {
+                else if (selectedText.equals("Delete")|| selectedText.equals("Sterge") || selectedText.equals("Verwijderen")) {
                     setView(View.DELETE);
                 }
             }
@@ -223,19 +248,20 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private void addParticipantToServer(ParticipantDTO participant) {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         boolean success = serverUtils.addParticipant(participant, event.code());
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                    "Success", "Participant Added Successfully",
-                    participant.name() + " has been added to the event");
+                    lm.get("Success"), lm.get("Participant Added Successfully"),
+                    participant.name() + lm.get(" has been added to the event"));
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
         }
         else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error", "Adding Participant Failed",
-                    "The participant has not been added due to an error. Please try again.");
+                    lm.get("Error"), lm.get("Adding Participant Failed"),
+                    lm.get("The participant has not been added due to an error. Please try again."));
             alert.showAndWait();
         }
 
@@ -249,19 +275,20 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private void updateParticipantToServer(ParticipantDTO body, String name) {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         boolean success = serverUtils.updateParticipant(body, event.code(), name);
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                    "Success", "Participant Updated Successfully",
-                    name + " has been updated.");
+                    lm.get("Success"), lm.get("Participant Updated Successfully"),
+                    name + lm.get(" has been updated."));
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
         }
         else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error", "Updating Participant Failed",
-                    name + " has not been updated due to an error. Please try again.");
+                    lm.get("Error"), lm.get("Updating Participant Failed"),
+                    name + lm.get(" has not been updated due to an error. Please try again."));
             alert.showAndWait();
         }
 
@@ -274,19 +301,20 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private void deleteParticipantFromServer(String name) {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         boolean success = serverUtils.deleteParticipant(event.code(), name);
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                    "Success", "Participant Deleted Successfully",
-                    name + " has been deleted from this event.");
+                    lm.get("Success"), lm.get("Participant Deleted Successfully"),
+                    name + lm.get(" has been deleted from this event."));
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
         }
         else {
             Alert alert = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error", "Deleting Participant Failed",
-                    name + " has not been deleted due to an error. Please try again.");
+                    lm.get("Error"), lm.get("Deleting Participant Failed"),
+                    name + lm.get(" has not been deleted due to an error. Please try again."));
             alert.showAndWait();
         }
 
@@ -298,9 +326,10 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private boolean formIsValid() {
+        LanguageManager lm = mainCtrl.getLanguageManager();
         if(currentView == View.EDIT || currentView == View.DELETE) {
             if(comboBoxName.getSelectionModel().getSelectedItem() == null) {
-                errorText.setText("Please select participant");
+                errorText.setText(lm.get("Please select participant"));
                 return false;
             }
         }
@@ -308,13 +337,13 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         if(currentView == View.EDIT) {
             if(boxEmail.getText().isEmpty() && boxIban.getText().isEmpty()
                 && boxBic.getText().isEmpty()) {
-                errorText.setText("Enter at least one field to edit");
+                errorText.setText(lm.get("Enter at least one field to edit"));
             }
         }
 
         if(currentView == View.ADD
                 && boxName.getText().isEmpty()) {
-            errorText.setText("Please fill in the name field");
+            errorText.setText(lm.get("Please fill in the name field"));
             return false;
         }
 
@@ -325,12 +354,12 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
         // NL12 XXXX 0123 4567 89
         String regexIban = "^NL\\d{2}\\s[A-Z0-9]{4}\\s\\d{4}\\s\\d{4}\\s\\d{2}$";
-        if(inputIsInvalid(boxIban.getText(), regexIban, "Please enter a valid IBAN"))
+        if(inputIsInvalid(boxIban.getText(), regexIban, lm.get("Please enter a valid IBAN")))
             return false;
 
         // XXXXXXXX
         String regexBic = "\\b[A-Z0-9]{8}\\b";
-        return !inputIsInvalid(boxBic.getText(), regexBic, "Please enter a valid BIC");
+        return !inputIsInvalid(boxBic.getText(), regexBic, lm.get("Please enter a valid BIC"));
     }
 
     /**
@@ -365,6 +394,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private void ok(){
+        LanguageManager lm = mainCtrl.getLanguageManager();
         // Check if form has been filled in correctly
         if(formIsValid()) {
             switch(currentView) {
@@ -380,8 +410,8 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 case EDIT -> {
                     // Confirmation box
                     boolean confirmed = controllerUtils.createConfirmationAlert(
-                            "Confirm Edit",
-                            "Are you sure you want to edit this participant?");
+                            lm.get("Confirm Edit"),
+                            lm.get("Are you sure you want to edit this participant?"));
 
                     if (confirmed) {
                         updateParticipantToServer(
@@ -399,8 +429,8 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 case DELETE -> {
                     // Confirmation box
                     boolean confirmed = controllerUtils.createConfirmationAlert(
-                            "Confirm Delete",
-                            "Are you sure you want to delete this participant?");
+                            lm.get("Confirm Delete"),
+                            lm.get("Are you sure you want to delete this participant?"));
 
                     if (confirmed) {
                         deleteParticipantFromServer(
@@ -428,5 +458,24 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void setErrorText(){
         this.errorText = new Text();
+    }
+
+    /**
+     * Sets the language for all elements in the ContactDetailsCtrl scene.
+     */
+    public void setLanguageForAllContactDetailsCtrl() {
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        addButton.setText(lm.get("Add"));
+        manageParticipants.setText(lm.get("Manage Participants"));
+        deleteButton.setText(lm.get("Delete"));
+        editButton.setText(lm.get("Edit"));
+        okButton.setText(lm.get("OK"));
+        abortButton.setText(lm.get("Abort"));
+        required.setText(lm.get("*required"));
+        labelName.setText(lm.get("Name"));
+        labelEmail.setText(lm.get("Email"));
+        labelIBAN.setText("IBAN");
+        labelBIC.setText("BIC");
+        comboBoxName.setPromptText(lm.get("Choose..."));
     }
 }
