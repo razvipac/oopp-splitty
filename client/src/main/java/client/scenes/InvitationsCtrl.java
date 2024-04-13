@@ -3,20 +3,21 @@ package client.scenes;
 import client.LanguageManager;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
+import client.utils.InviteUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.input.*;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
+    private final InviteUtils inviteUtils;
+
     private final MainCtrl mainCtrl; // reference to MainCtrl class
     private final ServerUtils serverUtils;
 
@@ -37,17 +38,19 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private Label eventCodeLabel;
     @FXML
-    private TextArea emailAddressesTextArea;
+    private TextField email;
 
     /**
      * Constructor for the InvitationsCtrl
      * @param mainCtrl scene of the mainCtrl class
      * @param serverUtils global serverUtils singleton
+     * @param inviteUtils singleton
      */
     @Inject
-    public InvitationsCtrl(MainCtrl mainCtrl, ServerUtils serverUtils) {
+    public InvitationsCtrl(MainCtrl mainCtrl, ServerUtils serverUtils, InviteUtils inviteUtils) {
         this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
+        this.inviteUtils = inviteUtils;
     }
 
     /**
@@ -73,14 +76,17 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void goBack(){
-        emailAddressesTextArea.setText("");
+        email.setText("");
         mainCtrl.showEventOverview(event);
     }
 
     @FXML
     private void sendInvites(){
-        System.out.println("Sending invites...");
-        // TODO: implement sending emails
+        EventDTO tmp= new EventDTO("name", "123", LocalDateTime.now(), LocalDateTime.now());
+        System.out.println(email.getText());
+
+        inviteUtils.sendInvitation(email.getText(),tmp.code());
+        System.out.println("Sending invites to" + email.getText());
         String title = "Invitations sent successfully";
         String header = "Invitations were sent successfully!";
         String content = "The invitations sent successfully to: \n";
@@ -93,7 +99,7 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         Alert successAlert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                 title,
                 header,
-                content + emailAddressesTextArea.getText());
+                content + email.getText());
         successAlert.showAndWait();
         goBack();
     }

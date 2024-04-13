@@ -24,7 +24,9 @@ dependencies {
 	implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '3.0.3'
 	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '3.0.3'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1'
-	
+	//implementation 'javax.mail:javax.mail-api:1.6.2'
+	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+
 	implementation group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.0.1'
 	implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
 	
