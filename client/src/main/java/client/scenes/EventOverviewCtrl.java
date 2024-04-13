@@ -132,10 +132,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void refresh(EventDTO event) {
         this.event = event;
-        this.eventWasDeleted = false;
 
         serverUtils.registerForWebSocketUpdatesForTheWholeEvent(
-                event.code(), q-> Platform.runLater(() -> refresh(this.event)));
+                event.code(), event.code(), q-> Platform.runLater(() -> refresh(this.event)));
 
         participants = serverUtils.getParticipants(event.code());
         expenses = serverUtils.getExpenses(event.code());
@@ -154,8 +153,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         EventDTO syncedEvent = serverUtils.getEvent(event.code());
-        if (syncedEvent == null && eventWasDeleted) {
-            this.eventWasDeleted = true;
+        if (syncedEvent == null) {
             Alert alert = controllerUtils.createAlert(
                     Alert.AlertType.WARNING,
                     "This event was deleted!",
@@ -291,6 +289,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private void goBack() {
+        serverUtils.disconnectWSSession(event.code());
         mainCtrl.showStartScreen();
     }
 

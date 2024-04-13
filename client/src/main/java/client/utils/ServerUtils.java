@@ -37,7 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,7 +49,8 @@ public class ServerUtils {
 
     private final String httpServerUrl;
     private final String serverUrl;
-    private StompSession wsSession;
+    private final Map<Object, StompSession> wsSessions;
+    private final Map<Object, Set<String>> destinations;
 
     /**
      * Constructor for ServerUtils
@@ -59,6 +60,8 @@ public class ServerUtils {
             File file = new File("client/src/main/resources/userSettings/config.json");
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
+            wsSessions = new HashMap<>();
+            destinations = new HashMap<>();
             if (rootNode.has("serverURL")) {
                 serverUrl = rootNode.get("serverURL").asText();
                 httpServerUrl = "http://" + serverUrl + "/";
@@ -85,23 +88,35 @@ public class ServerUtils {
         throw new IllegalStateException();
     }
 
-    private <T> void registerForWebSocketMessages(String dest,
+    /**
+     * Registers a consumer for receiving Web Socket STOMP messages from the server.
+     * Does not allow registering multiple consumers on the same path, for the same session key.
+     * @param sessionKey unique key that identifies said session
+     * @param dest destination to listen on
+     * @param consumer consumer callback for handling messages
+     * @param <T> type of fetched messages
+     */
+    private <T> void registerForWebSocketMessages(Object sessionKey, String dest,
                                                   Consumer<WSWrapperResponseBody<T>> consumer){
 
-        if (wsSession == null || !wsSession.isConnected()){
-            wsSession = wsConnect("ws://" + serverUrl + "/ws-connect");
+        if (wsSessions.get(sessionKey) == null || !wsSessions.get(sessionKey).isConnected()){
+            wsSessions.put(sessionKey, wsConnect("ws://" + serverUrl + "/ws-connect"));
+            destinations.put(sessionKey, new HashSet<>());
         }
-        wsSession.subscribe(dest, new StompFrameHandler() {
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return WSWrapperResponseBody.class;
-            }
+        if (!destinations.get(sessionKey).contains(dest)){
+            destinations.get(sessionKey).add(dest);
+            wsSessions.get(sessionKey).subscribe(dest, new StompFrameHandler() {
+                @Override
+                public Type getPayloadType(StompHeaders headers) {
+                    return WSWrapperResponseBody.class;
+                }
 
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                consumer.accept((WSWrapperResponseBody<T>) payload);
-            }
-        });
+                @Override
+                public void handleFrame(StompHeaders headers, Object payload) {
+                    consumer.accept((WSWrapperResponseBody<T>) payload);
+                }
+            });
+        }
     }
 
     /**
@@ -109,21 +124,10 @@ public class ServerUtils {
      * @param eventCode code of the event on which to listen
      * @param consumer consumer for handling changes
      */
-    public void registerForWebSocketUpdatesOnParticipant(String eventCode,
+    public void registerForWebSocketUpdatesOnParticipant(Object sessionKey, String eventCode,
                                                          Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
     {
-        registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
-    }
-
-    /**
-     * Registers a consumer for handling changes of expense entities in a given event
-     * @param eventCode code of the event on which to listen
-     * @param consumer consumer for handling changes
-     */
-    public void registerForWebSocketUpdatesOnExpense(String eventCode,
-                                                     Consumer<WSWrapperResponseBody<ExpenseDTO>> consumer)
-    {
-        registerForWebSocketMessages("/api/websocket/v1/channel/" + eventCode + "/expense", consumer);
+        registerForWebSocketMessages(sessionKey, "/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
     }
 
     /**
@@ -131,25 +135,35 @@ public class ServerUtils {
      * @param eventCode code of the event on which to listen
      * @param consumer consumer for handling changes
      */
-    public void registerForWebSocketUpdatesForTheWholeEvent(String eventCode,
+    public void registerForWebSocketUpdatesForTheWholeEvent(Object sessionKey, String eventCode,
                                                             Consumer<WSWrapperResponseBody> consumer)
     {
         registerForWebSocketMessages(
+                sessionKey,
                 "/api/websocket/v1/channel/event",
                 consumer::accept
         );
         registerForWebSocketMessages(
+                sessionKey,
                 "/api/websocket/v1/channel/" + eventCode,
                 consumer::accept
         );
         registerForWebSocketMessages(
+                sessionKey,
                 "/api/websocket/v1/channel/" + eventCode + "/participant",
                 consumer::accept
         );
         registerForWebSocketMessages(
+                sessionKey,
                 "/api/websocket/v1/channel/" + eventCode + "/expense",
                 consumer::accept
         );
+    }
+
+    public void disconnectWSSession(Object sessionKey){
+        this.wsSessions.get(sessionKey).disconnect();
+        this.destinations.remove(sessionKey);
+        this.wsSessions.remove(sessionKey);
     }
 
     private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();

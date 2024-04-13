@@ -107,7 +107,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
 
-        serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> {
+        serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), event.code(), p -> {
             Platform.runLater(() -> refresh(this.event, this.expense));
         });
 
@@ -292,6 +292,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      */
     @FXML
     private void goBack() {
+        serverUtils.disconnectWSSession(event.code());
         mainCtrl.showEventOverview(event);
     }
 
