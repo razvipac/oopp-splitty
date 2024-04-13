@@ -130,6 +130,12 @@ public class ServerUtils {
         registerForWebSocketMessages(sessionKey, "/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
     }
 
+    public void registerForWebSocketUpdatesForAllEvents(Object sessionKey,
+                                                        Consumer<WSWrapperResponseBody<EventDTO>> consumer)
+    {
+        registerForWebSocketMessages(sessionKey, "/api/websocket/v1/channel/event", consumer);
+    }
+
     /**
      * Registers a consumer for handling changes of all entities on given as well as event deletions and creations
      * @param eventCode code of the event on which to listen

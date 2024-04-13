@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import commons.dto.JSONDumpEventDTO;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -81,6 +82,7 @@ public class AdminCtrl implements VoidSceneController {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
+        serverUtils.registerForWebSocketUpdatesForAllEvents(this, q -> Platform.runLater(this::refresh));
     }
 
     /**
