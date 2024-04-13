@@ -68,7 +68,8 @@ public class Main extends Application {
         var adminPassword = FXML.load(AdminPasswordCtrl.class,
                 "client", "scenes", "AdminPassword.fxml");
         LanguageManager languageManager = new LanguageManager(
-                "client/src/main/resources/userSettings/userPreferences.json");
+                "client/src/main/resources/userSettings/userPreferences.json",
+                "client/src/main/resources/userSettings/config.json");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, startScreen, eventOverview, contactDetails,
