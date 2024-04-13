@@ -10,13 +10,15 @@ import java.util.Objects;
 
 public class LanguageManager {
     private String preferencesFilePath;
+    private String configFilePath;
     private LanguageOption languageOption;
     /**
      *
      * @param preferencesFilePath initialize this to create better injection
      */
-    public LanguageManager(String preferencesFilePath) {
+    public LanguageManager(String preferencesFilePath, String configFilePath) {
         this.preferencesFilePath = preferencesFilePath;
+        this.configFilePath = configFilePath;
         this.languageOption = loadLanguage();
     }
 
@@ -25,17 +27,18 @@ public class LanguageManager {
      */
     public LanguageOption loadLanguage() {
         try {
-            JsonNode rootNode = getJsonNode();
+            JsonNode rootNode = getJsonNode(configFilePath);
 
             // Modify the value of the "language" parameter
             if (rootNode.has("language")) {
-                if(rootNode.get("language").asText().equals("Dutch")){
-                    return new LanguageOption(LanguageOption.Language.DUTCH);
+                switch (rootNode.get("language").asText()) {
+                    case "Dutch":
+                        return new LanguageOption(LanguageOption.Language.DUTCH);
+                    case "Romanian":
+                        return new LanguageOption(LanguageOption.Language.ROMANIAN);
+                    case "English":
+                        return new LanguageOption(LanguageOption.Language.ENGLISH);
                 }
-                if(rootNode.get("language").asText().equals("Romanian")){
-                    return new LanguageOption(LanguageOption.Language.ROMANIAN);
-                }
-                return new LanguageOption(LanguageOption.Language.ENGLISH);
             }
         } catch (IOException e) {
             System.out.println("The system defaulted to english");
@@ -50,8 +53,8 @@ public class LanguageManager {
      * @return the proper json node of the file
      * @throws IOException in case the file is not found
      */
-    private JsonNode getJsonNode() throws IOException {
-        File file = new File(preferencesFilePath);
+    private JsonNode getJsonNode(String filePath) throws IOException {
+        File file = new File(filePath);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(file);
         return rootNode;
@@ -64,7 +67,7 @@ public class LanguageManager {
      */
     public void saveLanguage(LanguageOption language) {
         try {
-            File file = new File(preferencesFilePath);
+            File file = new File(configFilePath);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(file);
 
@@ -115,7 +118,7 @@ public class LanguageManager {
 
     public String get(LanguageOption language, String key) {
         try {
-            JsonNode rootNode = getJsonNode();
+            JsonNode rootNode = getJsonNode(preferencesFilePath);
 
             //String languageString = rootNode.get("language").asText();
             String languageString = language.toString();
