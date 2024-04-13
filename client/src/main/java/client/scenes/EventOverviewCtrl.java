@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.LanguageManager;
 import client.interfaces.DataBasedSceneController;
 import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
@@ -40,6 +41,20 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private List<ParticipantDTO> participants;
     private List<ExpenseDTO> expenses;
 
+    @FXML
+    private Button sendInvite;
+    @FXML
+    private Label participantsLabel;
+    @FXML
+    private Button manageParticipant;
+    @FXML
+    private Label expensesLabel;
+    @FXML
+    private Button addExpenseButton;
+    @FXML
+    private Button settleDebtsButton;
+    @FXML
+    private Button backButton;
     @FXML
     private TextField eventTitleTextField;
     @FXML
@@ -132,6 +147,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void refresh(EventDTO event) {
         this.event = event;
+        this.eventWasDeleted = false;
 
         serverUtils.registerForWebSocketUpdatesForTheWholeEvent(
                 event.code(), event.code(), q-> Platform.runLater(() -> refresh(this.event)));
@@ -153,12 +169,14 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         EventDTO syncedEvent = serverUtils.getEvent(event.code());
-        if (syncedEvent == null) {
+        if (syncedEvent == null && eventWasDeleted) {
+            LanguageManager lm = mainCtrl.getLanguageManager();
+            this.eventWasDeleted = true;
             Alert alert = controllerUtils.createAlert(
                     Alert.AlertType.WARNING,
-                    "This event was deleted!",
-                    "This event got deleted from the server!",
-                    "This may be an error. Try to connect later or contact our customer service desk!");
+                    lm.get("This event was deleted!"),
+                    lm.get("This event got deleted from the server!"),
+                    lm.get("This may be an error. Try to connect later or contact our customer service desk!"));
             alert.showAndWait();
             mainCtrl.showStartScreen();
         } else {
@@ -179,6 +197,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             refreshExpenseScroller();
         }
+        setLanguageForAllEventOverviewCtrl();
     }
 
     /**
@@ -199,7 +218,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             participantLabels.add(new Label(participant.name()));
         }
 
-        if (participants.isEmpty()) participantLabels.add(new Label("(No participants in event)"));
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        if (participants.isEmpty()) participantLabels.add(new Label(lm.get("(No participants in event)")));
 
         participantsHBox.getChildren().setAll(participantLabels);
     }
@@ -231,10 +251,11 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         expenseFilterFromRadio.setDisable(expenses.isEmpty());
         expenseFilterIncludingRadio.setDisable(expenses.isEmpty());
 
-        String name = selectedParticipant == null ? "(participant)" : selectedParticipant.name();
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        String name = selectedParticipant == null ? lm.get("(participant)") : selectedParticipant.name();
 
-        expenseFilterFromRadio.setText("From " + name);
-        expenseFilterIncludingRadio.setText("Including " + name);
+        expenseFilterFromRadio.setText(lm.get("From ") + name);
+        expenseFilterIncludingRadio.setText(lm.get("Including ") + name);
     }
 
     /**
@@ -249,7 +270,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         // Update total expenses label
-        totalExpensesLabel.setText("Total sum of expenses: " + calculateTotalExpenseSum());
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        totalExpensesLabel.setText(lm.get("Total sum of expenses: ") + calculateTotalExpenseSum());
 
         setExpenseItemVisibility();
     }
@@ -444,10 +466,11 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void handleEventTitleKeyboardEvent(KeyEvent keyEvent){
+        LanguageManager lm = mainCtrl.getLanguageManager();
         if (keyEvent.getCode() == KeyCode.ENTER) {
             String curText = eventTitleTextField.getText();
-            boolean confirmed = controllerUtils.createConfirmationAlert("Changing the name of the event",
-                    "Are you sure you want to change the name of the event to \""
+            boolean confirmed = controllerUtils.createConfirmationAlert(lm.get("Changing the name of the event"),
+                    lm.get("Are you sure you want to change the name of the event to \"")
                             + curText
                             + "\"?");
             if (confirmed) {
@@ -466,6 +489,22 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         eventTitleTextField.setText(event.name());
         Robot robot = new Robot();
         robot.keyType(KeyCode.TAB);
+    }
+
+    public void setLanguageForAllEventOverviewCtrl(){
+        LanguageManager lm = mainCtrl.getLanguageManager();
+        if(lm == null){
+            return;
+        }
+        participantsLabel.setText(lm.get("Participants"));
+        manageParticipant.setText(lm.get("Manage Participants"));
+        expensesLabel.setText(lm.get("Expenses"));
+        addExpenseButton.setText(lm.get("Add Expense"));
+        settleDebtsButton.setText(lm.get("Settle Debts"));
+        backButton.setText(lm.get("Back"));
+        lastActivityLabel.setText(lm.get("Last Activity:"));
+        sendInvite.setText(lm.get("Send _Invite"));
+        expenseFilterAllRadio.setText(lm.get("All"));
     }
 
     /**
@@ -526,7 +565,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.getColumnConstraints().addAll(col1, col2, col3, col4);
             this.getRowConstraints().addAll(row1, row2);
 
-            dateText = new Text("(no date)");
+            LanguageManager lm = mainCtrl.getLanguageManager();
+
+            dateText = new Text(lm.get("(no date)"));
             dateText.setFill(Color.web("#6f6f6f"));
             GridPane.setHalignment(dateText, HPos.LEFT);
             GridPane.setMargin(dateText, new Insets(0, 0, 0, 10));
@@ -535,17 +576,17 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             expenseInfoText = new Text();
             this.add(expenseInfoText, 1, 0);
 
-            includesText = new Text("(everyone)");
+            includesText = new Text(lm.get("(everyone)"));
             includesText.setFill(Color.web("#6f6f6f"));
             this.add(includesText, 1, 1);
 
-            editButton = new Button("Edit");
+            editButton = new Button(lm.get("Edit"));
             editButton.setPrefSize(45, 14);
             editButton.setFont(Font.font(10));
             GridPane.setHalignment(editButton, HPos.RIGHT);
             this.add(editButton, 2, 0, 1, 2);
 
-            deleteButton = new Button("Delete");
+            deleteButton = new Button(lm.get("Delete"));
             deleteButton.setPrefSize(45, 14);
             deleteButton.setFont(Font.font(10));
             GridPane.setHalignment(deleteButton, HPos.RIGHT);
@@ -556,10 +597,11 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
          * Adds the information of the expense to this GridPane
          */
         private void addExpenseInformation() {
+            LanguageManager lm = mainCtrl.getLanguageManager();
             if(expenseDTO.date() != null ) dateText.setText(expenseDTO.date().toString());
 
-            expenseInfoText.setText(expenseDTO.paidByName() + " paid \u20AC"
-                    + expenseDTO.price() + " for " + expenseDTO.item());
+            expenseInfoText.setText(expenseDTO.paidByName() + lm.get(" paid \u20AC")
+                    + expenseDTO.price() + lm.get(" for ") + expenseDTO.item());
 
             // TODO: includesText is currently hardcoded to '(everyone)'
 
@@ -567,8 +609,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             deleteButton.setOnAction(eventHandler -> {
                 boolean confirmed = controllerUtils.createConfirmationAlert(
-                        "Confirm Delete",
-                        "Are you sure you want to delete this expense?");
+                        lm.get("Confirm Delete"),
+                        lm.get("Are you sure you want to delete this expense?"));
 
                 if (confirmed) {
                     serverUtils.deleteExpense(expenseDTO, event.code());

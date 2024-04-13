@@ -37,7 +37,7 @@
                         </Label>
                      </children>
                   </VBox>
-                  <Button onAction="#openInvitations" text="Send _Invite">
+                  <Button fx:id="sendInvite" onAction="#openInvitations" text="Send _Invite">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -50,12 +50,12 @@
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label text="Participants">
+                        <Label fx:id="participantsLabel" text="Participants">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" onAction="#openAddEditParticipant" text="Manage Participants">
+                        <Button fx:id="manageParticipant" mnemonicParsing="false" onAction="#openAddEditParticipant" text="Manage Participants">
                            <graphic>
                               <FontAwesomeIconView glyphName="USER" />
                            </graphic></Button>
@@ -76,12 +76,12 @@
                <children>
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label text="Expenses">
+                        <Label fx:id="expensesLabel" text="Expenses">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Button mnemonicParsing="false" onAction="#openAddExpense" text="Add Expense">
+                        <Button fx:id="addExpenseButton" mnemonicParsing="false" onAction="#openAddExpense" text="Add Expense">
                            <graphic>
                               <FontAwesomeIconView glyphName="PLUS" />
                            </graphic></Button>
@@ -108,7 +108,7 @@
                         <VBox fx:id="expenseItemContainer" spacing="5.0" />
                      </content>
                   </ScrollPane>
-                  <Button mnemonicParsing="false" onAction="#openOpenDebts" text="Settle Debts">
+                  <Button fx:id="settleDebtsButton" mnemonicParsing="false" onAction="#openOpenDebts" text="Settle Debts">
                      <graphic>
                         <FontAwesomeIconView glyphName="MONEY" />
                      </graphic></Button>
@@ -117,7 +117,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#goBack" text="Back" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#goBack" text="Back" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

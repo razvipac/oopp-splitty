@@ -14,9 +14,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
    <children>
-      <Text layoutX="31.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Participants:" wrappingWidth="315.30859375">
+      <Text fx:id="manageParticipants" layoutX="31.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Participants:" wrappingWidth="315.30859375">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
@@ -32,7 +32,7 @@
             <ToggleGroup fx:id="toggleView" />
          </toggleGroup>
       </ToggleButton>
-      <ToggleButton layoutX="109.0" layoutY="60.0" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView">
+      <ToggleButton fx:id="editButton" layoutX="109.0" layoutY="60.0" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -40,7 +40,7 @@
             <FontAwesomeIconView glyphName="PENCIL" />
          </graphic>
       </ToggleButton>
-      <ToggleButton layoutX="189.0" layoutY="60.0" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView">
+      <ToggleButton fx:id="deleteButton" layoutX="189.0" layoutY="60.0" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -60,26 +60,26 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label text="Name*">
+            <Label fx:id="labelName" text="Name*">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
             <ComboBox fx:id="comboBoxName" prefHeight="25.0" prefWidth="160.0" promptText="Choose..." visible="false" GridPane.columnIndex="1" />
             <TextField fx:id="boxName" promptText="John" GridPane.columnIndex="1" />
-            <Label text="Email" GridPane.rowIndex="1">
+            <Label fx:id="labelEmail" text="Email" GridPane.rowIndex="1">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
             <TextField fx:id="boxEmail" onKeyReleased="#formatIban" promptText="johndoe@email.com" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="IBAN" GridPane.rowIndex="2">
+            <Label fx:id="labelIBAN" text="IBAN" GridPane.rowIndex="2">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
             <TextField fx:id="boxIban" promptText="NL12 3456 7890 1234 56" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="BIC" GridPane.rowIndex="3">
+            <Label fx:id="labelBIC" text="BIC" GridPane.rowIndex="3">
                <font>
                   <Font size="14.0" />
                </font>
@@ -87,13 +87,13 @@
             <TextField fx:id="boxBic" prefWidth="297.0" promptText="ABCDEFGH" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <Text layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
+      <Text fx:id="required" layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>
       </Text>
-      <Button layoutX="272.0" layoutY="242.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
-      <Button layoutX="332.0" layoutY="242.0" mnemonicParsing="false" onAction="#ok" text="OK">
+      <Button fx:id="abortButton" layoutX="272.0" layoutY="242.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
+      <Button fx:id="okButton" layoutX="332.0" layoutY="242.0" mnemonicParsing="false" onAction="#ok" text="OK">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>

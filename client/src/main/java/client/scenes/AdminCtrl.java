@@ -133,7 +133,8 @@ public class AdminCtrl implements VoidSceneController {
             Button eventNameButton = createEventNameButton(e);
             Button deleteButton = createDeleteEventButton(e);
 
-            Button downloadButton = new Button("Download");
+            LanguageManager lm = mainCtrl.getLanguageManager();
+            Button downloadButton = new Button(lm.get("Download"));
             // Download Button
             try {
                 List<JSONDumpEventDTO> allDumps = serverUtils.getJSON();
