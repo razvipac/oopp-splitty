@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.*?>
-<?import java.lang.String?>
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="340.0" prefWidth="590.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddEditExpenseCtrl">
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="340.0" prefWidth="650.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddEditExpenseCtrl">
     <children>
           <Text fx:id="header" layoutX="30.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Expense">
               <font>
@@ -32,9 +39,9 @@
          <font>
             <Font size="14.0" />
          </font></Label>
-            <ComboBox fx:id="whoPaidDropdown" layoutX="135.0" layoutY="74.0" prefHeight="25.0" prefWidth="141.0" promptText="Choose..." />
-            <TextField fx:id="whatForField" layoutX="135.0" layoutY="111.5" prefHeight="25.0" prefWidth="190.0" promptText="Drinks" />
-            <ComboBox fx:id="currencyDropdown" disable="true" layoutX="135.0" layoutY="149.0" prefHeight="25.0" prefWidth="47.0" promptText="€">
+            <ComboBox fx:id="whoPaidDropdown" layoutX="167.0" layoutY="73.0" prefHeight="25.0" prefWidth="141.0" promptText="Choose..." />
+            <TextField fx:id="whatForField" layoutX="167.0" layoutY="110.0" prefHeight="25.0" prefWidth="190.0" promptText="Drinks" />
+            <ComboBox fx:id="currencyDropdown" disable="true" layoutX="167.0" layoutY="148.0" prefHeight="25.0" prefWidth="47.0" promptText="€">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="€" />
@@ -43,9 +50,9 @@
                     </FXCollections>
                 </items>
             </ComboBox>
-            <TextField fx:id="howMuchField" layoutX="192.0" layoutY="149.0" prefHeight="25.0" prefWidth="63.0" />
-            <DatePicker fx:id="whenPicker" editable="false" layoutX="135.0" layoutY="187.0" prefHeight="25.0" prefWidth="120.0" promptText="01/01/2024" />
-            <Label fx:id="splitBetween" layoutX="339.0" layoutY="68.0" text="Split between:">
+            <TextField fx:id="howMuchField" layoutX="224.0" layoutY="148.0" prefHeight="25.0" prefWidth="63.0" />
+            <DatePicker fx:id="whenPicker" editable="false" layoutX="167.0" layoutY="186.0" prefHeight="25.0" prefWidth="120.0" promptText="01/01/2024" />
+            <Label fx:id="splitBetween" layoutX="382.0" layoutY="66.0" text="Split between:">
          <font>
             <Font size="14.0" />
          </font></Label>
@@ -53,15 +60,15 @@
             <font>
                 <Font size="14.0" />
             </font></Label>
-       <TextField fx:id="expenseTypeField" disable="true" layoutX="135.0" layoutY="227.0" promptText="food, restaurant" />
-      <Button fx:id="everyoneButton" layoutX="452.0" layoutY="67.0" mnemonicParsing="false" onAction="#selectEveryone" text="Select Everyone">
+       <TextField fx:id="expenseTypeField" disable="true" layoutX="167.0" layoutY="226.0" promptText="food, restaurant" />
+      <Button fx:id="everyoneButton" layoutX="510.0" layoutY="65.0" mnemonicParsing="false" onAction="#selectEveryone" text="Select Everyone">
          <font>
             <Font size="10.0" />
          </font>
          <graphic>
             <FontAwesomeIconView glyphName="CHECK" />
          </graphic></Button>
-      <ScrollPane layoutX="358.0" layoutY="96.0" prefHeight="155.0" prefWidth="204.0">
+      <ScrollPane layoutX="416.0" layoutY="94.0" prefHeight="155.0" prefWidth="204.0">
          <content>
                 <VBox fx:id="checkboxContainer" maxWidth="1.7976931348623157E308" spacing="10.0">
                     <padding>
@@ -70,11 +77,11 @@
                 </VBox>
          </content>
       </ScrollPane>
-            <Button fx:id="abortButton" layoutX="425.0" layoutY="293.0" mnemonicParsing="false" onAction="#goBack" text="Abort">
+            <Button fx:id="abortButton" layoutX="483.0" layoutY="291.0" mnemonicParsing="false" onAction="#goBack" text="Abort">
          <graphic>
             <FontAwesomeIconView glyphName="TIMES" />
          </graphic></Button>
-            <Button fx:id="addButton" layoutX="510.0" layoutY="293.0" mnemonicParsing="false" onAction="#submit" text="OK">
+            <Button fx:id="addButton" layoutX="568.0" layoutY="291.0" mnemonicParsing="false" onAction="#submit" text="OK">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>

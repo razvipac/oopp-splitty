@@ -539,20 +539,20 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             ColumnConstraints col1 = new ColumnConstraints();
             col1.setHalignment(HPos.CENTER);
-            col1.setMaxWidth(102.5);
-            col1.setPrefWidth(84.5);
+            col1.setMaxWidth(142.5);
+            col1.setPrefWidth(124.5);
 
             ColumnConstraints col2 = new ColumnConstraints();
             col2.setMaxWidth(378.5);
-            col2.setPrefWidth(364.0);
+            col2.setPrefWidth(304.0);
 
             ColumnConstraints col3 = new ColumnConstraints();
             col3.setMaxWidth(202.5);
-            col3.setPrefWidth(57.0);
+            col3.setPrefWidth(100.0);
 
             ColumnConstraints col4 = new ColumnConstraints();
-            col4.setMaxWidth(147.0);
-            col4.setPrefWidth(51.5);
+            col4.setMaxWidth(107.0);
+            col4.setPrefWidth(100.5);
 
             RowConstraints row1 = new RowConstraints();
             row1.setMaxHeight(21.0);
@@ -581,13 +581,13 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.add(includesText, 1, 1);
 
             editButton = new Button(lm.get("Edit"));
-            editButton.setPrefSize(45, 14);
+            editButton.setPrefSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
             editButton.setFont(Font.font(10));
             GridPane.setHalignment(editButton, HPos.RIGHT);
             this.add(editButton, 2, 0, 1, 2);
 
             deleteButton = new Button(lm.get("Delete"));
-            deleteButton.setPrefSize(45, 14);
+            deleteButton.setPrefSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
             deleteButton.setFont(Font.font(10));
             GridPane.setHalignment(deleteButton, HPos.RIGHT);
             this.add(deleteButton, 3, 0, 1, 2);
