@@ -343,6 +343,7 @@ public class AdminCtrl implements VoidSceneController {
      */
     @FXML
     private void goBack() {
+        serverUtils.disconnectWSSession(this);
         mainCtrl.showStartScreen();
     }
 
