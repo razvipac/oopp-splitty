@@ -242,14 +242,15 @@ public class ServerUtils {
      * @param eventCode the name of the event
      * @return the created Event
      */
-    public EventDTO deleteEvent(String eventCode) {
-
-        return ClientBuilder.newClient(new ClientConfig())
+    public boolean deleteEvent(String eventCode) {
+        Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(httpServerUrl).path("api/v1/")
                 .queryParam("eventCode", eventCode)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .delete(EventDTO.class);
+                .delete();
+
+        return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
     // Participant methods
@@ -521,7 +522,7 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(body, APPLICATION_JSON));
-        return response.getStatus() == Response.Status.CREATED.getStatusCode();
+        return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
     /**

@@ -185,6 +185,8 @@ public class JSONDumpService {
         try {
 
             EventDTO eventDTO = jsonDumpEventDTO.eventDTO();
+            if(eventDTO.code() == null || eventDTO.code().isEmpty())
+                throw new ImproperDumpFormatException("Event code is invalid");
             eventRepository.save(eventDTOMapper.newEntity(eventDTO));
 
             for (ParticipantDTO participantDTO : jsonDumpEventDTO.participantDTOs()) {

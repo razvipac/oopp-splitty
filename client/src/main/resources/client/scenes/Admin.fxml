@@ -12,8 +12,6 @@
 
 
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="469.0"
             prefWidth="391.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
@@ -52,13 +50,6 @@
         <ComboBox fx:id="orderByComboBox" layoutX="219.0" layoutY="55.0" prefHeight="22.0" prefWidth="144.0"
                   style="-fx-font-size: 10;" onAction="#orderEvents">
             <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:id="title" fx:value="Title"/>
-                    <String fx:id="newDate" fx:value="Creation Date (Newest)"/>
-                    <String fx:id="oldDate" fx:value="Creation Date (Oldest)"/>
-                    <String fx:id="recentActivity" fx:value="Last Activity (Most recent)"/>
-                    <String fx:id="lastActivity" fx:value="Last Activity (Least recent)"/>
-                </FXCollections>
             </items>
         </ComboBox>
         <Label fx:id="orderBy" layoutX="172.0" layoutY="59.0" text="Order by:">
