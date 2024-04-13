@@ -87,7 +87,7 @@
             <TextField fx:id="boxBic" prefWidth="297.0" promptText="ABCDEFGH" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <Text fx:id="requiredFields" layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
+      <Text fx:id="required" layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
          <font>
             <Font name="System Italic" size="12.0" />
          </font>

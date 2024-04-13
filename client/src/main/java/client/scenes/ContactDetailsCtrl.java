@@ -173,16 +173,19 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      */
     private void toggleViewListen() {
         LanguageManager lm = mainCtrl.getLanguageManager();
-        toggleView.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
+        System.out.print("lm is null: ");
+        System.out.println(lm == null);
+            toggleView.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue != null) {
                 ToggleButton selected = (ToggleButton) newValue; // idk if this is correct for in the if check to add the languagemanager, let's see if it brings bugs or not
-                if(selected.getText().equals("Add")) {
+                String selectedText = selected.getText();
+                if(selectedText.equals("Add") || selectedText.equals("Adauga") || selectedText.equals("Toevoegen")) {
                     setView(View.ADD);
                 }
-                else if(selected.getText().equals("Edit")) {
+                else if(selectedText.equals("Edit") || selectedText.equals("Bewerk")) {
                     setView(View.EDIT);
                 }
-                else if (selected.getText().equals("Delete")) {
+                else if (selectedText.equals("Delete")|| selectedText.equals("Sterge") || selectedText.equals("Verwijderen")) {
                     setView(View.DELETE);
                 }
             }
@@ -471,7 +474,8 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         required.setText(lm.get("*required"));
         labelName.setText(lm.get("Name"));
         labelEmail.setText(lm.get("Email"));
-        labelIBAN.setText(lm.get("IBAN"));
-        labelBIC.setText(lm.get("BIC"));
+        labelIBAN.setText("IBAN");
+        labelBIC.setText("BIC");
+        comboBoxName.setPromptText(lm.get("Choose..."));
     }
 }
