@@ -16,6 +16,10 @@ public class AdminPasswordCtrl implements VoidSceneController {
 
     private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
+
+    @Inject
+    private LanguageManager lm;
+
     @FXML
     private Button submitButton;
 
