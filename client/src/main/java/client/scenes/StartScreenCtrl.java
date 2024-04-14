@@ -145,8 +145,8 @@ public class StartScreenCtrl implements VoidSceneController{
 //        });
 
         class LanguageOptionCellClass extends ListCell<LanguageOption> {
-            Label name = new Label();
-            ImageView icon = new ImageView();
+            private Label name = new Label();
+            private ImageView icon = new ImageView();
             private final HBox cell;
             {
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);

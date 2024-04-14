@@ -35,6 +35,7 @@ public class JSONDumpController {
      * @param participantDTOMapper The ParticipantDTOMapper instance to be injected.
      * @param expenseDTOMapper The ExpenseDTOMapper instance to be injected.
      * @param debtDTOMapper The DebtDTOMapper instance to be injected.
+     * @param simpMessagingTemplate The SimpMessaging template to be injected.
      */
     public JSONDumpController(
             @Autowired JSONDumpService jsonDumpService,

@@ -179,7 +179,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         System.out.println(lm == null);
         toggleView.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
             if(newValue != null) {
-                ToggleButton selected = (ToggleButton) newValue; // idk if this is correct for in the if check to add the languagemanager, let's see if it brings bugs or not
+                ToggleButton selected = (ToggleButton) newValue;
                 String selectedText = selected.getText();
                 if(selectedText.equals("Add") || selectedText.equals("Adauga") || selectedText.equals("Toevoegen")) {
                     setView(View.ADD);
@@ -187,7 +187,9 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 else if(selectedText.equals("Edit") || selectedText.equals("Bewerk")) {
                     setView(View.EDIT);
                 }
-                else if (selectedText.equals("Delete")|| selectedText.equals("Sterge") || selectedText.equals("Verwijderen")) {
+                else if (selectedText.equals("Delete")
+                        || selectedText.equals("Sterge")
+                        || selectedText.equals("Verwijderen")) {
                     setView(View.DELETE);
                 }
             }

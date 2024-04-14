@@ -234,6 +234,9 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         serverUtils.regenerateDebts(event.code());
     }
 
+    /**
+     * Sets the text in the correct language
+     */
     public void setLanguageForAllOpenDebtsCtrl() {
         if(lm == null){
             System.out.println("lm is null when setting the languages in OpenDebtsCtrl");

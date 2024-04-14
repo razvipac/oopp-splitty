@@ -123,6 +123,7 @@ public class ServerUtils {
      * Registers a consumer for handling changes of participant entities in a given event
      * @param eventCode code of the event on which to listen
      * @param consumer consumer for handling changes
+     * @param sessionKey sets the key for this session
      */
     public void registerForWebSocketUpdatesOnParticipant(Object sessionKey, String eventCode,
                                                          Consumer<WSWrapperResponseBody<ParticipantDTO>> consumer)
@@ -130,6 +131,11 @@ public class ServerUtils {
         registerForWebSocketMessages(sessionKey, "/api/websocket/v1/channel/" + eventCode + "/participant", consumer);
     }
 
+    /**
+     * Registers a consumer for handling changes of all event entities
+     * @param consumer consumer for handling changes
+     * @param sessionKey sets the key for this session
+     */
     public void registerForWebSocketUpdatesForAllEvents(Object sessionKey,
                                                         Consumer<WSWrapperResponseBody<EventDTO>> consumer)
     {
@@ -140,6 +146,7 @@ public class ServerUtils {
      * Registers a consumer for handling changes of all entities on given as well as event deletions and creations
      * @param eventCode code of the event on which to listen
      * @param consumer consumer for handling changes
+     * @param sessionKey sets the key for this session
      */
     public void registerForWebSocketUpdatesForTheWholeEvent(Object sessionKey, String eventCode,
                                                             Consumer<WSWrapperResponseBody> consumer)
@@ -166,6 +173,10 @@ public class ServerUtils {
         );
     }
 
+    /**
+     * Disconnects the session with given key
+     * @param sessionKey key of the session to be disconnected
+     */
     public void disconnectWSSession(Object sessionKey){
         this.wsSessions.get(sessionKey).disconnect();
         this.destinations.remove(sessionKey);

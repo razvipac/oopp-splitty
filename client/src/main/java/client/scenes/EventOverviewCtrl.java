@@ -488,6 +488,9 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         robot.keyType(KeyCode.TAB);
     }
 
+    /**
+     *  Sets the text in correct language
+     */
     public void setLanguageForAllEventOverviewCtrl(){
         if(lm == null){
             return;

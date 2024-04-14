@@ -332,6 +332,9 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.ENTER) submit();
     }
 
+    /**
+     * Sets the text in correct language
+     */
     public void setLanguageForAllAddEditExpenseCtrl(){
         whoPaid.setText(lm.get("Who paid?*"));
         whatFor.setText(lm.get( "What for?*"));
