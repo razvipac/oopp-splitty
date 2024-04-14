@@ -14,7 +14,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
@@ -70,6 +72,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
     @Inject
     private LanguageManager lm;
+    List<ParticipantDTO> participants;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
@@ -88,6 +91,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
+        participants = new ArrayList<>();
         controllerUtils.bindComboBoxForKeyboardInput(comboBoxName);
 
         // IBAN: sets character limit to 18
@@ -112,6 +116,22 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
             }
         } );
 
+        comboBoxName.setOnAction(actionEvent -> {
+            String selection = comboBoxName.getSelectionModel().getSelectedItem();
+            if (selection != null && (currentView == View.EDIT || currentView == View.DELETE)) {
+                Optional<ParticipantDTO> found = participants.stream()
+                        .filter(participantDTO -> participantDTO.name().equals(selection))
+                        .findFirst();
+
+                if (found.isPresent()) {
+                    boxEmail.setText(found.get().email());
+                    boxIban.setText(found.get().iban());
+                    boxBic.setText(found.get().bic());
+                }
+            }
+
+        });
+
         // listen to toggleView changes
         toggleViewListen();
     }
@@ -131,7 +151,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         toggleView.selectToggle(addButton);
         setView(View.ADD);  // set to ADD by default
 
-        List<ParticipantDTO> participants = serverUtils.getParticipants(event.code());
+        participants = serverUtils.getParticipants(event.code());
         comboBoxName.getItems().setAll(
                 participants
                         .stream()
@@ -282,7 +302,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         if(success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
                     lm.get("Success"), lm.get("Participant Updated Successfully"),
-                    name + lm.get(" has been updated."));
+                    name + lm.get(" has been updated successfully."));
             confirmation.getButtonTypes().clear();
             confirmation.getButtonTypes().add(ButtonType.OK);
             confirmation.showAndWait();
