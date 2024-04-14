@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="290.0" prefWidth="477.0" stylesheets="@client/scenes/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.InvitationsCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="290.0" prefWidth="477.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.InvitationsCtrl">
    <children>
       <VBox alignment="CENTER" layoutX="139.0" layoutY="64.0" prefHeight="272.0" prefWidth="528.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

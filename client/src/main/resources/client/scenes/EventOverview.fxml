@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="500.0" prefWidth="600.0" stylesheets="@client/scenes/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="500.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventOverviewCtrl">
    <children>
       <VBox layoutX="160.0" layoutY="36.0" prefHeight="400.0" prefWidth="600.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -55,7 +55,7 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Button fx:id="manageParticipant" mnemonicParsing="false" onAction="#openAddEditParticipant" prefHeight="25.0" prefWidth="80.0" styleClass="primary-button" text="Manage">
+                        <Button fx:id="manageParticipant" mnemonicParsing="false" onAction="#openAddEditParticipant" prefHeight="25.0" styleClass="primary-button" text="Manage">
                            <graphic>
                               <FontAwesomeIconView glyphName="USER" styleClass="primary-icon" />
                            </graphic>
@@ -82,7 +82,7 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Button fx:id="addExpenseButton" mnemonicParsing="false" onAction="#openAddExpense" prefHeight="27.0" prefWidth="60.0" styleClass="primary-button" text="Add">
+                        <Button fx:id="addExpenseButton" mnemonicParsing="false" onAction="#openAddExpense" prefHeight="27.0" styleClass="primary-button" text="Add">
                            <graphic>
                               <FontAwesomeIconView glyphName="PLUS" styleClass="primary-icon" />
                            </graphic>
@@ -110,7 +110,7 @@
                         <VBox fx:id="expenseItemContainer" spacing="5.0" />
                      </content>
                   </ScrollPane>
-                  <Button fx:id="settleDebtsButton" mnemonicParsing="false" onAction="#openOpenDebts" prefHeight="27.0" prefWidth="110.0" styleClass="primary-button" text="Settle Debts">
+                  <Button fx:id="settleDebtsButton" mnemonicParsing="false" onAction="#openOpenDebts" prefHeight="27.0" styleClass="primary-button" text="Settle Debts">
                      <graphic>
                         <FontAwesomeIconView glyphName="MONEY" styleClass="primary-icon" />
                      </graphic>
