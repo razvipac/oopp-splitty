@@ -19,6 +19,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -83,6 +85,7 @@ public class AdminCtrl implements VoidSceneController {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
+        controllerUtils.bindComboBoxForKeyboardInput(orderByComboBox);
         orderByItems = FXCollections.observableArrayList();
         setLanguageForAllAdminCtrl();
         orderByComboBox.setItems(orderByItems);
@@ -371,5 +374,12 @@ public class AdminCtrl implements VoidSceneController {
      */
     private void setOrderOptions() {
         orderByItems.setAll(title, newDate, oldDate, recentActivity, lastActivity);
+    }
+
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
+            goBack();
+        }
     }
 }
