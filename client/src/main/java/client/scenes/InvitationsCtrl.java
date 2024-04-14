@@ -7,6 +7,7 @@ import client.utils.InviteUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
@@ -84,11 +85,19 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void sendInvites(){
-        EventDTO tmp= new EventDTO("name", "123", LocalDateTime.now(), LocalDateTime.now());
-        System.out.println(email.getText());
+        String emailString = email.getText();
+        String regexEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        if(emailString.isEmpty() || !(emailString.matches(regexEmail))) {
+            Alert error = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error",
+                    "Email entered incorrectly",
+                    "Please enter a valid email address.");
+            error.showAndWait();
+            return;
+        }
 
-        inviteUtils.sendInvitation(email.getText(),tmp.code());
-        System.out.println("Sending invites to" + email.getText());
+        System.out.println("Sending invites to" + emailString);
         String title = "Invitations sent successfully";
         String header = "Invitations were sent successfully!";
         String content = "The invitations sent successfully to: \n";
@@ -97,12 +106,28 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
             header = lm.get("Invitations were sent successfully!");
             content = lm.get("The invitations sent successfully to: \n");
         }
-        Alert successAlert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
-                title,
-                header,
-                content + email.getText());
-        successAlert.showAndWait();
-        goBack();
+
+        if(inviteUtils.sendInvitation(emailString, event.code())) {
+            String username = emailString.substring(0, emailString.indexOf('@'));
+            ParticipantDTO p = new ParticipantDTO(username, emailString, "", "");
+            serverUtils.addParticipant(p, event.code());
+
+            Alert successAlert = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
+                    title,
+                    header,
+                    content + email.getText());
+            successAlert.showAndWait();
+            goBack();
+        }
+        else {
+            System.out.println("Sending invites failed");
+            Alert error = controllerUtils.createAlert(Alert.AlertType.ERROR,
+                    "Error",
+                    "Sending email failed",
+                    "An error has occurred. Please try again.");
+            error.showAndWait();
+            return;
+        }
     }
 
     @FXML
