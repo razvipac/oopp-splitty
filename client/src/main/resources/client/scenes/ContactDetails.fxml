@@ -14,38 +14,38 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" stylesheets="@client/scenes/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
    <children>
       <Text fx:id="manageParticipants" layoutX="31.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Participants:" wrappingWidth="315.30859375">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
       </Text>
-      <ToggleButton fx:id="addButton" layoutX="31.0" layoutY="60.0" mnemonicParsing="false" text="Add">
+      <ToggleButton fx:id="addButton" layoutX="31.0" layoutY="60.0" mnemonicParsing="false" styleClass="primary-button" text="Add">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="System Bold" size="12.0" />
          </font>
          <graphic>
-            <FontAwesomeIconView glyphName="PLUS" />
+            <FontAwesomeIconView glyphName="PLUS" styleClass="primary-icon"/>
          </graphic>
          <toggleGroup>
             <ToggleGroup fx:id="toggleView" />
          </toggleGroup>
       </ToggleButton>
-      <ToggleButton fx:id="editButton" layoutX="109.0" layoutY="60.0" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView">
+      <ToggleButton fx:id="editButton" layoutX="109.0" layoutY="60.0" mnemonicParsing="false" styleClass="primary-button" text="Edit" toggleGroup="$toggleView">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="System Bold" size="12.0" />
          </font>
          <graphic>
-            <FontAwesomeIconView glyphName="PENCIL" />
+            <FontAwesomeIconView glyphName="PENCIL" styleClass="primary-icon"/>
          </graphic>
       </ToggleButton>
-      <ToggleButton fx:id="deleteButton" layoutX="189.0" layoutY="60.0" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView">
+      <ToggleButton fx:id="deleteButton" layoutX="189.0" layoutY="60.0" mnemonicParsing="false" styleClass="primary-button" text="Delete" toggleGroup="$toggleView">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="System Bold" size="12.0" />
          </font>
          <graphic>
-            <FontAwesomeIconView glyphName="TRASH" />
+            <FontAwesomeIconView glyphName="TRASH" styleClass="primary-icon"/>
          </graphic>
       </ToggleButton>
       <GridPane hgap="3.0" layoutX="31.0" layoutY="102.0" vgap="3.0">
@@ -92,10 +92,10 @@
             <Font name="System Italic" size="12.0" />
          </font>
       </Text>
-      <Button fx:id="abortButton" layoutX="272.0" layoutY="242.0" mnemonicParsing="false" onAction="#goBack" text="Abort" />
-      <Button fx:id="okButton" layoutX="332.0" layoutY="242.0" mnemonicParsing="false" onAction="#ok" text="OK">
+      <Button fx:id="abortButton" layoutX="272.0" layoutY="242.0" mnemonicParsing="false" onAction="#goBack" styleClass="back-button" text="Abort" />
+      <Button fx:id="okButton" layoutX="332.0" layoutY="242.0" mnemonicParsing="false" onAction="#ok" prefWidth="38.0" styleClass="primary-button" text="OK">
          <font>
-            <Font name="System Bold" size="13.0" />
+            <Font name="System Bold" size="12.0" />
          </font>
       </Button>
       <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" />

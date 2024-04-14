@@ -16,6 +16,11 @@
     -fx-border-color: #17418f;
 }
 
+.toggle-button:selected {
+    -fx-background-color: #46b5be;
+    -fx-border-color: #316386;
+}
+
 .primary-icon {
     -fx-fill: #ffffff;
 }
