@@ -197,7 +197,14 @@ public class StartScreenCtrl implements VoidSceneController{
             addRecentlyJoinedEventCode(code);
             mainCtrl.showEventOverview(found.get());
         }
-        else System.out.println("Event with code: " + code + " doesn't exist");
+        else {
+            controllerUtils.createAlert(Alert.AlertType.ERROR, 
+                    lm.get("Event does not exist"),
+                    lm.get("Event with code") + " \"" + code + "\" " + lm.get("does not exist") + "!",
+                    lm.get("Event with code") + " \"" + code + "\" " + lm.get("does not exist") + "! " +
+                            lm.get("Check your event code again!")
+            ).showAndWait();
+        }
     }
 
     private void addRecentlyJoinedEventCode(String code) {

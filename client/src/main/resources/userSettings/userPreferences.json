@@ -161,7 +161,11 @@
     "Please enter a valid BIC": "Voer een geldige BIC in",
     "Are you sure you want to edit this participant?": "Weet u zeker dat u deze deelnemer wilt bewerken?",
     "Are you sure you want to delete this participant?": "Weet u zeker dat u deze deelnemer wilt verwijderen?",
-    "Please enter a valid email": "Voer een geldig e-mailadres in"
+    "Please enter a valid email": "Voer een geldig e-mailadres in",
+    "Event does not exist": "Evenement bestaat niet",
+    "Event with code": "Evenement met code",
+    "does not exist": "bestaat niet",
+    "Check your event code again!": "Controleer uw evenementcode opnieuw!"
   },
   "English": {
     "English": "English",
@@ -332,7 +336,11 @@
     "Please enter a valid BIC": "Please enter a valid BIC",
     "Are you sure you want to edit this participant?": "Are you sure you want to edit this participant?",
     "Are you sure you want to delete this participant?": "Are you sure you want to delete this participant?",
-    "Please enter a valid email": "Please enter a valid email"
+    "Please enter a valid email": "Please enter a valid email",
+    "Event does not exist": "Event does not exist",
+    "Event with code": "Event with code",
+    "does not exist": "does not exist",
+    "Check your event code again!": "Check your event code again!"
   },
   "Romanian": {
     "English": "Engleză",
@@ -503,7 +511,11 @@
     "Please enter a valid BIC": "Vă rugăm să introduceți un BIC valid",
     "Are you sure you want to edit this participant?": "Sunteți sigur că doriți să editați acest participant?",
     "Are you sure you want to delete this participant?": "Sunteți sigur că doriți să ștergeți acest participant?",
-    "Please enter a valid email": "Introduceti un email valid"
+    "Please enter a valid email": "Introduceti un email valid",
+    "Event does not exist": "Evenimentul nu există",
+    "Event with code": "Eveniment cu cod",
+    "does not exist": "nu exista",
+    "Check your event code again!": "Verificați din nou codul evenimentului!"
   },
   "Template": {
     "English": "",
@@ -673,7 +685,8 @@
     "Please enter a valid BIC": "",
     "Are you sure you want to edit this participant?": "",
     "Are you sure you want to delete this participant?": "",
-    "Please enter a valid email": ""
+    "Please enter a valid email": "",
+    "Event does not exist": ""
   },
   "language": "Dutch"
 }
