@@ -167,7 +167,8 @@
     "does not exist": "bestaat niet",
     "Check your event code again!": "Controleer uw evenementcode opnieuw!",
     "Are you sure you want to change the name of the event to \"": "Weet u zeker dat u de naam van de gebeurtenis wilt wijzigen in \"",
-    "Adding Participant Failed": "Toevoegen van deelnemer is mislukt"
+    "Adding Participant Failed": "Toevoegen van deelnemer is mislukt",
+    " has been updated successfully.": " is succesvol bijgewerkt."
   },
   "English": {
     "English": "English",
@@ -521,7 +522,8 @@
     "does not exist": "nu exista",
     "Check your event code again!": "Verificați din nou codul evenimentului!",
     "Are you sure you want to change the name of the event to \"": "Sigur doriți să schimbați numele evenimentului în \"",
-    "Adding Participant Failed": "Adăugarea unui participant a eșuat"
+    "Adding Participant Failed": "Adăugarea unui participant a eșuat",
+    " has been updated successfully.": " a fost actualizat cu succes."
   },
   "Template": {
     "English": "",
