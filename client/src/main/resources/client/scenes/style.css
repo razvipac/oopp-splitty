@@ -1,0 +1,68 @@
+.root {
+    -fx-background-color: white;
+}
+
+.primary-button {
+    -fx-background-color: #3976A7;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 2px;
+    -fx-border-color: #0d244f;
+    -fx-border-width: 1px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #569bd3;
+    -fx-border-color: #17418f;
+}
+
+.secondary-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #002872;
+    -fx-border-radius: 2px;
+    -fx-border-color: #002872;
+    -fx-border-width: 1.2px;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #f2f8ff;
+    -fx-border-color: #0043b6;
+}
+
+.small-button {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 20px;
+    -fx-border-color: #858585;
+    -fx-border-width: 1px;
+}
+
+.small-button:hover {
+    -fx-text-fill: #0043b6;
+    -fx-border-color: #0043b6;
+    -fx-border-width: 1.4px;
+}
+
+.small-button-delete {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 20px;
+    -fx-border-color: #ff6d6d;
+    -fx-border-width: 1px;
+}
+
+.small-button-delete:hover {
+    -fx-text-fill: #e01d1d;
+    -fx-border-color: #e01d1d;
+    -fx-border-width: 1.4px;
+}
+
+.combo-box {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #858585;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+}
+
+.combo-box:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #0043b6;
+}
