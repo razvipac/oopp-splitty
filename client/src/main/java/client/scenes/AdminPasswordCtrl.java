@@ -85,7 +85,6 @@ public class AdminPasswordCtrl implements VoidSceneController {
      * text or prompt text accordingly.
      */
     public void setLanguageForAllAdminPasswordCtrl(){
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
             return;
         }

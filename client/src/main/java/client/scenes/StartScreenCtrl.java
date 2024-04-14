@@ -33,6 +33,8 @@ public class StartScreenCtrl implements VoidSceneController{
     private final MainCtrl mainCtrl;
     @Inject
     private ControllerUtils controllerUtils;
+    @Inject
+    private LanguageManager lm;
 
     private static final String STORAGE_PATH =
             "client/src/main/resources/userSettings/savedData/recently_joined_event_codes.ser";
@@ -134,29 +136,34 @@ public class StartScreenCtrl implements VoidSceneController{
 
     private void loadLanguageButton() {
         System.out.println("Loading language button");
+
         HBox hbox1 = new HBox();
         hbox1.getChildren().addAll(
-                mainCtrl.getLanguageManager().createFlagIcon(
+                lm.createFlagIcon(
                         new LanguageOption(LanguageOption.Language.ENGLISH)),
                 new Label("English"));
         HBox hbox2 = new HBox();
+
         hbox2.getChildren().addAll(
-                mainCtrl.getLanguageManager().createFlagIcon(
+                lm.createFlagIcon(
                         new LanguageOption(LanguageOption.Language.DUTCH)),
                 new Label("Nederlands"));
         HBox hbox3 = new HBox();
+
         hbox3.getChildren().addAll(
-                mainCtrl.getLanguageManager().createFlagIcon(
+                lm.createFlagIcon(
                         new LanguageOption(LanguageOption.Language.ROMANIAN)),
                 new Label("Romana"));
+
         languageButton.getItems().clear();
         languageButton.getItems().addAll(hbox1, hbox2, hbox3);
 
         HBox hbox4 = new HBox();
-        if(mainCtrl.getLanguageManager() != null){
+        if(lm != null){
             hbox4.getChildren().add(
-                    mainCtrl.getLanguageManager().createFlagIcon(
-                            mainCtrl.getLanguageManager().getLanguageOption())
+                    lm.createFlagIcon(
+                            lm.getLanguageOption()
+                    )
             );
         }else{
         }
@@ -208,7 +215,6 @@ public class StartScreenCtrl implements VoidSceneController{
      */
     public void setLanguageForAll(){
         System.out.println("Setting language for start screen");
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
             return;
         }
@@ -289,10 +295,11 @@ public class StartScreenCtrl implements VoidSceneController{
     public void translate(ActionEvent actionEvent) {
         int option = languageButton.getSelectionModel().getSelectedIndex();
         // Add your custom logic here based on the selected language;
-        HBox hBox = new HBox();
         switch (option){
+            case -1:
+                break;
             case 0:
-                mainCtrl.getLanguageManager().saveLanguage(
+                lm.saveLanguage(
                         new LanguageOption(LanguageOption.Language.ENGLISH));
                 System.out.println("Saved english");
                 mainCtrl.reloadAllLanguages();
@@ -300,7 +307,7 @@ public class StartScreenCtrl implements VoidSceneController{
                 //TODO - refresh the page
                 break;
             case 1:
-                mainCtrl.getLanguageManager().saveLanguage(
+                lm.saveLanguage(
                         new LanguageOption(LanguageOption.Language.DUTCH));
                 System.out.println("Saved dutch");
                 mainCtrl.reloadAllLanguages();
@@ -308,7 +315,7 @@ public class StartScreenCtrl implements VoidSceneController{
                 //TODO - refresh the page
                 break;
             case 2:
-                mainCtrl.getLanguageManager().saveLanguage(
+                lm.saveLanguage(
                         new LanguageOption(LanguageOption.Language.ROMANIAN));
                 System.out.println("Saved romanian");
                 mainCtrl.reloadAllLanguages();

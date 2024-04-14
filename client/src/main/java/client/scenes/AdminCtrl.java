@@ -58,12 +58,11 @@ public class AdminCtrl implements VoidSceneController {
     private String oldDate;
     private String newDate;
     private String title;
-    @FXML
-    private GridPane eventGrid;
-    @FXML
-    private ComboBox<String> orderByComboBox;
 
     private ObservableList<String> orderByItems;
+
+    @Inject
+    private LanguageManager lm;
 
     /**
      * Constructor for AdminCtrl.
@@ -139,7 +138,6 @@ public class AdminCtrl implements VoidSceneController {
             Button eventNameButton = createEventNameButton(e);
             Button deleteButton = createDeleteEventButton(e);
 
-            LanguageManager lm = mainCtrl.getLanguageManager();
             Button downloadButton = new Button(lm.get("Download"));
             // Download Button
             try {
@@ -182,7 +180,6 @@ public class AdminCtrl implements VoidSceneController {
      * @return Button Object.
      */
     private Button createDeleteEventButton(EventDTO event) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         Button delete = new Button(lm.get("Delete"));
         delete.setOnAction(e -> {
             boolean confirmed = controllerUtils.createConfirmationAlert(
@@ -216,7 +213,6 @@ public class AdminCtrl implements VoidSceneController {
      * @return the button
      */
     public Button createDownloadEventButton(JSONDumpEventDTO event) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         Button get = new Button(lm.get("Download"));
         // If the given event is null for any reason, the button is disabled.
         if (event == null) {
@@ -268,7 +264,6 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     public void importEvent() {
         FileChooser fileChooser = new FileChooser();
-        LanguageManager lm = mainCtrl.getLanguageManager();
         fileChooser.setTitle(lm.get("Choose JSON File"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
@@ -290,7 +285,6 @@ public class AdminCtrl implements VoidSceneController {
      * @param jsonPath the path to the file
      */
     public void importEventFromJSON(String jsonPath) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
@@ -354,7 +348,6 @@ public class AdminCtrl implements VoidSceneController {
      * Sets various Strings to the currently selected language
      */
     public void setLanguageForAllAdminCtrl() {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         adminPanel.setText(lm.get("Administrator Control Panel"));
         allEvents.setText(lm.get("All Events"));
         backButton.setText(lm.get("Back"));

@@ -37,6 +37,8 @@ public class MainCtrl {
 
     @Inject
     private ControllerUtils controllerUtils;
+    @Inject
+    private LanguageManager lm;
 
     private Stage primaryStage;
 
@@ -66,8 +68,6 @@ public class MainCtrl {
     private Stage adminPasswordPopup;
     private boolean passwordIsCorrect;
 
-    private LanguageManager languageManager;
-
     private KeyCombination globalBackToStartScreen = new KeyCodeCombination(KeyCode.X, KeyCombination.ALT_DOWN);
 
     private Thread.UncaughtExceptionHandler defaultExceptionHandler;
@@ -84,7 +84,6 @@ public class MainCtrl {
      * @param addEditExpensePair the addEditExpensePair from MyFXML output
      * @param adminPair the adminPair from MyFXML output
      * @param adminPasswordPair the adminPasswordPair from MyFXML output
-     * @param languageManager the languageManager of the whole app
      */
     public void initialize(Stage primaryStage,
                            Pair<StartScreenCtrl, Parent> startScreenPair,
@@ -94,10 +93,8 @@ public class MainCtrl {
                            Pair<OpenDebtsCtrl, Parent> openDebtsPair,
                            Pair<AddEditExpenseCtrl, Parent> addEditExpensePair,
                            Pair<AdminCtrl, Parent> adminPair,
-                           Pair<AdminPasswordCtrl, Parent> adminPasswordPair,
-                           LanguageManager languageManager
+                           Pair<AdminPasswordCtrl, Parent> adminPasswordPair
     ) {
-        this.languageManager = languageManager;
         this.primaryStage = primaryStage;
 
         this.startScreenCtrl = startScreenPair.getKey();
@@ -164,13 +161,12 @@ public class MainCtrl {
         while (true) {
             try {
                 String string = "Splitty: Start Screen";
-                string = languageManager.get(string);
+                string = lm.get(string);
                 primaryStage.setTitle(string);
                 primaryStage.setScene(startScreen);
                 startScreenCtrl.refresh();
                 break;
             } catch (ProcessingException e) {
-                LanguageManager lm = getLanguageManager();
                 boolean reconnect = controllerUtils.createServerUnavailableAlert(
                         lm.get("Server unavailable!"),
                         lm.get("The server is unavailable!\n") +
@@ -192,7 +188,6 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event to display.
      */
     public void showEventOverview(EventDTO eventDTO){
-        LanguageManager lm = languageManager;
         primaryStage.setTitle(lm.get("Splitty: Event ") + eventDTO.name());
         primaryStage.setScene(eventOverview);
         eventOverviewCtrl.refresh(eventDTO);
@@ -205,7 +200,6 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to display contact details.
      */
     public void showContactDetails(EventDTO eventDTO) {
-        LanguageManager lm = languageManager;
         primaryStage.setTitle(lm.get("Splitty: Add/Edit Participant"));
         primaryStage.setScene(contactDetails);
         contactDetailsCtrl.refresh(eventDTO);
@@ -219,7 +213,7 @@ public class MainCtrl {
      */
     public void showInvitations(EventDTO eventDTO){
         String string = "Splitty: Send invitations to event ";
-        string = languageManager.get(string);
+        string = lm.get(string);
         primaryStage.setTitle(string + eventDTO.name());
         primaryStage.setScene(invitations);
         invitationsCtrl.refresh(eventDTO);
@@ -232,7 +226,6 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to manage open debts.
      */
     public void showOpenDebts(EventDTO eventDTO){
-        LanguageManager lm = languageManager;
         primaryStage.setTitle(lm.get("Splitty: Settle debts of event ") + eventDTO.name());
         primaryStage.setScene(openDebts);
         openDebtsCtrl.refresh(eventDTO);
@@ -245,7 +238,6 @@ public class MainCtrl {
      * @param eventDTO The EventDTO representing the event for which to add expenses.
      */
     public void showAddExpense(EventDTO eventDTO){
-        LanguageManager lm = languageManager;
         primaryStage.setTitle(lm.get("Splitty: Add expense for event ") + eventDTO.name());
         primaryStage.setScene(addEditExpense);
         addEditExpenseCtrl.refresh(eventDTO, null);
@@ -259,7 +251,6 @@ public class MainCtrl {
      * @param expense The expense to edit.
      */
     public void showEditExpense(EventDTO eventDTO, ExpenseDTO expense){
-        LanguageManager lm = languageManager;
         primaryStage.setTitle(lm.get("Splitty: Edit expense for event ") + eventDTO.name());
         primaryStage.setScene(addEditExpense);
         addEditExpenseCtrl.refresh(eventDTO, expense);
@@ -271,7 +262,6 @@ public class MainCtrl {
      */
     public void showAdmin() {
         if(passwordIsCorrect) {
-            LanguageManager lm = languageManager;
             primaryStage.setTitle(lm.get("Splitty: Administrator Control Panel"));
             primaryStage.setScene(admin);
             adminCtrl.refresh();
@@ -288,8 +278,8 @@ public class MainCtrl {
         popup.initOwner(primaryStage);
         popup.initModality(Modality.APPLICATION_MODAL);
         String string = "Administrator Control Panel";
-        if(languageManager != null){
-            string = languageManager.get(string);
+        if(lm != null){
+            string = lm.get(string);
         }
         popup.setTitle(string);
         popup.setResizable(false);  // popup can't be resized
@@ -319,14 +309,6 @@ public class MainCtrl {
      */
     public Stage getPrimaryStage() {
         return primaryStage;
-    }
-
-    /**
-     * Retrieves the languageManager associated with this MainCtrl Instance
-     * @return the language manager
-     */
-    public LanguageManager getLanguageManager() {
-        return this.languageManager;
     }
 
     /**

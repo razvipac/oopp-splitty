@@ -35,6 +35,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private final MainCtrl mainCtrl;
     @Inject
     private ControllerUtils controllerUtils;
+    @Inject
+    private LanguageManager lm;
 
     // Event attributes
     private EventDTO event;
@@ -170,7 +172,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         EventDTO syncedEvent = serverUtils.getEvent(event.code());
         if (syncedEvent == null && eventWasDeleted) {
-            LanguageManager lm = mainCtrl.getLanguageManager();
             this.eventWasDeleted = true;
             Alert alert = controllerUtils.createAlert(
                     Alert.AlertType.WARNING,
@@ -218,7 +219,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             participantLabels.add(new Label(participant.name()));
         }
 
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if (participants.isEmpty()) participantLabels.add(new Label(lm.get("(No participants in event)")));
 
         participantsHBox.getChildren().setAll(participantLabels);
@@ -251,7 +251,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         expenseFilterFromRadio.setDisable(expenses.isEmpty());
         expenseFilterIncludingRadio.setDisable(expenses.isEmpty());
 
-        LanguageManager lm = mainCtrl.getLanguageManager();
         String name = selectedParticipant == null ? lm.get("(participant)") : selectedParticipant.name();
 
         expenseFilterFromRadio.setText(lm.get("From ") + name);
@@ -270,7 +269,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         // Update total expenses label
-        LanguageManager lm = mainCtrl.getLanguageManager();
         totalExpensesLabel.setText(lm.get("Total sum of expenses: ") + calculateTotalExpenseSum());
 
         setExpenseItemVisibility();
@@ -466,7 +464,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void handleEventTitleKeyboardEvent(KeyEvent keyEvent){
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if (keyEvent.getCode() == KeyCode.ENTER) {
             String curText = eventTitleTextField.getText();
             boolean confirmed = controllerUtils.createConfirmationAlert(lm.get("Changing the name of the event"),
@@ -492,7 +489,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     public void setLanguageForAllEventOverviewCtrl(){
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
             return;
         }
@@ -565,7 +561,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.getColumnConstraints().addAll(col1, col2, col3, col4);
             this.getRowConstraints().addAll(row1, row2);
 
-            LanguageManager lm = mainCtrl.getLanguageManager();
 
             dateText = new Text(lm.get("(no date)"));
             dateText.setFill(Color.web("#6f6f6f"));
@@ -597,7 +592,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
          * Adds the information of the expense to this GridPane
          */
         private void addExpenseInformation() {
-            LanguageManager lm = mainCtrl.getLanguageManager();
             if(expenseDTO.date() != null ) dateText.setText(expenseDTO.date().toString());
 
             expenseInfoText.setText(expenseDTO.paidByName() + lm.get(" paid \u20AC")
