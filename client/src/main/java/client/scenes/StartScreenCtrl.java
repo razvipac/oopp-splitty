@@ -257,7 +257,6 @@ public class StartScreenCtrl implements VoidSceneController{
     private void updateRecentEvents() {
         recentViewedEvents.getChildren().clear();
 
-
         List<EventDTO> recentlyJoinedEventDTOs = new ArrayList<>();
         recentlyJoinedEventCodes.forEach(code -> {
             EventDTO found = server.getEvent(code);
@@ -303,7 +302,6 @@ public class StartScreenCtrl implements VoidSceneController{
                         new LanguageOption(LanguageOption.Language.ENGLISH));
                 System.out.println("Saved english");
                 mainCtrl.reloadAllLanguages();
-                mainCtrl.showStartScreen();
                 //TODO - refresh the page
                 break;
             case 1:
@@ -311,7 +309,6 @@ public class StartScreenCtrl implements VoidSceneController{
                         new LanguageOption(LanguageOption.Language.DUTCH));
                 System.out.println("Saved dutch");
                 mainCtrl.reloadAllLanguages();
-                mainCtrl.showStartScreen();
                 //TODO - refresh the page
                 break;
             case 2:
@@ -319,7 +316,6 @@ public class StartScreenCtrl implements VoidSceneController{
                         new LanguageOption(LanguageOption.Language.ROMANIAN));
                 System.out.println("Saved romanian");
                 mainCtrl.reloadAllLanguages();
-                mainCtrl.showStartScreen();
                 //TODO - refresh the page
                 break;
         }
