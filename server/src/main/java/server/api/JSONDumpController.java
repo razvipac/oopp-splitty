@@ -4,6 +4,7 @@ import commons.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import server.entities.DTOMapper;
 import server.entities.debt.Debt;
@@ -24,6 +25,7 @@ public class JSONDumpController {
     private final DTOMapper<Participant, ParticipantDTO> participantDTOMapper;
     private final DTOMapper<Expense, ExpenseDTO> expenseDTOMapper;
     private final DTOMapper<Debt, DebtDTO> debtDTOMapper;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * Constructs a JSONDumpController with the specified JSONDumpService.
@@ -39,13 +41,15 @@ public class JSONDumpController {
             @Autowired DTOMapper<Event, EventDTO> eventDTOMapper,
             @Autowired DTOMapper<Participant, ParticipantDTO> participantDTOMapper,
             @Autowired DTOMapper<Expense, ExpenseDTO> expenseDTOMapper,
-            @Autowired DTOMapper<Debt, DebtDTO> debtDTOMapper
+            @Autowired DTOMapper<Debt, DebtDTO> debtDTOMapper,
+            @Autowired SimpMessagingTemplate simpMessagingTemplate
     ) {
         this.jsonDumpService = jsonDumpService;
         this.eventDTOMapper = eventDTOMapper;
         this.participantDTOMapper = participantDTOMapper;
         this.expenseDTOMapper = expenseDTOMapper;
         this.debtDTOMapper = debtDTOMapper;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
@@ -97,6 +101,15 @@ public class JSONDumpController {
     ){
         try {
             jsonDumpService.restoreEventFromDump(body);
+
+            simpMessagingTemplate.convertAndSend(
+                    "/api/websocket/v1/channel/event",
+                    new WSWrapperResponseBody<>(
+                            WSAction.CREATED,
+                            body
+                    )
+            );
+
             return new ResponseEntity<>("Restored Successfully", HttpStatus.OK);
         } catch (ImproperDumpFormatException e){
             return new ResponseEntity<>("Improper JSON dump format!", HttpStatus.NOT_MODIFIED);

@@ -2,12 +2,14 @@ package client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Singleton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.util.Objects;
 
+@Singleton
 public class LanguageManager {
     private String preferencesFilePath;
     private LanguageOption languageOption;

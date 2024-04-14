@@ -49,19 +49,21 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     private Button importEventButton;
     @FXML
+    private GridPane eventGrid;
+    @FXML
+    private ComboBox<String> orderByComboBox;
+
     private String lastActivity;
-    @FXML
     private String recentActivity;
-    @FXML
     private String oldDate;
-    @FXML
     private String newDate;
-    @FXML
     private String title;
     @FXML
     private GridPane eventGrid;
     @FXML
     private ComboBox<String> orderByComboBox;
+
+    private ObservableList<String> orderByItems;
 
     /**
      * Constructor for AdminCtrl.
@@ -82,7 +84,9 @@ public class AdminCtrl implements VoidSceneController {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
-        serverUtils.registerForWebSocketUpdatesForAllEvents(this, q -> Platform.runLater(this::refresh));
+        orderByItems = FXCollections.observableArrayList();
+        setLanguageForAllAdminCtrl();
+        orderByComboBox.setItems(orderByItems);
     }
 
     /**
@@ -90,10 +94,10 @@ public class AdminCtrl implements VoidSceneController {
      * Gets all events from server and orders them.
      */
     public void refresh() {
+        serverUtils.registerForWebSocketUpdatesForAllEvents(this, q -> Platform.runLater(this::refresh));
         events = serverUtils.getAllEvents();
         setLanguageForAllAdminCtrl();
         orderByComboBox.getSelectionModel().selectFirst();    // default selection
-        orderEvents();
     }
 
     /**
@@ -104,20 +108,22 @@ public class AdminCtrl implements VoidSceneController {
     public void orderEvents() {
         String selected = orderByComboBox.getValue();
 
-        if(selected.equals(title)) {
-            events.sort(Comparator.comparing(EventDTO::name, String.CASE_INSENSITIVE_ORDER));
-        }
-        else if(selected.equals(newDate)) {
-            events.sort(Comparator.comparing(EventDTO::creationDate, Comparator.reverseOrder()));
-        }
-        else if(selected.equals(oldDate)) {
-            events.sort(Comparator.comparing(EventDTO::creationDate));
-        }
-        else if(selected.equals(recentActivity)) {
-            events.sort(Comparator.comparing(EventDTO::lastActivity, Comparator.reverseOrder()));
-        }
-        else if(selected.equals(lastActivity)) {
-            events.sort(Comparator.comparing(EventDTO::lastActivity));
+        if (selected != null){
+            if(selected.equals(title)) {
+                events.sort(Comparator.comparing(EventDTO::name, String.CASE_INSENSITIVE_ORDER));
+            }
+            else if(selected.equals(newDate)) {
+                events.sort(Comparator.comparing(EventDTO::creationDate, Comparator.reverseOrder()));
+            }
+            else if(selected.equals(oldDate)) {
+                events.sort(Comparator.comparing(EventDTO::creationDate));
+            }
+            else if(selected.equals(recentActivity)) {
+                events.sort(Comparator.comparing(EventDTO::lastActivity, Comparator.reverseOrder()));
+            }
+            else if(selected.equals(lastActivity)) {
+                events.sort(Comparator.comparing(EventDTO::lastActivity));
+            }
         }
 
         addEventsToEventGrid();
@@ -198,7 +204,6 @@ public class AdminCtrl implements VoidSceneController {
                             lm.get("Event has not been deleted due to an error. Please try again later."));
                     alert.showAndWait();
                 }
-                refresh();
             }
         });
         return delete;
@@ -220,7 +225,6 @@ public class AdminCtrl implements VoidSceneController {
         }
 
         get.setOnAction(p -> {
-            refresh();  // refresh events
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
 
@@ -276,7 +280,6 @@ public class AdminCtrl implements VoidSceneController {
         // Check if file is selected
         if (selectedFile != null) {
             importEventFromJSON(selectedFile.getAbsolutePath());
-            refresh();
         }
     }
 
@@ -371,13 +374,6 @@ public class AdminCtrl implements VoidSceneController {
      * language.
      */
     private void setOrderOptions() {
-        ObservableList<String> list = FXCollections.observableArrayList(
-                title,
-                newDate,
-                oldDate,
-                recentActivity,
-                lastActivity
-        );
-        orderByComboBox.setItems(list);
+        orderByItems.setAll(title, newDate, oldDate, recentActivity, lastActivity);
     }
 }

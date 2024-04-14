@@ -70,7 +70,7 @@ public class MainCtrl {
 
     private KeyCombination globalBackToStartScreen = new KeyCodeCombination(KeyCode.X, KeyCombination.ALT_DOWN);
 
-    Thread.UncaughtExceptionHandler defaultExceptionHandler;
+    private Thread.UncaughtExceptionHandler defaultExceptionHandler;
 
     /**
      * Initializes the MainCtrl with the primary stage and scenes for various controllers.
@@ -135,19 +135,26 @@ public class MainCtrl {
         showStartScreen();
         primaryStage.show();
 
-        defaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
-
         Thread.setDefaultUncaughtExceptionHandler(this::exceptionHandler);
     }
 
     private void exceptionHandler(Thread thread, Throwable throwable) {
         if (throwable instanceof ProcessingException) showStartScreen();
-        if (throwable.getCause() instanceof InvocationTargetException invocationTargetException) {
+        else if (throwable.getCause() instanceof InvocationTargetException invocationTargetException) {
             if (invocationTargetException.getTargetException() instanceof ProcessingException) {
                 showStartScreen();
             }
+            else {
+                throwable.printStackTrace();
+                Platform.exit();
+                System.exit(1);
+            }
         }
-        defaultExceptionHandler.uncaughtException(thread, throwable);
+        else {
+            throwable.printStackTrace();
+            Platform.exit();
+            System.exit(1);
+        }
     }
 
     /**
