@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
 import commons.dto.JSONDumpEventDTO;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -48,19 +49,20 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     private Button importEventButton;
     @FXML
-    private String lastActivity;
-    @FXML
-    private String recentActivity;
-    @FXML
-    private String oldDate;
-    @FXML
-    private String newDate;
-    @FXML
-    private String title;
-    @FXML
     private GridPane eventGrid;
     @FXML
     private ComboBox<String> orderByComboBox;
+
+    private String lastActivity;
+    private String recentActivity;
+    private String oldDate;
+    private String newDate;
+    private String title;
+
+    private ObservableList<String> orderByItems;
+
+    @Inject
+    private LanguageManager lm;
 
     /**
      * Constructor for AdminCtrl.
@@ -81,6 +83,9 @@ public class AdminCtrl implements VoidSceneController {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
+        orderByItems = FXCollections.observableArrayList();
+        setLanguageForAllAdminCtrl();
+        orderByComboBox.setItems(orderByItems);
     }
 
     /**
@@ -88,10 +93,10 @@ public class AdminCtrl implements VoidSceneController {
      * Gets all events from server and orders them.
      */
     public void refresh() {
+        serverUtils.registerForWebSocketUpdatesForAllEvents(this, q -> Platform.runLater(this::refresh));
         events = serverUtils.getAllEvents();
         setLanguageForAllAdminCtrl();
         orderByComboBox.getSelectionModel().selectFirst();    // default selection
-        orderEvents();
     }
 
     /**
@@ -102,20 +107,22 @@ public class AdminCtrl implements VoidSceneController {
     public void orderEvents() {
         String selected = orderByComboBox.getValue();
 
-        if(selected.equals(title)) {
-            events.sort(Comparator.comparing(EventDTO::name, String.CASE_INSENSITIVE_ORDER));
-        }
-        else if(selected.equals(newDate)) {
-            events.sort(Comparator.comparing(EventDTO::creationDate, Comparator.reverseOrder()));
-        }
-        else if(selected.equals(oldDate)) {
-            events.sort(Comparator.comparing(EventDTO::creationDate));
-        }
-        else if(selected.equals(recentActivity)) {
-            events.sort(Comparator.comparing(EventDTO::lastActivity, Comparator.reverseOrder()));
-        }
-        else if(selected.equals(lastActivity)) {
-            events.sort(Comparator.comparing(EventDTO::lastActivity));
+        if (selected != null){
+            if(selected.equals(title)) {
+                events.sort(Comparator.comparing(EventDTO::name, String.CASE_INSENSITIVE_ORDER));
+            }
+            else if(selected.equals(newDate)) {
+                events.sort(Comparator.comparing(EventDTO::creationDate, Comparator.reverseOrder()));
+            }
+            else if(selected.equals(oldDate)) {
+                events.sort(Comparator.comparing(EventDTO::creationDate));
+            }
+            else if(selected.equals(recentActivity)) {
+                events.sort(Comparator.comparing(EventDTO::lastActivity, Comparator.reverseOrder()));
+            }
+            else if(selected.equals(lastActivity)) {
+                events.sort(Comparator.comparing(EventDTO::lastActivity));
+            }
         }
 
         addEventsToEventGrid();
@@ -131,7 +138,6 @@ public class AdminCtrl implements VoidSceneController {
             Button eventNameButton = createEventNameButton(e);
             Button deleteButton = createDeleteEventButton(e);
 
-            LanguageManager lm = mainCtrl.getLanguageManager();
             Button downloadButton = new Button(lm.get("Download"));
             // Download Button
             try {
@@ -174,7 +180,6 @@ public class AdminCtrl implements VoidSceneController {
      * @return Button Object.
      */
     private Button createDeleteEventButton(EventDTO event) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         Button delete = new Button(lm.get("Delete"));
         delete.setOnAction(e -> {
             boolean confirmed = controllerUtils.createConfirmationAlert(
@@ -196,7 +201,6 @@ public class AdminCtrl implements VoidSceneController {
                             lm.get("Event has not been deleted due to an error. Please try again later."));
                     alert.showAndWait();
                 }
-                refresh();
             }
         });
         return delete;
@@ -209,7 +213,6 @@ public class AdminCtrl implements VoidSceneController {
      * @return the button
      */
     public Button createDownloadEventButton(JSONDumpEventDTO event) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         Button get = new Button(lm.get("Download"));
         // If the given event is null for any reason, the button is disabled.
         if (event == null) {
@@ -218,7 +221,6 @@ public class AdminCtrl implements VoidSceneController {
         }
 
         get.setOnAction(p -> {
-            refresh();  // refresh events
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
 
@@ -262,7 +264,6 @@ public class AdminCtrl implements VoidSceneController {
     @FXML
     public void importEvent() {
         FileChooser fileChooser = new FileChooser();
-        LanguageManager lm = mainCtrl.getLanguageManager();
         fileChooser.setTitle(lm.get("Choose JSON File"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
@@ -274,7 +275,6 @@ public class AdminCtrl implements VoidSceneController {
         // Check if file is selected
         if (selectedFile != null) {
             importEventFromJSON(selectedFile.getAbsolutePath());
-            refresh();
         }
     }
 
@@ -285,7 +285,6 @@ public class AdminCtrl implements VoidSceneController {
      * @param jsonPath the path to the file
      */
     public void importEventFromJSON(String jsonPath) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
@@ -341,6 +340,7 @@ public class AdminCtrl implements VoidSceneController {
      */
     @FXML
     private void goBack() {
+        serverUtils.disconnectWSSession(this);
         mainCtrl.showStartScreen();
     }
 
@@ -348,7 +348,6 @@ public class AdminCtrl implements VoidSceneController {
      * Sets various Strings to the currently selected language
      */
     public void setLanguageForAllAdminCtrl() {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         adminPanel.setText(lm.get("Administrator Control Panel"));
         allEvents.setText(lm.get("All Events"));
         backButton.setText(lm.get("Back"));
@@ -368,13 +367,6 @@ public class AdminCtrl implements VoidSceneController {
      * language.
      */
     private void setOrderOptions() {
-        ObservableList<String> list = FXCollections.observableArrayList(
-                title,
-                newDate,
-                oldDate,
-                recentActivity,
-                lastActivity
-        );
-        orderByComboBox.setItems(list);
+        orderByItems.setAll(title, newDate, oldDate, recentActivity, lastActivity);
     }
 }

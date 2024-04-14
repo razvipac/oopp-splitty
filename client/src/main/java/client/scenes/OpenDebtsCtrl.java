@@ -33,6 +33,9 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     private final List<DebtDTO> unsettledDebts;
     private final List<DebtDTO> settledDebts;
 
+    @Inject
+    private LanguageManager lm;
+
     @FXML
     private VBox debtVBox;
     @FXML
@@ -142,7 +145,6 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
      * @param d Debt to be added
      */
     public void addDebtToLayout(DebtDTO d) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         // debtLine: line containing debtString and 'Mark Received' button
         HBox debtLine = new HBox(5);
         // debtItem: the entire debt item, containing the debtLine and debtInfo
@@ -205,7 +207,6 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         ParticipantDTO creditor = serverUtils.getParticipant(event.code(), d.creditorName());
         double amount = d.amount();
 
-        LanguageManager lm = mainCtrl.getLanguageManager();
         String creditorBankInfo =
                 lm.get("Bank Information for creditor (") + creditor.name() + "):\n" +
                         lm.get("Account Holder: ") + creditor.name() + "\n" +
@@ -233,8 +234,10 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         serverUtils.regenerateDebts(event.code());
     }
 
+    /**
+     * Sets the text in the correct language
+     */
     public void setLanguageForAllOpenDebtsCtrl() {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
             System.out.println("lm is null when setting the languages in OpenDebtsCtrl");
             return;
