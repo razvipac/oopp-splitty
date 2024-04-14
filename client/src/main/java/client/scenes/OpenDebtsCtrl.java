@@ -160,6 +160,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         // 'Mark Received' button. Prints effect to console for testing
         String buttonText = d.received() ? lm.get("Undo") : lm.get("Mark received");
         Button receivedButton = new Button(buttonText);
+        receivedButton.getStyleClass().add("primary-button");
         receivedButton.setOnAction(e -> {
             serverUtils.toggleDebtReceivedStatus(event.code(), d);
         });
