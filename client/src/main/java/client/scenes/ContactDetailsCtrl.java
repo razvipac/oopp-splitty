@@ -72,7 +72,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
     @Inject
     private LanguageManager lm;
-    List<ParticipantDTO> participants;
+    private List<ParticipantDTO> participants;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
@@ -116,21 +116,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
             }
         } );
 
-        comboBoxName.setOnAction(actionEvent -> {
-            String selection = comboBoxName.getSelectionModel().getSelectedItem();
-            if (selection != null && (currentView == View.EDIT || currentView == View.DELETE)) {
-                Optional<ParticipantDTO> found = participants.stream()
-                        .filter(participantDTO -> participantDTO.name().equals(selection))
-                        .findFirst();
-
-                if (found.isPresent()) {
-                    boxEmail.setText(found.get().email());
-                    boxIban.setText(found.get().iban());
-                    boxBic.setText(found.get().bic());
-                }
-            }
-
-        });
+        comboBoxName.setOnAction(actionEvent -> autoFillForm());
 
         // listen to toggleView changes
         toggleViewListen();
@@ -203,14 +189,19 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 String selectedText = selected.getText();
                 if(selectedText.equals("Add") || selectedText.equals("Adauga") || selectedText.equals("Toevoegen")) {
                     setView(View.ADD);
+                    boxEmail.setText("");
+                    boxIban.setText("");
+                    boxBic.setText("");
                 }
                 else if(selectedText.equals("Edit") || selectedText.equals("Bewerk")) {
                     setView(View.EDIT);
+                    autoFillForm();
                 }
                 else if (selectedText.equals("Delete")
                         || selectedText.equals("Sterge")
                         || selectedText.equals("Verwijderen")) {
                     setView(View.DELETE);
+                    autoFillForm();
                 }
             }
         }));
@@ -496,4 +487,20 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
         labelBIC.setText("BIC");
         comboBoxName.setPromptText(lm.get("Choose..."));
     }
+
+    private void autoFillForm() {
+        String selection = comboBoxName.getSelectionModel().getSelectedItem();
+        if (selection != null && (currentView == View.EDIT || currentView == View.DELETE)) {
+            Optional<ParticipantDTO> found = participants.stream()
+                    .filter(participantDTO -> participantDTO.name().equals(selection))
+                    .findFirst();
+
+            if (found.isPresent()) {
+                boxEmail.setText(found.get().email());
+                boxIban.setText(found.get().iban());
+                boxBic.setText(found.get().bic());
+            }
+        }
+    }
+
 }

@@ -21,6 +21,7 @@ public class LanguageManager {
     /**
      *
      * @param preferencesFilePath initialize this to create better injection
+     * @param configFilePath path to the config file
      */
     public LanguageManager(String preferencesFilePath, String configFilePath) {
         this.preferencesFilePath = preferencesFilePath;
