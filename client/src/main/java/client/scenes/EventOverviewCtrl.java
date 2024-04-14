@@ -452,7 +452,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
 
         // Update the last activity label in the UI
-        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
+        lastActivityDate.setText(updatedEventDTO.lastActivityToString());
     }
 
     private void resizeEventTitleTextField(String currText) {
