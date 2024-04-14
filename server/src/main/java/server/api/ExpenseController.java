@@ -1,20 +1,22 @@
 package server.api;
 
+import commons.dto.ExpenseDTO;
 import commons.dto.WSAction;
 import commons.dto.WSWrapperResponseBody;
-import server.entities.DTOMapper;
-import server.entities.expense.Expense;
-import commons.dto.ExpenseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import server.entities.DTOMapper;
+import server.entities.expense.Expense;
 import server.service.ExpenseService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.util.List;
 
+@Controller
 @RestController
 @RequestMapping("api/v1/{eventCode}/expense")
 public class ExpenseController {
@@ -53,6 +55,7 @@ public class ExpenseController {
      *                         or a single ExpenseResponseBody
      *                         object if both id and participantName are provided.
      */
+    @ResponseBody
     @GetMapping("")
     public ResponseEntity<List<ExpenseDTO>> getAllOrOne(
             @RequestParam(value = "id", required = false) Long id,
@@ -92,6 +95,7 @@ public class ExpenseController {
      * @return A ResponseEntity containing the ExpenseResponseBody of the created expense
      *         if successful, or a NOT_FOUND response if the event or participant is not found.
      */
+    @ResponseBody
     @PostMapping("")
     public ResponseEntity<ExpenseDTO> createOne(
             @PathVariable("eventCode") String eventCode,
@@ -127,6 +131,7 @@ public class ExpenseController {
      * @return A ResponseEntity containing the ExpenseResponseBody of the deleted expense
      *         if successful, or a NOT_FOUND response if the expense is not found.
      */
+    @ResponseBody
     @DeleteMapping("")
     public ResponseEntity<ExpenseDTO> deleteOne(
             @RequestParam("id") Long id,
@@ -164,6 +169,7 @@ public class ExpenseController {
      * @return A ResponseEntity containing the ExpenseResponseBody of the updated expense
      *         if successful, or a NOT_FOUND response if the expense is not found.
      */
+    @ResponseBody
     @PutMapping("")
     public ResponseEntity<ExpenseDTO> updateOneById(
             @RequestParam("id") Long id,

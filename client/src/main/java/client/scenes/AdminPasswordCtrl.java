@@ -7,6 +7,8 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -53,6 +55,11 @@ public class AdminPasswordCtrl implements VoidSceneController {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
+        passwordField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER){
+                submitPassword();
+            }
+        });
         setLanguageForAllAdminPasswordCtrl();
     }
 
@@ -79,6 +86,18 @@ public class AdminPasswordCtrl implements VoidSceneController {
         }
         else {
             errorText.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void goBack(){
+        mainCtrl.closeAdminPasswordPopup();
+    }
+
+    @FXML
+    private void onGlobalKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ESCAPE) {
+            goBack();
         }
     }
 
