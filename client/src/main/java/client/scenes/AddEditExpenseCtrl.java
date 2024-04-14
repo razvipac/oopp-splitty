@@ -130,6 +130,9 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         }
         else {
             header.setText(lm.get("Edit Expense"));
+            whatForField.setText(expense.item());
+            howMuchField.setText(expense.price().toString());
+            whenPicker.setValue(expense.date());
         }
         setLanguageForAllAddEditExpenseCtrl();
     }
