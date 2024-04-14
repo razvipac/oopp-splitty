@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
    <children>
       <VBox prefHeight="314.0" prefWidth="399.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -28,31 +28,31 @@
             </Text>
             <HBox spacing="10.0">
                <children>
-                  <ToggleButton fx:id="addButton" mnemonicParsing="false" text="Add">
+                  <ToggleButton fx:id="addButton" mnemonicParsing="false" text="Add" styleClass="primary-button">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" />
                      </font>
                      <graphic>
-                        <FontAwesomeIconView glyphName="PLUS" />
+                        <FontAwesomeIconView glyphName="PLUS" styleClass="primary-icon"/>
                      </graphic>
                      <toggleGroup>
                         <ToggleGroup fx:id="toggleView" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton fx:id="editButton" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView">
+                  <ToggleButton fx:id="editButton" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView" styleClass="primary-button">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" />
                      </font>
                      <graphic>
-                        <FontAwesomeIconView glyphName="PENCIL" />
+                        <FontAwesomeIconView glyphName="PENCIL" styleClass="primary-icon"/>
                      </graphic>
                   </ToggleButton>
-                  <ToggleButton fx:id="deleteButton" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView">
+                  <ToggleButton fx:id="deleteButton" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView" styleClass="primary-button">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" />
                      </font>
                      <graphic>
-                        <FontAwesomeIconView glyphName="TRASH" />
+                        <FontAwesomeIconView glyphName="TRASH" styleClass="primary-icon"/>
                      </graphic>
                   </ToggleButton>
                </children>
@@ -107,8 +107,8 @@
                         </Text>
                         <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" spacing="10.0">
                            <children>
-                              <Button fx:id="abortButton" mnemonicParsing="false" onAction="#goBack" text="Abort" />
-                              <Button fx:id="okButton" mnemonicParsing="false" onAction="#ok" text="OK">
+                              <Button fx:id="abortButton" mnemonicParsing="false" onAction="#goBack" styleClass="back-button" text="Abort" />
+                              <Button fx:id="okButton" mnemonicParsing="false" onAction="#ok" styleClass="primary-button" text="OK">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>

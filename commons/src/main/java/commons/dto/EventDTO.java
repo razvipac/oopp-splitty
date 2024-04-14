@@ -25,7 +25,7 @@ public record EventDTO(
             String formattedDate = lastActivity.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
             // Format time
             String formattedTime = lastActivity.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-            return "Last activity: " + formattedDate + "\n" + formattedTime;
+            return formattedDate + "\n" + formattedTime;
         }
     }
 

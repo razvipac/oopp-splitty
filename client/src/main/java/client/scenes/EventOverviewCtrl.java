@@ -79,6 +79,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private VBox expenseItemContainer;
     @FXML
     private Label lastActivityLabel;
+    @FXML
+    private Label lastActivityDate;
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
@@ -450,7 +452,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
 
         // Update the last activity label in the UI
-        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
+        lastActivityDate.setText(updatedEventDTO.lastActivityToString());
     }
 
     private void resizeEventTitleTextField(String currText) {
@@ -489,7 +491,11 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     *  Sets the text in correct language
+     * Sets the language for all elements in the invitations control panel.
+     * This method retrieves translations for various UI elements
+     * from the LanguageManager and updates the corresponding
+     * text accordingly.
+     * If LanguageManager is not available, no action is taken.
      */
     public void setLanguageForAllEventOverviewCtrl(){
         if(lm == null){
@@ -498,7 +504,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         participantsLabel.setText(lm.get("Participants"));
         manageParticipant.setText(lm.get("Manage Participants"));
         expensesLabel.setText(lm.get("Expenses"));
-        addExpenseButton.setText(lm.get("Add Expense"));
+        addExpenseButton.setText(lm.get("Add"));
         settleDebtsButton.setText(lm.get("Settle Debts"));
         backButton.setText(lm.get("Back"));
         lastActivityLabel.setText(lm.get("Last Activity:"));
@@ -581,12 +587,14 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             editButton = new Button(lm.get("Edit"));
             editButton.setPrefSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
             editButton.setFont(Font.font(10));
+            editButton.getStyleClass().add("edit-button");
             GridPane.setHalignment(editButton, HPos.RIGHT);
             this.add(editButton, 2, 0, 1, 2);
 
             deleteButton = new Button(lm.get("Delete"));
             deleteButton.setPrefSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
             deleteButton.setFont(Font.font(10));
+            deleteButton.getStyleClass().add("delete-button");
             GridPane.setHalignment(deleteButton, HPos.RIGHT);
             this.add(deleteButton, 3, 0, 1, 2);
         }

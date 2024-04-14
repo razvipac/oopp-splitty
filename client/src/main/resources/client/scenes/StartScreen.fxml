@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPressed" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.StartScreenCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPressed" prefHeight="400.0" prefWidth="660.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.StartScreenCtrl">
    <children>
       <HBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -46,7 +46,7 @@
                         <VBox alignment="TOP_CENTER" spacing="10.0">
                            <children>
                               <Label fx:id="administrator" text="Administrator:" />
-                              <Button fx:id="controlPanel" mnemonicParsing="false" onAction="#openAdminControlPanel" prefWidth="160.0" text="Control Panel" />
+                              <Button fx:id="controlPanel" mnemonicParsing="false" onAction="#openAdminControlPanel" prefWidth="160.0" styleClass="primary-button" text="Control Panel" />
                            </children>
                         </VBox>
                      </children>
@@ -73,7 +73,7 @@
                         <HBox alignment="CENTER" spacing="10.0">
                            <children>
                               <TextField fx:id="createEventTextField" prefHeight="25.0" prefWidth="200.0" promptText="Enter event name" />
-                              <Button fx:id="createButton" mnemonicParsing="false" onAction="#createEvent" prefWidth="100.0" text="Create" />
+                              <Button fx:id="createButton" mnemonicParsing="false" onAction="#createEvent" prefWidth="100.0" styleClass="primary-button" text="Create" />
                            </children>
                         </HBox>
                      </children>
@@ -88,7 +88,7 @@
                         <HBox alignment="CENTER" spacing="10.0">
                            <children>
                               <TextField fx:id="joinEventTextField" prefHeight="25.0" prefWidth="200.0" promptText="Enter event code" />
-                              <Button fx:id="joinButton" mnemonicParsing="false" onAction="#joinEvent" prefWidth="100.0" text="Join" />
+                              <Button fx:id="joinButton" mnemonicParsing="false" onAction="#joinEvent" prefWidth="100.0" styleClass="primary-button" text="Join" />
                            </children>
                         </HBox>
                      </children>

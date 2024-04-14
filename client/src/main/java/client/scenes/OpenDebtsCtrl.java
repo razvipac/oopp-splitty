@@ -104,7 +104,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         settledDebts.clear();
         settledDebts.addAll(
                 debtList.stream()
-                        .filter(debtDTO -> debtDTO.received())
+                        .filter(DebtDTO::received)
                         .toList()
         );
 
@@ -162,9 +162,8 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         // 'Mark Received' button. Prints effect to console for testing
         String buttonText = d.received() ? lm.get("Undo") : lm.get("Mark received");
         Button receivedButton = new Button(buttonText);
-        receivedButton.setOnAction(e -> {
-            serverUtils.toggleDebtReceivedStatus(event.code(), d);
-        });
+        receivedButton.getStyleClass().add("primary-button");
+        receivedButton.setOnAction(e -> serverUtils.toggleDebtReceivedStatus(event.code(), d));
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);
@@ -176,6 +175,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
         // toggle button for debtInfo, can be shown or hidden
         ToggleButton moreInfo = new ToggleButton(">");
+        moreInfo.getStyleClass().add("secondary-button");
         moreInfo.setOnAction(event -> {
             if(moreInfo.isSelected()) {
                 moreInfo.setText("v");
@@ -235,7 +235,11 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     }
 
     /**
-     * Sets the text in the correct language
+     * Sets the language for all elements in the invitations control panel.
+     * This method retrieves translations for various UI elements
+     * from the LanguageManager and updates the corresponding
+     * text accordingly.
+     * If LanguageManager is not available, no action is taken.
      */
     public void setLanguageForAllOpenDebtsCtrl() {
         if(lm == null){
