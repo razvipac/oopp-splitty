@@ -37,7 +37,10 @@ public class MyModule implements Module {
         binder.bind(AddEditExpenseCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminPasswordCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(LanguageManager.class).toInstance(new LanguageManager("client/src/main/resources" +
-                "/userSettings/userPreferences.json"));
+        binder.bind(LanguageManager.class).toInstance(new LanguageManager(
+                "client/src/main/resources/userSettings/userPreferences.json",
+                "client/src/main/resources/userSettings/config.json"
+                )
+        );
     }
 }
