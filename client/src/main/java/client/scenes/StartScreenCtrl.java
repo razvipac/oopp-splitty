@@ -10,15 +10,14 @@ import commons.dto.EventDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.net.URL;
@@ -56,7 +55,7 @@ public class StartScreenCtrl implements VoidSceneController{
     @FXML
     private TextField joinEventTextField;
     @FXML
-    private ComboBox<HBox> languageButton;
+    private ComboBox<LanguageOption> languageButton;
     @FXML
     private Label createNewEvent;
     @FXML
@@ -109,15 +108,83 @@ public class StartScreenCtrl implements VoidSceneController{
 
         setLanguageForAll();
 
-//        KeyCombination altC = new KeyCodeCombination(KeyCode.C, KeyCombination.ALT_DOWN);
-//        scene.getAccelerators().put(altC, () -> {
-//            createEventTextField.requestFocus();
-//        });
+        loadLanguageButton();
+
+
+//        languageButton.setCellFactory(new Callback<ListView<LanguageOption>, ListCell<LanguageOption>>() {
+//            @Override
+//            public ListCell<LanguageOption> call(ListView<LanguageOption> languageOptionListView) {
+//                return new ListCell<LanguageOption>() {
+//                    Label name = new Label();
+//                    ImageView icon = new ImageView();
+//                    private final HBox cell;
+//                    {
+//                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+//                        icon.setFitHeight(16);
+//                        icon.setPreserveRatio(true);
+//                        cell = new HBox();
+//                        cell.setSpacing(5);
+//                        cell.getChildren().add(icon);
+//                        cell.getChildren().add(name);
+//                    }
 //
-//        KeyCombination altJ = new KeyCodeCombination(KeyCode.J, KeyCombination.ALT_DOWN);
-//        scene.getAccelerators().put(altJ, () -> {
-//            joinEventTextField.requestFocus();
+//                    @Override
+//                    protected void updateItem(LanguageOption languageOption, boolean b) {
+//                        super.updateItem(languageOption, b);
+//
+//                        if (languageOption == null) {
+//                            setGraphic(null);
+//                        } else {
+//                            name.setText(languageOption.toString());
+//                            icon.setImage(LanguageManager.getFlagImage(languageOption));
+//                            setGraphic(cell);
+//                        }
+//                    }
+//                };
+//            }
 //        });
+
+        class LanguageOptionCellClass extends ListCell<LanguageOption> {
+            Label name = new Label();
+            ImageView icon = new ImageView();
+            private final HBox cell;
+            {
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                icon.setFitHeight(16);
+                icon.setPreserveRatio(true);
+                cell = new HBox();
+                cell.setSpacing(5);
+                cell.getChildren().add(icon);
+                cell.getChildren().add(name);
+            }
+
+            @Override
+            protected void updateItem(LanguageOption languageOption, boolean b) {
+                super.updateItem(languageOption, b);
+
+                if (languageOption == null) {
+                    setGraphic(null);
+                } else {
+                    name.setText(languageOption.toString());
+                    icon.setImage(LanguageManager.getFlagImage(languageOption));
+                    setGraphic(cell);
+                }
+            }
+        }
+
+        languageButton.setCellFactory(new Callback<ListView<LanguageOption>, ListCell<LanguageOption>>() {
+            @Override
+            public ListCell<LanguageOption> call(ListView<LanguageOption> languageOptionListView) {
+                return new LanguageOptionCellClass();
+            }
+        });
+
+        languageButton.setButtonCell(new LanguageOptionCellClass() {
+            {
+                name.setStyle("-fx-text-fill: #000000");
+
+            }
+        });
 
     }
 
@@ -129,7 +196,6 @@ public class StartScreenCtrl implements VoidSceneController{
         createEventTextField.clear();
         joinEventTextField.clear();
         events = server.getAllEvents();
-        loadLanguageButton();
         updateRecentEvents();
         setLanguageForAll();
     }
@@ -137,37 +203,36 @@ public class StartScreenCtrl implements VoidSceneController{
     private void loadLanguageButton() {
         System.out.println("Loading language button");
 
-        HBox hbox1 = new HBox();
-        hbox1.getChildren().addAll(
-                lm.createFlagIcon(
-                        new LanguageOption(LanguageOption.Language.ENGLISH)),
-                new Label("English"));
-        HBox hbox2 = new HBox();
-
-        hbox2.getChildren().addAll(
-                lm.createFlagIcon(
-                        new LanguageOption(LanguageOption.Language.DUTCH)),
-                new Label("Nederlands"));
-        HBox hbox3 = new HBox();
-
-        hbox3.getChildren().addAll(
-                lm.createFlagIcon(
-                        new LanguageOption(LanguageOption.Language.ROMANIAN)),
-                new Label("Romana"));
+//        HBox hbox1 = new HBox();
+//        hbox1.getChildren().addAll(
+//                lm.createFlagIcon(
+//                        new LanguageOption(LanguageOption.Language.ENGLISH)),
+//                new Label("English"));
+//        HBox hbox2 = new HBox();
+//
+//        hbox2.getChildren().addAll(
+//                lm.createFlagIcon(
+//                        new LanguageOption(LanguageOption.Language.DUTCH)),
+//                new Label("Nederlands"));
+//        HBox hbox3 = new HBox();
+//
+//        hbox3.getChildren().addAll(
+//                lm.createFlagIcon(
+//                        new LanguageOption(LanguageOption.Language.ROMANIAN)),
+//                new Label("Romana"));
 
         languageButton.getItems().clear();
-        languageButton.getItems().addAll(hbox1, hbox2, hbox3);
+        languageButton.getItems().addAll(
+                new LanguageOption(LanguageOption.Language.ENGLISH),
+                new LanguageOption(LanguageOption.Language.DUTCH),
+                new LanguageOption(LanguageOption.Language.ROMANIAN)
+        );
 
-        HBox hbox4 = new HBox();
-        if(lm != null){
-            hbox4.getChildren().add(
-                    lm.createFlagIcon(
-                            lm.getLanguageOption()
-                    )
-            );
-        }else{
+        switch (lm.getLanguageOption().getLanguage()){
+            case ENGLISH -> languageButton.getSelectionModel().select(0);
+            case DUTCH -> languageButton.getSelectionModel().select(1);
+            case ROMANIAN -> languageButton.getSelectionModel().select(2);
         }
-        languageButton.getSelectionModel().select(hbox4);
     }
 
     /**
@@ -302,21 +367,18 @@ public class StartScreenCtrl implements VoidSceneController{
                         new LanguageOption(LanguageOption.Language.ENGLISH));
                 System.out.println("Saved english");
                 mainCtrl.reloadAllLanguages();
-                //TODO - refresh the page
                 break;
             case 1:
                 lm.saveLanguage(
                         new LanguageOption(LanguageOption.Language.DUTCH));
                 System.out.println("Saved dutch");
                 mainCtrl.reloadAllLanguages();
-                //TODO - refresh the page
                 break;
             case 2:
                 lm.saveLanguage(
                         new LanguageOption(LanguageOption.Language.ROMANIAN));
                 System.out.println("Saved romanian");
                 mainCtrl.reloadAllLanguages();
-                //TODO - refresh the page
                 break;
         }
     }
