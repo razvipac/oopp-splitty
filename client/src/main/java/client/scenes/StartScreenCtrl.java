@@ -137,7 +137,7 @@ public class StartScreenCtrl implements VoidSceneController{
                 if (languageOption == null) {
                     setGraphic(null);
                 } else {
-                    name.setText(languageOption.toString());
+                    name.setText(lm.get(languageOption.toString()));
                     icon.setImage(LanguageManager.getFlagImage(languageOption));
                     setGraphic(cell);
                 }
