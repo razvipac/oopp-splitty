@@ -3,6 +3,7 @@ package server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.dto.EventDTO;
+import commons.dto.ParticipantDTO;
 import commons.dto.WSAction;
 import commons.dto.WSWrapperResponseBody;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,24 +14,30 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import server.database.EventRepository;
 import server.entities.DTOMapper;
 import server.entities.event.Event;
+import server.entities.event.EventDTOMapper;
+import server.entities.participant.Participant;
 import server.service.EventService;
 import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -176,26 +183,69 @@ public class EventControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    public void testDeleteDependants() throws NotFoundInDatabaseException {
-//        String name = "A";
-//        Event event = new Event();
-//        String eventCode = "1234";
-//        String email = "123";
-//        String iban = "134";
-//        String bic = "123";
-//        Participant participant = new Participant(name, event, email, iban, bic);
-//
-//
-//        // Mock the behavior of participantService.getOne
-//        when(participantService.getOne(anyString(), anyString())).thenReturn(participant);
-//
-//        // Call the method under test
-//        eventController.deleteDependants(event);
-//
-//        // Verify that deleteOne method is called for each participant
-//        verify(participantController).deleteOne(eq(name), eq(eventCode));
-//
-//    }
+    @Test
+    public void testDeleteDependants() throws NotFoundInDatabaseException {
+
+        Event event = mock(Event.class);
+        String eventCode = "1234";
+
+
+        List<Participant> participants = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            String name = "Participant " + i;
+            String email = "email" + i;
+            String iban = "iban" + i;
+            String bic = "bic" + i;
+            Participant participant = new Participant(name, event, email, iban, bic);
+            participants.add(participant);
+
+
+            ParticipantDTO participantDTO = new ParticipantDTO(name, email, iban, bic);
+
+
+            when(participantController.deleteOne(eq(participant.getName()), eq(eventCode))).thenReturn(ResponseEntity.ok(participantDTO));
+        }
+
+
+        when(event.getParticipants()).thenReturn(participants);
+
+
+        when(event.getCode()).thenReturn(eventCode);
+
+
+        eventController.deleteDependants(event);
+
+
+        for (Participant participant : participants) {
+            verify(participantController).deleteOne(eq(participant.getName()), eq(eventCode));
+        }
+    }
+
+
+
+
+    @Test
+    public void testDeleteOne() throws NotFoundInDatabaseException {
+        String eventCode = "1234";
+        Event event = new Event();
+        LocalDateTime creationDate = LocalDateTime.now();
+        LocalDateTime lastActivity = LocalDateTime.now();
+
+        EventDTO eventDTO = new EventDTO("Event Name", eventCode, creationDate, lastActivity);
+
+        when(eventService.getOne(anyString())).thenReturn(event);
+        when(eventDTOMapper.toDTO(event)).thenReturn(eventDTO);
+        when(eventService.deleteOne(eventCode)).thenReturn(event);
+
+
+        ResponseEntity<EventDTO> response = eventController.deleteOne(eventCode);
+
+
+        verify(eventService).deleteOne(eq(eventCode));
+
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(eventDTO, response.getBody());
+    }
 
 }
