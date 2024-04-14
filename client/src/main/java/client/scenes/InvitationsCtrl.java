@@ -89,9 +89,9 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         if(emailString.isEmpty() || !(emailString.matches(regexEmail))) {
             Alert error = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error",
-                    "Email entered incorrectly",
-                    "Please enter a valid email address.");
+                    lm.get("Error"),
+                    lm.get("Email entered incorrectly"),
+                    lm.get("Please enter a valid email"));
             error.showAndWait();
             return;
         }
@@ -121,9 +121,9 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         else {
             System.out.println("Sending invites failed");
             Alert error = controllerUtils.createAlert(Alert.AlertType.ERROR,
-                    "Error",
-                    "Sending email failed",
-                    "An error has occurred. Please try again.");
+                    lm.get("Error"),
+                    lm.get("Sending email failed"),
+                    lm.get("An error has occurred. Please try again."));
             error.showAndWait();
         }
     }
