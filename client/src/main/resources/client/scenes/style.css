@@ -46,6 +46,32 @@
     -fx-border-color: #343434;
 }
 
+.edit-button {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 3px;
+    -fx-font-size: 10px;
+    -fx-border-color: #343434;
+}
+
+.edit-button:hover {
+    -fx-background-color: #f3f7ff;
+    -fx-border-color: #0043b6;
+    -fx-text-fill: #0043b6;
+}
+
+.delete-button {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 3px;
+    -fx-font-size: 10px;
+    -fx-border-color: #f38c8c;
+}
+
+.delete-button:hover {
+    -fx-background-color: #fff3f3;
+    -fx-border-color: #b60000;
+    -fx-text-fill: #b60000;
+}
+
 .small-button {
     -fx-padding: 2px 5px 2px 5px;
     -fx-background-color: #ffffff;

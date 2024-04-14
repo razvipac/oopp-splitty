@@ -581,13 +581,13 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             editButton = new Button(lm.get("Edit"));
             editButton.setPrefSize(45, 14);
-            editButton.setFont(Font.font(10));
+            editButton.getStyleClass().add("edit-button");
             GridPane.setHalignment(editButton, HPos.RIGHT);
             this.add(editButton, 2, 0, 1, 2);
 
             deleteButton = new Button(lm.get("Delete"));
             deleteButton.setPrefSize(45, 14);
-            deleteButton.setFont(Font.font(10));
+            deleteButton.getStyleClass().add("delete-button");
             GridPane.setHalignment(deleteButton, HPos.RIGHT);
             this.add(deleteButton, 3, 0, 1, 2);
         }
