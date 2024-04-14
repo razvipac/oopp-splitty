@@ -123,3 +123,15 @@
     -fx-background-color: #f5f5f5;
     -fx-border-color: #0043b6;
 }
+
+.primary-button:focused,
+.secondary-button:focused,
+.back-button:focused,
+.edit-button:focused,
+.delete-button:focused,
+.small-button:focused,
+.small-button-delete:focused,
+.combo-box:focused {
+    -fx-border-color: #00def3;
+    -fx-border-width: 1.2px;
+}
