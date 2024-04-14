@@ -504,7 +504,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         participantsLabel.setText(lm.get("Participants"));
         manageParticipant.setText(lm.get("Manage Participants"));
         expensesLabel.setText(lm.get("Expenses"));
-        addExpenseButton.setText(lm.get("Add Expense"));
+        addExpenseButton.setText(lm.get("Add"));
         settleDebtsButton.setText(lm.get("Settle Debts"));
         backButton.setText(lm.get("Back"));
         lastActivityLabel.setText(lm.get("Last Activity:"));
