@@ -126,7 +126,6 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
                     "Sending email failed",
                     "An error has occurred. Please try again.");
             error.showAndWait();
-            return;
         }
     }
 
@@ -188,7 +187,7 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
      */
     public void setLanguageForAllInvitationsCtrl(){
         if(lm != null){
-            inviteFollowing.setText(lm.get("Invite the following people by email (one address per line)"));
+            inviteFollowing.setText(lm.get("Invite the following people by email"));
             cancel.setText(lm.get("Cancel"));
             giveInviteCode.setText(lm.get("Give people the following Invite Code: "));
             sendInvites.setText(lm.get("Send Invite"));
