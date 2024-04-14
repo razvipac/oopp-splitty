@@ -132,6 +132,7 @@
 .small-button:focused,
 .small-button-delete:focused,
 .combo-box:focused {
-    -fx-border-color: #00def3;
+    -fx-border-color: #00d9ff;
     -fx-border-width: 1.2px;
+    -fx-effect: dropshadow(three-pass-box, rgb(0, 217, 255), 4, 0, 0, 0);
 }
