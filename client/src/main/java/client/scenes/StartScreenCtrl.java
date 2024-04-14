@@ -23,10 +23,7 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class StartScreenCtrl implements VoidSceneController{
 
@@ -69,7 +66,7 @@ public class StartScreenCtrl implements VoidSceneController{
 
     private Scene scene;
 
-    private List<String> recentlyJoinedEventCodes = new ArrayList<>();
+    private Deque<String> recentlyJoinedEventCodes = new LinkedList<>();
 
     private List<EventDTO> events;
 
@@ -103,7 +100,7 @@ public class StartScreenCtrl implements VoidSceneController{
         // check if storage file exists
         File f = new File(STORAGE_PATH);
         if (!f.exists()) {
-            controllerUtils.saveObject(STORAGE_PATH, new ArrayList<>());
+            controllerUtils.saveObject(STORAGE_PATH, new LinkedList<>());
         }
 
         recentlyJoinedEventCodes = controllerUtils.readObject(STORAGE_PATH);
@@ -174,24 +171,6 @@ public class StartScreenCtrl implements VoidSceneController{
     private void loadLanguageButton() {
         System.out.println("Loading language button");
 
-//        HBox hbox1 = new HBox();
-//        hbox1.getChildren().addAll(
-//                lm.createFlagIcon(
-//                        new LanguageOption(LanguageOption.Language.ENGLISH)),
-//                new Label("English"));
-//        HBox hbox2 = new HBox();
-//
-//        hbox2.getChildren().addAll(
-//                lm.createFlagIcon(
-//                        new LanguageOption(LanguageOption.Language.DUTCH)),
-//                new Label("Nederlands"));
-//        HBox hbox3 = new HBox();
-//
-//        hbox3.getChildren().addAll(
-//                lm.createFlagIcon(
-//                        new LanguageOption(LanguageOption.Language.ROMANIAN)),
-//                new Label("Romana"));
-
         languageButton.getItems().clear();
         languageButton.getItems().addAll(
                 new LanguageOption(LanguageOption.Language.ENGLISH),
@@ -215,14 +194,17 @@ public class StartScreenCtrl implements VoidSceneController{
         String code = joinEventTextField.getText();
         Optional<EventDTO> found = getEvent(code);
         if(found.isPresent()) {
-            recentlyJoinedEventCodes.removeIf(eventCode -> eventCode.equals(code));
-            recentlyJoinedEventCodes.add(found.get().code());
-            updateRecentEvents();
-            controllerUtils.saveObject(STORAGE_PATH, recentlyJoinedEventCodes);
-
+            addRecentlyJoinedEventCode(code);
             mainCtrl.showEventOverview(found.get());
         }
         else System.out.println("Event with code: " + code + " doesn't exist");
+    }
+
+    private void addRecentlyJoinedEventCode(String code) {
+        recentlyJoinedEventCodes.removeIf(eventCode -> eventCode.equals(code));
+        recentlyJoinedEventCodes.addLast(code);
+        controllerUtils.saveObject(STORAGE_PATH, recentlyJoinedEventCodes);
+        updateRecentEvents();
     }
 
     /**
@@ -234,10 +216,8 @@ public class StartScreenCtrl implements VoidSceneController{
         String eventName = createEventTextField.getText();
         EventDTO event = server.createEvent(eventName);
         events = server.getAllEvents();
-        System.out.println(event.toString());
-        recentlyJoinedEventCodes.add(event.code());
-        controllerUtils.saveObject(STORAGE_PATH, recentlyJoinedEventCodes);
-        updateRecentEvents();
+
+        addRecentlyJoinedEventCode(event.code());
 
         mainCtrl.showEventOverview(event);
     }
@@ -311,6 +291,7 @@ public class StartScreenCtrl implements VoidSceneController{
             arrow.getStyleClass().add("small-button-icon");
             overviewButton.setGraphic(arrow);
             overviewButton.setOnAction(e -> {
+                addRecentlyJoinedEventCode(event.code());
                 mainCtrl.showEventOverview(event);
                 updateRecentEvents();
             });
