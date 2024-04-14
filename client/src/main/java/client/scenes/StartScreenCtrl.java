@@ -110,40 +110,6 @@ public class StartScreenCtrl implements VoidSceneController{
 
         loadLanguageButton();
 
-
-//        languageButton.setCellFactory(new Callback<ListView<LanguageOption>, ListCell<LanguageOption>>() {
-//            @Override
-//            public ListCell<LanguageOption> call(ListView<LanguageOption> languageOptionListView) {
-//                return new ListCell<LanguageOption>() {
-//                    Label name = new Label();
-//                    ImageView icon = new ImageView();
-//                    private final HBox cell;
-//                    {
-//                        setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-//                        icon.setFitHeight(16);
-//                        icon.setPreserveRatio(true);
-//                        cell = new HBox();
-//                        cell.setSpacing(5);
-//                        cell.getChildren().add(icon);
-//                        cell.getChildren().add(name);
-//                    }
-//
-//                    @Override
-//                    protected void updateItem(LanguageOption languageOption, boolean b) {
-//                        super.updateItem(languageOption, b);
-//
-//                        if (languageOption == null) {
-//                            setGraphic(null);
-//                        } else {
-//                            name.setText(languageOption.toString());
-//                            icon.setImage(LanguageManager.getFlagImage(languageOption));
-//                            setGraphic(cell);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-
         class LanguageOptionCellClass extends ListCell<LanguageOption> {
             private Label name = new Label();
             private ImageView icon = new ImageView();
@@ -156,6 +122,10 @@ public class StartScreenCtrl implements VoidSceneController{
                 cell.setSpacing(5);
                 cell.getChildren().add(icon);
                 cell.getChildren().add(name);
+            }
+
+            public Label getName() {
+                return name;
             }
 
             @Override
@@ -181,8 +151,7 @@ public class StartScreenCtrl implements VoidSceneController{
 
         languageButton.setButtonCell(new LanguageOptionCellClass() {
             {
-                name.setStyle("-fx-text-fill: #000000");
-
+                getName().setStyle("-fx-text-fill: #000000");
             }
         });
 
