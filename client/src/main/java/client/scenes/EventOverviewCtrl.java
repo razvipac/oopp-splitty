@@ -19,7 +19,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.robot.Robot;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
@@ -129,12 +128,10 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         controllerUtils.bindComboBoxForKeyboardInput(expenseFilterComboBox);
 
-        eventTitleTextField.textProperty().addListener((ov, prevText, currText) -> {
-            Platform.runLater(() -> {
-                resizeEventTitleTextField(currText);
-                eventTitleTextField.positionCaret(eventTitleTextField.getCaretPosition());
-            });
-        });
+        eventTitleTextField.textProperty().addListener((ov, prevText, currText) -> Platform.runLater(() -> {
+            resizeEventTitleTextField(currText);
+            eventTitleTextField.positionCaret(eventTitleTextField.getCaretPosition());
+        }));
 
         eventTitleTextField.focusedProperty().addListener((ov, oldValue, newValue) -> {
             if (oldValue && !newValue) {
@@ -492,6 +489,13 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         robot.keyType(KeyCode.TAB);
     }
 
+    /**
+     * Sets the language for all elements in the invitations control panel.
+     * This method retrieves translations for various UI elements
+     * from the LanguageManager and updates the corresponding
+     * text accordingly.
+     * If LanguageManager is not available, no action is taken.
+     */
     public void setLanguageForAllEventOverviewCtrl(){
         LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){

@@ -72,9 +72,8 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
     public void refresh(EventDTO event){
         this.event = event;
 
-        serverUtils.registerForLongPollingDebtUpdates(event.code(), debtDTOs -> {
-            Platform.runLater(() -> refresh(this.event));
-        });
+        serverUtils.registerForLongPollingDebtUpdates(event.code(), debtDTOs -> Platform.runLater(()
+                -> refresh(this.event)));
 
         List<DebtDTO> debtDTOs = serverUtils.getAllDebts(event.code());
         debtList.clear();
@@ -101,7 +100,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         settledDebts.clear();
         settledDebts.addAll(
                 debtList.stream()
-                        .filter(debtDTO -> debtDTO.received())
+                        .filter(DebtDTO::received)
                         .toList()
         );
 
@@ -161,9 +160,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         String buttonText = d.received() ? lm.get("Undo") : lm.get("Mark received");
         Button receivedButton = new Button(buttonText);
         receivedButton.getStyleClass().add("primary-button");
-        receivedButton.setOnAction(e -> {
-            serverUtils.toggleDebtReceivedStatus(event.code(), d);
-        });
+        receivedButton.setOnAction(e -> serverUtils.toggleDebtReceivedStatus(event.code(), d));
 
         // extra debt info (bank information)
         VBox debtInfo = new VBox(5);
@@ -234,6 +231,13 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
         serverUtils.regenerateDebts(event.code());
     }
 
+    /**
+     * Sets the language for all elements in the invitations control panel.
+     * This method retrieves translations for various UI elements
+     * from the LanguageManager and updates the corresponding
+     * text accordingly.
+     * If LanguageManager is not available, no action is taken.
+     */
     public void setLanguageForAllOpenDebtsCtrl() {
         LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
