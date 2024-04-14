@@ -163,7 +163,7 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     public void setLanguageForAllInvitationsCtrl(){
         if(mainCtrl.getLanguageManager() != null){
             LanguageManager lm = mainCtrl.getLanguageManager();
-            inviteFollowing.setText(lm.get("Invite the following people by email (one address per line)"));
+            inviteFollowing.setText(lm.get("Invite the following people by email"));
             cancel.setText(lm.get("Cancel"));
             giveInviteCode.setText(lm.get("Give people the following Invite Code: "));
             sendInvites.setText(lm.get("Send Invite"));
