@@ -129,7 +129,6 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                     boxBic.setText(found.get().bic());
                 }
             }
-
         });
 
         // listen to toggleView changes
@@ -203,6 +202,9 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
                 String selectedText = selected.getText();
                 if(selectedText.equals("Add") || selectedText.equals("Adauga") || selectedText.equals("Toevoegen")) {
                     setView(View.ADD);
+                    boxEmail.setText("");
+                    boxIban.setText("");
+                    boxBic.setText("");
                 }
                 else if(selectedText.equals("Edit") || selectedText.equals("Bewerk")) {
                     setView(View.EDIT);
