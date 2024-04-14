@@ -175,6 +175,7 @@ public class OpenDebtsCtrl implements DataBasedSceneController<EventDTO> {
 
         // toggle button for debtInfo, can be shown or hidden
         ToggleButton moreInfo = new ToggleButton(">");
+        moreInfo.getStyleClass().add("secondary-button");
         moreInfo.setOnAction(event -> {
             if(moreInfo.isSelected()) {
                 moreInfo.setText("v");

@@ -28,31 +28,31 @@
             </Text>
             <HBox spacing="10.0">
                <children>
-                  <ToggleButton fx:id="addButton" mnemonicParsing="false" text="Add">
+                  <ToggleButton fx:id="addButton" mnemonicParsing="false" text="Add" styleClass="primary-button">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" />
                      </font>
                      <graphic>
-                        <FontAwesomeIconView glyphName="PLUS" />
+                        <FontAwesomeIconView glyphName="PLUS" styleClass="primary-icon"/>
                      </graphic>
                      <toggleGroup>
                         <ToggleGroup fx:id="toggleView" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton fx:id="editButton" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView">
+                  <ToggleButton fx:id="editButton" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView" styleClass="primary-button">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" />
                      </font>
                      <graphic>
-                        <FontAwesomeIconView glyphName="PENCIL" />
+                        <FontAwesomeIconView glyphName="PENCIL" styleClass="primary-icon"/>
                      </graphic>
                   </ToggleButton>
-                  <ToggleButton fx:id="deleteButton" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView">
+                  <ToggleButton fx:id="deleteButton" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView" styleClass="primary-button">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" />
                      </font>
                      <graphic>
-                        <FontAwesomeIconView glyphName="TRASH" />
+                        <FontAwesomeIconView glyphName="TRASH" styleClass="primary-icon"/>
                      </graphic>
                   </ToggleButton>
                </children>
