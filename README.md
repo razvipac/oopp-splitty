@@ -4,7 +4,17 @@ Welcome to Splitty. This application allows you to manage group expenses and deb
 
 ## Getting Started
 
+1. Open the project in the IDE of your choice.
+2. Add Run configurations for server.Main and client.Main.
+3. In the Run configuration for client.Main, add the following line in VM options
 
+`--module-path="path/to/javafx-sdk-21.0.2/lib" --add-modules=javafx.controls,javafx.fxml`
+
+4. Run server.Main. The server URL can be adjusted in _client/src/main/resources/userSettings/config.json_ and is set to _localhost:8080_ by default.
+
+5. Run client.Main.
+
+If the client gives an error, please check if the server has been started and that the provided URL in config.json is correct.
 
 ## Features
 
