@@ -131,6 +131,9 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
     @FXML
     private void onGlobalKeyPress(KeyEvent keyEvent){
         if (keyEvent.getCode() == KeyCode.ESCAPE) goBack();
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.ENTER) {
+            sendInvites();
+        }
     }
 
     /**

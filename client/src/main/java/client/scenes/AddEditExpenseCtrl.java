@@ -130,6 +130,9 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         }
         else {
             header.setText(lm.get("Edit Expense"));
+            whatForField.setText(expense.item());
+            howMuchField.setText(expense.price().toString());
+            whenPicker.setValue(expense.date());
         }
         setLanguageForAllAddEditExpenseCtrl();
     }
@@ -163,6 +166,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         for (ParticipantDTO p : participants) {
             String name = p.name();
             CheckBox participantCheckbox = new CheckBox(name);
+            participantCheckbox.setDisable(true);
             checkboxContainer.getChildren().add(participantCheckbox);
         }
     }
