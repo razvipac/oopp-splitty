@@ -7,6 +7,8 @@ import client.utils.ControllerUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.dto.EventDTO;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -251,7 +253,6 @@ public class StartScreenCtrl implements VoidSceneController{
     private void updateRecentEvents() {
         recentViewedEvents.getChildren().clear();
 
-
         List<EventDTO> recentlyJoinedEventDTOs = new ArrayList<>();
         recentlyJoinedEventCodes.forEach(code -> {
             EventDTO found = server.getEvent(code);
@@ -262,13 +263,23 @@ public class StartScreenCtrl implements VoidSceneController{
         int lastIndex = recentlyJoinedEventDTOs.size() - 1;
         for (int i = lastIndex; i >= 0 && amountOfEvents < 4; i--) {
             EventDTO event = new ArrayList<>(recentlyJoinedEventDTOs).get(i);
+
             Label eventName = new Label(event.name());
-            Button overviewButton = new Button("\u2192");
+            Button overviewButton = new Button();
+            overviewButton.getStyleClass().add("small-button");
+            FontAwesomeIconView arrow = new FontAwesomeIconView(FontAwesomeIcon.ARROW_RIGHT);
+            arrow.getStyleClass().add("small-button-icon");
+            overviewButton.setGraphic(arrow);
             overviewButton.setOnAction(e -> {
                 mainCtrl.showEventOverview(event);
                 updateRecentEvents();
             });
-            Button removeButton = new Button("\u0078");
+
+            Button removeButton = new Button();
+            removeButton.getStyleClass().add("small-button-delete");
+            FontAwesomeIconView cross = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+            cross.getStyleClass().add("small-button-delete-icon");
+            removeButton.setGraphic(cross);
             removeButton.setOnAction(e -> {
                 recentlyJoinedEventCodes.remove(event.code());
                 controllerUtils.saveObject(STORAGE_PATH, recentlyJoinedEventCodes);

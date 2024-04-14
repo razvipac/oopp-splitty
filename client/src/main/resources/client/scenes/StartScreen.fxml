@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#onGlobalKeyPressed" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.StartScreenCtrl">
+<AnchorPane onKeyPressed="#onGlobalKeyPressed" prefHeight="400.0" prefWidth="600.0" stylesheets="@client/scenes/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.StartScreenCtrl">
    <children>
       <HBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -103,8 +103,8 @@
                   </Label>
                   <GridPane fx:id="recentViewedEvents" prefHeight="139.0" prefWidth="264.0">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.5" minWidth="10.0" prefWidth="199.5" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.5" minWidth="10.0" prefWidth="25.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="201.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.5" minWidth="10.0" prefWidth="36.5" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="47.5" minWidth="10.0" prefWidth="26.5" />
                      </columnConstraints>
                      <rowConstraints>
@@ -114,18 +114,18 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Button mnemonicParsing="false" styleClass="secondary-button" text="Ski Trip" />
-                        <Button mnemonicParsing="false" styleClass="secondary-button" text="Museum Visit" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" styleClass="secondary-button" text="Gift for John's Birthday" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" styleClass="secondary-button" text="New Year Party" GridPane.rowIndex="3" />
-                        <Button mnemonicParsing="false" styleClass="small-button" text="→" GridPane.columnIndex="1" />
-                        <Button mnemonicParsing="false" styleClass="small-button-delete" text="×" GridPane.columnIndex="2" />
-                        <Button mnemonicParsing="false" styleClass="small-button" text="→" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" styleClass="small-button" text="→" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" styleClass="small-button" text="→" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Button mnemonicParsing="false" styleClass="small-button-delete" text="×" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" styleClass="small-button-delete" text="×" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <Button mnemonicParsing="false" styleClass="small-button-delete" text="×" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" text="Ski Trip" />
+                        <Button mnemonicParsing="false" text="Museum Visit" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" text="Gift for John's Birthday" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" text="New Year Party" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" text="→" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Button mnemonicParsing="false" text="×" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
                </children>
