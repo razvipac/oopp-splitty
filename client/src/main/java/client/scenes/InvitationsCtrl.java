@@ -13,7 +13,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
