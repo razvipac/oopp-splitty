@@ -77,6 +77,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private VBox expenseItemContainer;
     @FXML
     private Label lastActivityLabel;
+    @FXML
+    private Label lastActivityDate;
 
     // Currently selected participant (whose expenses to view)
     private ParticipantDTO selectedParticipant;
@@ -451,7 +453,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
 
         // Update the last activity label in the UI
-        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
+        lastActivityDate.setText(updatedEventDTO.lastActivityToString());
     }
 
     private void resizeEventTitleTextField(String currText) {

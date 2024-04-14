@@ -132,5 +132,10 @@
             <Font size="12.0" />
          </font>
       </Label>
+      <Label fx:id="lastActivityDate" alignment="TOP_RIGHT" layoutX="409.0" layoutY="36.0" prefHeight="35.0" prefWidth="175.0" text="&lt;...&gt;" textAlignment="RIGHT" textFill="#6f6f6f">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
