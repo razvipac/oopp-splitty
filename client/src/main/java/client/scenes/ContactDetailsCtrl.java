@@ -72,7 +72,7 @@ public class ContactDetailsCtrl implements DataBasedSceneController<EventDTO> {
 
     @Inject
     private LanguageManager lm;
-    List<ParticipantDTO> participants;
+    private List<ParticipantDTO> participants;
 
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
