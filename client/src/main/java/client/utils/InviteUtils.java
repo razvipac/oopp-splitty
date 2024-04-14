@@ -6,12 +6,13 @@ import java.util.Properties;
 
 public class InviteUtils {
 
-
-    public String generateRandomInviteCode() {
-        return java.util.UUID.randomUUID().toString().substring(0, 8);
-    }
-
-    public void sendInvitation(String recipientEmail, String inviteCode) {
+    /**
+     * Sends email invitation to the given email address from ooppteam2@outlook.com
+     * @param recipientEmail Address to send to
+     * @param inviteCode Event invite code to send
+     * @return True iff successful, false otherwise
+     */
+    public boolean sendInvitation(String recipientEmail, String inviteCode) {
         final String fromEmail = "ooppteam2@outlook.com"; //  email
         final String password = ".KWn6.WL#)m9KuL"; // password
 
@@ -22,8 +23,6 @@ public class InviteUtils {
         props.put("mail.smtp.host", "smtp-mail.outlook.com"); // Outlook SMTP host
         props.put("mail.smtp.port", "587"); // Outlook SMTP port
 
-
-
         //create Authenticator object to pass in Session.getInstance argument
         Authenticator auth = new Authenticator() {
             //override the getPasswordAuthentication method
@@ -32,9 +31,22 @@ public class InviteUtils {
             }
         };
         Session session = Session.getInstance(props, auth);
-
-        sendEmail(session, recipientEmail, fromEmail, inviteCode);
+        try {
+            sendEmail(session, recipientEmail, fromEmail, inviteCode);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
+
+    /**
+     * Constructs email format and sends it to recipient
+     * @param session the mail session
+     * @param recipientEmail the email address of the recipient
+     * @param fromEmail the email address from which the invitation is sent
+     * @param inviteCode the invitation code to be included in the email
+     * @throws RuntimeException if there's an issue with sending the email
+     */
     public static void sendEmail(Session session, String recipientEmail, String fromEmail, String inviteCode){
         try {
             // Create a MimeMessage object
