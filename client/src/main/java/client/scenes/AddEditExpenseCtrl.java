@@ -74,6 +74,9 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
     private Button addButton;
     @FXML
     private Button abortButton;
+
+    @Inject
+    private LanguageManager lm;
     /**
      * Constructor for the AddEditExpense that calls the method to create the scene
      *
@@ -107,7 +110,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         this.event = event;
         this.participants = serverUtils.getParticipants(event.code());
 
-        serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), p -> {
+        serverUtils.registerForWebSocketUpdatesOnParticipant(event.code(), event.code(), p -> {
             Platform.runLater(() -> refresh(this.event, this.expense));
         });
 
@@ -121,7 +124,6 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         refreshWhoPaidDropdown();
         refreshParticipantContainer();
 
-        LanguageManager lm = mainCtrl.getLanguageManager();
         // Sets header based on if user is adding/editing
         if(expense == null) {
             header.setText(lm.get("Add Expense"));
@@ -169,7 +171,6 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      * Checks if the user-inputted form is valid.
      */
     private boolean formIsValid() {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if (whoPaidDropdown.getValue() == null || whoPaidDropdown.getValue().isEmpty()) {
             errorText.setText(lm.get("Please select the participant who paid for this expense"));
             return false;
@@ -233,7 +234,6 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      * @param e The (validated) expense to add
      */
     private void addExpenseToServer(ExpenseDTO e) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         boolean success = serverUtils.addExpense(e, event.code());
         if (success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
@@ -258,7 +258,6 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      * @param e DTO with updated values
      */
     private void updateExpenseToServer(ExpenseDTO e) {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         boolean success = serverUtils.updateExpense(e, event.code());
         if (success) {
             Alert confirmation = controllerUtils.createAlert(Alert.AlertType.CONFIRMATION,
@@ -292,6 +291,7 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      */
     @FXML
     private void goBack() {
+        serverUtils.disconnectWSSession(event.code());
         mainCtrl.showEventOverview(event);
     }
 
@@ -300,7 +300,6 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
      */
     @FXML
     private void submit() {
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if (formIsValid()) {
             if(expense == null) {
                 double price = Double.parseDouble(howMuchField.getText());
@@ -333,8 +332,10 @@ public class AddEditExpenseCtrl implements DualDataBasedSceneController<EventDTO
         if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.ENTER) submit();
     }
 
+    /**
+     * Sets the text in correct language
+     */
     public void setLanguageForAllAddEditExpenseCtrl(){
-        LanguageManager lm = mainCtrl.getLanguageManager();
         whoPaid.setText(lm.get("Who paid?*"));
         whatFor.setText(lm.get( "What for?*"));
         whoPaidDropdown.setPromptText(lm.get("Choose..."));

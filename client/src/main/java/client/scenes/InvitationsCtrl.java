@@ -23,6 +23,8 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
 
     @Inject
     private ControllerUtils controllerUtils;
+    @Inject
+    private LanguageManager lm;
 
     private EventDTO event;
     @FXML
@@ -90,8 +92,7 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
         String title = "Invitations sent successfully";
         String header = "Invitations were sent successfully!";
         String content = "The invitations sent successfully to: \n";
-        if(mainCtrl.getLanguageManager() != null){
-            LanguageManager lm = mainCtrl.getLanguageManager();
+        if(lm != null){
             title = lm.get("Invitations sent successfully");
             header = lm.get("Invitations were sent successfully!");
             content = lm.get("The invitations sent successfully to: \n");
@@ -161,9 +162,8 @@ public class InvitationsCtrl implements DataBasedSceneController<EventDTO> {
      * If LanguageManager is not available, no action is taken.
      */
     public void setLanguageForAllInvitationsCtrl(){
-        if(mainCtrl.getLanguageManager() != null){
-            LanguageManager lm = mainCtrl.getLanguageManager();
-            inviteFollowing.setText(lm.get("Invite the following people by email"));
+        if(lm != null){
+            inviteFollowing.setText(lm.get("Invite the following people by email (one address per line)"));
             cancel.setText(lm.get("Cancel"));
             giveInviteCode.setText(lm.get("Give people the following Invite Code: "));
             sendInvites.setText(lm.get("Send Invite"));

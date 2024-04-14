@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -10,94 +11,119 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane onKeyPressed="#onGlobalKeyPress" prefHeight="314.0" prefWidth="399.0" stylesheets="@client/scenes/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ContactDetailsCtrl">
    <children>
-      <Text fx:id="manageParticipants" layoutX="31.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Participants:" wrappingWidth="315.30859375">
-         <font>
-            <Font name="System Bold" size="20.0" />
-         </font>
-      </Text>
-      <ToggleButton fx:id="addButton" layoutX="31.0" layoutY="60.0" mnemonicParsing="false" styleClass="primary-button" text="Add">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-         <graphic>
-            <FontAwesomeIconView glyphName="PLUS" styleClass="primary-icon"/>
-         </graphic>
-         <toggleGroup>
-            <ToggleGroup fx:id="toggleView" />
-         </toggleGroup>
-      </ToggleButton>
-      <ToggleButton fx:id="editButton" layoutX="109.0" layoutY="60.0" mnemonicParsing="false" styleClass="primary-button" text="Edit" toggleGroup="$toggleView">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-         <graphic>
-            <FontAwesomeIconView glyphName="PENCIL" styleClass="primary-icon"/>
-         </graphic>
-      </ToggleButton>
-      <ToggleButton fx:id="deleteButton" layoutX="189.0" layoutY="60.0" mnemonicParsing="false" styleClass="primary-button" text="Delete" toggleGroup="$toggleView">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-         <graphic>
-            <FontAwesomeIconView glyphName="TRASH" styleClass="primary-icon"/>
-         </graphic>
-      </ToggleButton>
-      <GridPane hgap="3.0" layoutX="31.0" layoutY="102.0" vgap="3.0">
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="68.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="507.0" minWidth="10.0" prefWidth="267.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-         </rowConstraints>
+      <VBox prefHeight="314.0" prefWidth="399.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="labelName" text="Name*">
+            <Text fx:id="manageParticipants" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Participants:" wrappingWidth="315.30859375">
                <font>
-                  <Font size="14.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
-            </Label>
-            <ComboBox fx:id="comboBoxName" prefHeight="25.0" prefWidth="160.0" promptText="Choose..." visible="false" GridPane.columnIndex="1" />
-            <TextField fx:id="boxName" promptText="John" GridPane.columnIndex="1" />
-            <Label fx:id="labelEmail" text="Email" GridPane.rowIndex="1">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="boxEmail" onKeyReleased="#formatIban" promptText="johndoe@email.com" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label fx:id="labelIBAN" text="IBAN" GridPane.rowIndex="2">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="boxIban" promptText="NL12 3456 7890 1234 56" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label fx:id="labelBIC" text="BIC" GridPane.rowIndex="3">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="boxBic" prefWidth="297.0" promptText="ABCDEFGH" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </Text>
+            <HBox spacing="10.0">
+               <children>
+                  <ToggleButton fx:id="addButton" mnemonicParsing="false" text="Add">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView glyphName="PLUS" />
+                     </graphic>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="toggleView" />
+                     </toggleGroup>
+                  </ToggleButton>
+                  <ToggleButton fx:id="editButton" mnemonicParsing="false" text="Edit" toggleGroup="$toggleView">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView glyphName="PENCIL" />
+                     </graphic>
+                  </ToggleButton>
+                  <ToggleButton fx:id="deleteButton" mnemonicParsing="false" text="Delete" toggleGroup="$toggleView">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <FontAwesomeIconView glyphName="TRASH" />
+                     </graphic>
+                  </ToggleButton>
+               </children>
+            </HBox>
+            <GridPane hgap="3.0" vgap="3.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="68.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="507.0" minWidth="10.0" prefWidth="267.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="labelName" text="Name*">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="comboBoxName" prefHeight="25.0" prefWidth="160.0" promptText="Choose..." visible="false" GridPane.columnIndex="1" />
+                  <TextField fx:id="boxName" promptText="John" GridPane.columnIndex="1" />
+                  <Label fx:id="labelEmail" text="Email" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="boxEmail" onKeyReleased="#formatIban" promptText="johndoe@email.com" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="labelIBAN" text="IBAN" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="boxIban" promptText="NL12 3456 7890 1234 56" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="labelBIC" text="BIC" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="boxBic" prefWidth="297.0" promptText="ABCDEFGH" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+            </GridPane>
+            <VBox spacing="5.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="5.0">
+                     <children>
+                        <Text fx:id="required" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="500.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="abortButton" mnemonicParsing="false" onAction="#goBack" text="Abort" />
+                              <Button fx:id="okButton" mnemonicParsing="false" onAction="#ok" text="OK">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <Text fx:id="errorText" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" />
+               </children>
+            </VBox>
          </children>
-      </GridPane>
-      <Text fx:id="required" layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*required">
-         <font>
-            <Font name="System Italic" size="12.0" />
-         </font>
-      </Text>
-      <Button fx:id="abortButton" layoutX="272.0" layoutY="242.0" mnemonicParsing="false" onAction="#goBack" styleClass="back-button" text="Abort" />
-      <Button fx:id="okButton" layoutX="332.0" layoutY="242.0" mnemonicParsing="false" onAction="#ok" prefWidth="38.0" styleClass="primary-button" text="OK">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Button>
-      <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" />
+      </VBox>
    </children>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
 </AnchorPane>

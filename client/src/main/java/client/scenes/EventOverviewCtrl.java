@@ -19,6 +19,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.robot.Robot;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
@@ -34,6 +35,8 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
     private final MainCtrl mainCtrl;
     @Inject
     private ControllerUtils controllerUtils;
+    @Inject
+    private LanguageManager lm;
 
     // Event attributes
     private EventDTO event;
@@ -128,10 +131,12 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         controllerUtils.bindComboBoxForKeyboardInput(expenseFilterComboBox);
 
-        eventTitleTextField.textProperty().addListener((ov, prevText, currText) -> Platform.runLater(() -> {
-            resizeEventTitleTextField(currText);
-            eventTitleTextField.positionCaret(eventTitleTextField.getCaretPosition());
-        }));
+        eventTitleTextField.textProperty().addListener((ov, prevText, currText) -> {
+            Platform.runLater(() -> {
+                resizeEventTitleTextField(currText);
+                eventTitleTextField.positionCaret(eventTitleTextField.getCaretPosition());
+            });
+        });
 
         eventTitleTextField.focusedProperty().addListener((ov, oldValue, newValue) -> {
             if (oldValue && !newValue) {
@@ -149,7 +154,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         this.eventWasDeleted = false;
 
         serverUtils.registerForWebSocketUpdatesForTheWholeEvent(
-                event.code(), q-> Platform.runLater(() -> refresh(this.event)));
+                event.code(), event.code(), q-> Platform.runLater(() -> refresh(this.event)));
 
         participants = serverUtils.getParticipants(event.code());
         expenses = serverUtils.getExpenses(event.code());
@@ -169,7 +174,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
         EventDTO syncedEvent = serverUtils.getEvent(event.code());
         if (syncedEvent == null && eventWasDeleted) {
-            LanguageManager lm = mainCtrl.getLanguageManager();
             this.eventWasDeleted = true;
             Alert alert = controllerUtils.createAlert(
                     Alert.AlertType.WARNING,
@@ -217,7 +221,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             participantLabels.add(new Label(participant.name()));
         }
 
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if (participants.isEmpty()) participantLabels.add(new Label(lm.get("(No participants in event)")));
 
         participantsHBox.getChildren().setAll(participantLabels);
@@ -250,7 +253,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         expenseFilterFromRadio.setDisable(expenses.isEmpty());
         expenseFilterIncludingRadio.setDisable(expenses.isEmpty());
 
-        LanguageManager lm = mainCtrl.getLanguageManager();
         String name = selectedParticipant == null ? lm.get("(participant)") : selectedParticipant.name();
 
         expenseFilterFromRadio.setText(lm.get("From ") + name);
@@ -269,7 +271,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         }
 
         // Update total expenses label
-        LanguageManager lm = mainCtrl.getLanguageManager();
         totalExpensesLabel.setText(lm.get("Total sum of expenses: ") + calculateTotalExpenseSum());
 
         setExpenseItemVisibility();
@@ -310,6 +311,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      */
     @FXML
     private void goBack() {
+        serverUtils.disconnectWSSession(event.code());
         mainCtrl.showStartScreen();
     }
 
@@ -450,7 +452,7 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
         EventDTO updatedEventDTO = event.withLastActivity(updatedLastActivity);
 
         // Update the last activity label in the UI
-        lastActivityDate.setText(updatedEventDTO.lastActivityToString());
+        lastActivityLabel.setText(updatedEventDTO.lastActivityToString());
     }
 
     private void resizeEventTitleTextField(String currText) {
@@ -464,7 +466,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
     @FXML
     private void handleEventTitleKeyboardEvent(KeyEvent keyEvent){
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if (keyEvent.getCode() == KeyCode.ENTER) {
             String curText = eventTitleTextField.getText();
             boolean confirmed = controllerUtils.createConfirmationAlert(lm.get("Changing the name of the event"),
@@ -497,7 +498,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
      * If LanguageManager is not available, no action is taken.
      */
     public void setLanguageForAllEventOverviewCtrl(){
-        LanguageManager lm = mainCtrl.getLanguageManager();
         if(lm == null){
             return;
         }
@@ -544,20 +544,20 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
 
             ColumnConstraints col1 = new ColumnConstraints();
             col1.setHalignment(HPos.CENTER);
-            col1.setMaxWidth(102.5);
-            col1.setPrefWidth(84.5);
+            col1.setMaxWidth(142.5);
+            col1.setPrefWidth(124.5);
 
             ColumnConstraints col2 = new ColumnConstraints();
             col2.setMaxWidth(378.5);
-            col2.setPrefWidth(364.0);
+            col2.setPrefWidth(304.0);
 
             ColumnConstraints col3 = new ColumnConstraints();
             col3.setMaxWidth(202.5);
-            col3.setPrefWidth(57.0);
+            col3.setPrefWidth(100.0);
 
             ColumnConstraints col4 = new ColumnConstraints();
-            col4.setMaxWidth(147.0);
-            col4.setPrefWidth(51.5);
+            col4.setMaxWidth(107.0);
+            col4.setPrefWidth(100.5);
 
             RowConstraints row1 = new RowConstraints();
             row1.setMaxHeight(21.0);
@@ -570,7 +570,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.getColumnConstraints().addAll(col1, col2, col3, col4);
             this.getRowConstraints().addAll(row1, row2);
 
-            LanguageManager lm = mainCtrl.getLanguageManager();
 
             dateText = new Text(lm.get("(no date)"));
             dateText.setFill(Color.web("#6f6f6f"));
@@ -586,13 +585,15 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
             this.add(includesText, 1, 1);
 
             editButton = new Button(lm.get("Edit"));
-            editButton.setPrefSize(45, 14);
+            editButton.setPrefSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
+            editButton.setFont(Font.font(10));
             editButton.getStyleClass().add("edit-button");
             GridPane.setHalignment(editButton, HPos.RIGHT);
             this.add(editButton, 2, 0, 1, 2);
 
             deleteButton = new Button(lm.get("Delete"));
-            deleteButton.setPrefSize(45, 14);
+            deleteButton.setPrefSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
+            deleteButton.setFont(Font.font(10));
             deleteButton.getStyleClass().add("delete-button");
             GridPane.setHalignment(deleteButton, HPos.RIGHT);
             this.add(deleteButton, 3, 0, 1, 2);
@@ -602,7 +603,6 @@ public class EventOverviewCtrl implements DataBasedSceneController<EventDTO> {
          * Adds the information of the expense to this GridPane
          */
         private void addExpenseInformation() {
-            LanguageManager lm = mainCtrl.getLanguageManager();
             if(expenseDTO.date() != null ) dateText.setText(expenseDTO.date().toString());
 
             expenseInfoText.setText(expenseDTO.paidByName() + lm.get(" paid \u20AC")

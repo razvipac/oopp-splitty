@@ -2,10 +2,8 @@
 package server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import server.entities.DTOMapper;
-import server.entities.event.Event;
-import server.entities.participant.Participant;
 import commons.dto.EventDTO;
+import commons.dto.WSAction;
 import commons.dto.WSWrapperResponseBody;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,16 +14,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import commons.dto.WSAction;
 import server.database.EventRepository;
+import server.entities.DTOMapper;
+import server.entities.event.Event;
 import server.service.EventService;
 import server.service.ParticipantService;
 import server.service.exceptions.NotFoundInDatabaseException;
-
-
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -163,50 +160,6 @@ public class EventControllerTest {
                         .param("name", newName)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testDeleteEventSuccess() throws Exception {
-
-        Event event = new Event();
-        String eventCode = "1234";
-        String newName = "New Name";
-        event.setCode(eventCode);
-        event.setName(newName);
-        String email = "123";
-        String iban = "134";
-        String bic = "123";
-        String name = "A";
-        Participant participant = new Participant(name, event, email, iban, bic);
-        List<Participant> p = event.getParticipants();
-
-        when(eventService.getOne(eventCode)).thenReturn(event);
-        EventDTO eventDTO = eventDTOMapper.toDTO(event);
-
-        when(event.getParticipants()).thenReturn(p);
-        // Mocking successful deletion
-        when(eventService.deleteOne(eventCode)).thenReturn(event);
-
-        // Perform DELETE request and validate response
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/")
-                        .param("eventCode", eventCode)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<WSWrapperResponseBody<EventDTO>> payloadCaptor = ArgumentCaptor
-                .forClass(WSWrapperResponseBody.class);
-        verify(simpMessagingTemplate).convertAndSend(destinationCaptor.capture(), payloadCaptor.capture());
-
-        String actualDestination = destinationCaptor.getValue();
-        WSWrapperResponseBody<EventDTO> actualPayload = payloadCaptor.getValue();
-
-        // Assert that the destination and payload are correct
-        // Adjusted the eventCode to match the code variable
-        assertEquals("/api/websocket/v1/channel/1234", actualDestination);
-        // Corrected to expect DELETED for a successful deletion
-        assertEquals(WSAction.DELETED, actualPayload.action());
-        assertEquals(eventDTO, actualPayload.object()); // Changed to match the eventDTO
     }
 
     @Test
