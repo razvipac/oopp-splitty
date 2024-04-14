@@ -162,6 +162,7 @@ public class AdminCtrl implements VoidSceneController {
      */
     private Button createEventNameButton(EventDTO event) {
         Button openPage = new Button(event.name());
+        openPage.getStyleClass().add("edit-button");
         openPage.setOnAction(e -> mainCtrl.showEventOverview(event));
 
         return openPage;
@@ -176,6 +177,7 @@ public class AdminCtrl implements VoidSceneController {
     private Button createDeleteEventButton(EventDTO event) {
         LanguageManager lm = mainCtrl.getLanguageManager();
         Button delete = new Button(lm.get("Delete"));
+        delete.getStyleClass().add("delete-button");
         delete.setOnAction(e -> {
             boolean confirmed = controllerUtils.createConfirmationAlert(
                     lm.get("Confirm Deletion"),
@@ -211,6 +213,7 @@ public class AdminCtrl implements VoidSceneController {
     public Button createDownloadEventButton(JSONDumpEventDTO event) {
         LanguageManager lm = mainCtrl.getLanguageManager();
         Button get = new Button(lm.get("Download"));
+        get.getStyleClass().add("edit-button");
         // If the given event is null for any reason, the button is disabled.
         if (event == null) {
             get.setDisable(true);
