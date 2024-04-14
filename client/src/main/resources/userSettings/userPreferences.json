@@ -168,7 +168,10 @@
     "Check your event code again!": "Controleer uw evenementcode opnieuw!",
     "Are you sure you want to change the name of the event to \"": "Weet u zeker dat u de naam van de gebeurtenis wilt wijzigen in \"",
     "Adding Participant Failed": "Toevoegen van deelnemer is mislukt",
-    " has been updated successfully.": " is succesvol bijgewerkt."
+    " has been updated successfully.": " is succesvol bijgewerkt.",
+    "Email entered incorrectly": "E-mailadres verkeerd ingevoerd",
+    "Sending email failed": "E-mail sturen is mislukt",
+    "An error has occurred. Please try again.": "Een fout is opgetreden. Probeer het opnieuw."
   },
   "English": {
     "English": "English",
@@ -345,7 +348,10 @@
     "does not exist": "does not exist",
     "Check your event code again!": "Check your event code again!",
     "Are you sure you want to change the name of the event to \"": "Are you sure you want to change the name of the event to \"",
-    "Adding Participant Failed": "Adding Participant Failed"
+    "Adding Participant Failed": "Adding Participant Failed",
+    "Email entered incorrectly": "Email entered incorrectly",
+    "Sending email failed": "Sending email failed",
+    "An error has occurred. Please try again.": "An error has occurred. Please try again."
   },
   "Romanian": {
     "English": "Engleză",
@@ -523,7 +529,10 @@
     "Check your event code again!": "Verificați din nou codul evenimentului!",
     "Are you sure you want to change the name of the event to \"": "Sigur doriți să schimbați numele evenimentului în \"",
     "Adding Participant Failed": "Adăugarea unui participant a eșuat",
-    " has been updated successfully.": " a fost actualizat cu succes."
+    " has been updated successfully.": " a fost actualizat cu succes.",
+    "Email entered incorrectly": "Adresa de email introdusă incorect",
+    "Sending email failed": "Trimiterea emailului a eșuat",
+    "An error has occurred. Please try again.": "A intervenit o eroare. Vă rugăm să încercați din nou."
   },
   "Template": {
     "English": "",
@@ -694,7 +703,10 @@
     "Are you sure you want to edit this participant?": "",
     "Are you sure you want to delete this participant?": "",
     "Please enter a valid email": "",
-    "Event does not exist": ""
+    "Event does not exist": "",
+    "Email entered incorrectly": "",
+    "Sending email failed": "",
+    "An error has occurred. Please try again.": ""
   },
   "language": "Dutch"
 }
