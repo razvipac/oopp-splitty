@@ -134,7 +134,14 @@ public class LanguageManager {
             if(languageSection.has(key)){
                 return languageSection.get(key).asText();
             }else{
-                return "NotFound";
+                /**
+                 * In case no key-value translation is found, the function return key
+                 * This is in order to ensure that we have a bad translation only,
+                 * and not a bad program
+                 * Also, for english, the key-value coincide, so we basically have
+                 * the english translation for it as generic :)
+                 */
+                return key;
             }
 
 
