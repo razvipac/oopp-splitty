@@ -55,11 +55,6 @@ public class AdminPasswordCtrl implements VoidSceneController {
      * @param resources passed ResourceBundle
      */
     public void initialize(URL location, ResourceBundle resources) {
-        passwordField.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ENTER){
-                submitPassword();
-            }
-        });
         setLanguageForAllAdminPasswordCtrl();
     }
 
@@ -98,6 +93,12 @@ public class AdminPasswordCtrl implements VoidSceneController {
     private void onGlobalKeyPress(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.ESCAPE) {
             goBack();
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.ENTER) {
+            submitPassword();
+        }
+        if (keyEvent.isAltDown() && keyEvent.getCode() == KeyCode.X) {
+            mainCtrl.closeAdminPasswordPopup();
         }
     }
 
